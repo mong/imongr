@@ -29,6 +29,16 @@ make_pool <- function() {
     }
   }
 
+  dbname <- conf$db$name
+  if (dbname == "env") {
+    if ("IMONGR_DB_NAME" %in% names(Sys.getenv())) {
+      dbname <- Sys.getenv("IMONGR_DB_NAME")
+    } else {
+      stop(paste("No database name defined in config or environment",
+                 "varaible IMONGR_DB_NAME. Cannot go on."))
+    }
+  }
+
   username <- conf$db$user
   if (username == "env") {
     if ("IMONGR_DB_USER" %in% names(Sys.getenv())) {
@@ -51,7 +61,7 @@ make_pool <- function() {
 
   pool::dbPool(
     drv = RMariaDB::MariaDB(),
-    dbname = conf$db$name,
+    dbname = dbname,
     host = host,
     username = username,
     password = password,

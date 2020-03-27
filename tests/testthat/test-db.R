@@ -23,10 +23,12 @@ check_db <- function() {
 env_context <- Sys.getenv("IMONGR_CONTEXT")
 env_user <- Sys.getenv("IMONGR_DB_USER")
 env_pass <- Sys.getenv("IMONGR_DB_PASS")
+env_name <- Sys.getenv("IMONGR_DB_NAME")
 env_host <- Sys.getenv("IMONGR_DB_HOST")
 
 # Prepare for tests
-## now, create dedicated database to test against
+## now, create a connection pool
+create_config()
 conf <- get_config()
 if (is.null(check_db())) {
   pool <- make_pool()
@@ -40,7 +42,7 @@ test_that("a pool object can be provided", {
 
 test_that("database server is up and test database can be made", {
   check_db()
-  query <- paste("CREATE DATABASE testdb CHARACTER SET = 'utf8'",
+  query <- paste("CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
                  "COLLATE = 'utf8_danish_ci';")
   expect_equal(pool::dbExecute(pool, query), 1)
   expect_equal(class(pool::dbGetQuery(pool, "SELECT 1")), "data.frame")
@@ -102,6 +104,8 @@ test_that("data can be fetched from test database", {
 test_that("pool cannot be established when missing credentials", {
   Sys.unsetenv("IMONGR_DB_HOST")
   expect_error(make_pool())
+  Sys.unsetenv("IMONGR_DB_NAME")
+  expect_error(make_pool())
   Sys.unsetenv("IMONGR_DB_PASS")
   expect_error(make_pool())
   Sys.unsetenv("IMONGR_DB_USER")
@@ -119,4 +123,5 @@ file.remove("_imongr.yml")
 Sys.setenv(IMONGR_CONTEXT = env_context)
 Sys.setenv(IMONGR_DB_USER = env_user)
 Sys.setenv(IMONGR_DB_PASS = env_pass)
+Sys.setenv(IMONGR_DB_NAME = env_name)
 Sys.setenv(IMONGR_DB_HOST = env_host)

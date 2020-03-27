@@ -1,6 +1,6 @@
 db:
   host: env
-  name: imongr
+  name: env
   user: env
   pass: env
   tab:
