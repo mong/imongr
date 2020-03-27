@@ -1,0 +1,33 @@
+db:
+  host: env
+  name: imongr
+  user: env
+  pass: env
+  tab:
+    data:
+      insert:
+      - Aar
+      - ShNavn
+      - ReshId
+      - OrgNrShus
+      - Variabel
+      - KvalIndID
+      - delivery_id
+    delivery:
+      insert:
+      - latest
+      - md5_checksum
+      - user_id
+    user:
+      insert:
+      - user_name
+      - name
+      - phone
+      - email
+      - valid
+      - org_id
+    org:
+      insert:
+      - name
+      - orgnumber
+      - valid

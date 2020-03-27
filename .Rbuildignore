@@ -1,0 +1,9 @@
+^imongr\.Rproj$
+^\.Rproj\.user$
+^data-raw$
+^\.travis\.yml$
+^CODE_OF_CONDUCT\.md$
+^appveyor\.yml$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

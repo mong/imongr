@@ -1,0 +1,40 @@
+language: r
+cache: packages
+
+r:
+  - oldrel
+  - release
+  - devel
+
+services:
+  - mysql
+
+r_github_packages:
+  - jimhester/covr
+  - jimhester/lintr
+  - r-lib/pkgdown
+
+before_install:
+  - mysql -e "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8' COLLATE = 'utf8_danish_ci';"
+
+
+after_success:
+  - R CMD INSTALL $PKG_TARBALL
+  - |
+    if [[ "$TRAVIS_R_VERSION_STRING" == "release" ]] && [[ "$TRAVIS_EVENT_TYPE" == "push" ]]; then
+      Rscript -e 'lintr::lint_package()'
+      Rscript -e 'covr::codecov()'
+    fi
+  - rm -rf imongr.Rcheck
+  - Rscript -e 'pkgdown::build_site()'
+
+deploy:
+  # our site to gh_pages
+  - provider: pages
+    skip_cleanup: true
+    token: $GH_TOKEN
+    keep_history: false
+    local_dir: docs
+    on:
+      branch: master
+      condition: $TRAVIS_R_VERSION_STRING == "release"
