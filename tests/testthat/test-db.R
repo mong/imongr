@@ -28,9 +28,9 @@ env_host <- Sys.getenv("IMONGR_DB_HOST")
 # Prepare for tests
 ## now, create dedicated database to test against
 conf <- get_config()
-pool <- make_pool()
-
-
+if (is.null(check_db())) {
+  pool <- make_pool()
+}
 test_that("a pool object can be provided", {
   check_db()
   expect_equal(class(pool), c("Pool", "R6"))
@@ -54,7 +54,9 @@ test_that("pool can be drained (closed)", {
 # create new pool pointing at testdb
 conf$db$name <- "testdb"
 write_config(conf)
-pool <- make_pool()
+if (is.null(check_db())) {
+  pool <- make_pool()
+}
 
 # make queries for creating tables
 fc <- file(system.file("create_tabs.sql", package = "imongr"), "r")
@@ -92,11 +94,9 @@ test_that("database can be populated with test data", {
   expect_true(insert_tab(pool, table = "data", df = imongr::data))
 })
 
-# it this is the last test that depends on a database, drop db
 test_that("data can be fetched from test database", {
   check_db()
   expect_equal(dim(get_data(pool)), dim(imongr::data))
-  pool::dbExecute(pool, "drop database testdb;")
 })
 
 test_that("pool cannot be established when missing credentials", {
@@ -109,7 +109,10 @@ test_that("pool cannot be established when missing credentials", {
 })
 
 # clean up
-drain_pool(pool)
+if (is.null(check_db())) {
+  pool::dbExecute(pool, "drop database testdb;")
+  drain_pool(pool)
+}
 file.remove("_imongr.yml")
 
 # recreate initial state
