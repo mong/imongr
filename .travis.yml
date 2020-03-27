@@ -6,6 +6,12 @@ r:
   - release
   - devel
 
+env:
+  - IMONGR_DB_HOST="127.0.0.1"
+  - IMONGR_DB_NAME="testdb"
+  - IMONGR_DB_USER="travis"
+  - IMONGR_DB_PASS=""
+
 services:
   - mysql
 
