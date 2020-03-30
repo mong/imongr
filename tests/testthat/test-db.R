@@ -100,20 +100,33 @@ test_that("database can be populated with test data", {
   expect_true(insert_tab(pool, table = "data", df = imongr::data))
 })
 
+test_that("function provides error when inserting non-consistent data", {
+  check_db()
+  expect_error(insert_tab(pool, table = "wrong_table", df = data.frame))
+  expect_error(insert_tab(pool, table = "org",
+                          df = cbind(imongr::org, unvalid_var=1)))
+  expect_error(insert_tab(pool, table = "org",
+                          df = data.frame(name="", OrgNr=123456789, valid=1)))
+})
+
 test_that("data can be fetched from test database", {
   check_db()
   expect_equal(dim(get_data(pool)), dim(imongr::data))
 })
 
 test_that("pool cannot be established when missing credentials", {
+  file.remove("_imongr.yml")
   Sys.unsetenv("IMONGR_DB_HOST")
-  expect_error(make_pool())
+  expect_error(make_pool(), "IMONGR_DB_HOST")
+  Sys.setenv(IMONGR_DB_HOST = env_host)
   Sys.unsetenv("IMONGR_DB_NAME")
-  expect_error(make_pool())
+  expect_error(make_pool(), "IMONGR_DB_NAME")
+  Sys.setenv(IMONGR_DB_NAME = env_name)
   Sys.unsetenv("IMONGR_DB_PASS")
-  expect_error(make_pool())
+  expect_error(make_pool(), "IMONGR_DB_PASS")
+  Sys.setenv(IMONGR_DB_PASS = env_pass)
   Sys.unsetenv("IMONGR_DB_USER")
-  expect_error(make_pool())
+  expect_error(make_pool(), "IMONGR_DB_USER")
 })
 
 # clean up
@@ -121,7 +134,6 @@ if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool, "drop database testdb;")
   drain_pool(pool)
 }
-file.remove("_imongr.yml")
 
 # recreate initial state
 Sys.setenv(IMONGR_CONTEXT = env_context)
