@@ -15,7 +15,7 @@ check_db <- function() {
   } else if (Sys.getenv("TRAVIS") == "true") {
     NULL
   } else {
-    skip("Test skipped due to possible lack of database infrastructure")
+    testthat::skip("Test skipped: possible lack of database infrastructure")
   }
 }
 
