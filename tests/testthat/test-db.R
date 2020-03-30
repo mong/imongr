@@ -104,9 +104,10 @@ test_that("function provides error when inserting non-consistent data", {
   check_db()
   expect_error(insert_tab(pool, table = "wrong_table", df = data.frame))
   expect_error(insert_tab(pool, table = "org",
-                          df = cbind(imongr::org, unvalid_var=1)))
+                          df = cbind(imongr::org, unvalid_var = 1)))
   expect_error(insert_tab(pool, table = "org",
-                          df = data.frame(name="", OrgNr=123456789, valid=1)))
+                          df = data.frame(name = "", OrgNr=123456789,
+                                          valid = 1)))
 })
 
 test_that("data can be fetched from test database", {
