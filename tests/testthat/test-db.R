@@ -9,13 +9,17 @@
 
 # Database infrastructure is only guaranteed at Travis and our own dev env.
 # Tests running on other environments should be skipped:
-check_db <- function() {
+check_db <- function(is_test_that = TRUE) {
   if (Sys.getenv("IMONGR_CONTEXT") == "DEV") {
     NULL
   } else if (Sys.getenv("TRAVIS") == "true") {
     NULL
   } else {
-    testthat::skip("Test skipped: possible lack of database infrastructure")
+    if (is_test_that) {
+      testthat::skip("Possible lack of database infrastructure")
+    } else {
+      1
+    }
   }
 }
 
@@ -30,7 +34,7 @@ env_host <- Sys.getenv("IMONGR_DB_HOST")
 ## now, create a connection pool
 create_config()
 conf <- get_config()
-if (is.null(check_db())) {
+if (is.null(check_db(is_test_that = FALSE))) {
   pool <- make_pool()
 }
 test_that("a pool object can be provided", {
@@ -56,7 +60,7 @@ test_that("pool can be drained (closed)", {
 # create new pool pointing at testdb
 conf$db$name <- "testdb"
 write_config(conf)
-if (is.null(check_db())) {
+if (is.null(check_db(is_test_that = FALSE))) {
   pool <- make_pool()
 }
 
@@ -113,7 +117,7 @@ test_that("pool cannot be established when missing credentials", {
 })
 
 # clean up
-if (is.null(check_db())) {
+if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool, "drop database testdb;")
   drain_pool(pool)
 }
