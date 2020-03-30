@@ -11,6 +11,7 @@ Description: Primarily a tool to update data used by the qmongr application.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
+Depends: R (>= 3.5.0)
 Imports: 
     pool,
     RMariaDB,
