@@ -123,11 +123,11 @@ test_that("pool cannot be established when missing credentials", {
   Sys.unsetenv("IMONGR_DB_NAME")
   expect_error(make_pool(), "IMONGR_DB_NAME")
   Sys.setenv(IMONGR_DB_NAME = "test")
-  Sys.unsetenv("IMONGR_DB_PASS")
-  expect_error(make_pool(), "IMONGR_DB_PASS")
-  Sys.setenv(IMONGR_DB_PASS = "test")
   Sys.unsetenv("IMONGR_DB_USER")
   expect_error(make_pool(), "IMONGR_DB_USER")
+  Sys.setenv(IMONGR_DB_USER = "test")
+  Sys.unsetenv("IMONGR_DB_PASS")
+  expect_error(make_pool(), "IMONGR_DB_PASS")
 })
 
 # clean up
