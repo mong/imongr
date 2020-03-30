@@ -131,7 +131,9 @@ test_that("pool cannot be established when missing credentials", {
 })
 
 # clean up
-if (is.null(check_db(is_test_that = FALSE))) {
+# if dropped on travis the following coverage will fail...
+if (is.null(check_db(is_test_that = FALSE)) &&
+    Sys.getenv("TRAVIS") != "true") {
   pool::dbExecute(pool, "drop database testdb;")
   drain_pool(pool)
 }

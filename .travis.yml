@@ -26,11 +26,11 @@ before_install:
 
 
 after_success:
-  - Rscript -e 'covr::codecov()'
   - R CMD INSTALL $PKG_TARBALL
   - |
     if [[ "$TRAVIS_R_VERSION_STRING" == "release" ]] && [[ "$TRAVIS_EVENT_TYPE" == "push" ]]; then
       Rscript -e 'lintr::lint_package()'
+      Rscript -e 'covr::codecov()'
     fi
   - rm -rf imongr.Rcheck
   - Rscript -e 'pkgdown::build_site()'
