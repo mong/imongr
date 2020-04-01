@@ -3,10 +3,10 @@
 \name{db}
 \alias{db}
 \alias{make_pool}
+\alias{drain_pool}
 \alias{insert_tab}
 \alias{get_data}
-\alias{drain_pool}
-\title{Database functions for imongr}
+\title{Low level database functions for imongr}
 \usage{
 make_pool()
 
@@ -27,8 +27,18 @@ get_data(pool)
 Database pool object, data frame or status message
 }
 \description{
-Database credentials are read from config. If one or more of these are
+Database metadata are read from config. If one or more of these are
 defined 'env' corresponding values will be fetched from the environmental
-variables IMONGR_DB_USER and IMONGR_DB_PASS. If these are undefined the
-function providing connection handles will exit with an error.
+variables IMONGR_DB_HOST, IMONGR_DB_NAME, IMONGR_DB_USER and IMONGR_DB_PASS.
+If these are undefined the function providing connection handles will exit
+with an error. What the function expects from table names and variable
+names in the data is also defined by the configuration. Thus, functions can
+be left unchanged when the data model is altered as long as such changes
+are reflected by configuration.
+}
+\details{
+Ordianry user interactions with data should have their own functions, but
+may be built ontop of these ones. For instance, such functions must make
+sure consistency (\emph{e.g.} foreign keys) between database tables are
+kept in order.
 }
