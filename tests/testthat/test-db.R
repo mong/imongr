@@ -106,7 +106,7 @@ test_that("function provides error when inserting non-consistent data", {
   expect_error(insert_tab(pool, table = "org",
                           df = cbind(imongr::org, unvalid_var = 1)))
   expect_error(insert_tab(pool, table = "org",
-                          df = data.frame(name = "", OrgNr=123456789,
+                          df = data.frame(name = "", OrgNr = 123456789,
                                           valid = 1)))
 })
 

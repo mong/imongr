@@ -5,19 +5,19 @@
 
 app_ui <- function() {
 
-  shiny::addResourcePath('www', system.file('www', package='imongr'))
-  appTitle = "imongr"
+  shiny::addResourcePath("www", system.file("www", package = "imongr"))
+  app_title <- "imongr"
 
   shiny::tagList(
     shiny::navbarPage(
       title = shiny::div(
         shiny::a(
           shiny::includeHTML(
-            system.file('www/logo.svg', package='imongr')
+            system.file("www/logo.svg", package = "imongr")
           )
-        ), appTitle
+        ), app_title
       ),
-      windowTitle = appTitle,
+      windowTitle = app_title,
       theme = "www/bootstrap.css",
       id = "tabs",
 
