@@ -1,5 +1,4 @@
-
-# imongr
+# imongr <img src="man/figures/logo.svg" align="right" height="150" />
 
 <!-- badges: start -->
 [![Version](https://img.shields.io/github/v/release/mong/imongr?sort=semver)](https://github.com/mong/imongr/releases)
