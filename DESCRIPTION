@@ -15,6 +15,7 @@ Depends: R (>= 3.5.0)
 Imports: 
     pool,
     RMariaDB,
+    shiny,
     yaml
 RoxygenNote: 7.0.2
 Suggests: 

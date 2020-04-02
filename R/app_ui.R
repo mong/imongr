@@ -25,13 +25,13 @@ app_ui <- function() {
       id = "tabs",
 
       shiny::tabPanel("Last",
-        h2("last data")
+        shiny::h2("last data")
       ),
       shiny::tabPanel("Loss",
-        h2("loss data")
+        shiny::h2("loss data")
       ),
       shiny::tabPanel("Profil",
-        h2("profil bruker")
+        shiny::h2("profil bruker")
       )
     )
   )
