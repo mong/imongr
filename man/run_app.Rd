@@ -12,6 +12,3 @@ An object representeing the imongr app
 \description{
 Run the imongr Shiny Application
 }
-\examples{
-run_app()
-}

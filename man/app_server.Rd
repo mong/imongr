@@ -19,6 +19,3 @@ An imongr shiny app server object
 \description{
 Server logic for the imongr app
 }
-\examples{
-app_server()
-}

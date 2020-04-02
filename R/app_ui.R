@@ -2,9 +2,6 @@
 #'
 #' @return An imonger shiny app ui object
 #' @export
-#'
-#' @examples
-#' app_ui()
 
 app_ui <- function() {
 

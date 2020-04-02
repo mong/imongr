@@ -12,6 +12,3 @@ An imonger shiny app ui object
 \description{
 Client (ui) for the imonger app
 }
-\examples{
-app_ui()
-}

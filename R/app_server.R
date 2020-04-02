@@ -6,9 +6,6 @@
 #'
 #' @return An imongr shiny app server object
 #' @export
-#'
-#' @examples
-#' app_server()
 
 app_server <- function(input, output, session) {
 

@@ -2,9 +2,6 @@
 #'
 #' @return An object representeing the imongr app
 #' @export
-#'
-#' @examples
-#' run_app()
 
 run_app <- function() {
 
