@@ -65,7 +65,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
 }
 
 # make queries for creating tables
-fc <- file(system.file("create_tabs.sql", package = "imongr"), "r")
+fc <- file(system.file("2_create_tabs.sql", package = "imongr"), "r")
 t <- readLines(fc)
 close(fc)
 sql <- paste0(t, collapse = "\n")
@@ -79,7 +79,7 @@ test_that("relevant tables can be made in test database, table", {
 })
 
 # make queries for creating indices
-fc <- file(system.file("create_indices.sql", package = "imongr"), "r")
+fc <- file(system.file("3_create_indices.sql", package = "imongr"), "r")
 t <- readLines(fc)
 close(fc)
 sql <- paste0(t, collapse = "\n")
