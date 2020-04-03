@@ -1,1 +1,1 @@
-GRANT ALL privileges ON testdb TO 'imongr'@'%' IDENTIFIED BY 'imongr;
+GRANT ALL privileges ON testdb TO 'imongr'@'%' IDENTIFIED BY 'imongri';
