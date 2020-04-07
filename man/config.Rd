@@ -10,7 +10,7 @@
 \usage{
 create_config(dir = ".")
 
-write_config(config, dir = ".")
+write_config(config, dir = ".", filename = "_imongr.yml")
 
 get_config(dir = ".")
 

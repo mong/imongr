@@ -24,9 +24,9 @@ create_config <- function(dir = ".") {
 
 #' @rdname config
 #' @export
-write_config <- function(config, dir = ".") {
+write_config <- function(config, dir = ".", filename = "_imongr.yml") {
   check_config(config)
-  config_file <- paste(dir, "_imongr.yml", sep = "/")
+  config_file <- paste(dir, filename, sep = "/")
   yaml::write_yaml(config, file = config_file)
   invisible()
 }
