@@ -4,13 +4,15 @@
 \name{delivery}
 \alias{delivery}
 \title{Delivery example data for qmongr data store}
-\format{Data frame with made up values
+\format{
+Data frame with made up values
 \describe{
   \item{latest}{Numeric definig if the delivery is the latest (1) or not(0)}
   \item{md5_checksum}{String A hash of the delivered data set used for
   integrity checking}
   \item{user_id}{Numeric id referencing the user that made the delivery}
-  }}
+  }
+}
 \usage{
 delivery
 }

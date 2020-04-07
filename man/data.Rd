@@ -4,7 +4,8 @@
 \name{data}
 \alias{data}
 \title{Example data for qmongr data store}
-\format{Data frame with made up values
+\format{
+Data frame with made up values
 \describe{
   \item{Aar}{Numeric 4 digit year}
   \item{ShNavn}{String hospital name}
@@ -13,7 +14,8 @@
   \item{Variabel}{String variable name}
   \item{kvalIndID}{Numeric id of quality indicator}
   \item{delivery_id}{Numeric id referencing the delivery}
-  }}
+  }
+}
 \usage{
 data
 }

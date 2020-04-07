@@ -4,13 +4,15 @@
 \name{org}
 \alias{org}
 \title{Organization example data for qmongr data store}
-\format{Data frame with made up values
+\format{
+Data frame with made up values
 \describe{
   \item{name}{String with name of organization. The person (user) adding
   data to qmonger must belong to an organization found in \code{org$name}}
   \item{orgnumber}{Numeric id of organization}
   \item{valid}{Numeric defining if organization is active (1) of not (0)}
-}}
+}
+}
 \usage{
 org
 }
