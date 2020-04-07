@@ -8,3 +8,4 @@
 ^docs$
 ^pkgdown$
 ^_imongr.yml$
+^docker-compose.yml$

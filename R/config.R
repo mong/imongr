@@ -1,7 +1,8 @@
 #' Functions handling imongr R package config
 #'
-#' @param dir string providing path to config
-#' @param config list containing config
+#' @param dir string providing path to configuration file
+#' @param config list containing configuration
+#' @param filename string defining config filename
 #'
 #' @return A status message or list of config
 #' @name config

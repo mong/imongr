@@ -17,9 +17,11 @@ get_config(dir = ".")
 check_config(config)
 }
 \arguments{
-\item{dir}{string providing path to config}
+\item{dir}{string providing path to configuration file}
 
-\item{config}{list containing config}
+\item{config}{list containing configuration}
+
+\item{filename}{string defining config filename}
 }
 \value{
 A status message or list of config
