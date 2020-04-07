@@ -95,6 +95,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
 
 Sys.setenv(SHINYPROXY_USERNAME="mongr")
 test_that("a user id can be provided", {
+  check_db()
   expect_equal(get_user_id(pool), 1)
 })
 
