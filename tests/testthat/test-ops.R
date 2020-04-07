@@ -100,7 +100,7 @@ test_that("a user id can be provided", {
 
 test_that("a consistent md5 checksum of a data frame can be provided", {
   expect_equal(md5_checksum(data.frame(name="imongr")),
-               "1a637bea4457c8ae517017732785962c")
+               "8dae045a4446895b320320f6bb031704")
 })
 
 test_that("no (real) delivery has been made yet", {

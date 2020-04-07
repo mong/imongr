@@ -67,7 +67,12 @@ get_user_id <- function(pool) {
 #' @export
 md5_checksum <- function(df) {
 
-  digest::digest(df, algo = "md5")
+  fn <- tempfile()
+  utils::write.csv(df, file = fn)
+  fc <- file(fn, "r")
+  t <- readLines(fc)
+  close(fc)
+  digest::digest(t, algo = "md5", serialize = FALSE)
 
 }
 
