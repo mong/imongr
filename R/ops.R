@@ -79,7 +79,7 @@ md5_checksum <- function(df) {
 
 #' @rdname ops
 #' @export
-delivery_exist_in_db <-function(pool, df) {
+delivery_exist_in_db <- function(pool, df) {
 
   query <- "
 SELECT
@@ -121,9 +121,9 @@ insert_data <- function(pool, df) {
     stop("This delivery has already been made, data exist in database!")
   }
 
-  delivery <- data.frame(latest=1,
-                         md5_checksum=md5_checksum(df),
-                         user_id=get_user_id(pool))
+  delivery <- data.frame(latest = 1,
+                         md5_checksum = md5_checksum(df),
+                         user_id = get_user_id(pool))
 
   retire_user_deliveries(pool)
 

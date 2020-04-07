@@ -28,7 +28,7 @@ check_db <- function(is_test_that = TRUE) {
 }
 
 
-Sys.setenv(SHINYPROXY_USERNAME="")
+Sys.setenv(SHINYPROXY_USERNAME = "")
 test_that("an error is provided when the function finds no user", {
   expect_error(get_user_name())
 })
@@ -38,12 +38,12 @@ test_that("a username can be returned", {
   expect_equal(get_user_name(), "imongr")
 })
 
-Sys.setenv(SHINYPROXY_USERGROUPS="")
+Sys.setenv(SHINYPROXY_USERGROUPS = "")
 test_that("an error is provided when the function finds no groups", {
   expect_error(get_user_groups())
 })
 
-Sys.setenv(SHINYPROXY_USERGROUPS="000000000,999999999")
+Sys.setenv(SHINYPROXY_USERGROUPS = "000000000,999999999")
 test_that("user groups can be returned", {
   expect_equal(get_user_groups(), "000000000,999999999")
 })
@@ -93,14 +93,14 @@ if (is.null(check_db(is_test_that = FALSE))) {
   insert_tab(pool, table = "data", df = imongr::data[1:100, ])
 }
 
-Sys.setenv(SHINYPROXY_USERNAME="mongr")
+Sys.setenv(SHINYPROXY_USERNAME = "mongr")
 test_that("a user id can be provided", {
   check_db()
   expect_equal(get_user_id(pool), 1)
 })
 
 test_that("a consistent md5 checksum of a data frame can be provided", {
-  expect_equal(md5_checksum(data.frame(name="imongr")),
+  expect_equal(md5_checksum(data.frame(name = "imongr")),
                "8dae045a4446895b320320f6bb031704")
 })
 
@@ -117,7 +117,6 @@ if (is.null(check_db(is_test_that = FALSE))) {
 test_that("the delivery has alrady been made", {
   check_db()
   expect_error(insert_data(pool, df = imongr::data[1:100, ]))
-  #expect_true(delivery_exist_in_db(pool, df = imongr::data[1:100, ]))
 })
 
 # clean up
