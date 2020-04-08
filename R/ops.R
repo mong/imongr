@@ -69,6 +69,24 @@ get_user_id <- function(pool) {
 
 #' @rdname ops
 #' @export
+get_user_latest_delivery_id <- function(pool) {
+
+  query <- paste0("
+SELECT
+  id
+FROM
+  delivery
+WHERE
+  latest=1 AND
+  user_id=", get_user_id(pool), ";")
+
+  df <- pool::dbGetQuery(pool, query)
+  df$id
+}
+
+
+#' @rdname ops
+#' @export
 md5_checksum <- function(df) {
 
   fn <- tempfile()
@@ -76,7 +94,7 @@ md5_checksum <- function(df) {
   fc <- file(fn, "r")
   t <- readLines(fc)
   close(fc)
-  digest::digest(t, algo = "md5", serialize = FALSE)
+  digest::digest(paste0(t, collapse = ""), algo = "md5", serialize = FALSE)
 
 }
 
@@ -132,6 +150,9 @@ insert_data <- function(pool, df) {
   retire_user_deliveries(pool)
 
   insert_tab(pool, "delivery", delivery)
-  insert_tab(pool, "data", df)
+  did <- get_user_latest_delivery_id(pool)
+  print(did)
+  df_id <- data.frame(delivery_id = did)
+  insert_tab(pool, "data", cbind(df, df_id))
 
 }

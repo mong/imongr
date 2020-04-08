@@ -101,7 +101,7 @@ test_that("a user id can be provided", {
 
 test_that("a consistent md5 checksum of a data frame can be provided", {
   expect_equal(md5_checksum(data.frame(name = "imongr")),
-               "8dae045a4446895b320320f6bb031704")
+               "ed91fb7bafe2bd55f90522e1104a13f1")
 })
 
 test_that("no (real) delivery has been made yet", {
@@ -111,12 +111,12 @@ test_that("no (real) delivery has been made yet", {
 
 ### make a delivery
 if (is.null(check_db(is_test_that = FALSE))) {
-  insert_data(pool, df = imongr::data[1:100, ])
+  insert_data(pool, df = imongr::data[1:100, 1:6])
 }
 
 test_that("the delivery has alrady been made", {
   check_db()
-  expect_error(insert_data(pool, df = imongr::data[1:100, ]))
+  expect_error(insert_data(pool, df = imongr::data[1:100, 1:6]))
 })
 
 test_that("existing org will not be (re-)created", {
