@@ -115,6 +115,21 @@ test_that("data can be fetched from test database", {
   expect_equal(dim(get_data(pool)), dim(imongr::data))
 })
 
+test_that("delivery data can be fetched from test database", {
+  check_db()
+  expect_equal(dim(get_delivery(pool)), dim(imongr::delivery))
+})
+
+test_that("user data can be fetched from test database", {
+  check_db()
+  expect_equal(dim(get_user(pool)), dim(imongr::user))
+})
+
+test_that("org data can be fetched from test database", {
+  check_db()
+  expect_equal(dim(get_org(pool))[1], dim(imongr::org)[1])
+})
+
 test_that("pool cannot be established when missing credentials", {
   file.remove("_imongr.yml")
   Sys.unsetenv("IMONGR_DB_HOST")

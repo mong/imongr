@@ -119,6 +119,46 @@ test_that("the delivery has alrady been made", {
   expect_error(insert_data(pool, df = imongr::data[1:100, ]))
 })
 
+test_that("existing org will not be (re-)created", {
+  check_db()
+  expect_equal(create_imongr_org(pool, name = "mongr.no",
+                                 orgnumber = 123456789),
+               "Organization already exists. Nothing to do!")
+})
+
+test_that("existing user will not be (re-)created", {
+  check_db()
+  expect_equal(create_imongr_user(pool, user_name = "mongr",
+                                  name = "Mongr No",
+                                  phone = "+4747474747",
+                                  email = "jesus@sky.com",
+                                  orgnumber = 123456789),
+               "User already exists. Nothing to do!")
+})
+
+test_that("a user with undefined org will not be created", {
+  check_db()
+  expect_match(create_imongr_user(pool, user_name = "jesus",
+                                  name = "Jesus Christ",
+                                  phone = "+4747474747",
+                                  email = "jesus@sky.com",
+                                  orgnumber = 987654321),
+               "does not belong to a known organization", all = FALSE)
+})
+
+test_that("a new organization can be created", {
+  check_db()
+  expect_true(create_imongr_org(pool, name = "Heaven", orgnumber = 987654321))
+})
+
+test_that("a new user can be created", {
+  expect_true(create_imongr_user(pool, user_name = "jesus",
+                                 name = "Jesus Christ",
+                                 phone = "+4747474747",
+                                 email = "jesus@sky.com",
+                                 orgnumber = 987654321))
+})
+
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
