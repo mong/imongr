@@ -5,7 +5,8 @@
 #' @return Relevant values from the current environment and database
 #' @name ops
 #' @aliases get_user_name get_user_groups get_user_data get_user_id
-#' md5_checksum delivery_exist_in_db retire_user_deliveries insert_data
+#' get_user_latest_delivery_id md5_checksum delivery_exist_in_db
+#' retire_user_deliveries insert_data
 NULL
 
 
@@ -151,7 +152,6 @@ insert_data <- function(pool, df) {
 
   insert_tab(pool, "delivery", delivery)
   did <- get_user_latest_delivery_id(pool)
-  print(did)
   df_id <- data.frame(delivery_id = did)
   insert_tab(pool, "data", cbind(df, df_id))
 
