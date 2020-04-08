@@ -152,6 +152,7 @@ test_that("a new organization can be created", {
 })
 
 test_that("a new user can be created", {
+  check_db()
   expect_true(create_imongr_user(pool, user_name = "jesus",
                                  name = "Jesus Christ",
                                  phone = "+4747474747",
