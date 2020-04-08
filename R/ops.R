@@ -6,6 +6,7 @@
 #' @name ops
 #' @aliases get_user_name get_user_groups get_user_data get_user_id
 #' md5_checksum delivery_exist_in_db retire_user_deliveries insert_data
+NULL
 
 
 
@@ -22,6 +23,9 @@ get_user_name <- function() {
 
 }
 
+
+#' @rdname ops
+#' @export
 get_user_groups <- function() {
 
   user_groups <- Sys.getenv("SHINYPROXY_USERGROUPS")

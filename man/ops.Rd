@@ -14,6 +14,8 @@
 \usage{
 get_user_name()
 
+get_user_groups()
+
 get_user_data(pool)
 
 get_user_id(pool)
