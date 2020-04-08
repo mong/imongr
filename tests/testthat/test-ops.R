@@ -33,7 +33,7 @@ test_that("an error is provided when the function finds no user", {
   expect_error(get_user_name())
 })
 
-Sys.setenv(SHINYPROXY_USERNAME="imongr")
+Sys.setenv(SHINYPROXY_USERNAME = "imongr")
 test_that("a username can be returned", {
   expect_equal(get_user_name(), "imongr")
 })
@@ -59,7 +59,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
 
   # new connections to testdb
   drain_pool(pool)
-  Sys.setenv(IMONGR_DB_NAME="testdb")
+  Sys.setenv(IMONGR_DB_NAME = "testdb")
   pool <- make_pool()
 
   # add tabs to testdb

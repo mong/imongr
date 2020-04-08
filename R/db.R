@@ -175,7 +175,6 @@ WHERE
 #' @export
 get_org <- function(pool) {
 
-  conf <- get_config()
   query <- paste0("
 SELECT
   *
