@@ -137,3 +137,52 @@ WHERE
 
   pool::dbGetQuery(pool, query)
 }
+
+
+#' @rdname db
+#' @export
+get_delivery <- function(pool) {
+
+  conf <- get_config()
+  query <- paste0("
+SELECT
+  ", paste0(conf$db$tab$delivery$insert, collapse = ",\n "), "
+FROM
+  delivery;")
+
+  pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname db
+#' @export
+get_user <- function(pool) {
+
+  conf <- get_config()
+  query <- paste0("
+SELECT
+  ", paste0(conf$db$tab$user$insert, collapse = ",\n "), "
+FROM
+  user
+WHERE
+  valid=1;")
+
+  pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname db
+#' @export
+get_org <- function(pool) {
+
+  conf <- get_config()
+  query <- paste0("
+SELECT
+  *
+FROM
+  org
+WHERE
+  valid=1;")
+
+  pool::dbGetQuery(pool, query)
+}

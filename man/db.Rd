@@ -6,6 +6,9 @@
 \alias{drain_pool}
 \alias{insert_tab}
 \alias{get_data}
+\alias{get_delivery}
+\alias{get_user}
+\alias{get_org}
 \title{Low level database functions for imongr}
 \usage{
 make_pool()
@@ -15,6 +18,12 @@ drain_pool(pool)
 insert_tab(pool, table, df)
 
 get_data(pool)
+
+get_delivery(pool)
+
+get_user(pool)
+
+get_org(pool)
 }
 \arguments{
 \item{pool}{a database connection pool object}
