@@ -11,12 +11,12 @@
 #' @param email String providing the e-mail of a user
 #' @return These functions are mainly fronends to DBI and the returned value is
 #' mainly what will be porvided by the underlying DBI functions
-#' @name org
+#' @name mgmt
 #' @aliases create_imongr_org create_imongr_user
 NULL
 
 
-#' @rdname org
+#' @rdname mgmt
 #' @export
 create_imongr_org <- function(pool, name, orgnumber, valid = 1) {
 
@@ -31,7 +31,7 @@ create_imongr_org <- function(pool, name, orgnumber, valid = 1) {
 }
 
 
-#' @rdname org
+#' @rdname mgmt
 #' @export
 create_imongr_user <- function(pool, user_name, name, phone, email, valid = 1,
                                orgnumber) {
