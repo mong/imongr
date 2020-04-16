@@ -6,11 +6,11 @@
 \alias{get_user_groups}
 \alias{get_user_data}
 \alias{get_user_id}
+\alias{get_user_latest_delivery_id}
 \alias{md5_checksum}
 \alias{delivery_exist_in_db}
 \alias{retire_user_deliveries}
 \alias{insert_data}
-\alias{get_user_latest_delivery_id}
 \title{Functions for data operations in imongr}
 \usage{
 get_user_name()
