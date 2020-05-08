@@ -13,6 +13,7 @@ db:
       - Variabel
       - KvalIndID
       - delivery_id
+      - Register
     delivery:
       insert:
       - latest
@@ -25,9 +26,34 @@ db:
       - phone
       - email
       - valid
-      - org_id
+    user_registry:
+      insert:
+      - Register
+      - user_id
+    registry:
+      insert:
+      - Register
+      - full_name
     org:
       insert:
-      - name
-      - orgnumber
-      - valid
+      - OrgNrRHF
+      - RHF
+      - OrgNrHF
+      - HF
+      - Hfkortnavn
+      - OrgNrShus
+      - OrgNavnEnhetsreg
+      - SykehusnavnLang
+      - SykehusNavn
+      - TaMed
+    indicator:
+      insert:
+      - IndID
+      - Register
+      - IndTittel
+      - IndNavn
+      - MaalNivaaGronn
+      - MaalNivaaGul
+      - MaalRetn
+      - BeskrivelseKort
+      - BeskrivelseLang
