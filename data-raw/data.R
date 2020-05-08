@@ -1,7 +1,24 @@
 ## code to prepare `data` dataset goes here
 
 data <- qmongrdata::KvalIndData
+
+# fake a delivery
 data <- cbind(data, delivery_id=rep(1, dim(data)[1]))
+
+# ditch nra because Register and IndID seems to be swapped in indBeskr
+ind <- data$KvalIndID == "nra"
+data <- data[!ind, ]
+
+# add registry field that is (currently) not part of data set from qmongrdata
+ind_reg <- data.frame(ind = qmongrdata::IndBeskr$IndID,
+                      reg = qmongrdata::IndBeskr$Register,
+                      stringsAsFactors = FALSE)
+reg <- rep(NA, dim(data)[1])
+for (i in seq_len(dim(ind_reg)[1])) {
+  ind <- data$KvalIndID == ind_reg$ind[i]
+  reg[ind] <- ind_reg$reg[i]
+}
+data <- cbind(data, Register = reg, stringsAsFactors = FALSE)
 
 # currently OrgNrShus from qmongrdata contains NAs and currently do not conform
 # to the database consistency constraints
