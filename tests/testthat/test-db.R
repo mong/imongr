@@ -94,7 +94,9 @@ test_that("test tables can be indexed", {
 
 test_that("database can be populated with test data", {
   check_db()
+  expect_true(insert_tab(pool, table = "registry", df = imongr::registry))
   expect_true(insert_tab(pool, table = "org", df = imongr::org))
+  expect_true(insert_tab(pool, table = "indicator", df = imongr::indicator))
   expect_true(insert_tab(pool, table = "user", df = imongr::user))
   expect_true(insert_tab(pool, table = "delivery", df = imongr::delivery))
   expect_true(insert_tab(pool, table = "data", df = imongr::data))
@@ -147,9 +149,9 @@ test_that("pool cannot be established when missing credentials", {
 
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
-if (is.null(check_db(is_test_that = FALSE))) {
-  pool::dbExecute(pool, "DROP TABLE data, delivery, user, org;")
-}
+# if (is.null(check_db(is_test_that = FALSE))) {
+#   pool::dbExecute(pool, "DROP TABLE data, delivery, user, org;")
+# }
 ## if db dropped on travis the following coverage will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
     Sys.getenv("TRAVIS") != "true") {
