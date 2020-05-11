@@ -6,12 +6,17 @@
 \alias{create_imongr_user}
 \title{Functions for organization and user management in imongr}
 \usage{
-create_imongr_org(pool, name, orgnumber, valid = 1)
+create_imongr_org(pool, df)
 
-create_imongr_user(pool, user_name, name, phone, email, valid = 1, orgnumber)
+create_imongr_user(pool, df)
 }
 \arguments{
 \item{pool}{Database connection pool object}
+
+\item{df}{Data frame corresponding to database table fields}
+
+\item{user_name}{String defining the username db field. Most likely its
+content should be unique}
 
 \item{name}{String defining any given name to the entity}
 
@@ -19,9 +24,6 @@ create_imongr_user(pool, user_name, name, phone, email, valid = 1, orgnumber)
 
 \item{valid}{Integer defining if the entity is valid (1) or deprecated (0).
 Default value is 1}
-
-\item{user_name}{String defining the username db field. Most likely its
-content should be unique}
 
 \item{phone}{String providing the phone number of a user}
 

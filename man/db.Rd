@@ -8,6 +8,7 @@
 \alias{get_data}
 \alias{get_delivery}
 \alias{get_user}
+\alias{get_user_registry}
 \alias{get_org}
 \title{Low level database functions for imongr}
 \usage{
@@ -24,6 +25,8 @@ get_delivery(pool)
 get_user(pool)
 
 get_org(pool)
+
+get_user_registry(pool)
 }
 \arguments{
 \item{pool}{a database connection pool object}
