@@ -40,4 +40,13 @@ data$ShNavn <- gsub("\xd8", "Ø", data$ShNavn)
 data$ShNavn <- gsub("\xe5", "å", data$ShNavn)
 data$ShNavn <- gsub("\xc5", "Å", data$ShNavn)
 
+# then, change to ascii substitutes
+data$ShNavn <- gsub("æ", "ae", data$ShNavn)
+data$ShNavn <- gsub("Æ", "Ae", data$ShNavn)
+data$ShNavn <- gsub("ø", "oe", data$ShNavn)
+data$ShNavn <- gsub("Ø", "Oe", data$ShNavn)
+data$ShNavn <- gsub("å", "aa", data$ShNavn)
+data$ShNavn <- gsub("Å", "Aa", data$ShNavn)
+
+
 usethis::use_data(data, overwrite = TRUE)
