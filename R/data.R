@@ -1,15 +1,64 @@
+#' Registry example data for qmongr data store
+#'
+#' Meta data to allow interactions with qmong data. Only used for testing in
+#' this package. Please refere to the overall data model (ref)
+#' @format Data frame with made up values
+#' \describe{
+#'   \item{Register}{String with registry name}
+#'   \item{full_name}{String with registry full name}
+#' }
+"registry"
+
+
 #' Organization example data for qmongr data store
 #'
 #' Meta data to allow interactions with qmong data. Only used for testing in
 #' this package. Please refere to the overall data model (ref)
 #' @format Data frame with made up values
 #' \describe{
-#'   \item{name}{String with name of organization. The person (user) adding
-#'   data to qmonger must belong to an organization found in \code{org$name}}
-#'   \item{orgnumber}{Numeric id of organization}
-#'   \item{valid}{Numeric defining if organization is active (1) of not (0)}
+#'   \item{OrgNrRHF}{}
+#'   \item{RHF}{}
+#'   \item{OrgNrHF}{}
+#'   \item{HF}{}
+#'   \item{Hfkortnavn}{}
+#'   \item{OrgNrShus}{}
+#'   \item{OrgNavnEnhetsreg}{}
+#'   \item{SykehusnavnLang}{}
+#'   \item{SykehusNavn}{}
+#'   \item{TaMed}{}
 #' }
 "org"
+
+
+#' Indicator example data for qmongr data store
+#'
+#' Meta data to allow interactions with qmong data. Only used for testing in
+#' this package. Please refere to the overall data model (ref)
+#' @format Data frame with made up values
+#' \describe{
+#'   \item{IndId}{}
+#'   \item{Register}{}
+#'   \item{IndTittel}{}
+#'   \item{IndNavn}{}
+#'   \item{MaalNivaaGronn}{}
+#'   \item{MaalNivaaGul}{}
+#'   \item{MaalRetn}{}
+#'   \item{BeskrivelseKort}{}
+#'   \item{BeskrivelseLang}{}
+#'
+#' }
+"indicator"
+
+#' User_registry example data for qmongr data store
+#'
+#' Meta data to allow interactions with qmong data. Only used for testing in
+#' this package. Please refere to the overall data model (ref)
+#' @format Data frame with made up values
+#' \describe{
+#'   \item{Register}{}
+#'   \item{user_id}{}
+#' }
+"user_registry"
 
 #' User example data for qmongr data store
 #'
@@ -26,9 +75,9 @@
 #'   \item{email}{String e-mail address of the person altering data,
 #'   \emph{e.g.} 'jesusc\@sky.com'}
 #'   \item{valid}{Numeric definig if user is active (1) or not (0)}
-#'   \item{org_id}{Numeric id referencing the organization the user belings to}
 #'   }
 "user"
+
 
 #' Delivery example data for qmongr data store
 #'

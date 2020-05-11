@@ -14,24 +14,6 @@ create_imongr_user(pool, df)
 \item{pool}{Database connection pool object}
 
 \item{df}{Data frame corresponding to database table fields}
-
-\item{user_name}{String defining the username db field. Most likely its
-content should be unique}
-
-\item{name}{String defining any given name to the entity}
-
-\item{orgnumber}{Integer providing a global id of the entity}
-
-\item{valid}{Integer defining if the entity is valid (1) or deprecated (0).
-Default value is 1}
-
-\item{phone}{String providing the phone number of a user}
-
-\item{email}{String providing the e-mail of a user}
-}
-\value{
-These functions are mainly fronends to DBI and the returned value is
-mainly what will be porvided by the underlying DBI functions
 }
 \description{
 Functions for organization and user management in imongr

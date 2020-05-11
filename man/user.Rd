@@ -16,7 +16,6 @@ Data frame with made up values
   \item{email}{String e-mail address of the person altering data,
   \emph{e.g.} 'jesusc\@sky.com'}
   \item{valid}{Numeric definig if user is active (1) or not (0)}
-  \item{org_id}{Numeric id referencing the organization the user belings to}
   }
 }
 \usage{

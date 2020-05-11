@@ -2,16 +2,6 @@
 #'
 #' @param pool Database connection pool object
 #' @param df Data frame corresponding to database table fields
-#' @param user_name String defining the username db field. Most likely its
-#' content should be unique
-#' @param name String defining any given name to the entity
-#' @param orgnumber Integer providing a global id of the entity
-#' @param valid Integer defining if the entity is valid (1) or deprecated (0).
-#' Default value is 1
-#' @param phone String providing the phone number of a user
-#' @param email String providing the e-mail of a user
-#' @return These functions are mainly fronends to DBI and the returned value is
-#' mainly what will be porvided by the underlying DBI functions
 #' @name mgmt
 #' @aliases create_imongr_org create_imongr_user
 NULL
