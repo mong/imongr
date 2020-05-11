@@ -25,6 +25,13 @@ data <- cbind(data, Register = reg, stringsAsFactors = FALSE)
 ind <- is.na(data$OrgNrShus)
 data <- data[!ind, ]
 
+# currently, OrgNrShus in data is not consistent with SykehusNavnStruktur
+# thus, remove all "unknown" OrgNrShus entries from data
+org <- qmongrdata::SykehusNavnStruktur$OrgNrShus
+org_data <- data$OrgNrShus
+ind <- is.element(org_data, org)
+data <- data[ind, ]
+
 # substitute some strange codes (latin1?) with proper chars
 data$ShNavn <- gsub("\xe6", "æ", data$ShNavn)
 data$ShNavn <- gsub("\xc6", "Æ", data$ShNavn)

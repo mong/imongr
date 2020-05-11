@@ -179,9 +179,7 @@ get_org <- function(pool) {
 SELECT
   *
 FROM
-  org
-WHERE
-  valid=1;")
+  org;")
 
   pool::dbGetQuery(pool, query)
 }

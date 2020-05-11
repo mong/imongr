@@ -87,7 +87,9 @@ test_that("error is provided when the current user is not in db", {
 
 ## then onto some content from package ready-made data
 if (is.null(check_db(is_test_that = FALSE))) {
+  insert_tab(pool, table = "registry", df = imongr::registry)
   insert_tab(pool, table = "org", df = imongr::org)
+  insert_tab(pool, table = "indicator", df = imongr::indicator)
   insert_tab(pool, table = "user", df = imongr::user)
   insert_tab(pool, table = "delivery", df = imongr::delivery)
   insert_tab(pool, table = "data", df = imongr::data[1:100, ])
@@ -111,12 +113,12 @@ test_that("no (real) delivery has been made yet", {
 
 ### make a delivery
 if (is.null(check_db(is_test_that = FALSE))) {
-  insert_data(pool, df = imongr::data[1:100, 1:6])
+  insert_data(pool, df = imongr::data[1:100, c(1:6, 8)])
 }
 
 test_that("the delivery has alrady been made", {
   check_db()
-  expect_error(insert_data(pool, df = imongr::data[1:100, 1:6]))
+  expect_error(insert_data(pool, df = imongr::data[1:100, c(1:6, 8)]))
 })
 
 test_that("existing org will not be (re-)created", {

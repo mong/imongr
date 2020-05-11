@@ -98,6 +98,7 @@ test_that("database can be populated with test data", {
   expect_true(insert_tab(pool, table = "org", df = imongr::org))
   expect_true(insert_tab(pool, table = "indicator", df = imongr::indicator))
   expect_true(insert_tab(pool, table = "user", df = imongr::user))
+  expect_true(insert_tab(pool, table = "user_registry", df = imongr::user_registry))
   expect_true(insert_tab(pool, table = "delivery", df = imongr::delivery))
   expect_true(insert_tab(pool, table = "data", df = imongr::data))
 })
