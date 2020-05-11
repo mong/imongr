@@ -19,7 +19,8 @@
 #' @param df data frame containing data to be inserted into a database
 #' @return Database pool object, data frame or status message
 #' @name db
-#' @aliases make_pool drain_pool insert_tab get_data
+#' @aliases make_pool drain_pool insert_tab get_data get_delivery get_user
+#' get_user_registry
 NULL
 
 #' @rdname db
@@ -180,6 +181,20 @@ SELECT
   *
 FROM
   org;")
+
+  pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname db
+#' @export
+get_user_registry <- function(pool) {
+
+  query <- paste0("
+SELECT
+  *
+FROM
+  user_registry;")
 
   pool::dbGetQuery(pool, query)
 }
