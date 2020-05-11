@@ -33,25 +33,13 @@ create_imongr_org <- function(pool, df) {
 
 #' @rdname mgmt
 #' @export
-create_imongr_user <- function(pool, user_name, name, phone, email, valid = 1,
-                               orgnumber) {
+create_imongr_user <- function(pool, df) {
 
   user <- get_user(pool)
-  if (user_name %in% user$user_name) {
+  if (df$user_name %in% user$user_name) {
     return("User already exists. Nothing to do!")
   } else {
-    org <- get_org(pool)
-    if (orgnumber %in% org$orgnumber) {
-      org_id <- org$id[org$orgnumber == orgnumber]
-      print(org_id)
-      df <- data.frame(user_name = user_name, name = name, phone = phone,
-                       email = email, valid = valid, org_id = org_id)
-      msg <- insert_tab(pool, "user", df)
-      return(msg)
-    } else {
-      return(paste("The user", user_name, "does not belong to a known",
-                   "organization. Please create this organization first",
-                   "and then registrer this user."))
-    }
+    msg <- insert_tab(pool, "user", df)
+    return(msg)
   }
 }
