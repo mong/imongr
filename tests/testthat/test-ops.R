@@ -91,6 +91,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
   insert_tab(pool, table = "org", df = imongr::org)
   insert_tab(pool, table = "indicator", df = imongr::indicator)
   insert_tab(pool, table = "user", df = imongr::user)
+  insert_tab(pool, table = "user_registry", df = imongr::user_registry)
   insert_tab(pool, table = "delivery", df = imongr::delivery)
   insert_tab(pool, table = "data", df = imongr::data[1:100, ])
 }
@@ -123,49 +124,57 @@ test_that("the delivery has alrady been made", {
 
 test_that("existing org will not be (re-)created", {
   check_db()
-  expect_equal(create_imongr_org(pool, name = "mongr.no",
-                                 orgnumber = 123456789),
+  expect_equal(create_imongr_org(pool, df = imongr::org[1, ]),
                "Organization already exists. Nothing to do!")
 })
 
 test_that("existing user will not be (re-)created", {
   check_db()
-  expect_equal(create_imongr_user(pool, user_name = "mongr",
-                                  name = "Mongr No",
-                                  phone = "+4747474747",
-                                  email = "jesus@sky.com",
-                                  orgnumber = 123456789),
-               "User already exists. Nothing to do!")
+  expect_equal(create_imongr_user(pool, data.frame(
+    user_name = "mongr",
+    name = "Mongr No",
+    phone = "+4747474747",
+    email = "jesus@sky.com",
+    stringsAsFactors = FALSE)),
+    "User already exists. Nothing to do!")
 })
 
-test_that("a user with undefined org will not be created", {
-  check_db()
-  expect_match(create_imongr_user(pool, user_name = "jesus",
-                                  name = "Jesus Christ",
-                                  phone = "+4747474747",
-                                  email = "jesus@sky.com",
-                                  orgnumber = 987654321),
-               "does not belong to a known organization", all = FALSE)
-})
+# test_that("a user with undefined org will not be created", {
+#   check_db()
+#   expect_match(create_imongr_user(pool, user_name = "jesus",
+#                                   name = "Jesus Christ",
+#                                   phone = "+4747474747",
+#                                   email = "jesus@sky.com",
+#                                   orgnumber = 987654321),
+#                "does not belong to a known organization", all = FALSE)
+# })
+
+# Lots of missing test below due to new tables
 
 test_that("a new organization can be created", {
   check_db()
-  expect_true(create_imongr_org(pool, name = "Heaven", orgnumber = 987654321))
+  df <- imongr::org[1, ]
+  df$OrgNrShus <- 10000000
+  expect_true(create_imongr_org(pool,df))
 })
 
 test_that("a new user can be created", {
   check_db()
-  expect_true(create_imongr_user(pool, user_name = "jesus",
-                                 name = "Jesus Christ",
-                                 phone = "+4747474747",
-                                 email = "jesus@sky.com",
-                                 orgnumber = 987654321))
+  expect_true(create_imongr_user(pool, data.frame(
+    user_name = "jesus",
+    name = "Jesus Christ",
+    phone = "+4747474747",
+    email = "jesus@sky.com",
+    valid = 1,
+    stringsAsFactors = FALSE)))
 })
 
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
-  pool::dbExecute(pool, "DROP TABLE data, delivery, user, org;")
+  pool::dbExecute(pool,
+                  paste("DROP TABLE data, user_registry, delivery,",
+                        "user, org, indicator, registry;"))
 }
 ## if db dropped on travis the coverage reporting will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
