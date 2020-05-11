@@ -1,6 +1,7 @@
 #' Functions for organization and user management in imongr
 #'
 #' @param pool Database connection pool object
+#' @param df Data frame corresponding to database table fields
 #' @param user_name String defining the username db field. Most likely its
 #' content should be unique
 #' @param name String defining any given name to the entity
@@ -18,13 +19,12 @@ NULL
 
 #' @rdname mgmt
 #' @export
-create_imongr_org <- function(pool, name, orgnumber, valid = 1) {
+create_imongr_org <- function(pool, df) {
 
   org <- get_org(pool)
-  if (orgnumber %in% org$orgnumber) {
+  if (df$OrgNrShus %in% org$OrgNrShus) {
     return("Organization already exists. Nothing to do!")
   } else {
-    df <- data.frame(name = name, orgnumber = orgnumber, valid = valid)
     msg <- insert_tab(pool, "org", df)
     return(msg)
   }
