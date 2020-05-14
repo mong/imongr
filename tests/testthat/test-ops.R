@@ -139,15 +139,6 @@ test_that("existing user will not be (re-)created", {
     "User already exists. Nothing to do!")
 })
 
-# test_that("a user with undefined org will not be created", {
-#   check_db()
-#   expect_match(create_imongr_user(pool, user_name = "jesus",
-#                                   name = "Jesus Christ",
-#                                   phone = "+4747474747",
-#                                   email = "jesus@sky.com",
-#                                   orgnumber = 987654321),
-#                "does not belong to a known organization", all = FALSE)
-# })
 
 # Lots of missing test below due to new tables
 
@@ -155,7 +146,7 @@ test_that("a new organization can be created", {
   check_db()
   df <- imongr::org[1, ]
   df$OrgNrShus <- 10000000
-  expect_true(create_imongr_org(pool,df))
+  expect_true(create_imongr_org(pool, df))
 })
 
 test_that("a new user can be created", {
