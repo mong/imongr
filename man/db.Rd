@@ -11,6 +11,8 @@
 \alias{get_user_registry}
 \alias{get_table}
 \alias{get_org}
+\alias{get_indicator}
+\alias{get_registry}
 \title{Low level database functions for imongr}
 \usage{
 make_pool()
@@ -19,7 +21,7 @@ drain_pool(pool)
 
 insert_tab(pool, table, df)
 
-get_table(pool, tab)
+get_table(pool, table)
 
 get_data(pool)
 
@@ -30,6 +32,10 @@ get_user(pool)
 get_org(pool)
 
 get_user_registry(pool)
+
+get_indicator(pool)
+
+get_registry(pool)
 }
 \arguments{
 \item{pool}{a database connection pool object}

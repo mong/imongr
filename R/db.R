@@ -121,9 +121,9 @@ insert_tab <- function(pool, table, df) {
 
 #' @rdname db
 #' @export
-get_table <- function(pool, tab) {
+get_table <- function(pool, table) {
 
-  f <- paste0("get_", tab)
+  f <- paste0("get_", table)
   do.call(f, args = list(pool = pool))
 }
 
