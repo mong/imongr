@@ -14,6 +14,10 @@ db:
       - KvalIndID
       - delivery_id
       - Register
+    user_registry:
+      insert:
+      - Register
+      - user_id
     delivery:
       insert:
       - latest
@@ -26,14 +30,6 @@ db:
       - phone
       - email
       - valid
-    user_registry:
-      insert:
-      - Register
-      - user_id
-    registry:
-      insert:
-      - Register
-      - full_name
     org:
       insert:
       - OrgNrRHF
@@ -57,3 +53,9 @@ db:
       - MaalRetn
       - BeskrivelseKort
       - BeskrivelseLang
+    registry:
+      insert:
+      - Register
+      - full_name
+adminer:
+  url: http://localhost:8888
