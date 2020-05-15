@@ -25,10 +25,20 @@ app_ui <- function() {
         shiny::h2("last data")
       ),
       shiny::tabPanel("Loss",
-        shiny::h2("loss data")
+        sidebarLayout(
+          sidebarPanel(
+            uiOutput("select_db_table"),
+            selectInput("file_format", "Filformat:", c("csv", "csv2", "rda")),
+            downloadButton("download_db_table", "Last ned!")
+          ),
+          mainPanel(
+            uiOutput("ui_db_table")
+          )
+        )
       ),
-      shiny::tabPanel("Profil",
-        shiny::h2("profil bruker")
+      shiny::tabPanel("Admin",
+        mainPanel(width = 12,
+          htmlOutput("admin_frame"))
       )
     )
   )
