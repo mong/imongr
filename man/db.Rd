@@ -9,6 +9,7 @@
 \alias{get_delivery}
 \alias{get_user}
 \alias{get_user_registry}
+\alias{get_table}
 \alias{get_org}
 \title{Low level database functions for imongr}
 \usage{
@@ -17,6 +18,8 @@ make_pool()
 drain_pool(pool)
 
 insert_tab(pool, table, df)
+
+get_table(pool, tab)
 
 get_data(pool)
 

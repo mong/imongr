@@ -121,6 +121,14 @@ insert_tab <- function(pool, table, df) {
 
 #' @rdname db
 #' @export
+get_table <- function(pool, tab) {
+
+  f <- paste0("get_", tab)
+  do.call(f, args = list(pool = pool))
+}
+
+#' @rdname db
+#' @export
 get_data <- function(pool) {
 
   conf <- get_config()
@@ -195,6 +203,34 @@ SELECT
   *
 FROM
   user_registry;")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db
+#' @export
+get_indicator <- function(pool) {
+
+  conf <- get_config()
+  query <- paste0("
+SELECT
+  ", paste0(conf$db$tab$indicator$insert, collapse = ",\n "), "
+FROM
+  indicator;")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db
+#' @export
+get_registry <- function(pool) {
+
+  conf <- get_config()
+  query <- paste0("
+SELECT
+  ", paste0(conf$db$tab$registry$insert, collapse = ",\n "), "
+FROM
+  registry;")
 
   pool::dbGetQuery(pool, query)
 }
