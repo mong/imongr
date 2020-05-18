@@ -59,3 +59,20 @@ db:
       - full_name
 adminer:
   url: http://localhost:8888
+upload:
+  data_var_ind:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  doc:
+    main: Dette er et verktøy for å hjelpe med å laste opp filer i riktig format til bruk i sykehusviser. Underer det vist et eksempel på hvordan filen skal se ut. Din fil skal være i csv-format med de samme kolonnenavnene som i eksempelet. Det er ikke nøye med små og store bokstaver eller rekkefølgen på kolonnene. Under følger en forklaring på innholdet i kolonnene.
+    Aar: året for hendelsen
+    ShNavn: registerets navn på enheten knyttet til hendelsen
+    ReshId: registerets numeriske ID (ofte RESH) på enheten knyttet til hendelsen
+    OrgNrShus: organisasjonsnummeret til sykehus/HF knyttet til hendelsen, hentet fra tilsendt fil SykehusNavnStruktur
+    Variabel: enten en binær indikator (0/1) for fremstilling av andel måloppnåelse, eller en numerisk variabel for fremstilling av gjennomsnitt eller median
+    nevner: valgfri; nevner som angir antall tilfeller der tilsvarende Variabel representerer en aggregert verdi
+    KvalIndID: identifikator for kvalitetsindikator, skal samsvare med identifikator gitt i Indikatorbeskrivelse

@@ -12,6 +12,24 @@ app_server <- function(input, output, session) {
   conf <- get_config()
   pool <- make_pool()
 
+  # last
+  output$other_encoding <- shiny::renderUI({
+    if (input$tegnsett == "Annet") {
+      shiny::selectInput(inputId = "andretegn_verdi", label = "Spesifiser:",
+                         choices = iconvlist(), selected = "MS-ANSI")
+    }
+  })
+
+  output$var_doc <- shiny::renderText({
+    l <- "<ul>\n"
+    for (i in conf$upload$data_var_ind) {
+      var <- conf$db$tab$data$insert[i]
+      l <- paste0(l, "\t<li><b>", var, "</b>: ",
+                  conf$upload$doc[[var]], "</li>\n")
+    }
+    l
+  })
+
   # loss
   db_table <- shiny::reactive({
     get_table(pool, input$tab_set)
