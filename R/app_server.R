@@ -17,15 +17,15 @@ app_server <- function(input, output, session) {
     get_table(pool, input$tab_set)
   })
 
-  output$select_db_table <- renderUI({
-    selectInput("tab_set", "Velg tabell:", names(conf$db$tab),
-                selected = names(conf$db$tab)[1])
+  output$select_db_table <- shiny::renderUI({
+    shiny::selectInput("tab_set", "Velg tabell:", names(conf$db$tab),
+                       selected = names(conf$db$tab)[1])
   })
   output$db_table <- DT::renderDataTable(
     db_table(), rownames = FALSE
   )
 
-  output$ui_db_table <- renderUI(
+  output$ui_db_table <- shiny::renderUI(
     DT::dataTableOutput("db_table")
   )
 
@@ -54,9 +54,9 @@ app_server <- function(input, output, session) {
                       "username=", db_username(), "&",
                       "db=", db_name())
 
-  output$admin_frame <- renderUI({
-    tags$iframe(src = admin_url, width = "100%", height = 1024,
-                      frameborder = "no")
+  output$admin_frame <- shiny::renderUI({
+    shiny::tags$iframe(src = admin_url, width = "100%", height = 1024,
+                       frameborder = "no")
   })
 
 }
