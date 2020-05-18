@@ -13,16 +13,39 @@ app_server <- function(input, output, session) {
   pool <- make_pool()
 
   # loss
+  db_table <- shiny::reactive({
+    get_table(pool, input$tab_set)
+  })
+
   output$select_db_table <- renderUI({
     selectInput("tab_set", "Velg tabell:", names(conf$db$tab),
                 selected = names(conf$db$tab)[1])
   })
   output$db_table <- DT::renderDataTable(
-    get_table(pool, input$tab_set), rownames = FALSE
+    db_table(), rownames = FALSE
   )
 
   output$ui_db_table <- renderUI(
     DT::dataTableOutput("db_table")
+  )
+
+  output$download_db_table <- shiny::downloadHandler(
+    filename = function() {
+      if (input$file_format %in% c("csv", "csv2", "excel-csv", "excel-csv2")) {
+        basename(tempfile(fileext = ".csv"))
+      } else {
+        basename(tempfile(fileext = ".rds"))
+      }
+    },
+    content = function(file) {
+      switch (input$file_format,
+        `csv` = readr::write_csv(db_table(), file),
+        `csv2` = readr::write_csv2(db_table(), file),
+        `excel-csv` = readr::write_excel_csv(db_table(), file),
+        `excel-csv2` = readr::write_excel_csv2(db_table(), file),
+        `rds` = readr::write_rds(db_table(), file)
+      )
+    }
   )
 
   # our db admin interface
