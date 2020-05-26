@@ -13,6 +13,20 @@ app_server <- function(input, output, session) {
   pool <- make_pool()
 
   # last
+
+  ## observers
+  shiny::observeEvent(input$submit, {
+    output$upload_file <- shiny::renderUI({
+      shiny::fileInput("upload_file", "Velg csv-fil",
+                       multiple = FALSE,
+                       accept = c("text/csv",
+                                  "text/comma-separated-values,text/plain",
+                                  ".csv")
+      )
+    })
+    insert_data(pool, cbind(df(), data.frame(Register = input$registry)))
+  })
+
   ## reactive exp
   encoding <- shiny::reactive({
     if (input$enc == "Annet") {
@@ -37,12 +51,13 @@ app_server <- function(input, output, session) {
     shiny::selectInput("registry", "Velg register:", get_user_registries(pool))
   })
 
-  output$error_report <- shiny::renderText({
-    if(is.null(input$upload_file)) {
-      NULL
-    } else {
-      check_report(df(), pool)
-    }
+  output$upload_file <- shiny::renderUI({
+    shiny::fileInput("upload_file", "Velg csv-fil",
+                     multiple = FALSE,
+                     accept = c("text/csv",
+                                "text/comma-separated-values,text/plain",
+                                ".csv")
+    )
   })
 
   output$other_encoding <- shiny::renderUI({
@@ -52,9 +67,9 @@ app_server <- function(input, output, session) {
     }
   })
 
-  output$submitt <- shiny::renderUI({
+  output$submit <- shiny::renderUI({
     if (all(!check_upload(df(), pool)$fail)) {
-      actionButton("submitt", "Send til server", icon("paper-plane"))
+      actionButton("submit", "Send til server", icon("paper-plane"))
     } else {
       NULL
     }
@@ -62,6 +77,16 @@ app_server <- function(input, output, session) {
 
 
   ## ui main panel
+  output$in_progress <- shiny::renderUI(NULL)
+
+  output$error_report <- shiny::renderText({
+    if(is.null(input$upload_file)) {
+      NULL
+    } else {
+      check_report(df(), pool)
+    }
+  })
+
   output$upload_sample_text <- shiny::renderText({
     if (is.null(input$upload_file)) {
       NULL

@@ -6,7 +6,7 @@
 #' @name ops
 #' @aliases get_user_name get_user_groups get_user_data get_user_id
 #' get_user_latest_delivery_id md5_checksum delivery_exist_in_db
-#' retire_user_deliveries insert_data
+#' retire_user_deliveries delete_registry_data insert_data
 NULL
 
 
@@ -154,16 +154,39 @@ WHERE
 
 #' @rdname ops
 #' @export
+delete_registry_data <- function(pool, df) {
+
+  if (!"Register" %in% names(df)) {
+    stop("Data frame has no 'Register' variable. Cannot go on!")
+  }
+  reg <- levels(as.factor(df$Register))
+  if (length(reg) > 1) {
+    stop("Data can only represent one registry. Cannot go on!")
+  }
+
+  query <- paste0("
+DELETE FROM
+  data
+WHERE
+  Register='", reg, "';")
+
+  pool::dbExecute(pool, query)
+}
+
+
+#' @rdname ops
+#' @export
 insert_data <- function(pool, df) {
 
-  if (delivery_exist_in_db(pool, df)) {
-    stop("This delivery has already been made, data exist in database!")
-  }
+  # if (delivery_exist_in_db(pool, df)) {
+  #   stop("This delivery has already been made, data exist in database!")
+  # }
 
   delivery <- data.frame(latest = 1,
                          md5_checksum = md5_checksum(df),
                          user_id = get_user_id(pool))
 
+  delete_registry_data(pool, df)
   retire_user_deliveries(pool)
 
   insert_tab(pool, "delivery", delivery)

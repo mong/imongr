@@ -25,12 +25,7 @@ app_ui <- function() {
         shiny::sidebarLayout(
           shiny::sidebarPanel(
             shiny::uiOutput("select_registry"),
-            shiny::fileInput("upload_file", "Velg csv-fil",
-                             multiple = FALSE,
-                             accept = c("text/csv",
-                                        "text/comma-separated-values,text/plain",
-                                        ".csv"),
-            ),
+            shiny::uiOutput("upload_file"),
             shiny::radioButtons("sep", "Kolonneseparator",
                                 choices = c(Semikolon = ";",
                                             Komma = ",",
@@ -48,11 +43,12 @@ app_ui <- function() {
                                 min = 1, max = 50),
             shiny::selectInput("sample_type", "Utvalg:",
                                list(`toppen` = FALSE, `tilfeldig` = TRUE), FALSE),
-            shiny::uiOutput("submitt")
+            shiny::uiOutput("submit")
           ),
 
           # Main panel for displaying outputs ----
           shiny::mainPanel(
+            shiny::htmlOutput("in_progress"),
             shiny::htmlOutput("error_report"),
             shiny::titlePanel("Last opp fil"),
             shiny::htmlOutput("upload_sample_text"),
