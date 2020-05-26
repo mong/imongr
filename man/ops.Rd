@@ -11,6 +11,7 @@
 \alias{delivery_exist_in_db}
 \alias{retire_user_deliveries}
 \alias{insert_data}
+\alias{get_user_registries}
 \title{Functions for data operations in imongr}
 \usage{
 get_user_name()
@@ -20,6 +21,8 @@ get_user_groups()
 get_user_data(pool)
 
 get_user_id(pool)
+
+get_user_registries(pool)
 
 get_user_latest_delivery_id(pool)
 

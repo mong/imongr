@@ -70,6 +70,22 @@ get_user_id <- function(pool) {
 
 #' @rdname ops
 #' @export
+get_user_registries <- function(pool) {
+
+  query <- paste0("
+SELECT
+  Register
+FROM
+  user_registry
+WHERE
+  user_id=", get_user_id(pool), ";")
+
+  pool::dbGetQuery(pool, query)[, 1]
+}
+
+
+#' @rdname ops
+#' @export
 get_user_latest_delivery_id <- function(pool) {
 
   query <- paste0("
