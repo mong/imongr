@@ -16,6 +16,9 @@
 #'
 #' @param pool a database connection pool object
 #' @param table string defining target database table
+#' @param sample Numeric in the range 0 to 1 defining the relative sub-sample
+#' size, \emph{e.g.} when \code{sample = 0.1} approximately 10\% of
+#' observations are returned. Default is \code{NA} which will return all data
 #' @param df data frame containing data to be inserted into a database
 #' @return Database pool object, data frame or status message
 #' @name db
@@ -129,7 +132,7 @@ get_table <- function(pool, table) {
 
 #' @rdname db
 #' @export
-get_data <- function(pool) {
+get_data <- function(pool, sample = NA) {
 
   conf <- get_config()
   query <- paste0("
@@ -142,7 +145,11 @@ LEFT JOIN
 ON
   var.delivery_id = d.id
 WHERE
-  d.latest = 1;")
+  d.latest = 1")
+
+  if (!is.na(sample) && sample > 0 && sample < 1) {
+    query <- paste(query, "AND RAND() <", sample)
+  }
 
   pool::dbGetQuery(pool, query)
 }
@@ -150,14 +157,18 @@ WHERE
 
 #' @rdname db
 #' @export
-get_delivery <- function(pool) {
+get_delivery <- function(pool, sample = NA) {
 
   conf <- get_config()
   query <- paste0("
 SELECT
   ", paste0(conf$db$tab$delivery$insert, collapse = ",\n "), "
 FROM
-  delivery;")
+  delivery")
+
+  if (!is.na(sample) && sample > 0 && sample < 1) {
+    query <- paste(query, "\nWHERE\n  RAND() <", sample)
+  }
 
   pool::dbGetQuery(pool, query)
 }
@@ -165,7 +176,7 @@ FROM
 
 #' @rdname db
 #' @export
-get_user <- function(pool) {
+get_user <- function(pool, sample = NA) {
 
   conf <- get_config()
   query <- paste0("
@@ -174,7 +185,11 @@ SELECT
 FROM
   user
 WHERE
-  valid=1;")
+  valid=1")
+
+  if (!is.na(sample) && sample > 0 && sample < 1) {
+    query <- paste(query, "AND RAND() <", sample)
+  }
 
   pool::dbGetQuery(pool, query)
 }
@@ -182,13 +197,17 @@ WHERE
 
 #' @rdname db
 #' @export
-get_org <- function(pool) {
+get_org <- function(pool, sample = NA) {
 
   query <- paste0("
 SELECT
   *
 FROM
-  org;")
+  org")
+
+  if (!is.na(sample) && sample > 0 && sample < 1) {
+    query <- paste(query, "\nWHERE\n  RAND() <", sample)
+  }
 
   pool::dbGetQuery(pool, query)
 }
@@ -196,41 +215,53 @@ FROM
 
 #' @rdname db
 #' @export
-get_user_registry <- function(pool) {
+get_user_registry <- function(pool, sample = NA) {
 
   query <- paste0("
 SELECT
   *
 FROM
-  user_registry;")
+  user_registry")
+
+  if (!is.na(sample) && sample > 0 && sample < 1) {
+    query <- paste(query, "\nWHERE\n  RAND() <", sample)
+  }
 
   pool::dbGetQuery(pool, query)
 }
 
 #' @rdname db
 #' @export
-get_indicator <- function(pool) {
+get_indicator <- function(pool, sample = NA) {
 
   conf <- get_config()
   query <- paste0("
 SELECT
   ", paste0(conf$db$tab$indicator$insert, collapse = ",\n "), "
 FROM
-  indicator;")
+  indicator")
+
+  if (!is.na(sample) && sample > 0 && sample < 1) {
+    query <- paste(query, "\nWHERE\n  RAND() <", sample)
+  }
 
   pool::dbGetQuery(pool, query)
 }
 
 #' @rdname db
 #' @export
-get_registry <- function(pool) {
+get_registry <- function(pool, sample = NA) {
 
   conf <- get_config()
   query <- paste0("
 SELECT
   ", paste0(conf$db$tab$registry$insert, collapse = ",\n "), "
 FROM
-  registry;")
+  registry")
+
+  if (!is.na(sample) && sample > 0 && sample < 1) {
+    query <- paste(query, "\nWHERE\n  RAND() <", sample)
+  }
 
   pool::dbGetQuery(pool, query)
 }

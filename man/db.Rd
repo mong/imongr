@@ -23,19 +23,19 @@ insert_tab(pool, table, df)
 
 get_table(pool, table)
 
-get_data(pool)
+get_data(pool, sample = NA)
 
-get_delivery(pool)
+get_delivery(pool, sample = NA)
 
-get_user(pool)
+get_user(pool, sample = NA)
 
-get_org(pool)
+get_org(pool, sample = NA)
 
-get_user_registry(pool)
+get_user_registry(pool, sample = NA)
 
-get_indicator(pool)
+get_indicator(pool, sample = NA)
 
-get_registry(pool)
+get_registry(pool, sample = NA)
 }
 \arguments{
 \item{pool}{a database connection pool object}
@@ -43,6 +43,10 @@ get_registry(pool)
 \item{table}{string defining target database table}
 
 \item{df}{data frame containing data to be inserted into a database}
+
+\item{sample}{Numeric in the range 0 to 1 defining the relative sub-sample
+size, \emph{e.g.} when \code{sample = 0.1} approximately 10\% of
+observations are returned. Default is \code{NA} which will return all data}
 }
 \value{
 Database pool object, data frame or status message
