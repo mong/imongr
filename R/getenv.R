@@ -1,13 +1,12 @@
 #' Get relevant settings either from config og environmental variables
 #'
-#' asdfgasd
-#'
 #' @return Character string with settings
 #' @name getenv
 #' @aliases db_host db_name db_username db_password adminer_url
 NULL
 
-#' @rdname getnev
+
+#' @rdname getenv
 #' @export
 db_host <- function() {
 
@@ -26,7 +25,8 @@ db_host <- function() {
   host
 }
 
-#' @rdname getnev
+
+#' @rdname getenv
 #' @export
 db_name <- function() {
 
@@ -45,7 +45,8 @@ db_name <- function() {
   dbname
 }
 
-#' @rdname getnev
+
+#' @rdname getenv
 #' @export
 db_username <- function() {
 
@@ -64,7 +65,8 @@ db_username <- function() {
   username
 }
 
-#' @rdname getnev
+
+#' @rdname getenv
 #' @export
 db_password <- function() {
 
@@ -83,7 +85,8 @@ db_password <- function() {
   password
 }
 
-#' @rdname getnev
+
+#' @rdname getenv
 #' @export
 adminer_url <- function() {
 

@@ -8,9 +8,20 @@
 \alias{db_password}
 \alias{adminer_url}
 \title{Get relevant settings either from config og environmental variables}
+\usage{
+db_host()
+
+db_name()
+
+db_username()
+
+db_password()
+
+adminer_url()
+}
 \value{
 Character string with settings
 }
 \description{
-asdfgasd
+Get relevant settings either from config og environmental variables
 }
