@@ -24,63 +24,44 @@ app_ui <- function() {
       shiny::tabPanel("Last",
         shiny::sidebarLayout(
           shiny::sidebarPanel(
-            shiny::fileInput("file1", "Velg csv-fil",
+            shiny::uiOutput("select_registry"),
+            shiny::fileInput("upload_file", "Velg csv-fil",
                              multiple = FALSE,
                              accept = c("text/csv",
                                         "text/comma-separated-values,text/plain",
                                         ".csv"),
             ),
-            shiny::tags$hr(),
             shiny::radioButtons("sep", "Kolonneseparator",
                                 choices = c(Semikolon = ";",
                                             Komma = ",",
                                             Tab = "\t"),
                                 selected = ";"),
-
             shiny::radioButtons("dec_sep", "Desimalseparator",
                                 choices = c(Puktum = ".",
                                             Komma = ","),
                                 selected = ","),
-
-            shiny::radioButtons("tegnsett", "Tegnsetting",
+            shiny::radioButtons("enc", "Tegnsetting",
                                 choices = c("LATIN1", "UTF-8", "Annet"),
                                 selected = "UTF-8"),
-
             shiny::uiOutput(outputId = "other_encoding"),
-
-            # Input: Select number of rows to display ----
-            shiny::radioButtons("disp", "Vis",
-                                choices = c("Første 20 rader" = "head",
-                                            "20 tilfeldige rader" = "tilf20",
-                                            "Alle rader" = "all"),
-                                selected = "head"),
-
-            shiny::tags$hr(),
-
-            shinyjs::disabled(
-              actionButton(inputId = "lastopp", label = "Send til server",
-                           icon("paper-plane"),
-                           style = "color: #fff; background-color: #337ab7; border-color: #2e6da4")),
-            shinyjs::hidden(p(id = "text1", "Fiks følgende problemer med datasettet for å aktivisere opplastingsknapp: ")),
-                          shiny::uiOutput("feilmeld")
+            shiny::numericInput("sample_size", "Antall rader vist:", 20,
+                                min = 1, max = 50),
+            shiny::selectInput("sample_type", "Utvalg:",
+                               list(`toppen` = FALSE, `tilfeldig` = TRUE), FALSE),
+            shiny::uiOutput("submitt")
           ),
 
           # Main panel for displaying outputs ----
           shiny::mainPanel(
+            shiny::htmlOutput("error_report"),
             shiny::titlePanel("Last opp fil"),
-            shiny::h4(conf$upload$doc$main),
-
+            shiny::htmlOutput("upload_sample_text"),
+            shiny::tableOutput("upload_sample"),
+            shiny::h3("Veiledning"),
+            shiny::p(conf$upload$doc$main),
             shiny::htmlOutput("var_doc"),
-            shiny::br(),
             shiny::h4("Eksempeldata:"),
-            # Output: Data file ----
-            shiny::tableOutput("eksempel"),
-            # Horizontal line ----
-            shiny::tags$hr(),
-            shiny::h4("Opplastet datasett:"),
-            shiny::h5("Her vises en utsnitt av datasett du har lastet opp. Juster parametrene i menyen på venstresiden
-         slik at norske tegn (æøå) representeres riktig og tallene fremstår slik de skal."),
-            shiny::tableOutput("contents")
+            shiny::tableOutput("sample_data"),
           )
         )
       ),

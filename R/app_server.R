@@ -13,10 +13,68 @@ app_server <- function(input, output, session) {
   pool <- make_pool()
 
   # last
+  ## reactive exp
+  encoding <- shiny::reactive({
+    if (input$enc == "Annet") {
+      input$other_encoding
+    } else {
+      input$enc
+    }
+  })
+
+  df <- shiny::reactive({
+    if (is.null(input$upload_file)) {
+      data.frame()
+    } else {
+      csv_to_df(input$upload_file$datapath, input$sep, input$dec_sep,
+                encoding())
+    }
+  })
+
+
+  ## ui sidebar panel
+  output$select_registry <- shiny::renderUI({
+    shiny::selectInput("registry", "Velg register:", get_user_registries(pool))
+  })
+
+  output$error_report <- shiny::renderText({
+    if(is.null(input$upload_file)) {
+      NULL
+    } else {
+      check_report(df(), pool)
+    }
+  })
+
   output$other_encoding <- shiny::renderUI({
-    if (input$tegnsett == "Annet") {
-      shiny::selectInput(inputId = "andretegn_verdi", label = "Spesifiser:",
+    if (input$enc == "Annet") {
+      shiny::selectInput(inputId = "other_encoding", label = "Spesifiser:",
                          choices = iconvlist(), selected = "MS-ANSI")
+    }
+  })
+
+  output$submitt <- shiny::renderUI({
+    if (all(!check_upload(df(), pool)$fail)) {
+      actionButton("submitt", "Send til server", icon("paper-plane"))
+    } else {
+      NULL
+    }
+  })
+
+
+  ## ui main panel
+  output$upload_sample_text <- shiny::renderText({
+    if (is.null(input$upload_file)) {
+      NULL
+    } else {
+      conf$upload$doc$sample
+    }
+  })
+
+  output$upload_sample <- shiny::renderTable({
+    if(is.null(input$upload_file)) {
+      NULL
+    } else {
+      sample_df(df(), input$sample_size, input$sample_type)
     }
   })
 
@@ -29,6 +87,13 @@ app_server <- function(input, output, session) {
     }
     l
   })
+
+  output$sample_data <- shiny::renderTable(
+    get_data(pool, sample = 0.0001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
+  )
+
+
+
 
   # loss
   db_table <- shiny::reactive({
