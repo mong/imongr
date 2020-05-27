@@ -10,34 +10,6 @@
 NULL
 
 
-
-#' @rdname ops
-#' @export
-get_user_name <- function() {
-
-  user_name <- Sys.getenv("SHINYPROXY_USERNAME")
-  if (user_name == "") {
-    stop("No user defined!")
-  }
-
-  user_name
-
-}
-
-
-#' @rdname ops
-#' @export
-get_user_groups <- function() {
-
-  user_groups <- Sys.getenv("SHINYPROXY_USERGROUPS")
-  if (user_groups == "") {
-    stop("No groups defined")
-  }
-
-  user_groups
-}
-
-
 #' @rdname ops
 #' @export
 get_user_data <- function(pool) {
