@@ -21,9 +21,12 @@ app_server <- function(input, output, session) {
                        multiple = FALSE,
                        accept = c("text/csv",
                                   "text/comma-separated-values,text/plain",
-                                  ".csv")
-      )
-    })
+                                  ".csv"))
+      })
+    output$error_report <- shiny::renderText(NULL)
+    output$upload_sample_text <- shiny::renderText(NULL)
+    output$upload_sample <- shiny::renderTable(NULL)
+    output$submit <- shiny::renderUI(NULL)
     insert_data(pool, cbind(df(), data.frame(Register = input$registry)))
   })
 
@@ -102,6 +105,8 @@ app_server <- function(input, output, session) {
       sample_df(df(), input$sample_size, input$sample_type)
     }
   })
+
+  output$main_doc <- shiny::renderText(conf$upload$doc$main)
 
   output$var_doc <- shiny::renderText({
     l <- "<ul>\n"

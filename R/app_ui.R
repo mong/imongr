@@ -54,7 +54,7 @@ app_ui <- function() {
             shiny::htmlOutput("upload_sample_text"),
             shiny::tableOutput("upload_sample"),
             shiny::h3("Veiledning"),
-            shiny::p(conf$upload$doc$main),
+            shiny::htmlOutput("main_doc"),
             shiny::htmlOutput("var_doc"),
             shiny::h4("Eksempeldata:"),
             shiny::tableOutput("sample_data"),
