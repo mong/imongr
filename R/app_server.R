@@ -22,6 +22,7 @@ app_server <- function(input, output, session) {
   })
   shiny::observeEvent(input$submit, {
     insert_data(pool, cbind(df(), data.frame(Register = input$registry)))
+    rv$inv_data <- rv$inv_data + 1
   })
 
   ## reactive exps
@@ -66,6 +67,7 @@ app_server <- function(input, output, session) {
   })
 
   output$submit <- shiny::renderUI({
+    rv$inv_data
     if (!is.null(input$upload_file)) {
       if (all(!check_upload(cbind(df(), Register = input$registry),
                             pool)$fail)) {
