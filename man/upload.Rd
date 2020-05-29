@@ -10,6 +10,8 @@
 \alias{check_invalid_var}
 \alias{check_invalid_org}
 \alias{check_invalid_ind}
+\alias{check_none_numeric_var}
+\alias{check_duplicate_delivery}
 \title{Title}
 \usage{
 check_report(df, pool)
@@ -24,9 +26,13 @@ check_invalid_org(df, conf, pool)
 
 check_invalid_ind(df, conf, pool)
 
+check_none_numeric_var(df, conf, pool)
+
+check_duplicate_delivery(df, conf, pool)
+
 csv_to_df(path, sep = ",", dec, encoding = "UTF-8")
 
-sample_df(df, n, random = FALSE)
+sample_df(df, skip = c(""), n, random = FALSE)
 }
 \arguments{
 \item{df}{Data frame}
@@ -38,6 +44,8 @@ sample_df(df, n, random = FALSE)
 \item{dec}{Character decimal sep}
 
 \item{encoding}{Character encoding}
+
+\item{skip}{character vector defining data frame variables to skip}
 
 \item{n}{Numeric sample size}
 

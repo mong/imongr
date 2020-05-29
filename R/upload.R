@@ -7,6 +7,7 @@
 #' @param encoding Character encoding
 #' @param df Data frame
 #' @param n Numeric sample size
+#' @param skip character vector defining data frame variables to skip
 #' @param random Logical sample method
 #'
 #' @return
@@ -138,6 +139,15 @@ check_none_numeric_var <- function(df, conf, pool) {
 
 #' @rdname upload
 #' @export
+check_duplicate_delivery <- function(df, conf, pool) {
+
+  fail <- delivery_exist_in_db(pool, df)
+  report <- ""
+  list(fail = fail, report = report)
+}
+
+#' @rdname upload
+#' @export
 csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
 
   if(!file.exists(path)) {
@@ -150,17 +160,21 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
 
 #' @rdname upload
 #' @export
-sample_df <- function(df, n, random = FALSE) {
+sample_df <- function(df, skip = c(""), n, random = FALSE) {
 
-  if (n > dim(df)[1]) {
-    n <- dim(df)[1]
+  if (ncol(df) > length(skip)) {
+    df <- df[ , !(names(df) %in% skip)]
+  }
+
+  if (n > nrow(df)) {
+    n <- nrow(df)
   }
 
   if (is.na(n)) {
     return(df)
   } else {
     if (random) {
-      return(df[sample(1:dim(df)[1], n), ])
+      return(df[sample(1:nrow(df), n), ])
     } else {
       return(df[1:n, ])
     }

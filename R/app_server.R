@@ -11,26 +11,20 @@ app_server <- function(input, output, session) {
 
   conf <- get_config()
   pool <- make_pool()
+  rv <- shiny::reactiveValues(inv_data = 0)
 
   # last
-
   ## observers
+  shiny::observeEvent(input$registry, {
+    if (!is.null(input$upload_file)) {
+      rv$inv_data <- rv$inv_data + 1
+    }
+  })
   shiny::observeEvent(input$submit, {
-    output$upload_file <- shiny::renderUI({
-      shiny::fileInput("upload_file", "Velg csv-fil",
-                       multiple = FALSE,
-                       accept = c("text/csv",
-                                  "text/comma-separated-values,text/plain",
-                                  ".csv"))
-      })
-    output$error_report <- shiny::renderText(NULL)
-    output$upload_sample_text <- shiny::renderText(NULL)
-    output$upload_sample <- shiny::renderTable(NULL)
-    output$submit <- shiny::renderUI(NULL)
     insert_data(pool, cbind(df(), data.frame(Register = input$registry)))
   })
 
-  ## reactive exp
+  ## reactive exps
   encoding <- shiny::reactive({
     if (input$enc == "Annet") {
       input$other_encoding
@@ -51,7 +45,8 @@ app_server <- function(input, output, session) {
 
   ## ui sidebar panel
   output$select_registry <- shiny::renderUI({
-    shiny::selectInput("registry", "Velg register:", get_user_registries(pool))
+    regs <- get_user_registries(pool)
+    shiny::selectInput("registry", "Velg register:", regs, selected = regs[1])
   })
 
   output$upload_file <- shiny::renderUI({
@@ -71,8 +66,13 @@ app_server <- function(input, output, session) {
   })
 
   output$submit <- shiny::renderUI({
-    if (all(!check_upload(df(), pool)$fail)) {
-      actionButton("submit", "Send til server", icon("paper-plane"))
+    if (!is.null(input$upload_file)) {
+      if (all(!check_upload(cbind(df(), Register = input$registry),
+                            pool)$fail)) {
+        actionButton("submit", "Send til server", icon("paper-plane"))
+      } else {
+        NULL
+      }
     } else {
       NULL
     }
@@ -83,10 +83,11 @@ app_server <- function(input, output, session) {
   output$in_progress <- shiny::renderUI(NULL)
 
   output$error_report <- shiny::renderText({
+    rv$inv_data
     if(is.null(input$upload_file)) {
       NULL
     } else {
-      check_report(df(), pool)
+      check_report(cbind(df(), Register = input$registry), pool)
     }
   })
 
@@ -99,10 +100,12 @@ app_server <- function(input, output, session) {
   })
 
   output$upload_sample <- shiny::renderTable({
+    rv$inv_data
     if(is.null(input$upload_file)) {
       NULL
     } else {
-      sample_df(df(), input$sample_size, input$sample_type)
+      sample_df(df = df(), skip = c(input$registry), n = input$sample_size,
+                random = input$sample_type)
     }
   })
 
