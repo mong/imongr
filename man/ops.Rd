@@ -10,14 +10,11 @@
 \alias{md5_checksum}
 \alias{delivery_exist_in_db}
 \alias{retire_user_deliveries}
+\alias{delete_registry_data}
 \alias{insert_data}
 \alias{get_user_registries}
 \title{Functions for data operations in imongr}
 \usage{
-get_user_name()
-
-get_user_groups()
-
 get_user_data(pool)
 
 get_user_id(pool)
@@ -31,6 +28,8 @@ md5_checksum(df)
 delivery_exist_in_db(pool, df)
 
 retire_user_deliveries(pool)
+
+delete_registry_data(pool, df)
 
 insert_data(pool, df)
 }

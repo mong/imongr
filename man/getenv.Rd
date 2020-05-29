@@ -7,8 +7,14 @@
 \alias{db_username}
 \alias{db_password}
 \alias{adminer_url}
+\alias{get_user_name}
+\alias{get_user_groups}
 \title{Get relevant settings either from config og environmental variables}
 \usage{
+get_user_name()
+
+get_user_groups()
+
 db_host()
 
 db_name()
