@@ -1,0 +1,28 @@
+version: "3.6"
+
+services:
+  shinyproxy:
+    image: hnskde/shinyproxy
+    restart: unless-stopped
+    container_name: shinyproxy
+    environment:
+      IMONGR_DB_HOST: ${IMONGR_DB_HOST}
+      IMONGR_DB_NAME: ${IMONGR_DB_NAME}
+      IMONGR_DB_USER: ${IMONGR_DB_USER}
+      IMONGR_DB_PASS: ${IMONGR_DB_PASS}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8080:8080
+    networks:
+      - mongr-net
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: eu-west-1
+        awslogs-group: imongr
+        awslogs-stream: ${NODE_NAME}
+        awslogs-create-group: "true"
+networks:
+  mongr-net:
+    name: mongr-net
