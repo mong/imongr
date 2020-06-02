@@ -10,6 +10,8 @@ services:
       IMONGR_DB_NAME: ${IMONGR_DB_NAME}
       IMONGR_DB_USER: ${IMONGR_DB_USER}
       IMONGR_DB_PASS: ${IMONGR_DB_PASS}
+      OPENID_CLIENT_ID: ${OPENID_CLIENT_ID}
+      OPENID_CLIENT_SECRET: ${OPENID_CLIENT_SECRET}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:

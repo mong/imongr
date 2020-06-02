@@ -11,6 +11,7 @@ proxy:
     jwks-url: https://dev-4bsfd97d.eu.auth0.com/.well-known/jwks.json
     client_id: ${OPENID_CLIENT_ID}
     client_secret: ${OPENID_CLIENT_SECRET}
+    roles-claim: https://mongr.no/imongr/shinyproxy_roles
   docker:
     internal-networking: true
   usage-stats-url: http://172.31.31.109:8086/write?db=shinyproxy_usagestats
