@@ -13,6 +13,12 @@ app_server <- function(input, output, session) {
   pool <- make_pool()
   rv <- shiny::reactiveValues(inv_data = 0)
 
+  # profil
+  output$profile <- shiny::renderText({
+    paste("SHINYPROXY_USERNAME:", get_user_name(), "<br>",
+          "SHINYPROXY_USERGROUPS:", get_user_groups())
+  })
+
   # last
   ## observers
   shiny::observeEvent(input$registry, {

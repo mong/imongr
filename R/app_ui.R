@@ -21,6 +21,10 @@ app_ui <- function() {
       theme = "www/bootstrap.css",
       id = "tabs",
 
+      shiny::tabPanel("Profil",
+        shiny::mainPanel(width = 12, shiny::htmlOutput("profile"))
+      ),
+
       shiny::tabPanel("Last",
         shiny::sidebarLayout(
           shiny::sidebarPanel(
