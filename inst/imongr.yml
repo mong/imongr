@@ -58,7 +58,7 @@ db:
       - Register
       - full_name
 adminer:
-  url: http://localhost:8888
+  url: env
 upload:
   ok: Flink pike!
   data_var_ind:
