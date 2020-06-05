@@ -28,7 +28,7 @@ get_user_groups <- function() {
     stop("No groups defined")
   }
 
-  user_groups
+  strsplit(user_groups, split = ",")[[1]]
 }
 
 

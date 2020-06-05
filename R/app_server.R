@@ -9,14 +9,38 @@
 
 app_server <- function(input, output, session) {
 
+  iusr <- get_user_name()
+  igrs <- get_user_groups()
   conf <- get_config()
   pool <- make_pool()
   rv <- shiny::reactiveValues(inv_data = 0)
 
+  # show/hide tabs by user profile
+  known_user <- nrow(get_user_data(pool)) > 0
+  shiny::hideTab("tabs", target = "Last")
+  shiny::hideTab("tabs", target = "Loss")
+  shiny::hideTab("tabs", target = "Sj\u00e6f")
+  if (known_user && "provider" %in% igrs) {
+    shiny::showTab("tabs", target = "Last")
+    shiny::showTab("tabs", target = "Loss")
+  }
+  if (known_user && "manager" %in% igrs) {
+    shiny::showTab("tabs", target = "Sj\u00e6f")
+  }
+
   # profil
   output$profile <- shiny::renderText({
-    paste("SHINYPROXY_USERNAME:", get_user_name(), "<br>",
-          "SHINYPROXY_USERGROUPS:", get_user_groups())
+    if (!known_user || "none" %in% igrs) {
+      conf$profile$pending
+    } else {
+      df <- get_user_data(pool)
+      paste(conf$profile$greeting, "<b>", iusr, "</b>", "<br>",
+            conf$profile$userinfo, "<br>",
+            "Navn:", df$name, "<br>",
+            "Telefon:", df$phone, "<br>",
+            "e-post:", df$email, "<br><br>",
+            conf$profile$howto)
+    }
   })
 
   # last

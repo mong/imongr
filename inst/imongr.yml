@@ -57,6 +57,19 @@ db:
       insert:
       - Register
       - full_name
+profile:
+  greeting: >
+    Hei
+  pending: >
+    Du er nesten klar for bruk av imongr. Det eneste som nå mangeler er
+    riktige tilganger og det kan <a href="mailto:skde@helse-nord.no">SKDE</a>
+    helpe deg med.
+  userinfo: >
+    Følgende er registrert om deg:
+  howto: >
+    Gjør slik og sånn, før du du utfører dette og til slutt trykker ok. Om du
+    plages kan du alltids ta kontakt med
+    <a href="mailto:skde@helse-nord.no">SKDE</a>.
 adminer:
   url: env
 upload:
