@@ -20,17 +20,17 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "Last")
   shiny::hideTab("tabs", target = "Loss")
   shiny::hideTab("tabs", target = "Sj\u00e6f")
-  if (known_user && "provider" %in% igrs) {
+  if (known_user && conf$role$provider %in% igrs) {
     shiny::showTab("tabs", target = "Last")
     shiny::showTab("tabs", target = "Loss")
   }
-  if (known_user && "manager" %in% igrs) {
+  if (known_user && conf$role$manager %in% igrs) {
     shiny::showTab("tabs", target = "Sj\u00e6f")
   }
 
   # profil
   output$profile <- shiny::renderText({
-    if (!known_user || "none" %in% igrs) {
+    if (!known_user || conf$role$none %in% igrs) {
       paste(conf$profile$pending, "<br>",
             "SHINYPROXY_USERNAME:", get_user_name(), "<br>",
             "SHINYPROXY_USERGROUPS:", paste(get_user_groups(),

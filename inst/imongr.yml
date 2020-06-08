@@ -57,6 +57,10 @@ db:
       insert:
       - Register
       - full_name
+role:
+  none: NONE
+  provider: PROVIDER
+  manager: MANAGER
 profile:
   greeting: >
     Hei
