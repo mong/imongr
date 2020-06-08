@@ -31,7 +31,10 @@ app_server <- function(input, output, session) {
   # profil
   output$profile <- shiny::renderText({
     if (!known_user || "none" %in% igrs) {
-      conf$profile$pending
+      paste(conf$profile$pending, "<br>",
+            "SHINYPROXY_USERNAME:", get_user_name(), "<br>",
+            "SHINYPROXY_USERGROUPS:", paste(get_user_groups(),
+                                            collapse = ", "))
     } else {
       df <- get_user_data(pool)
       paste(conf$profile$greeting, "<b>", iusr, "</b>", "<br>",
