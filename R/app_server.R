@@ -42,7 +42,10 @@ app_server <- function(input, output, session) {
             "Navn:", df$name, "<br>",
             "Telefon:", df$phone, "<br>",
             "e-post:", df$email, "<br><br>",
-            conf$profile$howto)
+            conf$profile$howto, "<br><br>",
+            "SHINYPROXY_USERNAME:", get_user_name(), "<br>",
+            "SHINYPROXY_USERGROUPS:", paste(get_user_groups(),
+                                            collapse = ", "))
     }
   })
 
