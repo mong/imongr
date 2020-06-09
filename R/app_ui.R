@@ -75,12 +75,13 @@ app_ui <- function() {
       shiny::tabPanel("Loss",
         shiny::sidebarLayout(
           shiny::sidebarPanel(width = 3,
+            shiny::uiOutput("select_download_registry"),
             shiny::uiOutput("select_db_table"),
             shiny::selectInput("file_format",
                                "Filformat:", c("csv", "csv2", "rds",
                                                "excel-csv",
                                                "excel-csv2")),
-            shiny::downloadButton("download_db_table", "Loss!")
+            shiny::downloadButton("download_db_table", "Hent fra server")
           ),
           shiny::mainPanel(
             shiny::uiOutput("ui_db_table")

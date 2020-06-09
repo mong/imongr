@@ -2,11 +2,13 @@
 #'
 #' @param pool Database connection pool object
 #' @param df Data frame of relevant data
+#' @param registry Character registry name
 #' @return Relevant values from the current environment and database
 #' @name ops
 #' @aliases get_user_name get_user_groups get_user_data get_user_id
-#' get_user_latest_delivery_id md5_checksum delivery_exist_in_db
-#' retire_user_deliveries delete_registry_data insert_data
+#' get_user_latest_delivery_id get_registry_data md5_checksum
+#' delivery_exist_in_db retire_user_deliveries delete_registry_data
+#' insert_data
 NULL
 
 
@@ -88,6 +90,27 @@ WHERE
 
   df <- pool::dbGetQuery(pool, query)
   df$id
+}
+
+
+#' @rdname ops
+#' @export
+get_registry_data <- function(pool, registry) {
+
+  fields <- paste(conf$db$tab$data$insert[conf$upload$data_var_ind],
+                  collapse = ",\n  ")
+
+  query <- paste0("
+SELECT
+  ", fields, "
+FROM
+  data
+WHERE
+  Register='", registry, "';")
+
+  print(query)
+  df <- pool::dbGetQuery(pool, query)
+
 }
 
 

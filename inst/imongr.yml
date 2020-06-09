@@ -74,8 +74,6 @@ profile:
     Gjør slik og sånn, før du du utfører dette og til slutt trykker ok. Om du
     plages kan du alltids ta kontakt med
     <a href="mailto:skde@helse-nord.no">SKDE</a>.
-adminer:
-  url: env
 upload:
   fail: Kontakt SKDE!
   ok: Flink pike!
@@ -130,3 +128,8 @@ upload:
     KvalIndID: >
       identifikator for kvalitetsindikator, skal samsvare med identifikator
       gitt i Indikatorbeskrivelse
+download:
+  tab:
+  - data
+adminer:
+  url: env

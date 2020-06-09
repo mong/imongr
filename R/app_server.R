@@ -176,23 +176,24 @@ app_server <- function(input, output, session) {
 
 
 
-
   # loss
   db_table <- shiny::reactive({
-    get_table(pool, input$tab_set)
+    get_registry_data(pool, input$download_registry)
+  })
+
+  output$select_download_registry <- shiny::renderUI({
+    regs <- get_user_registries(pool)
+    if (length(regs) == 0) {
+      regs <- c(conf$upload$fail)
+    }
+    shiny::selectInput("download_registry", "Velg register:", regs,
+                       selected = regs[1])
   })
 
   output$select_db_table <- shiny::renderUI({
-    shiny::selectInput("tab_set", "Velg tabell:", names(conf$db$tab),
-                       selected = names(conf$db$tab)[1])
+    shiny::selectInput("tab_set", "Velg tabell:", conf$download$tab,
+                       selected = conf$download$tab[1])
   })
-  output$db_table <- DT::renderDataTable(
-    db_table(), rownames = FALSE
-  )
-
-  output$ui_db_table <- shiny::renderUI(
-    DT::dataTableOutput("db_table")
-  )
 
   output$download_db_table <- shiny::downloadHandler(
     filename = function() {
@@ -204,14 +205,23 @@ app_server <- function(input, output, session) {
     },
     content = function(file) {
       switch (input$file_format,
-        `csv` = readr::write_csv(db_table(), file),
-        `csv2` = readr::write_csv2(db_table(), file),
-        `excel-csv` = readr::write_excel_csv(db_table(), file),
-        `excel-csv2` = readr::write_excel_csv2(db_table(), file),
-        `rds` = readr::write_rds(db_table(), file)
+              `csv` = readr::write_csv(db_table(), file),
+              `csv2` = readr::write_csv2(db_table(), file),
+              `excel-csv` = readr::write_excel_csv(db_table(), file),
+              `excel-csv2` = readr::write_excel_csv2(db_table(), file),
+              `rds` = readr::write_rds(db_table(), file)
       )
     }
   )
+
+  output$db_table <- DT::renderDataTable(
+    db_table(), rownames = FALSE
+  )
+
+  output$ui_db_table <- shiny::renderUI(
+    DT::dataTableOutput("db_table")
+  )
+
 
   # our db admin interface
   admin_url <- paste0(adminer_url(), "/?",
