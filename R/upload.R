@@ -154,7 +154,13 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
     stop(paste("The file", path, "does not exist!"))
   }
 
-  read.csv(path, header = TRUE, sep = sep, dec = dec, fileEncoding = encoding)
+  df <- read.csv(path, header = TRUE, sep = sep, dec = dec, fileEncoding = encoding)
+
+  if ("Register" %in% names(df)) {
+    df <- df[ , !(names(df) %in% c("Register"))]
+  }
+
+  df
 }
 
 
