@@ -12,6 +12,23 @@ NULL
 
 #' @rdname ops
 #' @export
+get_all_user_data <- function(pool) {
+
+  query <- paste0("
+SELECT
+  *
+FROM
+  user
+WHERE
+  valid = 1 AND
+  user_name='", get_user_name(), "';")
+
+  pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname ops
+#' @export
 get_user_data <- function(pool) {
 
   query <- paste0("

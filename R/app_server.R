@@ -14,7 +14,8 @@ app_server <- function(input, output, session) {
   conf <- get_config()
   pool <- make_pool()
   rv <- shiny::reactiveValues(inv_data = 0)
-  known_user <- nrow(get_user_data(pool)) > 0
+  known_user <- nrow(get_all_user_data(pool)) > 0
+  valid_user <- nrow(get_user_data(pool)) > 0
 
   # if unknown, add user as pendig in imongr
   if (!known_user) {
@@ -27,21 +28,18 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "Last")
   shiny::hideTab("tabs", target = "Loss")
   shiny::hideTab("tabs", target = "Sj\u00e6f")
-  if (known_user && conf$role$provider %in% igrs) {
+  if (valid_user && conf$role$provider %in% igrs) {
     shiny::showTab("tabs", target = "Last")
     shiny::showTab("tabs", target = "Loss")
   }
-  if (known_user && conf$role$manager %in% igrs) {
+  if (valid_user && conf$role$manager %in% igrs) {
     shiny::showTab("tabs", target = "Sj\u00e6f")
   }
 
   # profil
   output$profile <- shiny::renderText({
-    if (!known_user || conf$role$none %in% igrs) {
-      paste(conf$profile$pending, "<br>",
-            "SHINYPROXY_USERNAME:", get_user_name(), "<br>",
-            "SHINYPROXY_USERGROUPS:", paste(get_user_groups(),
-                                            collapse = ", "))
+    if (!valid_user || conf$role$none %in% igrs) {
+      conf$profile$pending
     } else {
       df <- get_user_data(pool)
       paste(conf$profile$greeting, "<b>", iusr, "</b>", "<br>",
@@ -49,10 +47,7 @@ app_server <- function(input, output, session) {
             "Navn:", df$name, "<br>",
             "Telefon:", df$phone, "<br>",
             "e-post:", df$email, "<br><br>",
-            conf$profile$howto, "<br><br>",
-            "SHINYPROXY_USERNAME:", get_user_name(), "<br>",
-            "SHINYPROXY_USERGROUPS:", paste(get_user_groups(),
-                                            collapse = ", "))
+            conf$profile$howto)
     }
   })
 
@@ -90,6 +85,9 @@ app_server <- function(input, output, session) {
   ## ui sidebar panel
   output$select_registry <- shiny::renderUI({
     regs <- get_user_registries(pool)
+    if (length(regs) == 0) {
+      regs <- c(conf$upload$fail)
+    }
     shiny::selectInput("registry", "Velg register:", regs, selected = regs[1])
   })
 
@@ -111,7 +109,8 @@ app_server <- function(input, output, session) {
 
   output$submit <- shiny::renderUI({
     rv$inv_data
-    if (!is.null(input$upload_file)) {
+    if (!is.null(input$upload_file) &&
+        !(conf$upload$fail %in% input$registry)) {
       if (all(!check_upload(cbind(df(), Register = input$registry),
                             pool)$fail)) {
         actionButton("submit", "Send til server", icon("paper-plane"))
