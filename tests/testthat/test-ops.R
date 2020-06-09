@@ -45,7 +45,7 @@ test_that("an error is provided when the function finds no groups", {
 
 Sys.setenv(SHINYPROXY_USERGROUPS = "000000000,999999999")
 test_that("user groups can be returned", {
-  expect_equal(get_user_groups(), "000000000,999999999")
+  expect_equal(get_user_groups(), c("000000000", "999999999"))
 })
 
 

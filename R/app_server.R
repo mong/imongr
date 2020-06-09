@@ -113,7 +113,8 @@ app_server <- function(input, output, session) {
         !(conf$upload$fail %in% input$registry)) {
       if (all(!check_upload(cbind(df(), Register = input$registry),
                             pool)$fail)) {
-        actionButton("submit", "Send til server", icon("paper-plane"))
+        shiny::actionButton("submit", "Send til server",
+                            shiny::icon("paper-plane"))
       } else {
         NULL
       }

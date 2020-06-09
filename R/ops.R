@@ -5,7 +5,7 @@
 #' @param registry Character registry name
 #' @return Relevant values from the current environment and database
 #' @name ops
-#' @aliases get_user_name get_user_groups get_user_data get_user_id
+#' @aliases get_user_data get_user_id
 #' get_user_latest_delivery_id get_registry_data md5_checksum
 #' delivery_exist_in_db retire_user_deliveries delete_registry_data
 #' insert_data
@@ -97,6 +97,7 @@ WHERE
 #' @export
 get_registry_data <- function(pool, registry) {
 
+  conf <- get_config()
   fields <- paste(conf$db$tab$data$insert[conf$upload$data_var_ind],
                   collapse = ",\n  ")
 
@@ -190,9 +191,9 @@ WHERE
 #' @export
 insert_data <- function(pool, df) {
 
-  # if (delivery_exist_in_db(pool, df)) {
-  #   stop("This delivery has already been made, data exist in database!")
-  # }
+  if (delivery_exist_in_db(pool, df)) {
+    stop("This delivery has already been made, data exist in database!")
+  }
 
   delivery <- data.frame(latest = 1,
                          md5_checksum = md5_checksum(df),

@@ -2,19 +2,21 @@
 % Please edit documentation in R/ops.R
 \name{ops}
 \alias{ops}
-\alias{get_user_name}
-\alias{get_user_groups}
 \alias{get_user_data}
 \alias{get_user_id}
 \alias{get_user_latest_delivery_id}
+\alias{get_registry_data}
 \alias{md5_checksum}
 \alias{delivery_exist_in_db}
 \alias{retire_user_deliveries}
 \alias{delete_registry_data}
 \alias{insert_data}
+\alias{get_all_user_data}
 \alias{get_user_registries}
 \title{Functions for data operations in imongr}
 \usage{
+get_all_user_data(pool)
+
 get_user_data(pool)
 
 get_user_id(pool)
@@ -22,6 +24,8 @@ get_user_id(pool)
 get_user_registries(pool)
 
 get_user_latest_delivery_id(pool)
+
+get_registry_data(pool, registry)
 
 md5_checksum(df)
 
@@ -35,6 +39,8 @@ insert_data(pool, df)
 }
 \arguments{
 \item{pool}{Database connection pool object}
+
+\item{registry}{Character registry name}
 
 \item{df}{Data frame of relevant data}
 }

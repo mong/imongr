@@ -37,6 +37,10 @@ sample_df(df, skip = c(""), n, random = FALSE)
 \arguments{
 \item{df}{Data frame}
 
+\item{pool}{Data base pool object}
+
+\item{conf}{List of configuration}
+
 \item{path}{Character path to a file}
 
 \item{sep}{Character filed sep}
@@ -52,7 +56,7 @@ sample_df(df, skip = c(""), n, random = FALSE)
 \item{random}{Logical sample method}
 }
 \value{
-
+whatever
 }
 \description{
 Title

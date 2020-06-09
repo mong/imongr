@@ -1,5 +1,7 @@
 #' Title
 #'
+#' @param pool Data base pool object
+#' @param conf List of configuration
 #' @param df Data frame
 #' @param path Character path to a file
 #' @param sep Character filed sep
@@ -10,7 +12,7 @@
 #' @param skip character vector defining data frame variables to skip
 #' @param random Logical sample method
 #'
-#' @return
+#' @return whatever
 #' @importFrom utils read.csv
 #' @name upload
 #' @aliases csv_to_df sample_df

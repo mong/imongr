@@ -10,3 +10,4 @@
 ^_imongr.yml$
 ^docker-compose.yml$
 ^codecov\.yml$
+^Dockerfile$
