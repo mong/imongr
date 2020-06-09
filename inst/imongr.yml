@@ -74,6 +74,9 @@ profile:
     Gjør slik og sånn, før du du utfører dette og til slutt trykker ok. Om du
     plages kan du alltids ta kontakt med
     <a href="mailto:skde@helse-nord.no">SKDE</a>.
+  logout:
+    text: Logg ut
+    url: https://mongr.no/imongr/logout
 upload:
   fail: Kontakt SKDE!
   ok: Flink pike!

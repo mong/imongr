@@ -24,8 +24,7 @@ app_ui <- function() {
       shiny::tabPanel("Profil",
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("profile")),
-          shiny::actionLink("logout", "Logg ut!",
-            onclick = "location.href='https://mongr.no/imongr/logout;")
+          shiny::uiOutput("logout")
 
       ),
 

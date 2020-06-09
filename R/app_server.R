@@ -50,6 +50,9 @@ app_server <- function(input, output, session) {
             conf$profile$howto)
     }
   })
+  output$logout <- shiny::renderUI({
+    shiny::tags$a(href = conf$profile$logout$url, conf$profile$logout$text)
+  })
 
   # last
   ## observers
