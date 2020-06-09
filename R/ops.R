@@ -20,7 +20,6 @@ SELECT
 FROM
   user
 WHERE
-  valid = 1 AND
   user_name='", get_user_name(), "';")
 
   pool::dbGetQuery(pool, query)
@@ -37,6 +36,7 @@ SELECT
 FROM
   user
 WHERE
+  valid = 1 AND
   user_name='", get_user_name(), "';")
 
   pool::dbGetQuery(pool, query)
