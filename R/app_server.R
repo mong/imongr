@@ -116,6 +116,11 @@ app_server <- function(input, output, session) {
     }
   })
 
+  output$spinner <- shiny::renderText({
+    input$submit
+    paste("")
+  })
+
 
   ## ui main panel
   output$in_progress <- shiny::renderUI(NULL)

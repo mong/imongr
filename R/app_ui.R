@@ -46,7 +46,13 @@ app_ui <- function() {
             shiny::numericInput("sample_size", "Antall rader vist:", 20,
                                 min = 1, max = 50),
             shiny::selectInput("sample_type", "Utvalg:",
-                               list(`toppen` = FALSE, `tilfeldig` = TRUE), FALSE),
+                               list(`toppen` = FALSE, `tilfeldig` = TRUE),
+                               FALSE),
+            shinycssloaders::withSpinner(shiny::textOutput("spinner"),
+                                         color = "#18bc9c",
+                                         color.background = "#ffffff",
+                                         type = 7,
+                                         proxy.height = 80),
             shiny::uiOutput("submit")
           ),
 
