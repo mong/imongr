@@ -22,7 +22,11 @@ app_ui <- function() {
       id = "tabs",
 
       shiny::tabPanel("Profil",
-        shiny::mainPanel(width = 12, shiny::htmlOutput("profile"))
+        shiny::mainPanel(width = 12,
+          shiny::htmlOutput("profile")),
+          shiny::actionLink("logout", "Logg ut!",
+            onclick = "location.href='https://mongr.no/imongr/logout;")
+
       ),
 
       shiny::tabPanel("Last",
