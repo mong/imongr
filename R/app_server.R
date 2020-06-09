@@ -14,9 +14,16 @@ app_server <- function(input, output, session) {
   conf <- get_config()
   pool <- make_pool()
   rv <- shiny::reactiveValues(inv_data = 0)
+  known_user <- nrow(get_user_data(pool)) > 0
+
+  # if unknown, add user as pendig in imongr
+  if (!known_user) {
+    insert_tab(pool, "user",
+               data.frame(user_name = iusr, name = "", phone = "", email = "",
+                          valid = 0))
+  }
 
   # show/hide tabs by user profile
-  known_user <- nrow(get_user_data(pool)) > 0
   shiny::hideTab("tabs", target = "Last")
   shiny::hideTab("tabs", target = "Loss")
   shiny::hideTab("tabs", target = "Sj\u00e6f")
