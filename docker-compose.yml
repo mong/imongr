@@ -39,6 +39,8 @@ services:
       - db
     image: adminer
     restart: "no"
+    environment:
+      ADMINER_PLUGINS: frames
     ports:
       - 8888:8080
 
