@@ -234,7 +234,7 @@ app_server <- function(input, output, session) {
                       "db=", db_name())
 
   output$admin_frame <- shiny::renderUI({
-    shiny::tags$iframe(src = adminer_url(), width = "100%", height = 1024,
+    shiny::tags$iframe(src = admin_url, width = "100%", height = 1024,
                        frameborder = "no")
   })
 
