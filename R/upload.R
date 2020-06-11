@@ -152,14 +152,15 @@ check_duplicate_delivery <- function(df, conf, pool) {
 #' @export
 csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
 
-  if(!file.exists(path)) {
+  if (!file.exists(path)) {
     stop(paste("The file", path, "does not exist!"))
   }
 
-  df <- read.csv(path, header = TRUE, sep = sep, dec = dec, fileEncoding = encoding)
+  df <- read.csv(path, header = TRUE, sep = sep, dec = dec,
+                 fileEncoding = encoding)
 
   if ("Register" %in% names(df)) {
-    df <- df[ , !(names(df) %in% c("Register"))]
+    df <- df[, !(names(df) %in% c("Register"))]
   }
 
   df
@@ -171,7 +172,7 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
 sample_df <- function(df, skip = c(""), n, random = FALSE) {
 
   if (ncol(df) > length(skip)) {
-    df <- df[ , !(names(df) %in% skip)]
+    df <- df[, !(names(df) %in% skip)]
   }
 
   if (n > nrow(df)) {
@@ -182,7 +183,7 @@ sample_df <- function(df, skip = c(""), n, random = FALSE) {
     return(df)
   } else {
     if (random) {
-      return(df[sample(1:nrow(df), n), ])
+      return(df[sample(seq_len(nrow(df)), n), ])
     } else {
       return(df[1:n, ])
     }

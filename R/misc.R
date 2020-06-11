@@ -22,11 +22,11 @@ navbar_widget <- function() {
     "Info")
 
   logout <- shiny::tags$a(
-    id = 'logout',
+    id = "logout",
     href = conf$profile$logout$url,
     conf$profile$logout$text)
 
-  txtWidget <-
+  txt_widget <-
     paste0("var header = $('.navbar> .container-fluid');\n",
            "header.append('<div class=\"navbar-brand\" style=\"float:right;",
            "vertical-align:super;font-size:65%\">",
@@ -36,7 +36,7 @@ navbar_widget <- function() {
            "</div>');\n",
            "console.log(header)")
 
-  shiny::tags$script(shiny::HTML(txtWidget))
+  shiny::tags$script(shiny::HTML(txt_widget))
 }
 
 

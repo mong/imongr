@@ -147,7 +147,7 @@ app_server <- function(input, output, session) {
 
   output$error_report <- shiny::renderText({
     rv$inv_data
-    if(is.null(input$upload_file)) {
+    if (is.null(input$upload_file)) {
       NULL
     } else {
       check_report(cbind(df(), Register = input$registry), pool)
@@ -164,7 +164,7 @@ app_server <- function(input, output, session) {
 
   output$upload_sample <- shiny::renderTable({
     rv$inv_data
-    if(is.null(input$upload_file)) {
+    if (is.null(input$upload_file)) {
       NULL
     } else {
       sample_df(df = df(), skip = c(input$registry), n = input$sample_size,
@@ -185,7 +185,8 @@ app_server <- function(input, output, session) {
   })
 
   output$sample_data <- shiny::renderTable(
-    get_data(pool, sample = 0.0001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
+    get_data(pool,
+             sample = 0.0001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
   )
 
 
@@ -218,7 +219,7 @@ app_server <- function(input, output, session) {
       }
     },
     content = function(file) {
-      switch (input$file_format,
+      switch(input$file_format,
               `csv` = readr::write_csv(db_table(), file),
               `csv2` = readr::write_csv2(db_table(), file),
               `excel-csv` = readr::write_excel_csv(db_table(), file),

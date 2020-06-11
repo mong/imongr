@@ -109,8 +109,7 @@ FROM
 WHERE
   Register='", registry, "';")
 
-  print(query)
-  df <- pool::dbGetQuery(pool, query)
+  pool::dbGetQuery(pool, query)
 
 }
 
