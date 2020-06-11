@@ -24,6 +24,8 @@ RUN R -e "install.packages(c('digest', 'DT', 'pool', 'readr', 'RMariaDB', 'yaml'
 
 RUN R -e "remotes::install_github('rstudio/shiny')"
 
+RUN R -e "install.packages(c('shinycssloaders'))"
+
 
 ## add package tarball
 COPY *.tar.gz .
