@@ -19,6 +19,7 @@ Imports:
     readr,
     RMariaDB,
     shiny,
+    shinyalert,
     shinycssloaders,
     yaml
 RoxygenNote: 7.1.0

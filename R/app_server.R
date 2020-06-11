@@ -36,6 +36,16 @@ app_server <- function(input, output, session) {
     shiny::showTab("tabs", target = "Sj\u00e6f")
   }
 
+  # app widget
+  ## observers
+  shiny::observeEvent(input$app_info,
+    shinyalert::shinyalert("Relevant informasjon", "jada...",
+                           type = "", imageUrl = "www/logo.svg",
+                           closeOnEsc = TRUE, closeOnClickOutside = TRUE,
+                           html = TRUE,
+                           confirmButtonText = "OK")
+  )
+
   # profil
   output$profile <- shiny::renderText({
     if (!valid_user || conf$role$none %in% igrs) {

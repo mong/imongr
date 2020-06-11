@@ -5,8 +5,40 @@
 #'
 #' @return Invisible
 #' @name misc
-#' @aliases insert_sample_data delete_all_data
+#' @aliases navbar_widget insert_sample_data delete_all_data
 NULL
+
+
+#' @rdname misc
+#' @export
+navbar_widget <- function() {
+
+  conf <- get_config()
+
+  app_info <- shiny::tags$a(
+    id = "app_info",
+    href = "#",
+    class = "action-button",
+    "Info")
+
+  logout <- shiny::tags$a(
+    id = 'logout',
+    href = conf$profile$logout$url,
+    conf$profile$logout$text)
+
+  txtWidget <-
+    paste0("var header = $('.navbar> .container-fluid');\n",
+           "header.append('<div class=\"navbar-brand\" style=\"float:right;",
+           "vertical-align:super;font-size:65%\">",
+           app_info, "<br>",
+           get_user_name(), "<br>",
+           logout,
+           "</div>');\n",
+           "console.log(header)")
+
+  shiny::tags$script(shiny::HTML(txtWidget))
+}
+
 
 #' @rdname misc
 #' @export

@@ -2,10 +2,13 @@
 % Please edit documentation in R/misc.R
 \name{misc}
 \alias{misc}
+\alias{navbar_widget}
 \alias{insert_sample_data}
 \alias{delete_all_data}
 \title{Tools and whatever}
 \usage{
+navbar_widget()
+
 insert_sample_data(include_data_table = TRUE)
 
 delete_all_data()

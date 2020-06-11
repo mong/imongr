@@ -94,7 +94,9 @@ app_ui <- function() {
       shiny::tabPanel("Sj\u00e6f",
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("admin_frame"))
-      )
+      ),
+      navbar_widget(),
+      shinyalert::useShinyalert()
     )
   )
 }
