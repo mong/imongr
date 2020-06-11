@@ -1,5 +1,7 @@
 language: r
 cache: packages
+os: linux
+dist: xenial
 
 r:
   - oldrel
@@ -12,18 +14,28 @@ env:
     - IMONGR_DB_NAME="testdb"
     - IMONGR_DB_USER="travis"
     - IMONGR_DB_PASS=""
+    - _R_CHECK_TESTS_NLINES_=0
 
 services:
   - mysql
+  - docker
 
 r_github_packages:
   - jimhester/covr
   - jimhester/lintr
   - r-lib/pkgdown
+  - rstudio/shiny
 
 before_install:
   - mysql -e "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8' COLLATE = 'utf8_danish_ci';"
+  - R CMD build .
+  - docker build --build-arg GITHUB_PAT=${GITHUB_PAT} -t $DOCKER_ORG/$IMAGE_NAME .
+  - rm imongr_*.tar.gz
+  - docker run -d -p 127.0.0.1:3838:3838 --name $IMAGE_NAME $DOCKER_ORG/$IMAGE_NAME
 
+before_script:
+  - docker ps | grep -q $IMAGE_NAME
+  - curl -IsSf 127.0.0.1:3838 > /dev/null
 
 after_success:
   - R CMD INSTALL $PKG_TARBALL
@@ -34,6 +46,7 @@ after_success:
     fi
   - rm -rf imongr.Rcheck
   - Rscript -e 'pkgdown::build_site()'
+  - wget https://raw.githubusercontent.com/mong/scripts/master/travis/docker_push
 
 deploy:
   # our site to gh_pages
@@ -44,4 +57,11 @@ deploy:
     local_dir: docs
     on:
       branch: master
+      condition: $TRAVIS_R_VERSION_STRING == "release"
+  # our image to dockerhub
+  - provider: script
+    script: bash docker_push
+    skip_cleanup: true
+    on:
+      all_branches: true
       condition: $TRAVIS_R_VERSION_STRING == "release"
