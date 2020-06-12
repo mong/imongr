@@ -28,13 +28,12 @@ navbar_widget <- function() {
 
   txt_widget <-
     paste0("var header = $('.navbar> .container-fluid');\n",
-           "header.append('<div class=\"navbar-brand\" style=\"float:right;",
-           "vertical-align:super;font-size:65%\">",
+           "header.append('<div class=\"navbar-brand\" style=\"float:right; ",
+           "vertical-align:baseline ;font-size:70%\">",
            app_info, "<br>",
            get_user_name(), "<br>",
            logout,
-           "</div>');\n",
-           "console.log(header)")
+           "</div>');\n")
 
   shiny::tags$script(shiny::HTML(txt_widget))
 }
