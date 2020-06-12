@@ -29,9 +29,9 @@ r_github_packages:
 before_install:
   - mysql -e "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8' COLLATE = 'utf8_danish_ci';"
   - R CMD build .
-  - docker build --build-arg GITHUB_PAT=${GITHUB_PAT} -t $DOCKER_ORG/$IMAGE_NAME .
+  - docker build -t $DOCKER_ORG/$IMAGE_NAME .
   - rm imongr_*.tar.gz
-  - docker run -d -p 127.0.0.1:3838:3838 --name $IMAGE_NAME $DOCKER_ORG/$IMAGE_NAME
+  - docker run -d -p 127.0.0.1:3838:3838 -e SHINYPROXY_USERNAME='ci' --name $IMAGE_NAME $DOCKER_ORG/$IMAGE_NAME
 
 before_script:
   - docker ps | grep -q $IMAGE_NAME
