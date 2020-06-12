@@ -11,3 +11,4 @@
 ^docker-compose.yml$
 ^codecov\.yml$
 ^Dockerfile$
+^LICENSE\.md$
