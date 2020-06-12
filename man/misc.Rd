@@ -3,17 +3,26 @@
 \name{misc}
 \alias{misc}
 \alias{navbar_widget}
+\alias{version_info}
+\alias{no_opt_out_ok}
 \alias{insert_sample_data}
 \alias{delete_all_data}
 \title{Tools and whatever}
 \usage{
 navbar_widget()
 
+version_info(newline = "<br>")
+
+no_opt_out_ok()
+
 insert_sample_data(include_data_table = TRUE)
 
 delete_all_data()
 }
 \arguments{
+\item{newline}{String element defining line break for formatting. Default is
+\code{<br>}}
+
 \item{include_data_table}{Logical defining if the data table is to be
 populated by data too. By default TRUE}
 }
@@ -22,4 +31,8 @@ Invisible
 }
 \description{
 Tools and whatever
+}
+\examples{
+version_info()
+no_opt_out_ok()
 }

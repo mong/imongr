@@ -1,3 +1,45 @@
+app_text:
+  info:
+    title: Informasjon
+    version:
+      app:
+      - imongr
+    help: >
+      <br>
+      Om du trenger hjelp til bruk av denne programvaren ta kontakt med SKDE på
+      <a href="mailto:skde@helse-nord.no">e-post</a> eller telefon +4747474747
+      og spør etter Are, Arnfinn eller Yohannes<br>
+      <br>
+    lisence: >
+      imongr: data contribution to qmongr ("Sykehusviseren")
+      Copyright (C) 2020 SKDE<br>
+      <br>
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      (at your option) any later version.<br>
+      <br>
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.<br>
+      <br>
+      Please find the full lisence here:
+      https://mong.github.io/imongr/LICENSE.html<br>
+      <br>
+    action_button:
+      no_opt_out_ok:
+      - Den er grei
+      - Om du sier det, så
+      - Ok, da
+      - Javel, da
+      - Ja, da er det vel sånn
+      - Fint
+      - Flott!
+      - Klart
+      - Mottatt
+      - Akkurat
+      - Livet er herlig!
 db:
   host: env
   name: env

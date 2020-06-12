@@ -39,11 +39,15 @@ app_server <- function(input, output, session) {
   # app widget
   ## observers
   shiny::observeEvent(input$app_info,
-    shinyalert::shinyalert("Relevant informasjon", "jada...",
+    shinyalert::shinyalert(conf$app_text$info$title,
+                           paste(version_info(),
+                                 conf$app_text$info$help,
+                                 conf$app_text$info$lisence,
+                                 sep = "\n"),
                            type = "", imageUrl = "www/logo.svg",
                            closeOnEsc = TRUE, closeOnClickOutside = TRUE,
                            html = TRUE,
-                           confirmButtonText = "OK")
+                           confirmButtonText = no_opt_out_ok())
   )
 
   # profil
