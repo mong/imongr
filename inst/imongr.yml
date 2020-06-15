@@ -120,8 +120,11 @@ profile:
     text: Logg ut
     url: https://mongr.no/imongr/logout
 upload:
+  reciept:
+    title: Fantastisk!
+    body: Dine data er nå lastet inn
   fail: Kontakt SKDE!
-  ok: Flink pike!
+  ok: Datasettet er klart til å sendes inn
   data_var_ind:
   - 1
   - 2
