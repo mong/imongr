@@ -52,18 +52,9 @@ app_server <- function(input, output, session) {
 
   # profil
   output$profile <- shiny::renderText({
-    if (!valid_user || conf$role$none %in% igrs) {
-      conf$profile$pending
-    } else {
-      df <- get_user_data(pool)
-      paste(conf$profile$greeting, "<b>", iusr, "</b>", "<br>",
-            conf$profile$userinfo, "<br>",
-            "Navn:", df$name, "<br>",
-            "Telefon:", df$phone, "<br>",
-            "e-post:", df$email, "<br><br>",
-            conf$profile$howto)
-    }
+    profile_ui(conf, pool, valid_user, iusr, igrs)
   })
+
   output$logout <- shiny::renderUI({
     shiny::tags$a(href = conf$profile$logout$url, conf$profile$logout$text)
   })
@@ -101,11 +92,7 @@ app_server <- function(input, output, session) {
 
   ## ui sidebar panel
   output$select_registry <- shiny::renderUI({
-    regs <- get_user_registries(pool)
-    if (length(regs) == 0) {
-      regs <- c(conf$upload$fail)
-    }
-    shiny::selectInput("registry", "Velg register:", regs, selected = regs[1])
+    select_registry_ui(conf, pool)
   })
 
   output$upload_file <- shiny::renderUI({
@@ -126,18 +113,7 @@ app_server <- function(input, output, session) {
 
   output$submit <- shiny::renderUI({
     rv$inv_data
-    if (!is.null(input$upload_file) &&
-        !(conf$upload$fail %in% input$registry)) {
-      if (all(!check_upload(cbind(df(), Register = input$registry),
-                            pool)$fail)) {
-        shiny::actionButton("submit", "Send til server",
-                            shiny::icon("paper-plane"))
-      } else {
-        NULL
-      }
-    } else {
-      NULL
-    }
+    submit_ui(conf, pool, input$upload_file, input$registry, df())
   })
 
   output$spinner <- shiny::renderText({
@@ -151,41 +127,23 @@ app_server <- function(input, output, session) {
 
   output$error_report <- shiny::renderText({
     rv$inv_data
-    if (is.null(input$upload_file)) {
-      NULL
-    } else {
-      check_report(cbind(df(), Register = input$registry), pool)
-    }
+    error_report_ui(pool, df(), input$upload_file, input$registry)
   })
 
   output$upload_sample_text <- shiny::renderText({
-    if (is.null(input$upload_file)) {
-      NULL
-    } else {
-      conf$upload$doc$sample
-    }
+    upload_sample_text_ui(conf, input$upload_file)
   })
 
   output$upload_sample <- shiny::renderTable({
     rv$inv_data
-    if (is.null(input$upload_file)) {
-      NULL
-    } else {
-      sample_df(df = df(), skip = c(input$registry), n = input$sample_size,
-                random = input$sample_type)
-    }
+    upload_sample_ui(df(), input$upload_file, input$registry,
+                     input$sample_size, input$sample_type)
   })
 
   output$main_doc <- shiny::renderText(conf$upload$doc$main)
 
   output$var_doc <- shiny::renderText({
-    l <- "<ul>\n"
-    for (i in conf$upload$data_var_ind) {
-      var <- conf$db$tab$data$insert[i]
-      l <- paste0(l, "\t<li><b>", var, "</b>: ",
-                  conf$upload$doc[[var]], "</li>\n")
-    }
-    l
+    var_doc_ui(conf)
   })
 
   output$sample_data <- shiny::renderTable(

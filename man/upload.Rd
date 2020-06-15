@@ -2,8 +2,6 @@
 % Please edit documentation in R/upload.R
 \name{upload}
 \alias{upload}
-\alias{csv_to_df}
-\alias{sample_df}
 \alias{check_report}
 \alias{check_upload}
 \alias{check_missing_var}
@@ -12,6 +10,8 @@
 \alias{check_invalid_ind}
 \alias{check_none_numeric_var}
 \alias{check_duplicate_delivery}
+\alias{csv_to_df}
+\alias{sample_df}
 \title{Title}
 \usage{
 check_report(df, pool)

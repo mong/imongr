@@ -15,7 +15,9 @@
 #' @return whatever
 #' @importFrom utils read.csv
 #' @name upload
-#' @aliases csv_to_df sample_df
+#' @aliases check_report check_upload check_missing_var check_invalid_var
+#' check_invalid_org check_invalid_ind check_none_numeric_var
+#' check_duplicate_delivery csv_to_df sample_df
 NULL
 
 
