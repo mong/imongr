@@ -205,7 +205,7 @@ app_server <- function(input, output, session) {
                    dom = "lftp",
                    language = list(
                      lengthMenu = "Vis _MENU_ rader per side",
-                     search = "Søk:",
+                     search = "S\u00f8k:",
                      info = "Rad _START_ til _END_ av totalt _TOTAL_",
                      paginate = list(previous = "Forrige", `next` = "Neste")
                    )))
