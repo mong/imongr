@@ -38,7 +38,7 @@ app_ui <- function() {
                                             Tab = "\t"),
                                 selected = ";"),
             shiny::radioButtons("dec_sep", "Desimalseparator",
-                                choices = c(Puktum = ".",
+                                choices = c(Punktum = ".",
                                             Komma = ","),
                                 selected = ","),
             shiny::radioButtons("enc", "Tegnsetting",

@@ -57,6 +57,9 @@ select_registry_ui <- function(conf, pool) {
 #' @export
 submit_ui <- function(conf, pool, upload_file, registry, df) {
 
+  if (!is.null(upload_file) && !"nevner" %in% names(df)) {
+    df <- cbind(df, nevner = NA)
+  }
   if (!is.null(upload_file) &&
       !(conf$upload$fail %in% registry) &&
       all(!check_upload(cbind(df, Register = registry), pool)$fail)) {
@@ -74,6 +77,9 @@ error_report_ui <- function(pool, df, upload_file, registry) {
   if (is.null(upload_file)) {
     NULL
   } else {
+    if (!"nevner" %in% names(df)) {
+      df <- cbind(df, nevner = NA)
+    }
     check_report(cbind(df, Register = registry), pool)
   }
 }

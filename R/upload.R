@@ -165,6 +165,10 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
     df <- df[, !(names(df) %in% c("Register"))]
   }
 
+  if (!"nevner" %in% names(df)) {
+    df <- cbind(df, nevner = NA)
+  }
+
   df
 }
 
