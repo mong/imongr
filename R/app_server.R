@@ -55,9 +55,16 @@ app_server <- function(input, output, session) {
     profile_ui(conf, pool, valid_user, iusr, igrs)
   })
 
-  output$logout <- shiny::renderUI({
-    shiny::tags$a(href = conf$profile$logout$url, conf$profile$logout$text)
-  })
+  output$deliveries_table <- DT::renderDataTable(
+    DT::datatable(get_user_deliveries(pool), rownames = FALSE,
+                  options = list(dom = "tp", pageLength = 10, language = list(
+                                 paginate = list(previous = "Forrige",
+                                                 `next` = "Neste"))))
+  )
+
+  output$ui_deliveries_table <- shiny::renderUI(
+    DT::dataTableOutput("deliveries_table")
+  )
 
   # last
   ## observers
@@ -126,8 +133,6 @@ app_server <- function(input, output, session) {
 
 
   ## ui main panel
-  output$in_progress <- shiny::renderUI(NULL)
-
   output$error_report <- shiny::renderText({
     rv$inv_data
     error_report_ui(pool, df(), input$upload_file, input$registry)

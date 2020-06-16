@@ -1,4 +1,9 @@
 app_text:
+  format:
+    date: |-
+      %A %e. %B %Y
+    time: |-
+      %H:%M:%S
   info:
     title: Informasjon
     version:
@@ -25,7 +30,7 @@ app_text:
       GNU General Public License for more details.<br>
       <br>
       Please find the full lisence here:
-      https://mong.github.io/imongr/LICENSE.html<br>
+      <a href="https://mong.github.io/imongr/LICENSE.html">https://mong.github.io/imongr/LICENSE.html</a><br>
       <br>
     action_button:
       no_opt_out_ok:
@@ -108,14 +113,26 @@ profile:
     Hei
   pending: >
     Du er nesten klar for bruk av imongr. Det eneste som nå mangeler er
-    riktige tilganger og det kan <a href="mailto:skde@helse-nord.no">SKDE</a>
-    helpe deg med.
+    riktige tilganger og det kan <a href="https://helse-nord.no/skde">SKDE</a>
+    helpe deg med. Ta gjerne kontakt per telefon +4747474747 og spør etter
+    Arnfinn, Yohannes eller Are. Du kan også sende oss en
+    <a href="mailto:skde@helse-nord.no">e-post</a> om du heller vil.
   userinfo: >
     Følgende er registrert om deg:
+  delivery:
+    status: >
+      Tidligere dataleveranser:
+    none: >
+      Det finnes ingen registrerte dataleveranser fra deg
   howto: >
-    Gjør slik og sånn, før du du utfører dette og til slutt trykker ok. Om du
+    For å laste opp data velg fanen "Last" og følg instruksjonene der. Når du
+    er ferdig kan du logge ut ved å bruke lenken oppe i høyre hjørne. Om du
     plages kan du alltids ta kontakt med
-    <a href="mailto:skde@helse-nord.no">SKDE</a>.
+    <a href="https://helse-nord.no/skde">SKDE</a> på telefon +4747474747 eller
+    <a href="mailto:skde@helse-nord.no">e-post</a>. Om du ser eller mistenker
+    feil og mangler i denne programvaren setter vi stor pris på om du sier
+    ifra, enten ved bruk av kontaktinformasjonen over eller direkte gjennom
+    <a href="https://github.com/mong/imongr/issues">vår feilmeldingstjeneste</a>.
   logout:
     text: Logg ut
     url: https://mongr.no/imongr/logout
@@ -169,13 +186,19 @@ upload:
       tilsendt fil SykehusNavnStruktur
     Variabel: >
       enten en binær indikator (0/1) for fremstilling av andel måloppnåelse,
-      eller en numerisk variabel for fremstilling av gjennomsnitt eller median
+      eller en numerisk variabel for fremstilling av gjennomsnitt eller median.
+      Angis i utgangspunktet for hver enkelt tilfelle men kan også benyttes til
+      å angi aggregert verdi for et gitt antall tilfeller som da må angis i
+      "nevner" (se under)
     nevner: >
       valgfri; nevner som angir antall tilfeller der tilsvarende Variabel
-      representerer en aggregert verdi
+      representerer en aggregert verdi (av flere tilfeller)
     KvalIndID: >
       identifikator for kvalitetsindikator, skal samsvare med identifikator
       gitt i Indikatorbeskrivelse
+    Register: >
+      Velges fra menyen til venstre og trenger ikke være med i datafila som
+      lastes opp
 download:
   tab:
   - data

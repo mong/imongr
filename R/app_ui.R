@@ -24,8 +24,7 @@ app_ui <- function() {
       shiny::tabPanel("Profil",
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("profile")),
-          shiny::uiOutput("logout")
-
+          shiny::uiOutput("ui_deliveries_table")
       ),
 
       shiny::tabPanel("Last",

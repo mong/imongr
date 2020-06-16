@@ -77,6 +77,40 @@ WHERE
 
 #' @rdname ops
 #' @export
+get_user_deliveries <- function(pool) {
+
+  conf <- get_config()
+
+  query <- paste0("
+SELECT
+  del.time AS Dato,
+  del.time AS Tid,
+  dat.Register AS Register,
+  SUBSTRING(del.md5_checksum, 1, 7) as Referanse
+FROM
+  (SELECT DISTINCT delivery_id, Register FROM data) AS dat
+LEFT JOIN
+  delivery del
+ON
+  del.id=dat.delivery_id
+WHERE
+  del.user_id=", get_user_id(pool),"
+ORDER BY
+  del.time DESC;")
+
+  df <- pool::dbGetQuery(pool, query)
+
+  # timestamp in db is UTC, convet back to "our" time zone
+  df$Dato <- format(df$Dato, format = conf$app_text$format$date,
+                    tz = Sys.getenv("TZ"))
+  df$Tid <- format(df$Tid, format = conf$app_text$format$time,
+                   tz = Sys.getenv("TZ"))
+
+  df
+}
+
+#' @rdname ops
+#' @export
 get_user_latest_delivery_id <- function(pool) {
 
   query <- paste0("
