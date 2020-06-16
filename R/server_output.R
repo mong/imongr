@@ -25,12 +25,18 @@ profile_ui <- function(conf, pool, valid_user, iusr, igrs) {
     conf$profile$pending
   } else {
     df <- get_user_data(pool)
+    if (dim(get_user_deliveries(pool))[1] < 1) {
+      delivery_history <- conf$profile$delivery$none
+    } else {
+      delivery_history <- conf$profile$delivery$status
+    }
     paste(conf$profile$greeting, "<b>", iusr, "</b>", "<br>",
           conf$profile$userinfo, "<br>",
           "Navn:", df$name, "<br>",
           "Telefon:", df$phone, "<br>",
           "e-post:", df$email, "<br><br>",
-          conf$profile$howto)
+          conf$profile$howto, "<br><br>",
+          delivery_history)
   }
 }
 

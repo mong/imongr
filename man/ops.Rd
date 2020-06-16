@@ -13,6 +13,7 @@
 \alias{insert_data}
 \alias{get_all_user_data}
 \alias{get_user_registries}
+\alias{get_user_deliveries}
 \title{Functions for data operations in imongr}
 \usage{
 get_all_user_data(pool)
@@ -22,6 +23,8 @@ get_user_data(pool)
 get_user_id(pool)
 
 get_user_registries(pool)
+
+get_user_deliveries(pool)
 
 get_user_latest_delivery_id(pool)
 
