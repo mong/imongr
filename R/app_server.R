@@ -200,7 +200,15 @@ app_server <- function(input, output, session) {
   )
 
   output$db_table <- DT::renderDataTable(
-    db_table(), rownames = FALSE
+    DT::datatable(db_table(), rownames = FALSE,
+                 options = list(
+                   dom = "lftp",
+                   language = list(
+                     lengthMenu = "Vis _MENU_ rader per side",
+                     search = "Søk:",
+                     info = "Rad _START_ til _END_ av totalt _TOTAL_",
+                     paginate = list(previous = "Forrige", `next` = "Neste")
+                   )))
   )
 
   output$ui_db_table <- shiny::renderUI(
