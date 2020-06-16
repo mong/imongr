@@ -114,12 +114,12 @@ test_that("no (real) delivery has been made yet", {
 
 ### make a delivery
 if (is.null(check_db(is_test_that = FALSE))) {
-  insert_data(pool, df = imongr::data[1:100, c(1:6, 8)])
+  insert_data(pool, df = imongr::data[1:100, c(1:7, 9)])
 }
 
 test_that("the delivery has alrady been made", {
   check_db()
-  expect_error(insert_data(pool, df = imongr::data[1:100, c(1:6, 8)]))
+  expect_error(insert_data(pool, df = imongr::data[1:100, c(1:7, 9)]))
 })
 
 test_that("existing org will not be (re-)created", {
