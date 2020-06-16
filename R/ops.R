@@ -94,7 +94,7 @@ LEFT JOIN
 ON
   del.id=dat.delivery_id
 WHERE
-  del.user_id=", get_user_id(pool),"
+  del.user_id=", get_user_id(pool), "
 ORDER BY
   del.time DESC;")
 
