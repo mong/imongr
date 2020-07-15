@@ -80,9 +80,12 @@ app_ui <- function() {
             shiny::uiOutput("select_download_registry"),
             shiny::uiOutput("select_db_table"),
             shiny::selectInput("file_format",
-                               "Filformat:", c("csv", "csv2", "rds",
+                               "Filformat:", c("csv", "csv (nordisk)",
                                                "excel-csv",
-                                               "excel-csv2")),
+                                               "excel-csv (nordisk)", "rds")),
+            shiny::radioButtons("loss_enc", "Tegnsetting",
+                                choices = c("LATIN1", "UTF-8"),
+                                selected = "UTF-8"),
             shiny::downloadButton("download_db_table", "Hent fra server")
           ),
           shiny::mainPanel(
