@@ -110,6 +110,8 @@ app_server <- function(input, output, session) {
 
   output$upload_file <- shiny::renderUI({
     shiny::fileInput("upload_file", "Velg csv-fil",
+                     buttonLabel = "Velg fil...",
+                     placeholder = "Ingen fil er valgt",
                      multiple = FALSE,
                      accept = c("text/csv",
                                 "text/comma-separated-values,text/plain",
