@@ -89,11 +89,15 @@ error_report_ui <- function(pool, df, upload_file, registry) {
 
 #' @rdname server_output
 #' @export
-upload_sample_text_ui <- function(conf, upload_file) {
+upload_sample_text_ui <- function(pool, conf, upload_file, registry) {
   if (is.null(upload_file)) {
     NULL
   } else {
-    conf$upload$doc$sample
+    i <- get_registry_indicators(pool, registry)
+    paste0(conf$upload$doc$sample, " ", registry, ": <i>",
+          paste(get_registry_indicators(pool, registry)$IndID,
+                collapse = ", "),
+          "</i>.")
   }
 }
 

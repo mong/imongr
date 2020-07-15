@@ -19,7 +19,7 @@ submit_ui(conf, pool, upload_file, registry, df)
 
 error_report_ui(pool, df, upload_file, registry)
 
-upload_sample_text_ui(conf, upload_file)
+upload_sample_text_ui(pool, conf, upload_file, registry)
 
 upload_sample_ui(df, upload_file, registry, sample_size, sample_type)
 

@@ -7,7 +7,6 @@
 #' @param sep Character filed sep
 #' @param dec Character decimal sep
 #' @param encoding Character encoding
-#' @param df Data frame
 #' @param n Numeric sample size
 #' @param skip character vector defining data frame variables to skip
 #' @param random Logical sample method
@@ -112,8 +111,10 @@ check_invalid_org <- function(df, conf, pool) {
 check_invalid_ind <- function(df, conf, pool) {
 
   fail <- TRUE
+  registry <- df$Register[1]
   if ("KvalIndID" %in% names(df)) {
-    report <- setdiff(df$KvalIndID, get_indicator(pool)$IndID)
+    report <- setdiff(df$KvalIndID,
+                      get_registry_indicators(pool, registry)$IndID)
   } else {
     report <- "Field missing"
   }

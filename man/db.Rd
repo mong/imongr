@@ -12,6 +12,7 @@
 \alias{get_table}
 \alias{get_org}
 \alias{get_indicator}
+\alias{get_registry_indicators}
 \alias{get_registry}
 \title{Low level database functions for imongr}
 \usage{
@@ -34,6 +35,8 @@ get_org(pool, sample = NA)
 get_user_registry(pool, sample = NA)
 
 get_indicator(pool, sample = NA)
+
+get_registry_indicators(pool, registry)
 
 get_registry(pool, sample = NA)
 }

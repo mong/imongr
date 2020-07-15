@@ -250,6 +250,22 @@ FROM
 
 #' @rdname db
 #' @export
+get_registry_indicators <- function(pool, registry) {
+
+  query <- paste0("
+SELECT
+  IndID
+FROM
+  indicator
+WHERE
+  Register='", registry, "';"
+  )
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db
+#' @export
 get_registry <- function(pool, sample = NA) {
 
   conf <- get_config()

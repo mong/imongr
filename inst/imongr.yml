@@ -167,17 +167,18 @@ upload:
       Et identisk datasett finnes allerede
   doc:
     main: >
-      Dette er et verktøy for å hjelpe med å laste opp filer i riktig format
-      til bruk i sykehusviser. Under er det vist et eksempel på hvordan filen
+      Dette er et verktøy for å hjelpe med å legge til data i riktig format
+      i sykehusviser (!). Under er det vist et eksempel på hvordan filen
       skal se ut. Din fil skal være i csv-format med de samme kolonnenavnene
-      som i eksempelet. Det er ikke nøye med små og store bokstaver eller
-      rekkefølgen på kolonnene. Under følger en forklaring på innholdet i
-      kolonnene.
+      som i eksempelet. Det skilles mellom små og store bokstaver men
+      rekkefølgen på kolonnene kan være tilfeldig. Under følger en forklaring
+      på innholdet i kolonnene.
     sample: >
       Her vises en utsnitt av datasett du har lastet opp. Juster parametrene i
       menyen på venstresiden slik at norske tegn (æøå) representeres riktig og
       tallene fremstår slik de skal. <b>Merk at når du sender nye data til
       server vil alle gamle data for angitt register overskrives/slettes</b>.
+      Følgende indikatorer (KvalIndID) er gyldige for
     Aar: >
       året for hendelsen
     ShNavn: >
