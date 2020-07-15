@@ -164,7 +164,7 @@ upload:
     none_numeric_var: |-
       En eller flere verdier i Variabel er ikke numerisk
     duplicate_delivery: |-
-      Datasettet finnes allerede
+      Et identisk datasett finnes allerede
   doc:
     main: >
       Dette er et verktøy for å hjelpe med å laste opp filer i riktig format
@@ -176,7 +176,8 @@ upload:
     sample: >
       Her vises en utsnitt av datasett du har lastet opp. Juster parametrene i
       menyen på venstresiden slik at norske tegn (æøå) representeres riktig og
-      tallene fremstår slik de skal.
+      tallene fremstår slik de skal. <b>Merk at når du sender nye data til
+      server vil alle gamle data for angitt register overskrives/slettes</b>.
     Aar: >
       året for hendelsen
     ShNavn: >

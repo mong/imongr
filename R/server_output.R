@@ -63,8 +63,11 @@ submit_ui <- function(conf, pool, upload_file, registry, df) {
   if (!is.null(upload_file) &&
       !(conf$upload$fail %in% registry) &&
       all(!check_upload(cbind(df, Register = registry), pool)$fail)) {
+    shiny::tagList(
     shiny::actionButton("submit", "Send til server",
-                        shiny::icon("paper-plane"))
+                        shiny::icon("paper-plane")),
+    shiny::p(paste("Merk: nye data vil overskrive alle eksisterende data for", registry))
+    )
   } else {
     NULL
   }
