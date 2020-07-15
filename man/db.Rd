@@ -50,6 +50,8 @@ get_registry(pool, sample = NA)
 \item{sample}{Numeric in the range 0 to 1 defining the relative sub-sample
 size, \emph{e.g.} when \code{sample = 0.1} approximately 10\% of
 observations are returned. Default is \code{NA} which will return all data}
+
+\item{registry}{Character string defining registry}
 }
 \value{
 Database pool object, data frame or status message
