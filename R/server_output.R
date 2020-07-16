@@ -63,8 +63,12 @@ submit_ui <- function(conf, pool, upload_file, registry, df) {
   if (!is.null(upload_file) &&
       !(conf$upload$fail %in% registry) &&
       all(!check_upload(cbind(df, Register = registry), pool)$fail)) {
+    shiny::tagList(
     shiny::actionButton("submit", "Send til server",
-                        shiny::icon("paper-plane"))
+                        shiny::icon("paper-plane")),
+    shiny::p(paste("Merk: nye data vil overskrive alle eksisterende data for",
+                   registry))
+    )
   } else {
     NULL
   }
@@ -86,11 +90,14 @@ error_report_ui <- function(pool, df, upload_file, registry) {
 
 #' @rdname server_output
 #' @export
-upload_sample_text_ui <- function(conf, upload_file) {
+upload_sample_text_ui <- function(pool, conf, upload_file, registry) {
   if (is.null(upload_file)) {
     NULL
   } else {
-    conf$upload$doc$sample
+    paste0(conf$upload$doc$sample, " ", registry, ": <i>",
+          paste(get_registry_indicators(pool, registry)$IndID,
+                collapse = ", "),
+          "</i>.")
   }
 }
 

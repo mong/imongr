@@ -15,6 +15,7 @@
 #' kept in order.
 #'
 #' @param pool a database connection pool object
+#' @param registry Character string defining registry
 #' @param table string defining target database table
 #' @param sample Numeric in the range 0 to 1 defining the relative sub-sample
 #' size, \emph{e.g.} when \code{sample = 0.1} approximately 10\% of
@@ -244,6 +245,22 @@ FROM
   if (!is.na(sample) && sample > 0 && sample < 1) {
     query <- paste(query, "\nWHERE\n  RAND() <", sample)
   }
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db
+#' @export
+get_registry_indicators <- function(pool, registry) {
+
+  query <- paste0("
+SELECT
+  IndID
+FROM
+  indicator
+WHERE
+  Register='", registry, "';"
+  )
 
   pool::dbGetQuery(pool, query)
 }

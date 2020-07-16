@@ -9,6 +9,9 @@
 
 app_server <- function(input, output, session) {
 
+  # set max size of uploaded file to 50 Mb
+  options(shiny.maxRequestSize = 50 * 1024^2)
+
   iusr <- get_user_name()
   igrs <- get_user_groups()
   conf <- get_config()
@@ -107,6 +110,8 @@ app_server <- function(input, output, session) {
 
   output$upload_file <- shiny::renderUI({
     shiny::fileInput("upload_file", "Velg csv-fil",
+                     buttonLabel = "Velg fil...",
+                     placeholder = "Ingen fil er valgt",
                      multiple = FALSE,
                      accept = c("text/csv",
                                 "text/comma-separated-values,text/plain",
@@ -139,7 +144,7 @@ app_server <- function(input, output, session) {
   })
 
   output$upload_sample_text <- shiny::renderText({
-    upload_sample_text_ui(conf, input$upload_file)
+    upload_sample_text_ui(pool, conf, input$upload_file, input$registry)
   })
 
   output$upload_sample <- shiny::renderTable({
@@ -182,7 +187,8 @@ app_server <- function(input, output, session) {
 
   output$download_db_table <- shiny::downloadHandler(
     filename = function() {
-      if (input$file_format %in% c("csv", "csv2", "excel-csv", "excel-csv2")) {
+      if (input$file_format %in% c("csv", "csv (nordisk)", "excel-csv",
+                                   "excel-csv (nordisk)")) {
         basename(tempfile(fileext = ".csv"))
       } else {
         basename(tempfile(fileext = ".rds"))
@@ -190,10 +196,12 @@ app_server <- function(input, output, session) {
     },
     content = function(file) {
       switch(input$file_format,
-              `csv` = readr::write_csv(db_table(), file),
-              `csv2` = readr::write_csv2(db_table(), file),
+              `csv` = utils::write.csv(db_table(), file,
+                                       fileEncoding = input$loss_enc),
+              `csv (nordisk)` = utils::write.csv2(db_table(), file,
+                                                 fileEncoding = input$loss_enc),
               `excel-csv` = readr::write_excel_csv(db_table(), file),
-              `excel-csv2` = readr::write_excel_csv2(db_table(), file),
+              `excel-csv (nordisk)` = readr::write_excel_csv2(db_table(), file),
               `rds` = readr::write_rds(db_table(), file)
       )
     }

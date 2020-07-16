@@ -1,3 +1,11 @@
+# imongr 0.3.0
+
+* increased uplad limit to 50 Mb
+* improved docs on what happend to existing data at upload
+* quality assessment now only accepts registry speciffic indicators
+* added encoding option when data are downloaded
+* some changes of texts and minor bugfixes
+
 # imongr 0.2.0
 
 * new field 'nevner' in data
