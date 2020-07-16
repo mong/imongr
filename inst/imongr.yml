@@ -51,6 +51,17 @@ db:
   user: env
   pass: env
   tab:
+    agg_data:
+      insert:
+      - IndID
+      - unit_level
+      - unit_name
+      - OrgNr
+      - Aar
+      - count
+      - indicator
+      - level
+      - desired_level
     data:
       insert:
       - Aar

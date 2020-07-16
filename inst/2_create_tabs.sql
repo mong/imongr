@@ -119,6 +119,7 @@ CREATE TABLE IF NOT EXISTS `agg_data` (
   `indicator` double(9,5) unsigned NOT NULL,
   `level` char(1) COLLATE utf8_danish_ci NOT NULL,
   `desired_level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
+  `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
   PRIMARY KEY (`id`),
   KEY `IndID` (`IndID`),
   KEY `unit_level` (`unit_level`)
