@@ -107,3 +107,19 @@ CREATE TABLE IF NOT EXISTS data (
     ON UPDATE CASCADE
     ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `agg_data` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `IndID` varchar(63) COLLATE utf8_danish_ci NOT NULL,
+  `unit_level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
+  `unit_name` varchar(255) COLLATE utf8_danish_ci NOT NULL,
+  `OrgNr` int(10) unsigned NOT NULL,
+  `Aar` smallint(5) unsigned NOT NULL,
+  `count` int(10) unsigned NOT NULL,
+  `indicator` double(9,5) unsigned NOT NULL,
+  `level` char(1) COLLATE utf8_danish_ci NOT NULL,
+  `desired_level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IndID` (`IndID`),
+  KEY `unit_level` (`unit_level`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
