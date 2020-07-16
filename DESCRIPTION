@@ -1,12 +1,18 @@
 Package: imongr
 Title: I Handle the Data for qmongr 
-Version: 0.2.0.9000
-Authors@R: 
+Version: 0.3.0.9000
+Authors@R: c(
     person(given = "Are",
            family = "Edvardsen",
            role = c("aut", "cre"),
            email = "biorakel@gmail.com",
-           comment = c(ORCID = "0000-0002-5210-3656"))
+           comment = c(ORCID = "0000-0002-5210-3656")),
+    person(given = "Arnfinn Hykkerud",
+           family = "Steindal",
+           role = c("aut"),
+           email = "arnfinn.steindal@gmail.com",
+           comment = c(ORCID = "0000-0002-4088-7860"))
+           )
 Description: Primarily a tool to update data used by the qmongr application.
 License: GPL-3
 Encoding: UTF-8
