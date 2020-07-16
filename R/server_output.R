@@ -66,7 +66,8 @@ submit_ui <- function(conf, pool, upload_file, registry, df) {
     shiny::tagList(
     shiny::actionButton("submit", "Send til server",
                         shiny::icon("paper-plane")),
-    shiny::p(paste("Merk: nye data vil overskrive alle eksisterende data for", registry))
+    shiny::p(paste("Merk: nye data vil overskrive alle eksisterende data for",
+                   registry))
     )
   } else {
     NULL
@@ -93,7 +94,6 @@ upload_sample_text_ui <- function(pool, conf, upload_file, registry) {
   if (is.null(upload_file)) {
     NULL
   } else {
-    i <- get_registry_indicators(pool, registry)
     paste0(conf$upload$doc$sample, " ", registry, ": <i>",
           paste(get_registry_indicators(pool, registry)$IndID,
                 collapse = ", "),
