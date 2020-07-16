@@ -5,11 +5,12 @@
 \alias{make_pool}
 \alias{drain_pool}
 \alias{insert_tab}
+\alias{get_table}
+\alias{get_agg_data}
 \alias{get_data}
 \alias{get_delivery}
 \alias{get_user}
 \alias{get_user_registry}
-\alias{get_table}
 \alias{get_org}
 \alias{get_indicator}
 \alias{get_registry_indicators}
@@ -23,6 +24,8 @@ drain_pool(pool)
 insert_tab(pool, table, df)
 
 get_table(pool, table)
+
+get_agg_data(pool)
 
 get_data(pool, sample = NA)
 
@@ -67,7 +70,7 @@ be left unchanged when the data model is altered as long as such changes
 are reflected by configuration.
 }
 \details{
-Ordianry user interactions with data should have their own functions, but
+Ordinary user interactions with data should have their own functions, but
 may be built ontop of these ones. For instance, such functions must make
 sure consistency (\emph{e.g.} foreign keys) between database tables are
 kept in order.
