@@ -20,9 +20,12 @@ LazyData: true
 Depends: R (>= 3.5.0)
 Imports:
     digest,
+    dplyr,
     DT,
+    magrittr,
     pool,
     readr,
+    rlang,
     RMariaDB,
     shiny,
     shinyalert,
