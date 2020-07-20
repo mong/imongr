@@ -10,7 +10,7 @@
 #' names are kept as is (\emph{org} and \emph{indicator}). Other data frames
 #' passed into or between function are denoted \emph{df} or \emph{gdf} where
 #' the latter denotes a data frame that has been grouped (by
-#' \code{dplyr::group_by()}).
+#' \code{dplyr::group_by()}.
 #'
 #' @param df Data frame
 #' @param gdf Data frame of grouped data
@@ -27,7 +27,6 @@
 NULL
 
 #' @rdname aggregate
-#' @importFrom rlang .data
 #' @export
 agg <- function(df, org, indicator) {
 
@@ -70,7 +69,6 @@ agg <- function(df, org, indicator) {
 }
 
 #' @rdname aggregate
-#' @importFrom rlang .data
 #' @export
 add_unit_id <- function(df, org) {
 
@@ -87,7 +85,6 @@ add_unit_id <- function(df, org) {
 }
 
 #' @rdname aggregate
-#' @importFrom rlang .data
 #' @export
 make_group <- function(df, group = "") {
 
@@ -109,7 +106,6 @@ make_group <- function(df, group = "") {
 }
 
 #' @rdname aggregate
-#' @importFrom rlang .data
 #' @export
 compute_group <- function(gdf, indicator) {
 
@@ -139,7 +135,6 @@ compute_group <- function(gdf, indicator) {
 
 
 #' @rdname aggregate
-#' @importFrom rlang .data
 #' @export
 compute_indicator_mean <- function(gdf)  {
 
@@ -151,7 +146,6 @@ compute_indicator_mean <- function(gdf)  {
 }
 
 #' @rdname aggregate
-#' @importFrom rlang .data
 #' @export
 compute_indicator_median <- function(gdf)  {
 

@@ -54,5 +54,5 @@ is the qmongr database and where tables are used in these function their
 names are kept as is (\emph{org} and \emph{indicator}). Other data frames
 passed into or between function are denoted \emph{df} or \emph{gdf} where
 the latter denotes a data frame that has been grouped (by
-\code{dplyr::group_by()}).
+\code{dplyr::group_by()}.
 }
