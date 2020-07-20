@@ -78,6 +78,7 @@ app_server <- function(input, output, session) {
   })
   shiny::observeEvent(input$submit, {
     insert_data(pool, cbind(df(), data.frame(Register = input$registry)))
+    insert_agg_data(pool, df())
     rv$inv_data <- rv$inv_data + 1
     shinyalert::shinyalert(conf$upload$reciept$title, conf$upload$reciept$body,
                            type = "success", showConfirmButton = FALSE,
