@@ -35,6 +35,10 @@ org_data <- data$OrgNrShus
 ind <- is.element(org_data, org)
 data <- data[ind, ]
 
+# curently, OrgNrShus is of class character in qmongrdata while integers in db
+# thus, convert it
+data$OrgNrShus <- as.integer(data$OrgNrShus)
+
 # substitute some strange codes (latin1?) with proper chars
 data$ShNavn <- gsub("\xe6", "æ", data$ShNavn)
 data$ShNavn <- gsub("\xc6", "Æ", data$ShNavn)
