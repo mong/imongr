@@ -17,33 +17,42 @@ add_unit_id(df, org)
 
 make_group(df, group = "")
 
-compute_group(gdf, description)
+compute_group(gdf, indicator)
 
-compute_indicator_mean(grouped_data)
+compute_indicator_mean(gdf)
 
-compute_indicator_median(grouped_data)
+compute_indicator_median(gdf)
 
-get_indicator_level(grouped_data, description)
+get_indicator_level(gdf, indicator)
 }
 \arguments{
 \item{df}{Data frame}
 
-\item{org}{Data frame holding the org db table}
+\item{org}{Data frame holding the org db table providing all organization
+data for each unit (from hospital to health trust)}
 
-\item{indicator}{Data frame holding the indicator db table. Used as
-description in some functions (please clean up)}
+\item{indicator}{Data frame holding the indicator db table providing all
+data on each indicator}
 
-\item{group}{Character string defining grouping variable}
+\item{group}{Character string defining the name of the grouping variable
+in a data frame}
 
 \item{gdf}{Data frame of grouped data}
-
-\item{description}{see above}
-
-\item{grouped_data}{see above}
 }
 \value{
-Data frame in raw, grouped og aggregated form
+Data frame in raw, grouped or aggregated form
 }
 \description{
-Details here
+Aggregation of indicators as provided for each unit (hospital) at
+organization levels above hospital: health trust, regional health trust and
+national.
+}
+\details{
+All functions are adapted from qmongr/qmongrdata. However, the nomenclature
+of function arguments are changed somewhat. Main source of underlying data
+is the qmongr database and where tables are used in these function their
+names are kept as is (\emph{org} and \emph{indicator}). Other data frames
+passed into or between function are denoted \emph{df} or \emph{gdf} where
+the latter denotes a data frame that has been grouped (by
+\code{dplyr::group_by()}).
 }

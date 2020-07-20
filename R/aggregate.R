@@ -1,16 +1,26 @@
 #' Aggregate data
 #'
-#' Details here
+#' Aggregation of indicators as provided for each unit (hospital) at
+#' organization levels above hospital: health trust, regional health trust and
+#' national.
+#'
+#' All functions are adapted from qmongr/qmongrdata. However, the nomenclature
+#' of function arguments are changed somewhat. Main source of underlying data
+#' is the qmongr database and where tables are used in these function their
+#' names are kept as is (\emph{org} and \emph{indicator}). Other data frames
+#' passed into or between function are denoted \emph{df} or \emph{gdf} where
+#' the latter denotes a data frame that has been grouped (by
+#' \code{dplyr::group_by()}).
 #'
 #' @param df Data frame
 #' @param gdf Data frame of grouped data
-#' @param org Data frame holding the org db table
-#' @param indicator Data frame holding the indicator db table. Used as
-#' description in some functions (please clean up)
-#' @param description see above
-#' @param grouped_data see above
-#' @param group Character string defining grouping variable
-#' @return Data frame in raw, grouped og aggregated form
+#' @param org Data frame holding the org db table providing all organization
+#' data for each unit (from hospital to health trust)
+#' @param indicator Data frame holding the indicator db table providing all
+#' data on each indicator
+#' @param group Character string defining the name of the grouping variable
+#' in a data frame
+#' @return Data frame in raw, grouped or aggregated form
 #' @name aggregate
 #' @aliases agg add_unit_id make_group compute_group compute_indicator_mean
 #' compute_indicator_median get_indicator_level
@@ -101,7 +111,7 @@ make_group <- function(df, group = "") {
 #' @rdname aggregate
 #' @importFrom rlang .data
 #' @export
-compute_group <- function(gdf, description) {
+compute_group <- function(gdf, indicator) {
 
   # currently nonsensical. Method(s) to be fetched from indicator db table
   indicator_median <- "intensiv2"
@@ -124,16 +134,16 @@ compute_group <- function(gdf, description) {
     dplyr::ungroup() %>%
     as.data.frame()
 
-  get_indicator_level(grouped_data = g, description)
+  get_indicator_level(gdf = g, indicator)
 }
 
 
 #' @rdname aggregate
 #' @importFrom rlang .data
 #' @export
-compute_indicator_mean <- function(grouped_data)  {
+compute_indicator_mean <- function(gdf)  {
 
-  grouped_data %>%
+  gdf %>%
     dplyr::summarise(
       count = dplyr::n(),
       indicator = mean(.data[["Variabel"]])
@@ -143,9 +153,9 @@ compute_indicator_mean <- function(grouped_data)  {
 #' @rdname aggregate
 #' @importFrom rlang .data
 #' @export
-compute_indicator_median <- function(grouped_data)  {
+compute_indicator_median <- function(gdf)  {
 
-  grouped_data %>%
+  gdf %>%
     dplyr::summarise(
       count = dplyr::n(),
       indicator = stats::median(.data[["Variabel"]])
@@ -155,13 +165,13 @@ compute_indicator_median <- function(grouped_data)  {
 #' @rdname aggregate
 #' @importFrom rlang .data
 #' @export
-get_indicator_level <- function(grouped_data, description) {
-  grouped_data$level <- ""
-  grouped_data$desired_level <- ""
-  high <- function(indicator, green, yellow) {
-    if (indicator > green) {
+get_indicator_level <- function(gdf, indicator) {
+  gdf$level <- ""
+  gdf$desired_level <- ""
+  high <- function(value, green, yellow) {
+    if (value > green) {
       level <- "H"
-    } else if (indicator < green & indicator > yellow) {
+    } else if (value < green & value > yellow) {
       level <- "M"
     } else {
       level <- "L"
@@ -169,10 +179,10 @@ get_indicator_level <- function(grouped_data, description) {
     desired_level <-  "H\u00F8yt"
     return(list(level = level, desired_level = desired_level))
   }
-  low <- function(indicator, green, yellow) {
-    if (indicator < green) {
+  low <- function(value, green, yellow) {
+    if (value < green) {
       level <- "H"
-    } else if (indicator > green & indicator < yellow) {
+    } else if (value > green & value < yellow) {
       level <- "M"
     } else {
       level <- "L"
@@ -181,30 +191,30 @@ get_indicator_level <- function(grouped_data, description) {
     return(list(level = level, desired_level = desired_level))
   }
   lapply(
-    seq_len(nrow(grouped_data)),
+    seq_len(nrow(gdf)),
     function(x) {
-      data_row <- grouped_data[x, ]
-      description <- description %>%
+      data_row <- gdf[x, ]
+      indicator <- indicator %>%
         dplyr::filter(.data[["IndID"]] == data_row[["KvalIndID"]])
-      if (!is.na(description[["MaalRetn"]])) {
-        if (!is.na(description[["MaalNivaaGronn"]]) &
-            !is.na(description[["MaalNivaaGul"]])) {
-          if (description[["MaalRetn"]] == 1) {
+      if (!is.na(indicator[["MaalRetn"]])) {
+        if (!is.na(indicator[["MaalNivaaGronn"]]) &
+            !is.na(indicator[["MaalNivaaGul"]])) {
+          if (indicator[["MaalRetn"]] == 1) {
             level <- high(
-              indicator = data_row[["indicator"]],
-              green = description[["MaalNivaaGronn"]],
-              yellow = description[["MaalNivaaGul"]]
+              value = data_row[["indicator"]],
+              green = indicator[["MaalNivaaGronn"]],
+              yellow = indicator[["MaalNivaaGul"]]
             )
-          } else if (description[["MaalRetn"]] == 0) {
+          } else if (indicator[["MaalRetn"]] == 0) {
             level <- low(
-              indicator = data_row[["indicator"]],
-              green = description[["MaalNivaaGronn"]],
-              yellow =  description[["MaalNivaaGul"]]
+              value = data_row[["indicator"]],
+              green = indicator[["MaalNivaaGronn"]],
+              yellow =  indicator[["MaalNivaaGul"]]
             )
           }
         } else {
           desired_level <- switch(
-            paste(description[["MaalRetn"]]),
+            paste(indicator[["MaalRetn"]]),
             "1" =  "H\u00F8yt",
             "0" =  "Lavt"
           )
@@ -213,10 +223,11 @@ get_indicator_level <- function(grouped_data, description) {
       } else{
         level <- list(level = "undefined", desired_level = "undefined")
       }
-      grouped_data$level[x] <<- level$level
-      grouped_data$desired_level[x] <<- level$desired_level
+      gdf$level[x] <<- level$level
+      gdf$desired_level[x] <<- level$desired_level
     }
   )
-  return(grouped_data)
+
+  gdf
 }
 
