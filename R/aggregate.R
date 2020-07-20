@@ -1,4 +1,4 @@
-#' Aggregate data
+#' Aggregate hospital data
 #'
 #' Aggregation of indicators as provided for each unit (hospital) at
 #' organization levels above hospital: health trust, regional health trust and
@@ -10,7 +10,22 @@
 #' names are kept as is (\emph{org} and \emph{indicator}). Other data frames
 #' passed into or between function are denoted \emph{df} or \emph{gdf} where
 #' the latter denotes a data frame that has been grouped (by
-#' \code{dplyr::group_by()}.
+#' \code{dplyr::group_by()}. The aggregate consists of the following varables:
+#' \describe{
+#'   \item{Aar}{The year of the current record}
+#'   \item{IndID}{Indicator ID}
+#'   \item{OrgNr}{Organization ID}
+#'   \item{count}{Number of observations of the current record}
+#'   \item{indicator}{Summarised indicator value, for instance mean or median}
+#'   \item{level}{Code providing evaluated discret level such as 'H' (high),
+#'   'M' (intermediate) and 'L' (low)}
+#'   \item{desired_level}{Name providing the desired level such as 'Lavt' (low)
+#'   or 'Høyt' (high)}
+#'   \item{unit_level}{Code provideing level of aggregation such as 'shus'
+#'   (hospital), 'hf' (health trust), 'rhf' (regional health trust) and
+#'   'nasjonal' (national)}
+#'   \item{unit_name}{Name of the organization unit}
+#' }
 #'
 #' @param df Data frame
 #' @param gdf Data frame of grouped data
