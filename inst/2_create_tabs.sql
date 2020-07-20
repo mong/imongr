@@ -121,6 +121,7 @@ CREATE TABLE IF NOT EXISTS `agg_data` (
   `desired_level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
   `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
+  KEY `Aar` (`Aar`),
   KEY `IndID` (`IndID`),
   KEY `unit_level` (`unit_level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
