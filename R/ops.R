@@ -221,7 +221,7 @@ WHERE
 
 #' @rdname ops
 #' @export
-delete_agg_data <- function(pool, df, all_records = FALSE) {
+delete_agg_data <- function(pool, df) {
 
   query <- "
 DELETE FROM
@@ -229,13 +229,9 @@ DELETE FROM
 WHERE
   "
 
-  if (all_records) {
-    condition <- "1=1;"
-  } else {
-    ind <- levels(as.factor(df$IndID))
-    condition <- paste(paste0("'", ind, "'"), collapse = ", ")
-    condition <- paste0("IndID IN (", condition, ");")
-  }
+  ind <- levels(as.factor(df$IndID))
+  condition <- paste(paste0("'", ind, "'"), collapse = ", ")
+  condition <- paste0("IndID IN (", condition, ");")
 
   query <- paste0(query, condition)
 
@@ -271,6 +267,6 @@ insert_data <- function(pool, df) {
 insert_agg_data <- function(pool, df) {
 
   df <- agg(df, get_table(pool, "org"), get_table(pool, "indicator"))
-  delete_agg_data(pool, df, all_records = FALSE)
+  delete_agg_data(pool, df)
   insert_tab(pool, "agg_data", df)
 }

@@ -40,7 +40,7 @@ retire_user_deliveries(pool)
 
 delete_registry_data(pool, df)
 
-delete_agg_data(pool, df, all_records = FALSE)
+delete_agg_data(pool, df)
 
 insert_data(pool, df)
 
