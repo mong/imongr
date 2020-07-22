@@ -74,6 +74,10 @@ df <- data.frame(Aar = 2016,
                  KvalIndID = "norgast1",
                  Register = "norgast")
 
+# we need a user and groups defined
+Sys.setenv(SHINYPROXY_USERNAME = "imongr")
+Sys.setenv(SHINYPROXY_USERGROUPS = "G1,G2")
+
 
 test_that("profile_ui provides a characer string", {
   expect_equal(class(

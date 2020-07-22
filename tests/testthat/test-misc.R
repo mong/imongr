@@ -52,6 +52,10 @@ if (is.null(check_db(is_test_that = FALSE))) {
   }
 }
 
+# we need a user and groups defined
+Sys.setenv(SHINYPROXY_USERNAME = "tester")
+Sys.setenv(SHINYPROXY_USERGROUPS = "G1,G2")
+
 test_that("some html is provided for navbar_widget", {
   expect_equal(class(navbar_widget()), "shiny.tag")
 })
