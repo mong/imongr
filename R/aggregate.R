@@ -60,9 +60,6 @@ agg <- function(df, org, indicator) {
   unit_levels <- c("shus", "hf", "rhf", "nasjonal")
   unit_names <- c("SykehusNavn", "Hfkortnavn", "RHF", "nasjonal")
 
-  #groups <- c("OrgNrRHF", "")
-  #unit_levels <- c("rhf", "nasjonal")
-
   agg <- data.frame()
 
   for (i in seq_len(length(groups))) {
@@ -248,4 +245,3 @@ get_indicator_level <- function(gdf, indicator) {
 
   gdf
 }
-

@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `agg_data` (
   `Aar` smallint(5) unsigned NOT NULL,
   `count` int(10) unsigned NOT NULL,
   `indicator` double(9,5) unsigned NOT NULL,
-  `level` char(1) COLLATE utf8_danish_ci NOT NULL,
+  `level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
   `desired_level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
   `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),

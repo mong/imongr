@@ -102,6 +102,13 @@ test_that("a user id can be provided", {
   expect_equal(get_user_id(pool), 1)
 })
 
+test_that("all users data can be provided", {
+  check_db()
+  expect_equal(class(get_all_user_data(pool)), "data.frame")
+  expect_equal(class(get_user_registries(pool)), "character")
+  expect_equal(class(get_user_deliveries(pool)), "data.frame")
+})
+
 test_that("a consistent md5 checksum of a data frame can be provided", {
   expect_equal(md5_checksum(data.frame(name = "imongr")),
                "ed91fb7bafe2bd55f90522e1104a13f1")
@@ -139,8 +146,19 @@ test_that("existing user will not be (re-)created", {
     "User already exists. Nothing to do!")
 })
 
+test_that("error on delete when no 'Register' or several registries", {
+  check_db()
+  df <- imongr::data
+  expect_error(delete_registry_data(pool, df))
+  names(df)[names(df) == "Register"] <- "missing"
+  expect_error(delete_registry_data(pool, df))
+})
 
-# Lots of missing test below due to new tables
+test_that("data from a registry can be fetched", {
+  check_db()
+  registry <- levels(as.factor(imongr::data[1:100, ]$Register))[1]
+  expect_equal(class(get_registry_data(pool, registry)), "data.frame")
+})
 
 test_that("a new organization can be created", {
   check_db()
@@ -165,7 +183,7 @@ test_that("a new user can be created", {
 if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool,
                   paste("DROP TABLE data, user_registry, delivery,",
-                        "user, org, indicator, registry;"))
+                        "user, org, indicator, registry, agg_data;"))
 }
 ## if db dropped on travis the coverage reporting will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&

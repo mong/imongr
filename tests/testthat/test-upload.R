@@ -1,4 +1,5 @@
 pool <- list()
+create_config()
 conf <- get_config()
 
 l <- check_missing_var(data.frame(), conf, pool)
@@ -22,4 +23,163 @@ test_that("an empty report and ok status is provided from a valid data set", {
   expect_equal(l$report, character())
 })
 
-# next up will call for a test-db
+
+# preserve initial state
+env_context <- Sys.getenv("IMONGR_CONTEXT")
+env_user <- Sys.getenv("IMONGR_DB_USER")
+env_pass <- Sys.getenv("IMONGR_DB_PASS")
+env_name <- Sys.getenv("IMONGR_DB_NAME")
+env_host <- Sys.getenv("IMONGR_DB_HOST")
+env_user_name <- Sys.getenv("SHINYPROXY_USERNAME")
+env_user_groups <- Sys.getenv("SHINYPROXY_USERGROUPS")
+
+# Database infrastructure is only guaranteed at Travis and our own dev env.
+# Tests running on other environments should be skipped
+check_db <- function(is_test_that = TRUE) {
+  if (Sys.getenv("IMONGR_CONTEXT") == "DEV") {
+    NULL
+  } else if (Sys.getenv("TRAVIS") == "true") {
+    NULL
+  } else {
+    if (is_test_that) {
+      testthat::skip("Possible lack of database infrastructure")
+    } else {
+      1
+    }
+  }
+}
+
+# make a sample df to be used for the remaining tests
+df <- data.frame(Aar = 2016,
+                 ShNavn = "UNN-Tromsoe",
+                 ReshId = 601225,
+                 OrgNrShus = 974795787,
+                 Variabel = 0,
+                 nevner = NA,
+                 KvalIndID = "norgast1",
+                 Register = "norgast")
+
+test_that("valid vars pass the check", {
+  expect_true(length(check_invalid_var(df, conf, pool)$report) == 0)
+})
+
+test_that("an upload csv can be converted to a data frame", {
+  csv_file <- tempfile(fileext = ".csv")
+  write.csv(df, file = csv_file)
+  expect_error(csv_to_df(tempfile(), dec = "."))
+  expect_equal(class(csv_to_df(csv_file, dec = ".")), "data.frame")
+  # check when varaiable 'nevner' is not present
+  write.csv(df[, !names(df) %in% "nevner"], file = csv_file)
+  expect_equal(class(csv_to_df(csv_file, dec = ".")), "data.frame")
+  file.remove(csv_file)
+})
+
+test_that("a (sub) sample df can be provided", {
+  expect_equal(class(sample_df(df, skip = c("nevner"), n = 2)), "data.frame")
+  expect_equal(class(sample_df(df, n = NA)), "data.frame")
+  expect_equal(class(sample_df(df, n = 1, random = TRUE)), "data.frame")
+})
+
+# For the remianing tests we need a test database
+## first off with no data
+if (is.null(check_db(is_test_that = FALSE))) {
+  pool <- make_pool()
+  query <- paste("CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
+                 "COLLATE = 'utf8_danish_ci';")
+  pool::dbExecute(pool, query)
+
+  # new connections to testdb
+  drain_pool(pool)
+  Sys.setenv(IMONGR_DB_NAME = "testdb")
+  pool <- make_pool()
+
+  # add tabs to testdb
+  fc <- file(system.file("2_create_tabs.sql", package = "imongr"), "r")
+  t <- readLines(fc)
+  close(fc)
+  sql <- paste0(t, collapse = "\n")
+  queries <- strsplit(sql, ";")[[1]]
+  for (i in seq_len(length(queries))) {
+    pool::dbExecute(pool, queries[i])
+  }
+
+  insert_sample_data()
+}
+
+# test that depend on db
+conf <- get_config()
+
+test_that("org id checks is workinig", {
+  check_db()
+  expect_false(check_invalid_org(df, conf, pool)$fail)
+  expect_equal(check_invalid_org(df[, !names(df) %in% "OrgNrShus"],
+                                 conf, pool)$report, "Field missing")
+  # set an org id that (assumably) does not exist
+  df$OrgNrShus <- 66
+  expect_true(check_invalid_org(df, conf, pool)$fail)
+  expect_true(length(check_invalid_org(df, conf, pool)$report) > 0)
+  df$OrgNrShus <- 974795787
+})
+
+test_that("indicator id check is working", {
+  check_db()
+  expect_false(check_invalid_ind(df, conf, pool)$fail)
+  expect_equal(check_invalid_ind(df[, !names(df) %in% "KvalIndID"],
+                                 conf, pool)$report, "Field missing")
+  # set an indicator id that does not exist
+  df$KvalIndID <- "nothing"
+  expect_true(length(check_invalid_ind(df, conf, pool)$report) > 0)
+  df$KvalIndID <- "norgast1"
+})
+
+test_that("variable (numeric) type check is working", {
+  check_db()
+  expect_false(check_none_numeric_var(df, conf, pool)$fail)
+  expect_equal(check_none_numeric_var(df[, !names(df) %in% "Variabel"],
+                                     conf, pool)$report, "Field missing")
+  df$Variabel <- as.character(df$Variabel)
+  expect_true(check_none_numeric_var(df, conf, pool)$fail)
+  df$Variabel <- as.numeric(df$Variabel)
+})
+
+test_that("duplicate delivery check is present (tested elsewhere)", {
+  check_db()
+  expect_false(check_duplicate_delivery(df, conf, pool)$fail)
+})
+
+test_that("check report (wrapper) function is working", {
+  check_db()
+  expect_equal(class(check_report(df, pool)), "character")
+  expect_equal(class(check_report(df[, !names(df) %in% "OrgNrShus"], pool)),
+               "character")
+})
+
+
+# clean up
+## drop tables (in case tests are re-run on the same instance)
+if (is.null(check_db(is_test_that = FALSE))) {
+  pool::dbExecute(pool,
+                  paste("DROP TABLE data, user_registry, delivery,",
+                        "user, org, indicator, registry, agg_data;"))
+}
+## if db dropped on travis the coverage reporting will fail...
+if (is.null(check_db(is_test_that = FALSE)) &&
+    Sys.getenv("TRAVIS") != "true") {
+  pool::dbExecute(pool, "drop database testdb;")
+}
+## drain pool
+if (is.null(check_db(is_test_that = FALSE))) {
+  drain_pool(pool)
+}
+## and finally, remove local config
+file.remove("_imongr.yml")
+
+
+# recreate initial state
+Sys.setenv(IMONGR_CONTEXT = env_context)
+Sys.setenv(IMONGR_DB_USER = env_user)
+Sys.setenv(IMONGR_DB_PASS = env_pass)
+Sys.setenv(IMONGR_DB_NAME = env_name)
+Sys.setenv(IMONGR_DB_HOST = env_host)
+Sys.setenv(SHINYPROXY_USERNAME = env_user_name)
+Sys.setenv(SHINYPROXY_USERGROUPS = env_user_groups)

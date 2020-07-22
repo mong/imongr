@@ -104,6 +104,13 @@ test_that("database can be populated with test data", {
   expect_true(insert_tab(pool, table = "data", df = imongr::data))
 })
 
+test_that("agg_data can be populated from existing (test) data", {
+  check_db()
+  # to save ptime, use just a sub-sample of data (reused on retreival)
+  data_sample <- get_data(pool, sample = .4)
+  expect_true(insert_agg_data(pool, data_sample))
+})
+
 test_that("function provides error when inserting non-consistent data", {
   check_db()
   expect_error(insert_tab(pool, table = "wrong_table", df = data.frame))
@@ -112,26 +119,75 @@ test_that("function provides error when inserting non-consistent data", {
   expect_error(insert_tab(pool, table = "org",
                           df = data.frame(name = "", OrgNr = 123456789,
                                           valid = 1)))
+  org_wrong_name <- imongr::org
+  true_name <- names(org_wrong_name)[1]
+  wrong_name <- paste0(true_name, "borked")
+  names(org_wrong_name)[1] <- wrong_name
+  expect_error(insert_tab(pool, table = "org", df = org_wrong_name))
 })
 
 test_that("data can be fetched from test database", {
   check_db()
   expect_equal(dim(get_data(pool)), dim(imongr::data))
+  expect_true(dim(get_data(pool, sample = .1))[1] < dim(imongr::data)[1])
 })
 
 test_that("delivery data can be fetched from test database", {
   check_db()
   expect_equal(dim(get_delivery(pool)), dim(imongr::delivery))
+  expect_true(
+    dim(get_delivery(pool, sample = .9))[1] <= dim(imongr::delivery)[1]
+  )
 })
 
 test_that("user data can be fetched from test database", {
   check_db()
   expect_equal(dim(get_user(pool)), dim(imongr::user))
+  expect_true(dim(get_user(pool, sample = .9))[1] <= dim(imongr::user)[1])
 })
 
 test_that("org data can be fetched from test database", {
   check_db()
   expect_equal(dim(get_org(pool))[1], dim(imongr::org)[1])
+  expect_true(dim(get_org(pool, sample = .1))[1] < dim(imongr::org)[1])
+})
+
+test_that("indicator data can be fetched from test database", {
+  check_db()
+  expect_equal(dim(get_indicator(pool)), dim(imongr::indicator))
+  expect_true(
+    dim(get_indicator(pool, sample = .1))[1] < dim(imongr::indicator)[1]
+  )
+})
+
+test_that("registries and indicators per registry can be fetched", {
+  check_db()
+  registries <- levels(as.factor(imongr::data$Register))
+  expect_equal(class(get_registry_indicators(pool, registries[1])),
+               "data.frame")
+  expect_equal(class(get_registry(pool)), "data.frame")
+  expect_true(
+    dim(get_registry(pool, sample = .5))[1] < dim(imongr::registry)[1]
+  )
+})
+
+test_that("user_registry data can be fetched from test database", {
+  check_db()
+  expect_equal(class(get_user_registry(pool)), "data.frame")
+  expect_true(
+    dim(get_user_registry(pool, sample = .5))[1] <
+      dim(imongr::user_registry)[1]
+  )
+})
+
+test_that("aggregated data can be fetched from test database", {
+  check_db()
+  expect_equal(class(get_agg_data(pool)), "data.frame")
+})
+
+test_that("get_table wrapper function do work", {
+  check_db()
+  expect_equal(class(get_table(pool, "org")), "data.frame")
 })
 
 test_that("pool cannot be established when missing credentials", {
@@ -154,7 +210,7 @@ test_that("pool cannot be established when missing credentials", {
 if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool,
                   paste("DROP TABLE data, user_registry, delivery,",
-                        "user, org, indicator, registry;"))
+                        "user, org, indicator, registry, agg_data;"))
 }
 
 ## if db dropped on travis the following coverage will fail...
