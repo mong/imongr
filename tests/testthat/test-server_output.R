@@ -75,7 +75,7 @@ df <- data.frame(Aar = 2016,
                  Register = "norgast")
 
 # we need a user and groups defined
-Sys.setenv(SHINYPROXY_USERNAME = "imongr")
+Sys.setenv(SHINYPROXY_USERNAME = "mongr")
 Sys.setenv(SHINYPROXY_USERGROUPS = "G1,G2")
 
 
