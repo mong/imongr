@@ -1,5 +1,9 @@
 # imongr 0.4.0
 
+* aggregate data on upload
+* new functions interacting with db
+* extended testing
+
 # imongr 0.3.0
 
 * increased uplad limit to 50 Mb
