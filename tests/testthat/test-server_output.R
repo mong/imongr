@@ -80,6 +80,7 @@ Sys.setenv(SHINYPROXY_USERGROUPS = "G1,G2")
 
 
 test_that("profile_ui provides a characer string", {
+  check_db()
   expect_equal(class(
     profile_ui(conf, pool, valid_user = FALSE, "TU", "TG")),
                "character")
@@ -90,10 +91,12 @@ test_that("profile_ui provides a characer string", {
 })
 
 test_that("select list of registries is provided (if any)", {
+  check_db()
   expect_equal(class(select_registry_ui(conf, pool)), "shiny.tag")
 })
 
 test_that("submit ui is provided", {
+  check_db()
   expect_null(submit_ui(conf, pool, NULL, "norgast", df))
   expect_equal(class(
     submit_ui(conf, pool, TRUE, "norgast", df[, !names(df) %in% "nevner"]))[1],
@@ -102,6 +105,7 @@ test_that("submit ui is provided", {
 })
 
 test_that("error report is provided", {
+  check_db()
   expect_null(error_report_ui(pool, df, NULL, "norgast"))
   expect_equal(class(
     error_report_ui(pool, df[, !names(df) %in% c("nevner", "Register")], TRUE,
@@ -111,6 +115,7 @@ test_that("error report is provided", {
 })
 
 test_that("upload sample text is provided", {
+  check_db()
   expect_null(upload_sample_text_ui(pool, conf, NULL, "norgast"))
   expect_equal(class(
     upload_sample_text_ui(pool, conf, TRUE, "norgast")),
