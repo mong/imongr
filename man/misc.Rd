@@ -17,7 +17,7 @@ no_opt_out_ok()
 
 insert_sample_data(include_data_table = TRUE)
 
-delete_all_data()
+delete_all_data(prompt = TRUE)
 }
 \arguments{
 \item{newline}{String element defining line break for formatting. Default is
@@ -25,6 +25,8 @@ delete_all_data()
 
 \item{include_data_table}{Logical defining if the data table is to be
 populated by data too. By default TRUE}
+
+\item{prompt}{Logical to prompt for user input. Default is TRUE}
 }
 \value{
 Invisible

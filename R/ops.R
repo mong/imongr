@@ -8,7 +8,7 @@
 #' @aliases get_user_data get_user_id
 #' get_user_latest_delivery_id get_registry_data md5_checksum
 #' delivery_exist_in_db retire_user_deliveries delete_registry_data
-#' insert_data
+#' delete_agg_data insert_data insert_agg_data
 NULL
 
 
@@ -219,6 +219,25 @@ WHERE
   pool::dbExecute(pool, query)
 }
 
+#' @rdname ops
+#' @export
+delete_agg_data <- function(pool, df) {
+
+  query <- "
+DELETE FROM
+  agg_data
+WHERE
+  "
+
+  ind <- levels(as.factor(df$IndID))
+  condition <- paste(paste0("'", ind, "'"), collapse = ", ")
+  condition <- paste0("IndID IN (", condition, ");")
+
+  query <- paste0(query, condition)
+
+  pool::dbExecute(pool, query)
+}
+
 
 #' @rdname ops
 #' @export
@@ -240,4 +259,14 @@ insert_data <- function(pool, df) {
   df_id <- data.frame(delivery_id = did)
   insert_tab(pool, "data", cbind(df, df_id))
 
+}
+
+
+#' @rdname ops
+#' @export
+insert_agg_data <- function(pool, df) {
+
+  df <- agg(df, get_table(pool, "org"), get_table(pool, "indicator"))
+  delete_agg_data(pool, df)
+  insert_tab(pool, "agg_data", df)
 }

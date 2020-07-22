@@ -9,7 +9,7 @@
 #' be left unchanged when the data model is altered as long as such changes
 #' are reflected by configuration.
 #'
-#' Ordianry user interactions with data should have their own functions, but
+#' Ordinary user interactions with data should have their own functions, but
 #' may be built ontop of these ones. For instance, such functions must make
 #' sure consistency (\emph{e.g.} foreign keys) between database tables are
 #' kept in order.
@@ -23,8 +23,8 @@
 #' @param df data frame containing data to be inserted into a database
 #' @return Database pool object, data frame or status message
 #' @name db
-#' @aliases make_pool drain_pool insert_tab get_data get_delivery get_user
-#' get_user_registry
+#' @aliases make_pool drain_pool insert_tab get_table get_agg_data get_data
+#' get_delivery get_user get_user_registry
 NULL
 
 #' @rdname db
@@ -129,6 +129,20 @@ get_table <- function(pool, table) {
 
   f <- paste0("get_", table)
   do.call(f, args = list(pool = pool))
+}
+
+#' @rdname db
+#' @export
+get_agg_data <- function(pool) {
+
+  conf <- get_config()
+  query <- paste0("
+SELECT
+  ", paste0(conf$db$tab$agg_data$insert, collapse = ",\n "), "
+FROM
+  agg_data;")
+
+  pool::dbGetQuery(pool, query)
 }
 
 #' @rdname db

@@ -182,13 +182,12 @@ sample_df <- function(df, skip = c(""), n, random = FALSE) {
     df <- df[, !(names(df) %in% skip)]
   }
 
-  if (n > nrow(df)) {
-    n <- nrow(df)
-  }
-
   if (is.na(n)) {
     return(df)
   } else {
+    if (n > nrow(df)) {
+      n <- nrow(df)
+    }
     if (random) {
       return(df[sample(seq_len(nrow(df)), n), ])
     } else {

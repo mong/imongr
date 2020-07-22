@@ -10,7 +10,9 @@
 \alias{delivery_exist_in_db}
 \alias{retire_user_deliveries}
 \alias{delete_registry_data}
+\alias{delete_agg_data}
 \alias{insert_data}
+\alias{insert_agg_data}
 \alias{get_all_user_data}
 \alias{get_user_registries}
 \alias{get_user_deliveries}
@@ -38,7 +40,11 @@ retire_user_deliveries(pool)
 
 delete_registry_data(pool, df)
 
+delete_agg_data(pool, df)
+
 insert_data(pool, df)
+
+insert_agg_data(pool, df)
 }
 \arguments{
 \item{pool}{Database connection pool object}

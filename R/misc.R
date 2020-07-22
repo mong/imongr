@@ -4,6 +4,7 @@
 #' populated by data too. By default TRUE
 #' @param newline String element defining line break for formatting. Default is
 #' \code{<br>}
+#' @param prompt Logical to prompt for user input. Default is TRUE
 #' @return Invisible
 #' @name misc
 #' @aliases navbar_widget version_info no_opt_out_ok insert_sample_data
@@ -93,10 +94,14 @@ insert_sample_data <- function(include_data_table = TRUE) {
 
 #' @rdname misc
 #' @export
-delete_all_data <- function() {
+delete_all_data <- function(prompt = TRUE) {
 
+  if (prompt) {
   ans <- readline(paste("WARNING! This will delete all data from the db.",
                         "If this is the intention type 'YES' now "))
+  } else {
+    ans <- "YES"
+  }
 
   if (ans == "YES") {
     conf <- get_config()

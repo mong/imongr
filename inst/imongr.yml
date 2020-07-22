@@ -51,6 +51,17 @@ db:
   user: env
   pass: env
   tab:
+    agg_data:
+      insert:
+      - IndID
+      - unit_level
+      - unit_name
+      - OrgNr
+      - Aar
+      - count
+      - indicator
+      - level
+      - desired_level
     data:
       insert:
       - Aar
@@ -203,6 +214,14 @@ upload:
     Register: >
       Velges fra menyen til venstre og trenger ikke være med i datafila som
       lastes opp
+aggregate:
+  data_var_ind:
+  - 1
+  - 2
+  - 4
+  - 5
+  - 6
+  - 7
 download:
   tab:
   - data

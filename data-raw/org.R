@@ -23,4 +23,9 @@ org <- qmongrdata::SykehusNavnStruktur
 #           "SykehusNavn")
 # org <- stranger_strings(org, vars)
 
+# make OrgNrs integers
+org$OrgNrRHF <- as.integer(org$OrgNrRHF)
+org$OrgNrHF <- as.integer(org$OrgNrHF)
+org$OrgNrShus <- as.integer(org$OrgNrShus)
+
 usethis::use_data(org, overwrite = TRUE)
