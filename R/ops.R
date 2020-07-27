@@ -101,9 +101,9 @@ ORDER BY
   df <- pool::dbGetQuery(pool, query)
 
   # timestamp in db is UTC, convert back to "our" time zone
-  df$Dato <- format(df$Dato, format = conf$app_text$format$date,
+  df$Dato <- format(df$Dato, format = conf$app_text$format$date, # nolint
                     tz = Sys.getenv("TZ"))
-  df$Tid <- format(df$Tid, format = conf$app_text$format$time,
+  df$Tid <- format(df$Tid, format = conf$app_text$format$time, # nolint
                    tz = Sys.getenv("TZ"))
 
   df
