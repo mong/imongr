@@ -1,3 +1,7 @@
+# imongr 0.4.1
+
+* fix bug in data aggregation
+
 # imongr 0.4.0
 
 * aggregate data on upload
