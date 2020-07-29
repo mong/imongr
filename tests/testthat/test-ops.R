@@ -163,7 +163,7 @@ test_that("data from a registry can be fetched", {
 test_that("a new organization can be created", {
   check_db()
   df <- imongr::org[1, ]
-  df$OrgNrShus <- 10000000
+  df$OrgNrShus <- 10000000 # nolint
   expect_true(create_imongr_org(pool, df))
 })
 

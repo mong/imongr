@@ -115,10 +115,10 @@ test_that("org id checks is workinig", {
   expect_equal(check_invalid_org(df[, !names(df) %in% "OrgNrShus"],
                                  conf, pool)$report, "Field missing")
   # set an org id that (assumably) does not exist
-  df$OrgNrShus <- 66
+  df$OrgNrShus <- 66 # nolint
   expect_true(check_invalid_org(df, conf, pool)$fail)
   expect_true(length(check_invalid_org(df, conf, pool)$report) > 0)
-  df$OrgNrShus <- 974795787
+  df$OrgNrShus <- 974795787 # nolint
 })
 
 test_that("indicator id check is working", {
@@ -127,9 +127,9 @@ test_that("indicator id check is working", {
   expect_equal(check_invalid_ind(df[, !names(df) %in% "KvalIndID"],
                                  conf, pool)$report, "Field missing")
   # set an indicator id that does not exist
-  df$KvalIndID <- "nothing"
+  df$KvalIndID <- "nothing" # nolint
   expect_true(length(check_invalid_ind(df, conf, pool)$report) > 0)
-  df$KvalIndID <- "norgast1"
+  df$KvalIndID <- "norgast1" # nolint
 })
 
 test_that("variable (numeric) type check is working", {
@@ -137,9 +137,9 @@ test_that("variable (numeric) type check is working", {
   expect_false(check_none_numeric_var(df, conf, pool)$fail)
   expect_equal(check_none_numeric_var(df[, !names(df) %in% "Variabel"],
                                      conf, pool)$report, "Field missing")
-  df$Variabel <- as.character(df$Variabel)
+  df$Variabel <- as.character(df$Variabel) # nolint
   expect_true(check_none_numeric_var(df, conf, pool)$fail)
-  df$Variabel <- as.numeric(df$Variabel)
+  df$Variabel <- as.numeric(df$Variabel) # nolint
 })
 
 test_that("duplicate delivery check is present (tested elsewhere)", {

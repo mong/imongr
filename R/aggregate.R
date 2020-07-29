@@ -67,7 +67,7 @@ agg <- function(df, org, indicator) {
     idf <- compute_group(idf, indicator)
     idf$unit_level <- rep(unit_levels[i], dim(idf)[1])
     if (unit_levels[i] == "nasjonal") {
-      idf$OrgNr <- rep(0, dim(idf)[1])
+      idf$OrgNr <- rep(0, dim(idf)[1]) # nolint
       idf$unit_name <- rep("Nasjonal", dim(idf)[1])
     } else {
       this_org <- org %>%
