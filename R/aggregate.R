@@ -70,14 +70,10 @@ agg <- function(df, org, indicator) {
       idf$OrgNr <- rep(0, dim(idf)[1])
       idf$unit_name <- rep("Nasjonal", dim(idf)[1])
     } else {
-      idf <- idf %>%
-        dplyr::left_join(
-          org %>%
-            dplyr::select(
-              .data[[groups[i]]],
-              .data[[unit_names[i]]]
-            ), by = groups[i]
-        )
+      this_org <- org %>%
+        dplyr::select(.data[[groups[i]]], .data[[unit_names[i]]]) %>%
+          dplyr::distinct()
+      idf <- dplyr::left_join(idf, this_org, by = groups[i])
       names(idf)[names(idf) == groups[i]] <- "OrgNr"
       names(idf)[names(idf) == unit_names[i]] <- "unit_name"
     }
