@@ -1,5 +1,2 @@
 linters: with_defaults(object_name_linter(c("camelCase", "snake_case")))
-exclusions: list("data-raw/data.R",
-                 "data-raw/delivery.R",
-                 "data-raw/org.R",
-                 "data-raw/user.R")
+exclusions: list("data-raw/delivery.R", "data-raw/data.R", "data-raw/org.R", "data-raw/user.R")

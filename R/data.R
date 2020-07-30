@@ -1,3 +1,54 @@
+#' Organization structure example data
+#'
+#' Org hierarcy
+#' @format Data frame with example data
+#' \describe{
+#'   \item{id}{}
+#'   \item{orgnr}{}
+#'   \item{full_name}{}
+#'   \item{short_name}{}
+#' }
+"nation"
+
+#' Organization structure example data
+#'
+#' Org hierarcy
+#' @format Data frame with example data
+#' \describe{
+#'   \item{id}{}
+#'   \item{orgnr}{}
+#'   \item{full_name}{}
+#'   \item{short_name}{}
+#'   \item{ref_id}{}
+#' }
+"rhf"
+
+#' Organization structure example data
+#'
+#' Org hierarcy
+#' @format Data frame with example data
+#' \describe{
+#'   \item{id}{}
+#'   \item{orgnr}{}
+#'   \item{full_name}{}
+#'   \item{short_name}{}
+#'   \item{ref_id}{}
+#' }
+"hf"
+
+#' Organization structure example data
+#'
+#' Org hierarcy
+#' @format Data frame with example data
+#' \describe{
+#'   \item{id}{}
+#'   \item{orgnr}{}
+#'   \item{full_name}{}
+#'   \item{short_name}{}
+#'   \item{ref_id}{}
+#' }
+"shus"
+
 #' Registry example data for qmongr data store
 #'
 #' Meta data to allow interactions with qmong data. Only used for testing in

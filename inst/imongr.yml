@@ -116,6 +116,33 @@ db:
       insert:
       - Register
       - full_name
+    shus:
+      insert:
+      - id
+      - orgnr
+      - full_name
+      - short_name
+      - hf_id
+    hf:
+      insert:
+      - id
+      - orgnr
+      - full_name
+      - short_name
+      - rhf_id
+    rhf:
+      insert:
+      - id
+      - orgnr
+      - full_name
+      - short_name
+      - nation_id
+    nation:
+      insert:
+      - id
+      - orgnr
+      - full_name
+      - short_name
 role:
   none: NONE
   provider: PROVIDER

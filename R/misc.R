@@ -75,6 +75,10 @@ insert_sample_data <- function(include_data_table = TRUE) {
 
   pool <- make_pool()
 
+  insert_tab(pool, table = "nation", df = imongr::nation)
+  insert_tab(pool, table = "rhf", df = imongr::rhf)
+  insert_tab(pool, table = "hf", df = imongr::hf)
+  insert_tab(pool, table = "shus", df = imongr::shus)
   insert_tab(pool, table = "registry", df = imongr::registry)
   insert_tab(pool, table = "org", df = imongr::org)
   insert_tab(pool, table = "indicator", df = imongr::indicator)
