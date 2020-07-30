@@ -27,12 +27,10 @@ Imports:
     readr,
     rlang,
     RMariaDB,
-    shiny,
+    shiny (>= 1.5.0),
     shinyalert,
     shinycssloaders,
     yaml
-Remotes:
-    rstudio/shiny
 RoxygenNote: 7.1.0
 Suggests: 
     testthat (>= 2.1.0),
