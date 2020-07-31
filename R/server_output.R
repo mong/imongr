@@ -62,7 +62,7 @@ submit_ui <- function(conf, pool, upload_file, registry, df) {
   }
   if (!is.null(upload_file) &&
       !(conf$upload$fail %in% registry) &&
-      all(!check_upload(cbind(df, Register = registry), pool)$fail)) {
+      all(!check_upload(cbind(df, registry_id = registry), pool)$fail)) {
     shiny::tagList(
     shiny::actionButton("submit", "Send til server",
                         shiny::icon("paper-plane")),
@@ -84,7 +84,7 @@ error_report_ui <- function(pool, df, upload_file, registry) {
     if (!"nevner" %in% names(df)) {
       df <- cbind(df, nevner = NA)
     }
-    check_report(cbind(df, Register = registry), pool)
+    check_report(cbind(df, registry_id = registry), pool)
   }
 }
 

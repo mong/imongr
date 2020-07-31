@@ -111,7 +111,7 @@ check_invalid_org <- function(df, conf, pool) {
 check_invalid_ind <- function(df, conf, pool) {
 
   fail <- TRUE
-  registry <- df$Register[1]
+  registry <- df$registry_id[1]
   if ("KvalIndID" %in% names(df)) {
     report <- setdiff(df$KvalIndID,
                       get_registry_indicators(pool, registry)$IndID)

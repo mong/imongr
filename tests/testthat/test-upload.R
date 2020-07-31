@@ -57,7 +57,7 @@ df <- data.frame(Aar = 2016,
                  Variabel = 0,
                  nevner = NA,
                  KvalIndID = "norgast1",
-                 Register = "norgast")
+                 registry_id = 6)
 
 test_that("valid vars pass the check", {
   expect_true(length(check_invalid_var(df, conf, pool)$report) == 0)

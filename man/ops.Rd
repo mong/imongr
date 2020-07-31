@@ -49,7 +49,7 @@ insert_agg_data(pool, df)
 \arguments{
 \item{pool}{Database connection pool object}
 
-\item{registry}{Character registry name}
+\item{registry}{Integer registry id}
 
 \item{df}{Data frame of relevant data}
 }

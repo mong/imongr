@@ -15,7 +15,7 @@
 #' kept in order.
 #'
 #' @param pool a database connection pool object
-#' @param registry Character string defining registry
+#' @param registry Integer defining registry id
 #' @param table string defining target database table
 #' @param sample Numeric in the range 0 to 1 defining the relative sub-sample
 #' size, \emph{e.g.} when \code{sample = 0.1} approximately 10\% of
@@ -24,7 +24,7 @@
 #' @return Database pool object, data frame or status message
 #' @name db
 #' @aliases make_pool drain_pool insert_tab get_table get_agg_data get_data
-#' get_delivery get_user get_user_registry
+#' get_delivery get_user get_user_registry get_indicator get_registry_name
 NULL
 
 #' @rdname db
@@ -263,6 +263,24 @@ FROM
   pool::dbGetQuery(pool, query)
 }
 
+
+#' @rdname db
+#' @export
+get_registry_name <- function(pool, registry) {
+
+  query <- paste0("
+SELECT
+  name
+FROM
+  registry
+WHERE
+  id=", registry, ";")
+
+  pool::dbGetQuery(pool, query)$name
+}
+
+
+
 #' @rdname db
 #' @export
 get_registry_indicators <- function(pool, registry) {
@@ -273,7 +291,7 @@ SELECT
 FROM
   indicator
 WHERE
-  Register='", registry, "';"
+  registry_id=", registry, ";"
   )
 
   pool::dbGetQuery(pool, query)

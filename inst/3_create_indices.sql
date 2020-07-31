@@ -1,5 +1,3 @@
-CREATE INDEX ind_registry_register ON registry (Register);
-
 CREATE INDEX ind_indicator_indid ON indicator (IndID);
 
 CREATE INDEX ind_org_orgnrshus ON org (OrgNrShus);

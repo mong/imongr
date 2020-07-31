@@ -72,10 +72,10 @@ db:
       - nevner
       - KvalIndID
       - delivery_id
-      - Register
+      - registry_id
     user_registry:
       insert:
-      - Register
+      - registry_id
       - user_id
     delivery:
       insert:
@@ -112,9 +112,11 @@ db:
       - MaalRetn
       - BeskrivelseKort
       - BeskrivelseLang
+      - registry_id
     registry:
       insert:
-      - Register
+      - id
+      - name
       - full_name
     shus:
       insert:

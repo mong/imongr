@@ -65,14 +65,14 @@ if (is.null(check_db(is_test_that = FALSE))) {
 conf <- get_config()
 
 # make a sample df
-df <- data.frame(Aar = 2016,
-                 ShNavn = "UNN-Tromsoe",
-                 ReshId = 601225,
-                 OrgNrShus = 974795787,
+df <- data.frame(Aar = 2014,
+                 ShNavn = "OUS, RH",
+                 ReshId = 103469,
+                 OrgNrShus = 874716782,
                  Variabel = 0,
                  nevner = NA,
-                 KvalIndID = "norgast1",
-                 Register = "norgast")
+                 KvalIndID = "nakke1",
+                 registry_id = 4)
 
 # we need a user and groups defined
 Sys.setenv(SHINYPROXY_USERNAME = "mongr")
@@ -97,9 +97,9 @@ test_that("select list of registries is provided (if any)", {
 
 test_that("submit ui is provided", {
   check_db()
-  expect_null(submit_ui(conf, pool, NULL, "norgast", df))
+  expect_null(submit_ui(conf, pool, NULL, 4, df))
   expect_equal(class(
-    submit_ui(conf, pool, TRUE, "norgast", df[, !names(df) %in% "nevner"]))[1],
+    submit_ui(conf, pool, TRUE, 4, df[, !names(df) %in% "nevner"]))[1],
     "shiny.tag.list"
   )
 })
@@ -116,9 +116,9 @@ test_that("error report is provided", {
 
 test_that("upload sample text is provided", {
   check_db()
-  expect_null(upload_sample_text_ui(pool, conf, NULL, "norgast"))
+  expect_null(upload_sample_text_ui(pool, conf, NULL, 4))
   expect_equal(class(
-    upload_sample_text_ui(pool, conf, TRUE, "norgast")),
+    upload_sample_text_ui(pool, conf, TRUE, 4)),
     "character"
   )
 })

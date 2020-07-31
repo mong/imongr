@@ -2,7 +2,7 @@
 #'
 #' @param pool Database connection pool object
 #' @param df Data frame of relevant data
-#' @param registry Character registry name
+#' @param registry Integer registry id
 #' @return Relevant values from the current environment and database
 #' @name ops
 #' @aliases get_user_data get_user_id
@@ -65,11 +65,15 @@ get_user_registries <- function(pool) {
 
   query <- paste0("
 SELECT
-  Register
+  r.name
 FROM
-  user_registry
+  user_registry ur
+LEFT JOIN
+  registry r
+ON
+  ur.registry_id=r.id
 WHERE
-  user_id=", get_user_id(pool), ";")
+  ur.user_id=", get_user_id(pool), ";")
 
   pool::dbGetQuery(pool, query)[, 1]
 }
@@ -85,14 +89,18 @@ get_user_deliveries <- function(pool) {
 SELECT
   del.time AS Dato,
   del.time AS Tid,
-  dat.Register AS Register,
+  reg.name AS Register,
   SUBSTRING(del.md5_checksum, 1, 7) as Referanse
 FROM
-  (SELECT DISTINCT delivery_id, Register FROM data) AS dat
+  (SELECT DISTINCT delivery_id, registry_id FROM data) AS dat
 LEFT JOIN
   delivery del
 ON
   del.id=dat.delivery_id
+LEFT JOIN
+  registry reg
+ON
+  dat.registry_id=reg.id
 WHERE
   del.user_id=", get_user_id(pool), "
 ORDER BY
@@ -141,7 +149,7 @@ SELECT
 FROM
   data
 WHERE
-  Register='", registry, "';")
+  registry_id=", registry, ";")
 
   pool::dbGetQuery(pool, query)
 
@@ -202,10 +210,10 @@ WHERE
 #' @export
 delete_registry_data <- function(pool, df) {
 
-  if (!"Register" %in% names(df)) {
-    stop("Data frame has no 'Register' variable. Cannot go on!")
+  if (!"registry_id" %in% names(df)) {
+    stop("Data frame has no notion of 'registry' (id). Cannot go on!")
   }
-  reg <- levels(as.factor(df$Register))
+  reg <- unique(df$registry_id)
   if (length(reg) > 1) {
     stop("Data can only represent one registry. Cannot go on!")
   }
@@ -214,7 +222,7 @@ delete_registry_data <- function(pool, df) {
 DELETE FROM
   data
 WHERE
-  Register='", reg, "';")
+  registry_id=", reg, ";")
 
   pool::dbExecute(pool, query)
 }

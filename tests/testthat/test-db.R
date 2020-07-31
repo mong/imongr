@@ -164,9 +164,14 @@ test_that("indicator data can be fetched from test database", {
   )
 })
 
+test_that("registry name can be fetched from test database", {
+  check_db()
+  expect_equal(class(get_registry_name(pool, 1)), "character")
+})
+
 test_that("registries and indicators per registry can be fetched", {
   check_db()
-  registries <- levels(as.factor(imongr::data$Register))
+  registries <- unique(imongr::data$registry_id)
   expect_equal(class(get_registry_indicators(pool, registries[1])),
                "data.frame")
   expect_equal(class(get_registry(pool)), "data.frame")

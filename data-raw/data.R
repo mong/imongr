@@ -30,7 +30,7 @@ data <- data[!ind, ]
 
 # currently, OrgNrShus in data is not consistent with SykehusNavnStruktur
 # thus, remove all "unknown" OrgNrShus entries from data
-org <- qmongrdata::SykehusNavnStruktur$OrgNr
+org <- qmongrdata::SykehusNavnStruktur$OrgNrShus
 org_data <- data$OrgNrShus
 ind <- is.element(org_data, org)
 data <- data[ind, ]
@@ -38,6 +38,12 @@ data <- data[ind, ]
 # curently, OrgNrShus is of class character in qmongrdata while integers in db
 # thus, convert it
 data$OrgNrShus <- as.integer(data$OrgNrShus)
+
+# remove all indicators in data that are not present in indicator data set
+indicator <- imongr::indicator$IndID
+indicator_data <- data$KvalIndID
+ind <- is.element(indicator_data, indicator)
+data <- data[ind, ]
 
 # substitute some strange codes (latin1?) with proper chars
 data$ShNavn <- gsub("\xe6", "æ", data$ShNavn)
@@ -55,5 +61,11 @@ data$ShNavn <- gsub("Ø", "Oe", data$ShNavn)
 data$ShNavn <- gsub("å", "aa", data$ShNavn)
 data$ShNavn <- gsub("Å", "Aa", data$ShNavn)
 
+# add registry_id from local data set and select subset of vars
+data$registry_id <-
+  dplyr::left_join(data, imongr::registry, by = c("Register" = "name"))$id
+data <- data %>%
+  dplyr::select(., Aar, ShNavn, ReshId, OrgNrShus, Variabel, nevner,
+                KvalIndID, delivery_id, registry_id)
 
 usethis::use_data(data, overwrite = TRUE)
