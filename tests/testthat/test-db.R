@@ -214,7 +214,8 @@ test_that("pool cannot be established when missing credentials", {
 if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool,
                   paste("DROP TABLE data, user_registry, delivery,",
-                        "user, org, indicator, registry, agg_data;"))
+                        "user, org, indicator, registry, agg_data,",
+                        "shus, hf, rhf, nation;"))
 }
 
 ## if db dropped on travis the following coverage will fail...

@@ -86,7 +86,8 @@ test_that("sample data can be deleted from db", {
 if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool,
                   paste("DROP TABLE data, user_registry, delivery,",
-                        "user, org, indicator, registry, agg_data;"))
+                        "user, org, indicator, registry, agg_data,",
+                        "shus, hf, rhf, nation;"))
 }
 ## if db dropped on travis the coverage reporting will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
