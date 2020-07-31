@@ -87,6 +87,10 @@ test_that("error is provided when the current user is not in db", {
 
 ## then onto some content from package ready-made data
 if (is.null(check_db(is_test_that = FALSE))) {
+  insert_tab(pool, table = "nation", df = imongr::nation)
+  insert_tab(pool, table = "rhf", df = imongr::rhf)
+  insert_tab(pool, table = "hf", df = imongr::hf)
+  insert_tab(pool, table = "shus", df = imongr::shus)
   insert_tab(pool, table = "registry", df = imongr::registry)
   insert_tab(pool, table = "org", df = imongr::org)
   insert_tab(pool, table = "indicator", df = imongr::indicator)
@@ -182,8 +186,9 @@ test_that("a new user can be created", {
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool,
-                  paste("DROP TABLE data, user_registry, delivery,",
-                        "user, org, indicator, registry, agg_data;"))
+                  paste("DROP TABLE",
+                        paste(names(conf$db$tab), collapse = ", "), ";")
+  )
 }
 ## if db dropped on travis the coverage reporting will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
