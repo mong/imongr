@@ -90,10 +90,10 @@ if (is.null(check_db(is_test_that = FALSE))) {
   insert_tab(pool, table = "nation", df = imongr::nation)
   insert_tab(pool, table = "rhf", df = imongr::rhf)
   insert_tab(pool, table = "hf", df = imongr::hf)
-  insert_tab(pool, table = "shus", df = imongr::shus)
+  insert_tab(pool, table = "hospital", df = imongr::hospital)
   insert_tab(pool, table = "registry", df = imongr::registry)
   insert_tab(pool, table = "org", df = imongr::org)
-  insert_tab(pool, table = "indicator", df = imongr::indicator)
+  insert_tab(pool, table = "ind", df = imongr::ind)
   insert_tab(pool, table = "user", df = imongr::user)
   insert_tab(pool, table = "user_registry", df = imongr::user_registry)
   insert_tab(pool, table = "delivery", df = imongr::delivery)
@@ -118,6 +118,7 @@ test_that("a consistent md5 checksum of a data frame can be provided", {
                "ed91fb7bafe2bd55f90522e1104a13f1")
 })
 
+conf <- get_config()
 test_that("no (real) delivery has been made yet", {
   check_db()
   expect_false(delivery_exist_in_db(pool, df = imongr::data[1:100, ]))
@@ -125,12 +126,14 @@ test_that("no (real) delivery has been made yet", {
 
 ### make a delivery
 if (is.null(check_db(is_test_that = FALSE))) {
-  insert_data(pool, df = imongr::data[1:100, c(1:7, 9)])
+  insert_data(pool, df = imongr::data[1:100, conf$upload$data_var_ind])
 }
 
 test_that("the delivery has alrady been made", {
   check_db()
-  expect_error(insert_data(pool, df = imongr::data[1:100, c(1:7, 9)]))
+  expect_error(
+    insert_data(pool, df = imongr::data[1:100, conf$upload$data_var_ind])
+  )
 })
 
 test_that("existing org will not be (re-)created", {

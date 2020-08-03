@@ -40,7 +40,7 @@ data <- data[ind, ]
 data$OrgNrShus <- as.integer(data$OrgNrShus)
 
 # remove all indicators in data that are not present in indicator data set
-indicator <- imongr::indicator$IndID
+indicator <- imongr::indicator$id
 indicator_data <- data$KvalIndID
 ind <- is.element(indicator_data, indicator)
 data <- data[ind, ]
@@ -66,6 +66,9 @@ data$registry_id <-
   dplyr::left_join(data, imongr::registry, by = c("Register" = "name"))$id
 data <- data %>%
   dplyr::select(., Aar, ShNavn, ReshId, OrgNrShus, Variabel, nevner,
-                KvalIndID, delivery_id, registry_id)
+                delivery_id, KvalIndID, registry_id)
+
+# rename indicator field
+names(data)[names(data) == "KvalIndID"] <- "ind_id"
 
 usethis::use_data(data, overwrite = TRUE)

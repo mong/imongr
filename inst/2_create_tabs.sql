@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `hf` (
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
-CREATE TABLE IF NOT EXISTS `shus` (
+CREATE TABLE IF NOT EXISTS `hospital` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `orgnr` int(10) unsigned NOT NULL,
   `full_name` varchar(255) COLLATE utf8_danish_ci NOT NULL,
@@ -73,27 +73,25 @@ CREATE TABLE IF NOT EXISTS registry (
     UNIQUE (name)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
-CREATE TABLE IF NOT EXISTS indicator (
-  id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  IndID VARCHAR(63) NOT NULL,
-  Register VARCHAR(255) NOT NULL,
-  IndTittel VARCHAR(255),
-  IndNavn VARCHAR(255),
-  indikatorType VARCHAR(127) DEFAULT NULL,
-  benevning VARCHAR(127) DEFAULT NULL,
-  minsteNevner TINYINT UNSIGNED DEFAULT NULL,
-  minVerdi DOUBLE(7,3) DEFAULT NULL,
-  maxVerdi DOUBLE(7,3) DEFAULT NULL,
-  MaalNivaaGronn DOUBLE(7,3),
-  MaalNivaaGul DOUBLE(7,3),
-  MaalRetn TINYINT,
-  BeskrivelseKort VARCHAR(1023),
-  BeskrivelseLang VARCHAR(2047),
+CREATE TABLE IF NOT EXISTS ind (
+  id VARCHAR(63) NOT NULL PRIMARY KEY,
+  title VARCHAR(255),
+  name VARCHAR(255),
+  `type` VARCHAR(127) DEFAULT NULL,
+  measure_unit VARCHAR(127) DEFAULT NULL,
+  min_denominator TINYINT UNSIGNED DEFAULT NULL,
+  min_value DOUBLE(7,3) DEFAULT NULL,
+  max_value DOUBLE(7,3) DEFAULT NULL,
+  level_green DOUBLE(7,3),
+  level_yellow DOUBLE(7,3),
+  level_direction TINYINT,
+  short_description VARCHAR(1023),
+  long_description VARCHAR(2047),
   registry_id SMALLINT UNSIGNED NOT NULL,
   CONSTRAINT `fk_indicator_registry`
-    FOREIGN KEY (registry_id) REFERENCES registry (id),
-  CONSTRAINT `unique_IndID`
-    UNIQUE (IndID)
+    FOREIGN KEY (registry_id) REFERENCES registry (id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 
@@ -142,8 +140,8 @@ CREATE TABLE IF NOT EXISTS data (
   OrgNrShus INT UNSIGNED NOT NULL,
   Variabel DOUBLE(9,3) NOT NULL,
   nevner INT UNSIGNED DEFAULT NULL,
-  KvalIndID VARCHAR(63) NOT NULL,
   registry_id SMALLINT UNSIGNED NOT NULL,
+  ind_id VARCHAR(63) NOT NULL,
   delivery_id SMALLINT UNSIGNED NOT NULL,
   CONSTRAINT `fk_data_delivery`
     FOREIGN KEY (delivery_id) REFERENCES delivery (id)
@@ -153,8 +151,8 @@ CREATE TABLE IF NOT EXISTS data (
     FOREIGN KEY (OrgNrShus) REFERENCES org (OrgNrShus)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
-  CONSTRAINT `fk_data_indicator`
-    FOREIGN KEY (KvalIndID) REFERENCES indicator (IndID)
+  CONSTRAINT `fk_data_ind`
+    FOREIGN KEY (ind_id) REFERENCES ind (id)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
   CONSTRAINT `fk_data_registry`

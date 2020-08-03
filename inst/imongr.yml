@@ -70,8 +70,8 @@ db:
       - OrgNrShus
       - Variabel
       - nevner
-      - KvalIndID
       - delivery_id
+      - ind_id
       - registry_id
     user_registry:
       insert:
@@ -101,24 +101,23 @@ db:
       - SykehusnavnLang
       - SykehusNavn
       - TaMed
-    indicator:
+    ind:
       insert:
-      - IndID
-      - Register
-      - IndTittel
-      - IndNavn
-      - MaalNivaaGronn
-      - MaalNivaaGul
-      - MaalRetn
-      - BeskrivelseKort
-      - BeskrivelseLang
+      - id
+      - title
+      - name
+      - level_green
+      - level_yellow
+      - level_direction
+      - short_description
+      - long_description
       - registry_id
     registry:
       insert:
       - id
       - name
       - full_name
-    shus:
+    hospital:
       insert:
       - id
       - orgnr
@@ -190,7 +189,7 @@ upload:
   - 4
   - 5
   - 6
-  - 7
+  - 8
   - 9
   check:
     missing_var: |-

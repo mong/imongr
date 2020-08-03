@@ -16,5 +16,16 @@ indicator <- indicator %>%
                 MaalNivaaGul, MaalRetn, BeskrivelseKort, BeskrivelseLang,
                 registry_id)
 
+# make the actual (renamed) table
+ind <- data.frame(id = indicator$IndID,
+                  title = indicator$IndTittel,
+                  name = indicator$IndNavn,
+                  level_green = indicator$MaalNivaaGronn,
+                  level_yellow = indicator$MaalNivaaGul,
+                  level_direction = indicator$MaalRetn,
+                  short_description = indicator$BeskrivelseKort,
+                  long_description = indicator$BeskrivelseLang,
+                  registry_id = indicator$registry_id,
+                  stringsAsFactors = FALSE)
 
-usethis::use_data(indicator, overwrite = TRUE)
+usethis::use_data(ind, overwrite = TRUE)

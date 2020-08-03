@@ -7,21 +7,21 @@ dat <- readr::read_delim("data-raw/hospital_structure.csv",
 dat_nation <- dat[dat$Nivaa == 0, ]
 dat_rhf <- dat[dat$Nivaa == 1, ]
 dat_hf <- dat[dat$Nivaa == 2, ]
-dat_shus <- dat[dat$Nivaa == 3, ]
+dat_hospital <- dat[dat$Nivaa == 3, ]
 
 # add ids, increment by 1
 dat_nation$id <- seq_len(dim(dat_nation)[1])
 dat_rhf$id <- seq_len(dim(dat_rhf)[1])
 dat_hf$id <- seq_len(dim(dat_hf)[1])
-dat_shus$id <- seq_len(dim(dat_shus)[1])
+dat_hospital$id <- seq_len(dim(dat_hospital)[1])
 
 # add parent ids (foreign keys)
 dat_rhf$nation_id <-
   dplyr::left_join(dat_rhf, dat_nation, by = c("NivaaOpp" = "OrgNr"))$id.y
 dat_hf$rhf_id <-
   dplyr::left_join(dat_hf, dat_rhf, by = c("NivaaOpp" = "OrgNr"))$id.y
-dat_shus$hf_id <-
-  dplyr::left_join(dat_shus, dat_hf, by = c("NivaaOpp" = "OrgNr"))$id.y
+dat_hospital$hf_id <-
+  dplyr::left_join(dat_hospital, dat_hf, by = c("NivaaOpp" = "OrgNr"))$id.y
 
 
 nation <- data.frame(id = dat_nation$id,
@@ -41,14 +41,14 @@ hf <- data.frame(id = dat_hf$id,
                  short_name = dat_hf$Kortnavn,
                  rhf_id = dat_hf$rhf_id)
 
-shus <- data.frame(id = dat_shus$id,
-                  orgnr = dat_shus$OrgNr,
-                  full_name = dat_shus$OrgNavnEnhetsreg,
-                  short_name = dat_shus$Kortnavn,
-                  hf_id = dat_shus$hf_id)
+hospital <- data.frame(id = dat_hospital$id,
+                  orgnr = dat_hospital$OrgNr,
+                  full_name = dat_hospital$OrgNavnEnhetsreg,
+                  short_name = dat_hospital$Kortnavn,
+                  hf_id = dat_hospital$hf_id)
 
 
 usethis::use_data(nation, overwrite = TRUE)
 usethis::use_data(rhf, overwrite = TRUE)
 usethis::use_data(hf, overwrite = TRUE)
-usethis::use_data(shus, overwrite = TRUE)
+usethis::use_data(hospital, overwrite = TRUE)

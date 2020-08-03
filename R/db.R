@@ -252,9 +252,9 @@ get_indicator <- function(pool, sample = NA) {
   conf <- get_config()
   query <- paste0("
 SELECT
-  ", paste0(conf$db$tab$indicator$insert, collapse = ",\n "), "
+  ", paste0(conf$db$tab$ind$insert, collapse = ",\n "), "
 FROM
-  indicator")
+  ind")
 
   if (!is.na(sample) && sample > 0 && sample < 1) {
     query <- paste(query, "\nWHERE\n  RAND() <", sample)
@@ -287,9 +287,9 @@ get_registry_indicators <- function(pool, registry) {
 
   query <- paste0("
 SELECT
-  IndID
+  id
 FROM
-  indicator
+  ind
 WHERE
   registry_id=", registry, ";"
   )

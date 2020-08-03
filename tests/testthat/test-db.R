@@ -97,10 +97,10 @@ test_that("database can be populated with test data", {
   expect_true(insert_tab(pool, table = "nation", df = imongr::nation))
   expect_true(insert_tab(pool, table = "rhf", df = imongr::rhf))
   expect_true(insert_tab(pool, table = "hf", df = imongr::hf))
-  expect_true(insert_tab(pool, table = "shus", df = imongr::shus))
+  expect_true(insert_tab(pool, table = "hospital", df = imongr::hospital))
   expect_true(insert_tab(pool, table = "registry", df = imongr::registry))
   expect_true(insert_tab(pool, table = "org", df = imongr::org))
-  expect_true(insert_tab(pool, table = "indicator", df = imongr::indicator))
+  expect_true(insert_tab(pool, table = "ind", df = imongr::ind))
   expect_true(insert_tab(pool, table = "user", df = imongr::user))
   expect_true(insert_tab(pool, table = "user_registry",
                          df = imongr::user_registry))
@@ -158,9 +158,9 @@ test_that("org data can be fetched from test database", {
 
 test_that("indicator data can be fetched from test database", {
   check_db()
-  expect_equal(dim(get_indicator(pool)), dim(imongr::indicator))
+  expect_equal(dim(get_indicator(pool)), dim(imongr::ind))
   expect_true(
-    dim(get_indicator(pool, sample = .1))[1] < dim(imongr::indicator)[1]
+    dim(get_indicator(pool, sample = .1))[1] < dim(imongr::ind)[1]
   )
 })
 
