@@ -11,19 +11,19 @@
 \alias{get_indicator_level}
 \title{Aggregate hospital data}
 \usage{
-agg(df, org, indicator)
+agg(df, org, ind)
 
 add_unit_id(df, org)
 
 make_group(df, group = "")
 
-compute_group(gdf, indicator)
+compute_group(gdf, ind)
 
 compute_indicator_mean(gdf)
 
 compute_indicator_median(gdf)
 
-get_indicator_level(gdf, indicator)
+get_indicator_level(gdf, ind)
 }
 \arguments{
 \item{df}{Data frame}
@@ -31,7 +31,7 @@ get_indicator_level(gdf, indicator)
 \item{org}{Data frame holding the org db table providing all organization
 data for each unit (from hospital to health trust)}
 
-\item{indicator}{Data frame holding the indicator db table providing all
+\item{ind}{Data frame holding the indicator db table providing all
 data on each indicator}
 
 \item{group}{Character string defining the name of the grouping variable
@@ -51,23 +51,22 @@ national.
 All functions are adapted from qmongr/qmongrdata. However, the nomenclature
 of function arguments are changed somewhat. Main source of underlying data
 is the qmongr database and where tables are used in these function their
-names are kept as is (\emph{org} and \emph{indicator}). Other data frames
+names are kept as is (\emph{org} and \emph{ind}). Other data frames
 passed into or between function are denoted \emph{df} or \emph{gdf} where
 the latter denotes a data frame that has been grouped (by
 \code{dplyr::group_by()}. The aggregate consists of the following varables:
 \describe{
-  \item{Aar}{The year of the current record}
-  \item{IndID}{Indicator ID}
-  \item{OrgNr}{Organization ID}
+  \item{year}{The year of the current record}
+  \item{ind_id}{Indicator ID}
+  \item{orgnr}{Organization ID}
   \item{count}{Number of observations of the current record}
-  \item{indicator}{Summarised indicator value, for instance mean or median}
+  \item{var}{Summarised indicator value, for instance mean or median}
   \item{level}{Code providing evaluated discret level such as 'H' (high),
   'M' (intermediate) and 'L' (low)}
   \item{desired_level}{Name providing the desired level such as 'Lavt' (low)
   or 'Høyt' (high)}
-  \item{unit_level}{Code provideing level of aggregation such as 'shus'
-  (hospital), 'hf' (health trust), 'rhf' (regional health trust) and
-  'nasjonal' (national)}
+  \item{unit_level}{Code provideing level of aggregation such as 'hospital',
+  'hf' (health trust), 'rhf' (regional health trust) and 'national'}
   \item{unit_name}{Name of the organization unit}
 }
 }

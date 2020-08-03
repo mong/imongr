@@ -53,26 +53,24 @@ db:
   tab:
     agg_data:
       insert:
-      - IndID
+      - ind_id
       - unit_level
       - unit_name
-      - OrgNr
-      - Aar
+      - orgnr
+      - year
       - count
-      - indicator
+      - var
       - level
       - desired_level
     data:
       insert:
-      - Aar
-      - ShNavn
-      - ReshId
-      - OrgNrShus
-      - Variabel
-      - nevner
-      - delivery_id
-      - ind_id
+      - hospital_id
+      - year
+      - var
+      - denominator
       - registry_id
+      - ind_id
+      - delivery_id
     user_registry:
       insert:
       - registry_id
@@ -89,18 +87,6 @@ db:
       - phone
       - email
       - valid
-    org:
-      insert:
-      - OrgNrRHF
-      - RHF
-      - OrgNrHF
-      - HF
-      - Hfkortnavn
-      - OrgNrShus
-      - OrgNavnEnhetsreg
-      - SykehusnavnLang
-      - SykehusNavn
-      - TaMed
     ind:
       insert:
       - id
@@ -189,8 +175,6 @@ upload:
   - 4
   - 5
   - 6
-  - 8
-  - 9
   check:
     missing_var: |-
      Manglende variabler:
@@ -250,6 +234,13 @@ aggregate:
   - 5
   - 6
   - 7
+  unit_level:
+    hospital: hospital
+    hf: hf
+    rhf: rhf
+    national: national
+  orgnr:
+    suffix: orgnr_
 download:
   tab:
   - data

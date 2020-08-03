@@ -49,22 +49,6 @@ CREATE TABLE IF NOT EXISTS `hospital` (
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
-CREATE TABLE IF NOT EXISTS org (
-  id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  OrgNrRHF INT UNSIGNED,
-  RHF VARCHAR(255),
-  OrgNrHF INT UNSIGNED,
-  HF VARCHAR(255),
-  Hfkortnavn VARCHAR(255),
-  OrgNrShus INT UNSIGNED NOT NULL,
-  OrgNavnEnhetsreg VARCHAR(255),
-  SykehusnavnLang VARCHAR(255),
-  SykehusNavn VARCHAR(255),
-  TaMed BOOLEAN DEFAULT TRUE NOT NULL,
-  CONSTRAINT `unique_OrgNrShus`
-    UNIQUE (OrgNrShus)
-) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
-
 CREATE TABLE IF NOT EXISTS registry (
   id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
@@ -134,22 +118,20 @@ CREATE TABLE IF NOT EXISTS delivery (
 
 CREATE TABLE IF NOT EXISTS data (
   id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  Aar SMALLINT UNSIGNED NOT NULL,
-  ShNavn VARCHAR(127) NOT NULL,
-  ReshId VARCHAR(12),
-  OrgNrShus INT UNSIGNED NOT NULL,
-  Variabel DOUBLE(9,3) NOT NULL,
-  nevner INT UNSIGNED DEFAULT NULL,
+  hospital_id INT(10) UNSIGNED NOT NULL,
+  year SMALLINT UNSIGNED NOT NULL,
+  var DOUBLE(9,3) NOT NULL,
+  denominator INT UNSIGNED DEFAULT NULL,
   registry_id SMALLINT UNSIGNED NOT NULL,
   ind_id VARCHAR(63) NOT NULL,
   delivery_id SMALLINT UNSIGNED NOT NULL,
+  CONSTRAINT `fk_data_hospital`
+    FOREIGN KEY (hospital_id) REFERENCES hospital (id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
   CONSTRAINT `fk_data_delivery`
     FOREIGN KEY (delivery_id) REFERENCES delivery (id)
     ON UPDATE RESTRICT
-    ON DELETE CASCADE,
-  CONSTRAINT `fk_data_org`
-    FOREIGN KEY (OrgNrShus) REFERENCES org (OrgNrShus)
-    ON UPDATE CASCADE
     ON DELETE CASCADE,
   CONSTRAINT `fk_data_ind`
     FOREIGN KEY (ind_id) REFERENCES ind (id)
@@ -163,18 +145,18 @@ CREATE TABLE IF NOT EXISTS data (
 
 CREATE TABLE IF NOT EXISTS `agg_data` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `IndID` varchar(63) COLLATE utf8_danish_ci NOT NULL,
+  `ind_id` varchar(63) COLLATE utf8_danish_ci NOT NULL,
   `unit_level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
   `unit_name` varchar(255) COLLATE utf8_danish_ci NOT NULL,
-  `OrgNr` int(10) unsigned NOT NULL,
-  `Aar` smallint(5) unsigned NOT NULL,
+  `orgnr` int(10) unsigned NOT NULL,
+  `year` smallint(5) unsigned NOT NULL,
   `count` int(10) unsigned NOT NULL,
-  `indicator` double(9,5) unsigned NOT NULL,
+  `var` double(9,5) unsigned NOT NULL,
   `level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
   `desired_level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
   `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
-  KEY `Aar` (`Aar`),
-  KEY `IndID` (`IndID`),
+  KEY `year` (`year`),
+  KEY `ind_id` (`ind_id`),
   KEY `unit_level` (`unit_level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;

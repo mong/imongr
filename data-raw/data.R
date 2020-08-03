@@ -5,6 +5,7 @@ data <- qmongrdata::KvalIndData
 # fake a delivery
 data <- cbind(data, delivery_id=rep(1, dim(data)[1]))
 
+
 # ditch nra because Register and IndID seems to be swapped in indBeskr
 ind <- data$KvalIndID == "nra"
 data <- data[!ind, ]
@@ -21,7 +22,7 @@ for (i in seq_len(dim(ind_reg)[1])) {
 data <- cbind(data, Register = reg, stringsAsFactors = FALSE)
 
 # add nevner field that is (currently) not part of data set from qmongrdata
-data <- cbind(data[, c(1:5)], nevner = NA, data[, 6:8])
+data <- cbind(data[, c(1:5)], denominator = NA, data[, 6:8])
 
 # currently OrgNrShus from qmongrdata contains NAs and currently do not conform
 # to the database consistency constraints
@@ -40,7 +41,7 @@ data <- data[ind, ]
 data$OrgNrShus <- as.integer(data$OrgNrShus)
 
 # remove all indicators in data that are not present in indicator data set
-indicator <- imongr::indicator$id
+indicator <- imongr::ind$id
 indicator_data <- data$KvalIndID
 ind <- is.element(indicator_data, indicator)
 data <- data[ind, ]
@@ -61,14 +62,22 @@ data$ShNavn <- gsub("Ø", "Oe", data$ShNavn)
 data$ShNavn <- gsub("å", "aa", data$ShNavn)
 data$ShNavn <- gsub("Å", "Aa", data$ShNavn)
 
-# add registry_id from local data set and select subset of vars
+# add registry_id from local data
 data$registry_id <-
   dplyr::left_join(data, imongr::registry, by = c("Register" = "name"))$id
-data <- data %>%
-  dplyr::select(., Aar, ShNavn, ReshId, OrgNrShus, Variabel, nevner,
-                delivery_id, KvalIndID, registry_id)
 
-# rename indicator field
+# add hospital_id from local data
+data$hospital_id <-
+  dplyr::left_join(data, imongr::hospital, by = c("OrgNrShus" = "orgnr"))$id
+
+# select subset of vars
+data <- data %>%
+  dplyr::select(., hospital_id, Aar, Variabel, denominator,
+                registry_id, KvalIndID, delivery_id)
+
+# rename fields
+names(data)[names(data) == "Aar"] <- "year"
+names(data)[names(data) == "Variabel"] <- "var"
 names(data)[names(data) == "KvalIndID"] <- "ind_id"
 
 usethis::use_data(data, overwrite = TRUE)

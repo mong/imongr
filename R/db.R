@@ -25,6 +25,7 @@
 #' @name db
 #' @aliases make_pool drain_pool insert_tab get_table get_agg_data get_data
 #' get_delivery get_user get_user_registry get_indicator get_registry_name
+#' get_flat_org
 NULL
 
 #' @rdname db
@@ -311,6 +312,35 @@ FROM
   if (!is.na(sample) && sample > 0 && sample < 1) {
     query <- paste(query, "\nWHERE\n  RAND() <", sample)
   }
+
+  pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname db
+#' @export
+get_flat_org <- function(pool) {
+
+  conf <- get_config()
+  suffix <- conf$aggregate$orgnr$suffix
+  query <- paste0("
+SELECT
+  hos.short_name AS ", conf$aggregate$unit_level$hospital, ",
+  hos.orgnr AS ", paste0(suffix, conf$aggregate$unit_level$hospital), ",
+  h.short_name AS ", conf$aggregate$unit_level$hf, ",
+  h.orgnr AS ", paste0(suffix, conf$aggregate$unit_level$hf), ",
+  r.short_name AS ", conf$aggregate$unit_level$rhf, ",
+  r.orgnr AS ", paste0(suffix, conf$aggregate$unit_level$rhf), ",
+  n.short_name AS ", conf$aggregate$unit_level$national, ",
+  n.orgnr AS ", paste0(suffix, conf$aggregate$unit_level$national), "
+FROM
+  hospital hos
+LEFT JOIN hf h ON hos.hf_id = h.id
+LEFT JOIN rhf r ON h.rhf_id = r.id
+LEFT JOIN nation n ON r.nation_id = n.id
+GROUP BY ", conf$aggregate$unit_level$hospital, ";"
+  )
+
 
   pool::dbGetQuery(pool, query)
 }

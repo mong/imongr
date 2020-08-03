@@ -47,7 +47,7 @@
 #'   \item{short_name}{}
 #'   \item{ref_id}{}
 #' }
-"shus"
+"hospital"
 
 #' Registry example data for qmongr data store
 #'
@@ -61,44 +61,24 @@
 "registry"
 
 
-#' Organization example data for qmongr data store
-#'
-#' Meta data to allow interactions with qmong data. Only used for testing in
-#' this package. Please refere to the overall data model (ref)
-#' @format Data frame with made up values
-#' \describe{
-#'   \item{OrgNrRHF}{}
-#'   \item{RHF}{}
-#'   \item{OrgNrHF}{}
-#'   \item{HF}{}
-#'   \item{Hfkortnavn}{}
-#'   \item{OrgNrShus}{}
-#'   \item{OrgNavnEnhetsreg}{}
-#'   \item{SykehusnavnLang}{}
-#'   \item{SykehusNavn}{}
-#'   \item{TaMed}{}
-#' }
-"org"
-
-
 #' Indicator example data for qmongr data store
 #'
 #' Meta data to allow interactions with qmong data. Only used for testing in
 #' this package. Please refere to the overall data model (ref)
 #' @format Data frame with made up values
 #' \describe{
-#'   \item{IndId}{}
-#'   \item{Register}{}
-#'   \item{IndTittel}{}
-#'   \item{IndNavn}{}
-#'   \item{MaalNivaaGronn}{}
-#'   \item{MaalNivaaGul}{}
-#'   \item{MaalRetn}{}
-#'   \item{BeskrivelseKort}{}
-#'   \item{BeskrivelseLang}{}
+#'   \item{id}{}
+#'   \item{title}{}
+#'   \item{name}{}
+#'   \item{level_green}{}
+#'   \item{level_yellow}{}
+#'   \item{level_direction}{}
+#'   \item{short_description}{}
+#'   \item{long_description}{}
+#'   \item{registry_id}{}
 #'
 #' }
-"indicator"
+"ind"
 
 #' User_registry example data for qmongr data store
 #'
