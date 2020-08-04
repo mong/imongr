@@ -57,8 +57,8 @@ select_registry_ui <- function(conf, pool) {
 #' @export
 submit_ui <- function(conf, pool, upload_file, registry, df) {
 
-  if (!is.null(upload_file) && !"nevner" %in% names(df)) {
-    df <- cbind(df, nevner = NA)
+  if (!is.null(upload_file) && !"denominator" %in% names(df)) {
+    df <- cbind(df, denominator = NA)
   }
   if (!is.null(upload_file) &&
       !(conf$upload$fail %in% registry) &&

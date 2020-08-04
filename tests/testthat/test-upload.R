@@ -4,7 +4,7 @@ conf <- get_config()
 
 l <- check_missing_var(data.frame(), conf, pool)
 test_that("all vars are missing om empty data frame", {
-  expect_equal(l$report, conf$db$tab$data$insert[conf$upload$data_var_ind])
+  expect_equal(l$report, conf$upload$file$vars)
 })
 test_that("check reports failed status", {
   expect_true(l$fail)
@@ -16,7 +16,8 @@ test_that("invalid var is reported and that check status is failed", {
   expect_true(l$fail)
 })
 
-df <- imongr::data[conf$upload$data_var_ind]
+df <- imongr::data[, names(imongr::data) %in% conf$upload$file$vars]
+df <- cbind(df, orgnr_hospital = rep (1, dim(df)[1]))
 l <- check_missing_var(df, conf, pool)
 test_that("an empty report and ok status is provided from a valid data set", {
   expect_false(l$fail)
@@ -58,6 +59,13 @@ df <- data.frame(Aar = 2016,
                  nevner = NA,
                  KvalIndID = "norgast1",
                  registry_id = 6)
+
+df <- data.frame(year = 2014,
+                 orgnr_hospital = 874716782,
+                 ind_id = "nakke1",
+                 var = 0,
+                 denominator = NA,
+                 registry_id = 4)
 
 test_that("valid vars pass the check", {
   expect_true(length(check_invalid_var(df, conf, pool)$report) == 0)
@@ -112,34 +120,34 @@ conf <- get_config()
 test_that("org id checks is workinig", {
   check_db()
   expect_false(check_invalid_org(df, conf, pool)$fail)
-  expect_equal(check_invalid_org(df[, !names(df) %in% "OrgNrShus"],
+  expect_equal(check_invalid_org(df[, !names(df) %in% "orgnr_hospital"],
                                  conf, pool)$report, "Field missing")
   # set an org id that (assumably) does not exist
-  df$OrgNrShus <- 66 # nolint
+  df$orgnr_hospital <- 66
   expect_true(check_invalid_org(df, conf, pool)$fail)
   expect_true(length(check_invalid_org(df, conf, pool)$report) > 0)
-  df$OrgNrShus <- 974795787 # nolint
+  df$ind_id <- 874716782
 })
 
 test_that("indicator id check is working", {
   check_db()
   expect_false(check_invalid_ind(df, conf, pool)$fail)
-  expect_equal(check_invalid_ind(df[, !names(df) %in% "KvalIndID"],
+  expect_equal(check_invalid_ind(df[, !names(df) %in% "ind_id"],
                                  conf, pool)$report, "Field missing")
   # set an indicator id that does not exist
-  df$KvalIndID <- "nothing" # nolint
+  df$ind_id <- "nothing" # nolint
   expect_true(length(check_invalid_ind(df, conf, pool)$report) > 0)
-  df$KvalIndID <- "norgast1" # nolint
+  df$ind_id <- "nakke1"
 })
 
 test_that("variable (numeric) type check is working", {
   check_db()
   expect_false(check_none_numeric_var(df, conf, pool)$fail)
-  expect_equal(check_none_numeric_var(df[, !names(df) %in% "Variabel"],
+  expect_equal(check_none_numeric_var(df[, !names(df) %in% "var"],
                                      conf, pool)$report, "Field missing")
-  df$Variabel <- as.character(df$Variabel) # nolint
+  df$var <- as.character(df$var)
   expect_true(check_none_numeric_var(df, conf, pool)$fail)
-  df$Variabel <- as.numeric(df$Variabel) # nolint
+  df$var <- as.numeric(df$var)
 })
 
 test_that("duplicate delivery check is present (tested elsewhere)", {
@@ -150,7 +158,7 @@ test_that("duplicate delivery check is present (tested elsewhere)", {
 test_that("check report (wrapper) function is working", {
   check_db()
   expect_equal(class(check_report(df, pool)), "character")
-  expect_equal(class(check_report(df[, !names(df) %in% "OrgNrShus"], pool)),
+  expect_equal(class(check_report(df[, !names(df) %in% "orgnr_hospital"], pool)),
                "character")
 })
 

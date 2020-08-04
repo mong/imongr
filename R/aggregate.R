@@ -54,16 +54,10 @@ agg <- function(df, org, ind) {
   }
 
   # add flat orgs to data
-  df <- df %>%
-    dplyr::left_join(., org,
-                     by = c("hospital_id" = paste0(conf$aggregate$orgnr$suffix,
-                                                   conf$aggregate$unit_level$hospital)
-                     )
-    )
-  #df <- add_unit_id(df, org)
+  df <- dplyr::left_join(df, org, by = "hospital_id")
 
   groups <- paste0(conf$aggregate$orgnr$suffix, conf$aggregate$unit_level)
-  unit_levels <- conf$aggregate$unit_level
+  unit_levels <- unlist(conf$aggregate$unit_level, use.names = FALSE)
   unit_names <- c("SykehusNavn", "Hfkortnavn", "RHF", "nasjonal")
 
   agg <- data.frame()
@@ -77,7 +71,7 @@ agg <- function(df, org, ind) {
       dplyr::distinct()
     idf <- dplyr::left_join(idf, this_org, by = groups[i])
     names(idf)[names(idf) == groups[i]] <- "orgnr"
-    names(idf)[names(idf) == unit_names[i]] <- "unit_name"
+    names(idf)[names(idf) == unit_levels[i]] <- "unit_name"
     agg <- rbind(agg, idf)
   }
 
@@ -134,15 +128,15 @@ compute_group <- function(gdf, ind) {
     "norgast9",  "norgast10"
   )
   gmean <- gdf %>%
-    dplyr::filter(.data[["KvalIndID"]] %in% indicator_mean) %>%
+    dplyr::filter(.data[["ind_id"]] %in% indicator_mean) %>%
     compute_indicator_mean()
 
   gmedian <- gdf %>%
-    dplyr::filter(.data[["KvalIndID"]] %in% indicator_median) %>%
+    dplyr::filter(.data[["ind_id"]] %in% indicator_median) %>%
     compute_indicator_median()
 
   g <- dplyr::bind_rows(gmean, gmedian) %>%
-    dplyr::arrange(.data[["KvalIndID"]]) %>%
+    dplyr::arrange(.data[["ind_id"]]) %>%
     dplyr::ungroup() %>%
     as.data.frame()
 
@@ -157,7 +151,7 @@ compute_indicator_mean <- function(gdf)  {
   gdf %>%
     dplyr::summarise(
       count = dplyr::n(),
-      indicator = mean(.data[["Variabel"]])
+      var = mean(.data[["var"]])
     )
 }
 
@@ -205,26 +199,26 @@ get_indicator_level <- function(gdf, ind) {
     function(x) {
       data_row <- gdf[x, ]
       ind <- ind %>%
-        dplyr::filter(.data[["IndID"]] == data_row[["KvalIndID"]])
-      if (!is.na(ind[["MaalRetn"]])) {
-        if (!is.na(ind[["MaalNivaaGronn"]]) &
-            !is.na(ind[["MaalNivaaGul"]])) {
-          if (ind[["MaalRetn"]] == 1) {
+        dplyr::filter(.data[["id"]] == data_row[["ind_id"]])
+      if (!is.na(ind[["level_direction"]])) {
+        if (!is.na(ind[["level_green"]]) &
+            !is.na(ind[["level_yellow"]])) {
+          if (ind[["level_direction"]] == 1) {
             level <- high(
               value = data_row[["var"]],
-              green = ind[["MaalNivaaGronn"]],
-              yellow = ind[["MaalNivaaGul"]]
+              green = ind[["level_green"]],
+              yellow = ind[["level_yellow"]]
             )
-          } else if (ind[["MaalRetn"]] == 0) {
+          } else if (ind[["level_direction"]] == 0) {
             level <- low(
               value = data_row[["var"]],
-              green = ind[["MaalNivaaGronn"]],
-              yellow =  ind[["MaalNivaaGul"]]
+              green = ind[["level_green"]],
+              yellow =  ind[["level_yellow"]]
             )
           }
         } else {
           desired_level <- switch(
-            paste(ind[["MaalRetn"]]),
+            paste(ind[["level_direction"]]),
             "1" =  "H\u00F8yt",
             "0" =  "Lavt"
           )

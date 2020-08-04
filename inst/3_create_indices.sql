@@ -1,4 +1,1 @@
-CREATE INDEX ind_org_orgnrshus ON org (OrgNrShus);
-
-CREATE INDEX ind_data_shnavn ON data (ShNavn);
-CREATE INDEX ind_data_orgnrshus ON data (OrgNrShus);
+CREATE INDEX ind_user_user_name ON user (user_name);

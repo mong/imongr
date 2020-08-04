@@ -99,7 +99,6 @@ test_that("database can be populated with test data", {
   expect_true(insert_tab(pool, table = "hf", df = imongr::hf))
   expect_true(insert_tab(pool, table = "hospital", df = imongr::hospital))
   expect_true(insert_tab(pool, table = "registry", df = imongr::registry))
-  expect_true(insert_tab(pool, table = "org", df = imongr::org))
   expect_true(insert_tab(pool, table = "ind", df = imongr::ind))
   expect_true(insert_tab(pool, table = "user", df = imongr::user))
   expect_true(insert_tab(pool, table = "user_registry",
@@ -150,12 +149,6 @@ test_that("user data can be fetched from test database", {
   expect_true(dim(get_user(pool, sample = .9))[1] <= dim(imongr::user)[1])
 })
 
-test_that("org data can be fetched from test database", {
-  check_db()
-  expect_equal(dim(get_org(pool))[1], dim(imongr::org)[1])
-  expect_true(dim(get_org(pool, sample = .1))[1] < dim(imongr::org)[1])
-})
-
 test_that("indicator data can be fetched from test database", {
   check_db()
   expect_equal(dim(get_indicator(pool)), dim(imongr::ind))
@@ -196,7 +189,7 @@ test_that("aggregated data can be fetched from test database", {
 
 test_that("get_table wrapper function do work", {
   check_db()
-  expect_equal(class(get_table(pool, "org")), "data.frame")
+  expect_equal(class(get_table(pool, "user")), "data.frame")
 })
 
 test_that("pool cannot be established when missing credentials", {

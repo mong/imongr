@@ -163,6 +163,14 @@ profile:
     text: Logg ut
     url: https://mongr.no/imongr/logout
 upload:
+  file:
+    vars:
+    - year
+    - orgnr_hospital
+    - ind_id
+    - var
+    - denominator
+    - registry_id
   reciept:
     title: Fantastisk!
     body: Dine data er nå lastet inn
@@ -181,11 +189,11 @@ upload:
     invalid_var: |-
       Ugyldige variabler:
     invalid_org: |-
-      Ukjent OrgNrShus (kontakt SKDE):
+      Ukjent orgnr_hospital (kontakt SKDE):
     invalid_ind: |-
       Ukjent indikator (kontakt SKDE):
     none_numeric_var: |-
-      En eller flere verdier i Variabel er ikke numerisk
+      En eller flere verdier i var er ikke numerisk
     duplicate_delivery: |-
       Et identisk datasett finnes allerede
   doc:

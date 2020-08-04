@@ -28,8 +28,8 @@ get_indicator_level(gdf, ind)
 \arguments{
 \item{df}{Data frame}
 
-\item{org}{Data frame holding the org db table providing all organization
-data for each unit (from hospital to health trust)}
+\item{org}{Data frame holding the flat org table with all levels needed. May
+be obtained by \code{get_flat_org(pool)}}
 
 \item{ind}{Data frame holding the indicator db table providing all
 data on each indicator}

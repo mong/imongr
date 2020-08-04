@@ -67,8 +67,7 @@ check_upload <- function(df, pool) {
 check_missing_var <- function(df, conf, pool) {
 
   fail <- TRUE
-  report <- setdiff(conf$db$tab$data$insert[conf$upload$data_var_ind],
-                    names(df))
+  report <- setdiff(conf$upload$file$vars, names(df))
   if (length(report) == 0) {
     fail <- FALSE
   }
@@ -80,8 +79,7 @@ check_missing_var <- function(df, conf, pool) {
 check_invalid_var <- function(df, conf, pool) {
 
   fail <- TRUE
-  report <- setdiff(names(df),
-                    conf$db$tab$data$insert[conf$upload$data_var_ind])
+  report <- setdiff(names(df), conf$upload$file$vars)
   if (length(report) == 0) {
     fail <- FALSE
   }
@@ -94,8 +92,8 @@ check_invalid_var <- function(df, conf, pool) {
 check_invalid_org <- function(df, conf, pool) {
 
   fail <- TRUE
-  if ("OrgNrShus" %in% names(df)) {
-    report <- setdiff(df$OrgNrShus, get_org(pool)$OrgNrShus)
+  if ("orgnr_hospital" %in% names(df)) {
+    report <- setdiff(df$orgnr_hospital, get_flat_org(pool)$orgnr_hospital)
   } else {
     report <- "Field missing"
   }
@@ -112,9 +110,9 @@ check_invalid_ind <- function(df, conf, pool) {
 
   fail <- TRUE
   registry <- df$registry_id[1]
-  if ("KvalIndID" %in% names(df)) {
-    report <- setdiff(df$KvalIndID,
-                      get_registry_indicators(pool, registry)$IndID)
+  if ("ind_id" %in% names(df)) {
+    report <- setdiff(df$ind_id,
+                      get_registry_indicators(pool, registry)$id)
   } else {
     report <- "Field missing"
   }
@@ -131,8 +129,8 @@ check_none_numeric_var <- function(df, conf, pool) {
 
   fail <- TRUE
   report <- ""
-  if ("Variabel" %in% names(df)) {
-    if (is.numeric(df$Variabel)) {
+  if ("var" %in% names(df)) {
+    if (is.numeric(df$var)) {
       fail <- FALSE
     }
   } else {

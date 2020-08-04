@@ -49,6 +49,23 @@
 #' }
 "hospital"
 
+#' Organization structure example data
+#'
+#' Flat org hierarcy
+#' @format Data frame with example data
+#' \describe{
+#'   \item{hospital_id}{}
+#'   \item{hospital}{}
+#'   \item{orgnr_hospital}{}
+#'   \item{hf}{}
+#'   \item{orgnr_hf}{}
+#'   \item{rhf}{}
+#'   \item{orgnr_rhf}{}
+#'   \item{national}{}
+#'   \item{orgnr_national}{}
+#' }
+"org"
+
 #' Registry example data for qmongr data store
 #'
 #' Meta data to allow interactions with qmong data. Only used for testing in

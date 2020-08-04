@@ -237,9 +237,9 @@ DELETE FROM
 WHERE
   "
 
-  ind <- levels(as.factor(df$IndID))
+  ind <- levels(as.factor(df$ind_id))
   condition <- paste(paste0("'", ind, "'"), collapse = ", ")
-  condition <- paste0("IndID IN (", condition, ");")
+  condition <- paste0("ind_id IN (", condition, ");")
 
   query <- paste0(query, condition)
 
@@ -274,7 +274,7 @@ insert_data <- function(pool, df) {
 #' @export
 insert_agg_data <- function(pool, df) {
 
-  df <- agg(df, get_table(pool, "org"), get_table(pool, "indicator"))
+  df <- agg(df, get_flat_org(pool), get_table(pool, "indicator"))
   delete_agg_data(pool, df)
   insert_tab(pool, "agg_data", df)
 }

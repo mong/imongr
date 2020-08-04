@@ -92,7 +92,6 @@ if (is.null(check_db(is_test_that = FALSE))) {
   insert_tab(pool, table = "hf", df = imongr::hf)
   insert_tab(pool, table = "hospital", df = imongr::hospital)
   insert_tab(pool, table = "registry", df = imongr::registry)
-  insert_tab(pool, table = "org", df = imongr::org)
   insert_tab(pool, table = "ind", df = imongr::ind)
   insert_tab(pool, table = "user", df = imongr::user)
   insert_tab(pool, table = "user_registry", df = imongr::user_registry)
@@ -136,11 +135,6 @@ test_that("the delivery has alrady been made", {
   )
 })
 
-test_that("existing org will not be (re-)created", {
-  check_db()
-  expect_equal(create_imongr_org(pool, df = imongr::org[1, ]),
-               "Organization already exists. Nothing to do!")
-})
 
 test_that("existing user will not be (re-)created", {
   check_db()
@@ -167,12 +161,6 @@ test_that("data from a registry can be fetched", {
   expect_equal(class(get_registry_data(pool, registry)), "data.frame")
 })
 
-test_that("a new organization can be created", {
-  check_db()
-  df <- imongr::org[1, ]
-  df$OrgNrShus <- 10000000 # nolint
-  expect_true(create_imongr_org(pool, df))
-})
 
 test_that("a new user can be created", {
   check_db()

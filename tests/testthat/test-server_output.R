@@ -65,13 +65,11 @@ if (is.null(check_db(is_test_that = FALSE))) {
 conf <- get_config()
 
 # make a sample df
-df <- data.frame(Aar = 2014,
-                 ShNavn = "OUS, RH",
-                 ReshId = 103469,
-                 OrgNrShus = 874716782,
-                 Variabel = 0,
-                 nevner = NA,
-                 KvalIndID = "nakke1",
+df <- data.frame(year = 2014,
+                 orgnr_hospital = 874716782,
+                 ind_id = "nakke1",
+                 var = 0,
+                 denominator = NA,
                  registry_id = 4)
 
 # we need a user and groups defined
@@ -99,7 +97,8 @@ test_that("submit ui is provided", {
   check_db()
   expect_null(submit_ui(conf, pool, NULL, 4, df))
   expect_equal(class(
-    submit_ui(conf, pool, TRUE, 4, df[, !names(df) %in% "nevner"]))[1],
+    submit_ui(conf, pool, TRUE, 4,
+              df[, !names(df) %in% c("denominator", "registry_id")]))[1],
     "shiny.tag.list"
   )
 })
