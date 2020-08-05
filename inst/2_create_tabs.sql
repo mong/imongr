@@ -125,10 +125,6 @@ CREATE TABLE IF NOT EXISTS data (
   registry_id SMALLINT UNSIGNED NOT NULL,
   ind_id VARCHAR(63) NOT NULL,
   delivery_id SMALLINT UNSIGNED NOT NULL,
-  CONSTRAINT `fk_data_hospital`
-    FOREIGN KEY (hospital_id) REFERENCES hospital (id)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE,
   CONSTRAINT `fk_data_delivery`
     FOREIGN KEY (delivery_id) REFERENCES delivery (id)
     ON UPDATE RESTRICT
