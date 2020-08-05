@@ -25,17 +25,6 @@ check_db <- function(is_test_that = TRUE) {
   }
 }
 
-# make a sample df to be used for the remaining tests
-df <- data.frame(Aar = 2016,
-                 ShNavn = "UNN-Tromsoe",
-                 ReshId = 601225,
-                 OrgNrShus = 974795787,
-                 Variabel = 0,
-                 nevner = NA,
-                 KvalIndID = "norgast1",
-                 Register = "norgast")
-
-
 # For the remianing tests we need a test database
 ## first off with no data
 if (is.null(check_db(is_test_that = FALSE))) {
@@ -66,7 +55,7 @@ conf <- get_config()
 
 # make a sample df
 df <- data.frame(year = 2014,
-                 orgnr_hospital = 874716782,
+                 orgnr = 874716782,
                  ind_id = "nakke1",
                  var = 0,
                  denominator = NA,

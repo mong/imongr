@@ -53,12 +53,23 @@ agg <- function(df, org, ind) {
                 ". Cannot go on!"))
   }
 
-  # add flat orgs to data
+  # now, data contains orgnr independent of unit level
+  # temporary workaround until aggregation is redefined, add hospital_id
+  df <- df %>%
+    dplyr::left_join(
+      imongr::hospital %>%
+        dplyr::select(
+          .data[["id"]],
+          .data[["orgnr"]]
+        ),
+      by = "orgnr"
+    )
+
+  names(df)[names(df) == "id"] <- "hospital_id"
   df <- dplyr::left_join(df, org, by = "hospital_id")
 
   groups <- paste0(conf$aggregate$orgnr$suffix, conf$aggregate$unit_level)
   unit_levels <- unlist(conf$aggregate$unit_level, use.names = FALSE)
-  unit_names <- c("SykehusNavn", "Hfkortnavn", "RHF", "nasjonal")
 
   agg <- data.frame()
 

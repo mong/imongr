@@ -66,16 +66,12 @@ data$ShNavn <- gsub("Å", "Aa", data$ShNavn)
 data$registry_id <-
   dplyr::left_join(data, imongr::registry, by = c("Register" = "name"))$id
 
-# add hospital_id from local data
-data$hospital_id <-
-  dplyr::left_join(data, imongr::hospital, by = c("OrgNrShus" = "orgnr"))$id
-
 # select subset of vars
-data <- data %>%
-  dplyr::select(., hospital_id, Aar, Variabel, denominator,
+data <- dplyr::select(data, OrgNrShus, Aar, Variabel, denominator,
                 registry_id, KvalIndID, delivery_id)
 
 # rename fields
+names(data)[names(data) == "OrgNrShus"] <- "orgnr"
 names(data)[names(data) == "Aar"] <- "year"
 names(data)[names(data) == "Variabel"] <- "var"
 names(data)[names(data) == "KvalIndID"] <- "ind_id"

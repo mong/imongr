@@ -64,7 +64,7 @@ db:
       - desired_level
     data:
       insert:
-      - hospital_id
+      - orgnr
       - year
       - var
       - denominator
@@ -166,7 +166,7 @@ upload:
   file:
     vars:
     - year
-    - orgnr_hospital
+    - orgnr
     - ind_id
     - var
     - denominator
@@ -189,7 +189,7 @@ upload:
     invalid_var: |-
       Ugyldige variabler:
     invalid_org: |-
-      Ukjent orgnr_hospital (kontakt SKDE):
+      Ukjent orgnr (kontakt SKDE):
     invalid_ind: |-
       Ukjent indikator (kontakt SKDE):
     none_numeric_var: |-

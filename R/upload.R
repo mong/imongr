@@ -92,8 +92,8 @@ check_invalid_var <- function(df, conf, pool) {
 check_invalid_org <- function(df, conf, pool) {
 
   fail <- TRUE
-  if ("orgnr_hospital" %in% names(df)) {
-    report <- setdiff(df$orgnr_hospital, get_all_orgnr(pool)$orgnr)
+  if ("orgnr" %in% names(df)) {
+    report <- setdiff(df$orgnr, get_all_orgnr(pool)$orgnr)
   } else {
     report <- "Field missing"
   }

@@ -17,7 +17,7 @@ test_that("invalid var is reported and that check status is failed", {
 })
 
 df <- imongr::data[, names(imongr::data) %in% conf$upload$file$vars]
-df <- cbind(df, orgnr_hospital = rep (1, dim(df)[1]))
+df <- cbind(df, orgnr = rep (1, dim(df)[1]))
 l <- check_missing_var(df, conf, pool)
 test_that("an empty report and ok status is provided from a valid data set", {
   expect_false(l$fail)
@@ -51,17 +51,8 @@ check_db <- function(is_test_that = TRUE) {
 }
 
 # make a sample df to be used for the remaining tests
-df <- data.frame(Aar = 2016,
-                 ShNavn = "UNN-Tromsoe",
-                 ReshId = 601225,
-                 OrgNrShus = 974795787,
-                 Variabel = 0,
-                 nevner = NA,
-                 KvalIndID = "norgast1",
-                 registry_id = 6)
-
 df <- data.frame(year = 2014,
-                 orgnr_hospital = 874716782,
+                 orgnr = 874716782,
                  ind_id = "nakke1",
                  var = 0,
                  denominator = NA,
@@ -120,10 +111,10 @@ conf <- get_config()
 test_that("org id checks is workinig", {
   check_db()
   expect_false(check_invalid_org(df, conf, pool)$fail)
-  expect_equal(check_invalid_org(df[, !names(df) %in% "orgnr_hospital"],
+  expect_equal(check_invalid_org(df[, !names(df) %in% "orgnr"],
                                  conf, pool)$report, "Field missing")
   # set an org id that (assumably) does not exist
-  df$orgnr_hospital <- 66
+  df$orgnr <- 66
   expect_true(check_invalid_org(df, conf, pool)$fail)
   expect_true(length(check_invalid_org(df, conf, pool)$report) > 0)
   df$ind_id <- 874716782
@@ -158,7 +149,7 @@ test_that("duplicate delivery check is present (tested elsewhere)", {
 test_that("check report (wrapper) function is working", {
   check_db()
   expect_equal(class(check_report(df, pool)), "character")
-  expect_equal(class(check_report(df[, !names(df) %in% "orgnr_hospital"], pool)),
+  expect_equal(class(check_report(df[, !names(df) %in% "orgnr"], pool)),
                "character")
 })
 
