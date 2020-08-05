@@ -14,6 +14,7 @@
 \alias{get_indicator}
 \alias{get_registry_name}
 \alias{get_flat_org}
+\alias{get_all_orgnr}
 \alias{get_org}
 \alias{get_registry_indicators}
 \alias{get_registry}
@@ -48,6 +49,8 @@ get_registry_indicators(pool, registry)
 get_registry(pool, sample = NA)
 
 get_flat_org(pool)
+
+get_all_orgnr(pool)
 }
 \arguments{
 \item{pool}{a database connection pool object}

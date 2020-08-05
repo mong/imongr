@@ -25,7 +25,7 @@
 #' @name db
 #' @aliases make_pool drain_pool insert_tab get_table get_agg_data get_data
 #' get_delivery get_user get_user_registry get_indicator get_registry_name
-#' get_flat_org
+#' get_flat_org get_all_orgnr
 NULL
 
 #' @rdname db
@@ -341,6 +341,23 @@ LEFT JOIN rhf r ON h.rhf_id = r.id
 LEFT JOIN nation n ON r.nation_id = n.id;"
   )
 
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db
+#' @export
+get_all_orgnr <- function(pool) {
+
+  query <- "
+SELECT orgnr, 'hospital' AS unit_level FROM hospital
+UNION
+SELECT orgnr, 'hf' AS unit_level FROM hf
+UNION
+SELECT orgnr, 'rhf' AS unit_level FROM rhf
+UNION
+SELECT orgnr, 'national' AS unit_level FROM nation
+  "
 
   pool::dbGetQuery(pool, query)
 }
