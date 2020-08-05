@@ -66,6 +66,16 @@
 #' }
 "org"
 
+#' Organization structure example data
+#'
+#' Flat org hierarcy. To be removed...
+#' @format Data frame with example data
+#' \describe{
+#'   \item{orgnr}{}
+#'   \item{unit_level}{}
+#' }
+"orgnr"
+
 #' Registry example data for qmongr data store
 #'
 #' Meta data to allow interactions with qmong data. Only used for testing in

@@ -1,50 +1,42 @@
 CREATE TABLE IF NOT EXISTS `nation` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `orgnr` int(10) unsigned NOT NULL,
   `full_name` varchar(255) COLLATE utf8_danish_ci NOT NULL,
   `short_name` varchar(128) COLLATE utf8_danish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `orgnr` (`orgnr`)
+  PRIMARY KEY (`orgnr`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `rhf` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `orgnr` int(10) unsigned NOT NULL,
   `full_name` varchar(255) COLLATE utf8_danish_ci NOT NULL,
   `short_name` varchar(128) COLLATE utf8_danish_ci NOT NULL,
-  `nation_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `orgnr` (`orgnr`),
-  CONSTRAINT `fk_nation_id`
-    FOREIGN KEY (nation_id) REFERENCES nation (id)
+  `nation_orgnr` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`orgnr`),
+  CONSTRAINT `fk_nation_orgnr`
+    FOREIGN KEY (nation_orgnr) REFERENCES nation (orgnr)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `hf` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `orgnr` int(10) unsigned NOT NULL,
   `full_name` varchar(255) COLLATE utf8_danish_ci NOT NULL,
   `short_name` varchar(128) COLLATE utf8_danish_ci NOT NULL,
-  `rhf_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `orgnr` (`orgnr`),
-  CONSTRAINT `fk_rhf_id`
-    FOREIGN KEY (rhf_id) REFERENCES rhf (id)
+  `rhf_orgnr` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`orgnr`),
+  CONSTRAINT `fk_rhf_orgnr`
+    FOREIGN KEY (rhf_orgnr) REFERENCES rhf (orgnr)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `hospital` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `orgnr` int(10) unsigned NOT NULL,
   `full_name` varchar(255) COLLATE utf8_danish_ci NOT NULL,
   `short_name` varchar(128) COLLATE utf8_danish_ci NOT NULL,
-  `hf_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `orgnr` (`orgnr`),
-  CONSTRAINT `fk_hf_id`
-    FOREIGN KEY (hf_id) REFERENCES hf (id)
+  `hf_orgnr` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`orgnr`),
+  CONSTRAINT `fk_hf_orgnr`
+    FOREIGN KEY (hf_orgnr) REFERENCES hf (orgnr)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;

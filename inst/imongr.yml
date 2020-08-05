@@ -105,28 +105,24 @@ db:
       - full_name
     hospital:
       insert:
-      - id
       - orgnr
       - full_name
       - short_name
-      - hf_id
+      - hf_orgnr
     hf:
       insert:
-      - id
       - orgnr
       - full_name
       - short_name
-      - rhf_id
+      - rhf_orgnr
     rhf:
       insert:
-      - id
       - orgnr
       - full_name
       - short_name
-      - nation_id
+      - nation_orgnr
     nation:
       insert:
-      - id
       - orgnr
       - full_name
       - short_name
