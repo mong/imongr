@@ -4,6 +4,8 @@
 \alias{ops}
 \alias{get_user_data}
 \alias{get_user_id}
+\alias{get_user_registries}
+\alias{get_user_registry_select}
 \alias{get_user_latest_delivery_id}
 \alias{get_registry_data}
 \alias{md5_checksum}
@@ -14,7 +16,6 @@
 \alias{insert_data}
 \alias{insert_agg_data}
 \alias{get_all_user_data}
-\alias{get_user_registries}
 \alias{get_user_deliveries}
 \title{Functions for data operations in imongr}
 \usage{
@@ -25,6 +26,8 @@ get_user_data(pool)
 get_user_id(pool)
 
 get_user_registries(pool)
+
+get_user_registry_select(pool)
 
 get_user_deliveries(pool)
 

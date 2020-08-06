@@ -43,11 +43,11 @@ profile_ui <- function(conf, pool, valid_user, iusr, igrs) {
 #' @rdname server_output
 #' @export
 select_registry_ui <- function(conf, pool) {
-  regs <- get_user_registries(pool)
+  regs <- get_user_registry_select(pool)
   if (length(regs) == 0) {
     regs <- c(conf$upload$fail)
   }
-  shiny::selectInput("registry", "Velg register:", regs, selected = regs[1])
+  shiny::selectInput("registry", "Velg register:", regs)
 }
 
 
@@ -94,8 +94,9 @@ upload_sample_text_ui <- function(pool, conf, upload_file, registry) {
   if (is.null(upload_file)) {
     NULL
   } else {
-    paste0(conf$upload$doc$sample, " ", registry, ": <i>",
-          paste(get_registry_indicators(pool, registry)$IndID,
+    paste0(conf$upload$doc$sample, " ", get_registry_name(pool, registry),
+           ": <i>",
+          paste(get_registry_indicators(pool, registry)$id,
                 collapse = ", "),
           "</i>.")
   }

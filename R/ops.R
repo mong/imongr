@@ -5,7 +5,8 @@
 #' @param registry Integer registry id
 #' @return Relevant values from the current environment and database
 #' @name ops
-#' @aliases get_user_data get_user_id
+#' @aliases get_user_data get_user_id get_user_registries
+#' get_user_registry_select
 #' get_user_latest_delivery_id get_registry_data md5_checksum
 #' delivery_exist_in_db retire_user_deliveries delete_registry_data
 #' delete_agg_data insert_data insert_agg_data
@@ -78,6 +79,28 @@ WHERE
   pool::dbGetQuery(pool, query)[, 1]
 }
 
+
+#' @rdname ops
+#' @export
+get_user_registry_select <- function(pool) {
+
+  query <- paste0("
+SELECT
+  r.name AS name,
+  r.id AS value
+FROM
+  user_registry ur
+LEFT JOIN
+  registry r
+ON
+  ur.registry_id=r.id
+WHERE
+  ur.user_id=", get_user_id(pool), "
+ORDER BY name;"
+  )
+
+  tibble::deframe(pool::dbGetQuery(pool, query))
+}
 
 #' @rdname ops
 #' @export
