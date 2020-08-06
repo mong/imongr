@@ -17,7 +17,7 @@ test_that("invalid var is reported and that check status is failed", {
 })
 
 df <- imongr::data[, names(imongr::data) %in% conf$upload$file$vars]
-df <- cbind(df, orgnr = rep (1, dim(df)[1]))
+df <- cbind(df, orgnr = rep(1, dim(df)[1]))
 l <- check_missing_var(df, conf, pool)
 test_that("an empty report and ok status is provided from a valid data set", {
   expect_false(l$fail)

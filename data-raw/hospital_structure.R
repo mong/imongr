@@ -9,12 +9,6 @@ dat_rhf <- dat[dat$Nivaa == 1, ]
 dat_hf <- dat[dat$Nivaa == 2, ]
 dat_hospital <- dat[dat$Nivaa == 3, ]
 
-# # add ids, increment by 1
-# dat_nation$id <- seq_len(dim(dat_nation)[1])
-# dat_rhf$id <- seq_len(dim(dat_rhf)[1])
-# dat_hf$id <- seq_len(dim(dat_hf)[1])
-# dat_hospital$id <- seq_len(dim(dat_hospital)[1])
-#
 # add parent id (orgnr as foreign key)
 dat_rhf$nation_orgnr <-
   dplyr::left_join(dat_rhf, dat_nation, by = c("NivaaOpp" = "OrgNr"),

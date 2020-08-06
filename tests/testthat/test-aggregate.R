@@ -1,8 +1,6 @@
 conf <- get_config()
 df <- imongr::data
 org <- imongr::org #flattened organization table as obtained by get_flat_org()
-# all orgnr across unit levels as obtained by get_all_orgnr()
-#org <- imongr::orgnr
 ind <- imongr::ind
 
 test_that("example data can be aggregated", {
