@@ -63,12 +63,12 @@ data$ShNavn <- gsub("å", "aa", data$ShNavn)
 data$ShNavn <- gsub("Å", "Aa", data$ShNavn)
 
 # add registry_id from local data
-data$registry_id <-
-  dplyr::left_join(data, imongr::registry, by = c("Register" = "name"))$id
+# data$registry_id <-
+#   dplyr::left_join(data, imongr::registry, by = c("Register" = "name"))$id
 
 # select subset of vars
-data <- dplyr::select(data, OrgNrShus, Aar, Variabel, denominator,
-                registry_id, KvalIndID, delivery_id)
+data <- dplyr::select(data, OrgNrShus, Aar, Variabel, denominator, KvalIndID,
+                      delivery_id)
 
 # rename fields
 names(data)[names(data) == "OrgNrShus"] <- "orgnr"

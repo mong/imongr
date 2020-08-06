@@ -48,6 +48,7 @@ agg <- function(df, org, ind) {
 
   missing_var <- setdiff(conf$db$tab$data$insert[conf$aggregate$data_var_ind],
                          names(df))
+
   if (length(missing_var) > 0) {
     stop(paste0("Missing var(s) in df: ", paste(missing_var, collapse = ", "),
                 ". Cannot go on!"))

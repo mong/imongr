@@ -58,8 +58,7 @@ df <- data.frame(year = 2014,
                  orgnr = 874716782,
                  ind_id = "nakke1",
                  var = 0,
-                 denominator = NA,
-                 registry_id = 4)
+                 denominator = NA)
 
 # we need a user and groups defined
 Sys.setenv(SHINYPROXY_USERNAME = "mongr")

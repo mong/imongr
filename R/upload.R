@@ -109,8 +109,13 @@ check_invalid_org <- function(df, conf, pool) {
 check_invalid_ind <- function(df, conf, pool) {
 
   fail <- TRUE
-  registry <- df$registry_id[1]
+
   if ("ind_id" %in% names(df)) {
+    indicator <- unique(df$ind_id)
+    registry <- get_indicators_registry(pool, indicator)
+    if (length(registry) == 0) {
+      registry <- 0
+    }
     report <- setdiff(df$ind_id,
                       get_registry_indicators(pool, registry)$id)
   } else {

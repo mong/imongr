@@ -157,7 +157,7 @@ test_that("error on delete when no 'Register' or several registries", {
 
 test_that("data from a registry can be fetched", {
   check_db()
-  registry <- levels(as.factor(imongr::data[1:100, ]$registry_id))[1]
+  registry <- levels(as.factor(imongr::registry$id))[1]
   expect_equal(class(get_registry_data(pool, registry)), "data.frame")
 })
 

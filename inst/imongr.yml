@@ -68,7 +68,6 @@ db:
       - year
       - var
       - denominator
-      - registry_id
       - ind_id
       - delivery_id
     user_registry:
@@ -171,7 +170,6 @@ upload:
     - ind_id
     - var
     - denominator
-    - registry_id
   reciept:
     title: Fantastisk!
     body: Dine data er nå lastet inn
@@ -183,7 +181,6 @@ upload:
   - 3
   - 4
   - 5
-  - 6
   check:
     missing_var: |-
      Manglende variabler:
@@ -239,10 +236,9 @@ aggregate:
   data_var_ind:
   - 1
   - 2
+  - 3
   - 4
   - 5
-  - 6
-  - 7
   unit_level:
     hospital: hospital
     hf: hf

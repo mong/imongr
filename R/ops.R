@@ -3,12 +3,15 @@
 #' @param pool Database connection pool object
 #' @param df Data frame of relevant data
 #' @param registry Integer registry id
+#' @param indicator Character vector of indicator ids
 #' @return Relevant values from the current environment and database
 #' @name ops
 #' @aliases get_user_data get_user_id get_user_registries
 #' get_user_registry_select
-#' get_user_latest_delivery_id get_registry_data md5_checksum
-#' delivery_exist_in_db retire_user_deliveries delete_registry_data
+#' get_user_latest_delivery_id get_registry_data get_indicators_registry
+#' md5_checksum
+#' delivery_exist_in_db retire_user_deliveries delete_indicator_data
+#' delete_registry_data
 #' delete_agg_data insert_data insert_agg_data
 NULL
 
@@ -110,24 +113,28 @@ get_user_deliveries <- function(pool) {
 
   query <- paste0("
 SELECT
-  del.time AS Dato,
-  del.time AS Tid,
-  reg.name AS Register,
-  SUBSTRING(del.md5_checksum, 1, 7) as Referanse
+  d.time AS Dato,
+  d.time AS Tid,
+  r.name AS Register,
+  SUBSTRING(d.md5_checksum, 1, 7) as Referanse
 FROM
-  (SELECT DISTINCT delivery_id, registry_id FROM data) AS dat
+  delivery d
 LEFT JOIN
-  delivery del
+  user u
 ON
-  del.id=dat.delivery_id
+  d.user_id=u.id
 LEFT JOIN
-  registry reg
+  user_registry ur
 ON
-  dat.registry_id=reg.id
+  u.id=ur.user_id
+LEFT JOIN
+  registry r
+ON
+  ur.registry_id=r.id
 WHERE
-  del.user_id=", get_user_id(pool), "
+  d.user_id=", get_user_id(pool), "
 ORDER BY
-  del.time DESC;")
+  d.time DESC;")
 
   df <- pool::dbGetQuery(pool, query)
 
@@ -168,16 +175,36 @@ get_registry_data <- function(pool, registry) {
 
   query <- paste0("
 SELECT
-  ", fields, "
+  d.", fields, "
 FROM
-  data
+  data d
+LEFT JOIN
+  ind i
+ON
+  d.ind_id = i.id
 WHERE
-  registry_id=", registry, ";")
+  i.registry_id=", registry, ";")
 
   pool::dbGetQuery(pool, query)
 
 }
 
+
+#' @rdname ops
+#' @export
+get_indicators_registry <- function(pool, indicator) {
+
+  query <- paste0("
+SELECT
+  DISTINCT registry_id AS rid
+FROM
+  ind
+WHERE
+  id IN ('", paste0(indicator, collapse = "', '"), "');"
+  )
+
+  pool::dbGetQuery(pool, query)$rid
+}
 
 #' @rdname ops
 #' @export
@@ -224,6 +251,24 @@ SET
   latest=0
 WHERE
   user_id=", get_user_id(pool), ";")
+
+  pool::dbExecute(pool, query)
+}
+
+#' @rdname ops
+#' @export
+delete_indicator_data <- function(pool, df) {
+
+  if (!"ind_id" %in% names(df)) {
+    stop("Data frame has no notion of 'indicator' (id). Cannot delete!")
+  }
+  ind <- unique(df$ind_id)
+
+  query <- paste0("
+DELETE FROM
+  data
+WHERE
+  ind_id IN ('", paste0(ind, collapse = "', '"), "');")
 
   pool::dbExecute(pool, query)
 }
@@ -282,7 +327,7 @@ insert_data <- function(pool, df) {
                          md5_checksum = md5_checksum(df),
                          user_id = get_user_id(pool))
 
-  delete_registry_data(pool, df)
+  delete_indicator_data(pool, df)
   retire_user_deliveries(pool)
 
   insert_tab(pool, "delivery", delivery)

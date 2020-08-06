@@ -55,8 +55,7 @@ df <- data.frame(year = 2014,
                  orgnr = 874716782,
                  ind_id = "nakke1",
                  var = 0,
-                 denominator = NA,
-                 registry_id = 4)
+                 denominator = NA)
 
 test_that("valid vars pass the check", {
   expect_true(length(check_invalid_var(df, conf, pool)$report) == 0)
@@ -126,7 +125,7 @@ test_that("indicator id check is working", {
   expect_equal(check_invalid_ind(df[, !names(df) %in% "ind_id"],
                                  conf, pool)$report, "Field missing")
   # set an indicator id that does not exist
-  df$ind_id <- "nothing" # nolint
+  df$ind_id <- "nothing"
   expect_true(length(check_invalid_ind(df, conf, pool)$report) > 0)
   df$ind_id <- "nakke1"
 })
