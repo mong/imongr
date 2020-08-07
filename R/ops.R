@@ -333,6 +333,9 @@ insert_data <- function(pool, df) {
   insert_tab(pool, "delivery", delivery)
   did <- get_user_latest_delivery_id(pool)
   df_id <- data.frame(delivery_id = did)
+
+  df <- dplyr::left_join(df, get_all_orgnr(pool), by = "orgnr")
+
   insert_tab(pool, "data", cbind(df, df_id))
 
 }

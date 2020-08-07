@@ -123,15 +123,20 @@ test_that("no (real) delivery has been made yet", {
   expect_false(delivery_exist_in_db(pool, df = imongr::data[1:100, ]))
 })
 
+### data frame for re-use next two tests
+df <- imongr::data[1:100, ]
+df_var_ind <- names(df) %in% conf$db$tab$data$insert[conf$upload$data_var_ind]
+df <- df[, df_var_ind]
+
 ### make a delivery
 if (is.null(check_db(is_test_that = FALSE))) {
-  insert_data(pool, df = imongr::data[1:100, conf$upload$data_var_ind])
+  insert_data(pool, df)
 }
 
 test_that("the delivery has alrady been made", {
   check_db()
   expect_error(
-    insert_data(pool, df = imongr::data[1:100, conf$upload$data_var_ind])
+    insert_data(pool, df)
   )
 })
 

@@ -64,12 +64,13 @@ db:
       - desired_level
     data:
       insert:
+      - delivery_id
+      - unit_level
       - orgnr
       - year
       - var
       - denominator
       - ind_id
-      - delivery_id
     user_registry:
       insert:
       - registry_id
@@ -176,11 +177,11 @@ upload:
   fail: Kontakt SKDE!
   ok: Datasettet er klart til å sendes inn
   data_var_ind:
-  - 1
-  - 2
   - 3
   - 4
   - 5
+  - 6
+  - 7
   check:
     missing_var: |-
      Manglende variabler:

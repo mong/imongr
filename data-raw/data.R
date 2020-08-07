@@ -76,4 +76,7 @@ names(data)[names(data) == "Aar"] <- "year"
 names(data)[names(data) == "Variabel"] <- "var"
 names(data)[names(data) == "KvalIndID"] <- "ind_id"
 
+# add unit_level
+data <- dplyr::left_join(data, imongr::orgnr, by = "orgnr")
+
 usethis::use_data(data, overwrite = TRUE)
