@@ -28,4 +28,7 @@ ind <- data.frame(id = indicator$IndID,
                   registry_id = indicator$registry_id,
                   stringsAsFactors = FALSE)
 
+# add sg_id (self reference)
+ind <- cbind(ind, dg_id = NA)
+
 usethis::use_data(ind, overwrite = TRUE)

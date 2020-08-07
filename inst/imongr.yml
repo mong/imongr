@@ -87,14 +87,10 @@ db:
       - phone
       - email
       - valid
-    ind_dep:
-      insert:
-      - id
-      - indep_ind_id
-      - dep_ind_id
     ind:
       insert:
       - id
+      - dg_id
       - title
       - name
       - level_green
