@@ -173,12 +173,11 @@ app_server <- function(input, output, session) {
   })
 
   output$select_download_registry <- shiny::renderUI({
-    regs <- get_user_registries(pool)
+    regs <- get_user_registry_select(pool)
     if (length(regs) == 0) {
       regs <- c(conf$upload$fail)
     }
-    shiny::selectInput("download_registry", "Velg register:", regs,
-                       selected = regs[1])
+    shiny::selectInput("download_registry", "Velg register:", regs)
   })
 
   output$select_db_table <- shiny::renderUI({

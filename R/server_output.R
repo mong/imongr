@@ -67,7 +67,7 @@ submit_ui <- function(conf, pool, upload_file, registry, df) {
     shiny::actionButton("submit", "Send til server",
                         shiny::icon("paper-plane")),
     shiny::p(paste("Merk: nye data vil overskrive alle eksisterende data for",
-                   registry))
+                   get_registry_name(pool, registry)))
     )
   } else {
     NULL
