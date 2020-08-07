@@ -21,8 +21,8 @@ for (i in seq_len(dim(ind_reg)[1])) {
 }
 data <- cbind(data, Register = reg, stringsAsFactors = FALSE)
 
-# add nevner field that is (currently) not part of data set from qmongrdata
-data <- cbind(data[, c(1:5)], denominator = NA, data[, 6:8])
+# add denominator field that is (currently) not part of data set from qmongrdata
+data <- cbind(data[, c(1:5)], denominator = 1, data[, 6:8])
 
 # currently OrgNrShus from qmongrdata contains NAs and currently do not conform
 # to the database consistency constraints

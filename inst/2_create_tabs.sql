@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS data (
   orgnr INT(10) UNSIGNED NOT NULL,
   year SMALLINT UNSIGNED NOT NULL,
   var DOUBLE(9,3) NOT NULL,
-  denominator INT UNSIGNED DEFAULT NULL,
+  denominator INT UNSIGNED NOT NULL DEFAULT 1,
   ind_id VARCHAR(63) NOT NULL,
   CONSTRAINT `fk_data_delivery`
     FOREIGN KEY (delivery_id) REFERENCES delivery (id)
