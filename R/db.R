@@ -267,23 +267,6 @@ FROM
 
 #' @rdname db
 #' @export
-get_registry_name <- function(pool, registry) {
-
-  query <- paste0("
-SELECT
-  name
-FROM
-  registry
-WHERE
-  id=", registry, ";")
-
-  pool::dbGetQuery(pool, query)$name
-}
-
-
-
-#' @rdname db
-#' @export
 get_registry_indicators <- function(pool, registry) {
 
   query <- paste0("
