@@ -3,6 +3,7 @@
 #' @param pool Data base pool object
 #' @param conf List of configuration
 #' @param df Data frame
+#' @param registry Integer registry id
 #' @param path Character path to a file
 #' @param sep Character filed sep
 #' @param dec Character decimal sep
@@ -22,10 +23,10 @@ NULL
 
 #' @rdname upload
 #' @export
-check_report <- function(df, pool) {
+check_report <- function(registry, df, pool) {
 
   conf <- get_config()
-  r <- check_upload(df, pool)
+  r <- check_upload(registry, df, pool)
 
   if (all(!r$fail)) {
     msg <- paste("<font color=\"#00FF00\">", conf$upload$ok)
@@ -43,7 +44,7 @@ check_report <- function(df, pool) {
 
 #' @rdname upload
 #' @export
-check_upload <- function(df, pool) {
+check_upload <- function(registry, df, pool) {
 
   unit <- character()
   fail <- logical()
@@ -54,7 +55,8 @@ check_upload <- function(df, pool) {
   for (i in seq_len(length(conf$upload$check))) {
     unit[i] <- names(conf$upload$check)[i]
     r <- do.call(paste0("check_", unit[i]),
-                 args = list(df = df, conf = conf, pool = pool))
+                 args = list(registry = registry, df = df, conf = conf,
+                             pool = pool))
     fail[i] <- r$fail
     report[i] <- paste(r$report, collapse = ", ")
   }
@@ -64,7 +66,7 @@ check_upload <- function(df, pool) {
 
 #' @rdname upload
 #' @export
-check_missing_var <- function(df, conf, pool) {
+check_missing_var <- function(registry, df, conf, pool) {
 
   fail <- TRUE
   report <- setdiff(conf$upload$file$vars, names(df))
@@ -76,7 +78,7 @@ check_missing_var <- function(df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_invalid_var <- function(df, conf, pool) {
+check_invalid_var <- function(registry, df, conf, pool) {
 
   fail <- TRUE
   report <- setdiff(names(df), conf$upload$file$vars)
@@ -89,7 +91,7 @@ check_invalid_var <- function(df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_invalid_org <- function(df, conf, pool) {
+check_invalid_org <- function(registry, df, conf, pool) {
 
   fail <- TRUE
   if ("orgnr" %in% names(df)) {
@@ -106,16 +108,12 @@ check_invalid_org <- function(df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_invalid_ind <- function(df, conf, pool) {
+check_invalid_ind <- function(registry, df, conf, pool) {
 
   fail <- TRUE
 
   if ("ind_id" %in% names(df)) {
     indicator <- unique(df$ind_id)
-    registry <- get_indicators_registry(pool, indicator)
-    if (length(registry) == 0) {
-      registry <- 0
-    }
     report <- setdiff(df$ind_id,
                       get_registry_indicators(pool, registry)$id)
   } else {
@@ -130,7 +128,7 @@ check_invalid_ind <- function(df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_none_numeric_var <- function(df, conf, pool) {
+check_none_numeric_var <- function(registry, df, conf, pool) {
 
   fail <- TRUE
   report <- ""
@@ -147,7 +145,7 @@ check_none_numeric_var <- function(df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_duplicate_delivery <- function(df, conf, pool) {
+check_duplicate_delivery <- function(registry, df, conf, pool) {
 
   fail <- delivery_exist_in_db(pool, df)
   report <- ""

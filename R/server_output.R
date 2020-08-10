@@ -62,11 +62,11 @@ submit_ui <- function(conf, pool, upload_file, registry, df) {
   }
   if (!is.null(upload_file) &&
       !(conf$upload$fail %in% registry) &&
-      all(!check_upload(df, pool)$fail)) {
+      all(!check_upload(registry, df, pool)$fail)) {
     shiny::tagList(
     shiny::actionButton("submit", "Send til server",
                         shiny::icon("paper-plane")),
-    shiny::p(paste("Merk: nye data vil overskrive alle eksisterende data for",
+    shiny::p(paste(conf$upload$doc$submit$warning,
                    get_registry_name(pool, registry)))
     )
   } else {
@@ -84,7 +84,7 @@ error_report_ui <- function(pool, df, upload_file, registry) {
     if (!"denominator" %in% names(df)) {
       df <- cbind(df, denominator = NA)
     }
-    check_report(df, pool)
+    check_report(registry, df, pool)
   }
 }
 

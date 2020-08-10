@@ -230,6 +230,9 @@ upload:
     Register: >
       Velges fra menyen til venstre og trenger ikke være med i datafila som
       lastes opp
+    submit:
+      warning: >
+        Merk: nye data vil overskrive alle eksisterende indikatorer for
 aggregate:
   data_var_ind:
   - 1
