@@ -94,7 +94,8 @@ upload_sample_text_ui <- function(pool, conf, upload_file, registry) {
   if (is.null(upload_file)) {
     NULL
   } else {
-    paste0(conf$upload$doc$sample, " ", get_registry_name(pool, registry),
+    paste0(conf$upload$doc$sample, " ", get_registry_name(pool, registry,
+                                                          full_name = TRUE),
            ": <i>",
           paste(get_registry_indicators(pool, registry)$id,
                 collapse = ", "),
