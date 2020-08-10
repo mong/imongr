@@ -12,12 +12,12 @@
 \alias{get_user}
 \alias{get_user_registry}
 \alias{get_indicator}
-\alias{get_registry_name}
 \alias{get_flat_org}
 \alias{get_all_orgnr}
 \alias{get_org}
 \alias{get_registry_indicators}
 \alias{get_registry}
+\alias{get_registry_name}
 \title{Low level database functions for imongr}
 \usage{
 make_pool()

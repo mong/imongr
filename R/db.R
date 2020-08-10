@@ -24,7 +24,7 @@
 #' @return Database pool object, data frame or status message
 #' @name db
 #' @aliases make_pool drain_pool insert_tab get_table get_agg_data get_data
-#' get_delivery get_user get_user_registry get_indicator get_registry_name
+#' get_delivery get_user get_user_registry get_indicator
 #' get_flat_org get_all_orgnr
 NULL
 
