@@ -164,7 +164,7 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
                  fileEncoding = encoding)
 
   if (!"denominator" %in% names(df)) {
-    df <- cbind(df, denominator = NA)
+    df <- cbind(df, denominator = 1L)
   }
 
   df

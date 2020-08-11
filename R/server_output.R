@@ -58,7 +58,7 @@ select_registry_ui <- function(conf, pool) {
 submit_ui <- function(conf, pool, upload_file, registry, df) {
 
   if (!is.null(upload_file) && !"denominator" %in% names(df)) {
-    df <- cbind(df, denominator = NA)
+    df <- cbind(df, denominator = 1L)
   }
   if (!is.null(upload_file) &&
       !(conf$upload$fail %in% registry) &&

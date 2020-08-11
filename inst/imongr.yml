@@ -237,11 +237,11 @@ upload:
         Merk: nye data vil overskrive alle eksisterende indikatorer for
 aggregate:
   data_var_ind:
-  - 1
-  - 2
   - 3
   - 4
   - 5
+  - 6
+  - 7
   unit_level:
     hospital: hospital
     hf: hf
