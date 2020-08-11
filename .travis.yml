@@ -3,6 +3,8 @@ cache: packages
 os: linux
 dist: xenial
 
+warnings_are_errors: false
+
 r:
   - oldrel
   - release
