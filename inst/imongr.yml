@@ -91,6 +91,7 @@ db:
       insert:
       - id
       - dg_id
+      - include
       - title
       - name
       - type

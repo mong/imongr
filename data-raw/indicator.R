@@ -16,6 +16,7 @@ indicator <- indicator %>%
                 MaalNivaaGul, MaalRetn, BeskrivelseKort, BeskrivelseLang,
                 indikatorType, registry_id)
 
+
 # make the actual (renamed) table
 ind <- data.frame(id = indicator$IndID,
                   title = indicator$IndTittel,
@@ -28,6 +29,9 @@ ind <- data.frame(id = indicator$IndID,
                   type = indicator$indikatorType,
                   registry_id = indicator$registry_id,
                   stringsAsFactors = FALSE)
+
+# until present in data, add new field 'include'
+ind <- cbind(ind, include = TRUE)
 
 # add sg_id (self reference)
 ind <- cbind(ind, dg_id = NA)
