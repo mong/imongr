@@ -54,9 +54,9 @@ if (is.null(check_db(is_test_that = FALSE))) {
 conf <- get_config()
 
 # make a sample df
-df <- data.frame(year = 2014,
-                 orgnr = 874716782,
-                 ind_id = "nakke1",
+df <- data.frame(year = 2018,
+                 orgnr = 974633574,
+                 ind_id = "norgast_andel_avdoede_bykspytt_tolv",
                  var = 0,
                  denominator = 1)
 
@@ -83,9 +83,9 @@ test_that("select list of registries is provided (if any)", {
 
 test_that("submit ui is provided", {
   check_db()
-  expect_null(submit_ui(conf, pool, NULL, 4, df))
+  expect_null(submit_ui(conf, pool, NULL, 10, df))
   expect_equal(class(
-    submit_ui(conf, pool, TRUE, 4,
+    submit_ui(conf, pool, TRUE, 10,
               df[, !names(df) %in% c("denominator", "registry_id")]))[1],
     "shiny.tag.list"
   )
@@ -96,7 +96,7 @@ test_that("error report is provided", {
   expect_null(error_report_ui(pool, df, NULL, "norgast"))
   expect_equal(class(
     error_report_ui(pool, df[, !names(df) %in% c("nevner", "Register")], TRUE,
-                    "norgast")),
+                    10)),
     "character"
   )
 })

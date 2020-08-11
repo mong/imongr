@@ -4,6 +4,9 @@
 \alias{db_get}
 \alias{get_registry_name}
 \title{Retreiv data from imongr database}
+\usage{
+get_registry_name(pool, registry, full_name = FALSE)
+}
 \arguments{
 \item{pool}{a database connection pool object}
 

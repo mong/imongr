@@ -17,7 +17,7 @@
 #' @aliases get_registry_name
 NULL
 
-#' @rdname db
+#' @rdname db_get
 #' @export
 get_registry_name <- function(pool, registry, full_name = FALSE) {
 

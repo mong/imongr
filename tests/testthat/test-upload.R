@@ -1,8 +1,9 @@
 pool <- list()
 create_config()
 conf <- get_config()
+registry <- 10 # may be norgast
 
-l <- check_missing_var(data.frame(), conf, pool)
+l <- check_missing_var(registry, data.frame(), conf, pool)
 test_that("all vars are missing om empty data frame", {
   expect_equal(l$report, conf$upload$file$vars)
 })
@@ -10,7 +11,7 @@ test_that("check reports failed status", {
   expect_true(l$fail)
 })
 
-l <- check_invalid_var(data.frame(offBounce = 0), conf, pool)
+l <- check_invalid_var(registry, data.frame(offBounce = 0), conf, pool)
 test_that("invalid var is reported and that check status is failed", {
   expect_equal(l$report, "offBounce")
   expect_true(l$fail)
@@ -18,7 +19,7 @@ test_that("invalid var is reported and that check status is failed", {
 
 df <- imongr::data[, names(imongr::data) %in% conf$upload$file$vars]
 df <- cbind(df, orgnr = rep(1, dim(df)[1]))
-l <- check_missing_var(df, conf, pool)
+l <- check_missing_var(registry, df, conf, pool)
 test_that("an empty report and ok status is provided from a valid data set", {
   expect_false(l$fail)
   expect_equal(l$report, character())
@@ -51,14 +52,14 @@ check_db <- function(is_test_that = TRUE) {
 }
 
 # make a sample df to be used for the remaining tests
-df <- data.frame(year = 2014,
-                 orgnr = 874716782,
-                 ind_id = "nakke1",
+df <- data.frame(year = 2018,
+                 orgnr = 974633574,
+                 ind_id = "norgast_andel_avdoede_bykspytt_tolv",
                  var = 0,
-                 denominator = NA)
+                 denominator = 1)
 
 test_that("valid vars pass the check", {
-  expect_true(length(check_invalid_var(df, conf, pool)$report) == 0)
+  expect_true(length(check_invalid_var(registry, df, conf, pool)$report) == 0)
 })
 
 test_that("an upload csv can be converted to a data frame", {
@@ -109,8 +110,8 @@ conf <- get_config()
 
 test_that("org id checks is workinig", {
   check_db()
-  expect_false(check_invalid_org(df, conf, pool)$fail)
-  expect_equal(check_invalid_org(df[, !names(df) %in% "orgnr"],
+  expect_false(check_invalid_org(registry, df, conf, pool)$fail)
+  expect_equal(check_invalid_org(registry, df[, !names(df) %in% "orgnr"],
                                  conf, pool)$report, "Field missing")
   # set an org id that (assumably) does not exist
   df$orgnr <- 66
@@ -121,34 +122,35 @@ test_that("org id checks is workinig", {
 
 test_that("indicator id check is working", {
   check_db()
-  expect_false(check_invalid_ind(df, conf, pool)$fail)
-  expect_equal(check_invalid_ind(df[, !names(df) %in% "ind_id"],
+  expect_false(check_invalid_ind(registry, df, conf, pool)$fail)
+  expect_equal(check_invalid_ind(registry, df[, !names(df) %in% "ind_id"],
                                  conf, pool)$report, "Field missing")
   # set an indicator id that does not exist
   df$ind_id <- "nothing"
-  expect_true(length(check_invalid_ind(df, conf, pool)$report) > 0)
-  df$ind_id <- "nakke1"
+  expect_true(length(check_invalid_ind(registry, df, conf, pool)$report) > 0)
+  df$ind_id <- "norgast_andel_avdoede_bykspytt_tolv"
 })
 
 test_that("variable (numeric) type check is working", {
   check_db()
-  expect_false(check_none_numeric_var(df, conf, pool)$fail)
-  expect_equal(check_none_numeric_var(df[, !names(df) %in% "var"],
+  expect_false(check_none_numeric_var(registry, df, conf, pool)$fail)
+  expect_equal(check_none_numeric_var(registry, df[, !names(df) %in% "var"],
                                      conf, pool)$report, "Field missing")
   df$var <- as.character(df$var)
-  expect_true(check_none_numeric_var(df, conf, pool)$fail)
+  expect_true(check_none_numeric_var(registry, df, conf, pool)$fail)
   df$var <- as.numeric(df$var)
 })
 
 test_that("duplicate delivery check is present (tested elsewhere)", {
   check_db()
-  expect_false(check_duplicate_delivery(df, conf, pool)$fail)
+  expect_false(check_duplicate_delivery(registry, df, conf, pool)$fail)
 })
 
 test_that("check report (wrapper) function is working", {
   check_db()
-  expect_equal(class(check_report(df, pool)), "character")
-  expect_equal(class(check_report(df[, !names(df) %in% "orgnr"], pool)),
+  expect_equal(class(check_report(registry, df, pool)), "character")
+  expect_equal(class(check_report(registry, df[, !names(df) %in% "orgnr"],
+                                  pool)),
                "character")
 })
 

@@ -121,14 +121,10 @@ make_group <- function(df, group = "") {
 #' @export
 compute_group <- function(gdf, ind) {
 
-  # currently nonsensical. Method(s) to be fetched from ind db table
-  indicator_median <- "intensiv2"
-  indicator_mean <- c(
-    "nakke1", "nakke2", "nakke3", "nakke4", "intensiv1",
-    "norgast1",  "norgast2",  "norgast3",  "norgast4",
-    "norgast5",  "norgast6",  "norgast7",  "norgast8",
-    "norgast9",  "norgast10"
-  )
+  indicator_median <- ind$id[is.na(ind$type)]
+  indicator_mean <- ind$id[ind$type == "andel"]
+  indicator_mean <- indicator_mean[!is.na(indicator_mean)]
+
   gmean <- gdf %>%
     dplyr::filter(.data[["ind_id"]] %in% indicator_mean) %>%
     compute_indicator_mean()

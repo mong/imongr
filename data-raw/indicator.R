@@ -14,7 +14,7 @@ indicator$registry_id <-
 indicator <- indicator %>%
   dplyr::select(., IndID, Register, IndTittel, IndNavn, MaalNivaaGronn,
                 MaalNivaaGul, MaalRetn, BeskrivelseKort, BeskrivelseLang,
-                registry_id)
+                indikatorType, registry_id)
 
 # make the actual (renamed) table
 ind <- data.frame(id = indicator$IndID,
@@ -25,6 +25,7 @@ ind <- data.frame(id = indicator$IndID,
                   level_direction = indicator$MaalRetn,
                   short_description = indicator$BeskrivelseKort,
                   long_description = indicator$BeskrivelseLang,
+                  type = indicator$indikatorType,
                   registry_id = indicator$registry_id,
                   stringsAsFactors = FALSE)
 

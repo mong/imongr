@@ -93,6 +93,7 @@ db:
       - dg_id
       - title
       - name
+      - type
       - level_green
       - level_yellow
       - level_direction

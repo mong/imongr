@@ -1,82 +1,17 @@
 ## code to prepare `data` dataset goes here
 
-data <- qmongrdata::KvalIndData
+data <- data.frame()
 
-# fake a delivery
-data <- cbind(data, delivery_id=rep(1, dim(data)[1]))
+### add registires, one by one ... ###
+norgast <- read.csv2("../qmongrdata/data-raw/norgastdata.csv")
+
+# add delivery_id, denominator and unit_level
+norgast <- cbind(norgast, delivery_id = rep(1, dim(norgast)[1]))
+norgast <- cbind(norgast, denominator = rep(1, dim(norgast)[1]))
+norgast <- cbind(norgast, unit_level = rep("hospital", dim(norgast)[1]))
 
 
-# ditch nra because Register and IndID seems to be swapped in indBeskr
-ind <- data$KvalIndID == "nra"
-data <- data[!ind, ]
-
-# add registry field that is (currently) not part of data set from qmongrdata
-ind_reg <- data.frame(ind = qmongrdata::IndBeskr$IndID,
-                      reg = qmongrdata::IndBeskr$Register,
-                      stringsAsFactors = FALSE)
-reg <- rep(NA, dim(data)[1])
-for (i in seq_len(dim(ind_reg)[1])) {
-  ind <- data$KvalIndID == ind_reg$ind[i]
-  reg[ind] <- ind_reg$reg[i]
-}
-data <- cbind(data, Register = reg, stringsAsFactors = FALSE)
-
-# add denominator field that is (currently) not part of data set from qmongrdata
-data <- cbind(data[, c(1:5)], denominator = 1, data[, 6:8])
-
-# currently OrgNrShus from qmongrdata contains NAs and currently do not conform
-# to the database consistency constraints
-ind <- is.na(data$OrgNrShus)
-data <- data[!ind, ]
-
-# currently, OrgNrShus in data is not consistent with SykehusNavnStruktur
-# thus, remove all "unknown" OrgNrShus entries from data
-org <- qmongrdata::SykehusNavnStruktur$OrgNrShus
-org_data <- data$OrgNrShus
-ind <- is.element(org_data, org)
-data <- data[ind, ]
-
-# curently, OrgNrShus is of class character in qmongrdata while integers in db
-# thus, convert it
-data$OrgNrShus <- as.integer(data$OrgNrShus)
-
-# remove all indicators in data that are not present in indicator data set
-indicator <- imongr::ind$id
-indicator_data <- data$KvalIndID
-ind <- is.element(indicator_data, indicator)
-data <- data[ind, ]
-
-# substitute some strange codes (latin1?) with proper chars
-data$ShNavn <- gsub("\xe6", "æ", data$ShNavn)
-data$ShNavn <- gsub("\xc6", "Æ", data$ShNavn)
-data$ShNavn <- gsub("\xf8", "ø", data$ShNavn)
-data$ShNavn <- gsub("\xd8", "Ø", data$ShNavn)
-data$ShNavn <- gsub("\xe5", "å", data$ShNavn)
-data$ShNavn <- gsub("\xc5", "Å", data$ShNavn)
-
-# then, change to ascii substitutes
-data$ShNavn <- gsub("æ", "ae", data$ShNavn)
-data$ShNavn <- gsub("Æ", "Ae", data$ShNavn)
-data$ShNavn <- gsub("ø", "oe", data$ShNavn)
-data$ShNavn <- gsub("Ø", "Oe", data$ShNavn)
-data$ShNavn <- gsub("å", "aa", data$ShNavn)
-data$ShNavn <- gsub("Å", "Aa", data$ShNavn)
-
-# add registry_id from local data
-# data$registry_id <-
-#   dplyr::left_join(data, imongr::registry, by = c("Register" = "name"))$id
-
-# select subset of vars
-data <- dplyr::select(data, OrgNrShus, Aar, Variabel, denominator, KvalIndID,
-                      delivery_id)
-
-# rename fields
-names(data)[names(data) == "OrgNrShus"] <- "orgnr"
-names(data)[names(data) == "Aar"] <- "year"
-names(data)[names(data) == "Variabel"] <- "var"
-names(data)[names(data) == "KvalIndID"] <- "ind_id"
-
-# add unit_level
-data <- dplyr::left_join(data, imongr::orgnr, by = "orgnr")
+### merge registries
+data <- rbind(norgast)
 
 usethis::use_data(data, overwrite = TRUE)
