@@ -1,23 +1,25 @@
 pool <- list()
 create_config()
 conf <- get_config()
+registry <- 10 # may be norgast
 
-l <- check_missing_var(data.frame(), conf, pool)
+l <- check_missing_var(registry, data.frame(), conf, pool)
 test_that("all vars are missing om empty data frame", {
-  expect_equal(l$report, conf$db$tab$data$insert[conf$upload$data_var_ind])
+  expect_equal(l$report, conf$upload$file$vars)
 })
 test_that("check reports failed status", {
   expect_true(l$fail)
 })
 
-l <- check_invalid_var(data.frame(offBounce = 0), conf, pool)
+l <- check_invalid_var(registry, data.frame(offBounce = 0), conf, pool)
 test_that("invalid var is reported and that check status is failed", {
   expect_equal(l$report, "offBounce")
   expect_true(l$fail)
 })
 
-df <- imongr::data[conf$upload$data_var_ind]
-l <- check_missing_var(df, conf, pool)
+df <- imongr::data[, names(imongr::data) %in% conf$upload$file$vars]
+df <- cbind(df, orgnr = rep(1, dim(df)[1]))
+l <- check_missing_var(registry, df, conf, pool)
 test_that("an empty report and ok status is provided from a valid data set", {
   expect_false(l$fail)
   expect_equal(l$report, character())
@@ -50,17 +52,14 @@ check_db <- function(is_test_that = TRUE) {
 }
 
 # make a sample df to be used for the remaining tests
-df <- data.frame(Aar = 2016,
-                 ShNavn = "UNN-Tromsoe",
-                 ReshId = 601225,
-                 OrgNrShus = 974795787,
-                 Variabel = 0,
-                 nevner = NA,
-                 KvalIndID = "norgast1",
-                 Register = "norgast")
+df <- data.frame(year = 2018,
+                 orgnr = 974633574,
+                 ind_id = "norgast_andel_avdoede_bykspytt_tolv",
+                 var = 0,
+                 denominator = 1)
 
 test_that("valid vars pass the check", {
-  expect_true(length(check_invalid_var(df, conf, pool)$report) == 0)
+  expect_true(length(check_invalid_var(registry, df, conf, pool)$report) == 0)
 })
 
 test_that("an upload csv can be converted to a data frame", {
@@ -111,46 +110,47 @@ conf <- get_config()
 
 test_that("org id checks is workinig", {
   check_db()
-  expect_false(check_invalid_org(df, conf, pool)$fail)
-  expect_equal(check_invalid_org(df[, !names(df) %in% "OrgNrShus"],
+  expect_false(check_invalid_org(registry, df, conf, pool)$fail)
+  expect_equal(check_invalid_org(registry, df[, !names(df) %in% "orgnr"],
                                  conf, pool)$report, "Field missing")
   # set an org id that (assumably) does not exist
-  df$OrgNrShus <- 66 # nolint
+  df$orgnr <- 66
   expect_true(check_invalid_org(df, conf, pool)$fail)
   expect_true(length(check_invalid_org(df, conf, pool)$report) > 0)
-  df$OrgNrShus <- 974795787 # nolint
+  df$ind_id <- 874716782
 })
 
 test_that("indicator id check is working", {
   check_db()
-  expect_false(check_invalid_ind(df, conf, pool)$fail)
-  expect_equal(check_invalid_ind(df[, !names(df) %in% "KvalIndID"],
+  expect_false(check_invalid_ind(registry, df, conf, pool)$fail)
+  expect_equal(check_invalid_ind(registry, df[, !names(df) %in% "ind_id"],
                                  conf, pool)$report, "Field missing")
   # set an indicator id that does not exist
-  df$KvalIndID <- "nothing" # nolint
-  expect_true(length(check_invalid_ind(df, conf, pool)$report) > 0)
-  df$KvalIndID <- "norgast1" # nolint
+  df$ind_id <- "nothing"
+  expect_true(length(check_invalid_ind(registry, df, conf, pool)$report) > 0)
+  df$ind_id <- "norgast_andel_avdoede_bykspytt_tolv"
 })
 
 test_that("variable (numeric) type check is working", {
   check_db()
-  expect_false(check_none_numeric_var(df, conf, pool)$fail)
-  expect_equal(check_none_numeric_var(df[, !names(df) %in% "Variabel"],
+  expect_false(check_none_numeric_var(registry, df, conf, pool)$fail)
+  expect_equal(check_none_numeric_var(registry, df[, !names(df) %in% "var"],
                                      conf, pool)$report, "Field missing")
-  df$Variabel <- as.character(df$Variabel) # nolint
-  expect_true(check_none_numeric_var(df, conf, pool)$fail)
-  df$Variabel <- as.numeric(df$Variabel) # nolint
+  df$var <- as.character(df$var)
+  expect_true(check_none_numeric_var(registry, df, conf, pool)$fail)
+  df$var <- as.numeric(df$var)
 })
 
 test_that("duplicate delivery check is present (tested elsewhere)", {
   check_db()
-  expect_false(check_duplicate_delivery(df, conf, pool)$fail)
+  expect_false(check_duplicate_delivery(registry, df, conf, pool)$fail)
 })
 
 test_that("check report (wrapper) function is working", {
   check_db()
-  expect_equal(class(check_report(df, pool)), "character")
-  expect_equal(class(check_report(df[, !names(df) %in% "OrgNrShus"], pool)),
+  expect_equal(class(check_report(registry, df, pool)), "character")
+  expect_equal(class(check_report(registry, df[, !names(df) %in% "orgnr"],
+                                  pool)),
                "character")
 })
 
@@ -159,8 +159,9 @@ test_that("check report (wrapper) function is working", {
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool,
-                  paste("DROP TABLE data, user_registry, delivery,",
-                        "user, org, indicator, registry, agg_data;"))
+                  paste("DROP TABLE",
+                        paste(names(conf$db$tab), collapse = ", "), ";")
+  )
 }
 ## if db dropped on travis the coverage reporting will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&

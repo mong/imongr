@@ -53,29 +53,27 @@ db:
   tab:
     agg_data:
       insert:
-      - IndID
+      - ind_id
       - unit_level
       - unit_name
-      - OrgNr
-      - Aar
+      - orgnr
+      - year
       - count
-      - indicator
+      - var
       - level
       - desired_level
     data:
       insert:
-      - Aar
-      - ShNavn
-      - ReshId
-      - OrgNrShus
-      - Variabel
-      - nevner
-      - KvalIndID
       - delivery_id
-      - Register
+      - unit_level
+      - orgnr
+      - year
+      - var
+      - denominator
+      - ind_id
     user_registry:
       insert:
-      - Register
+      - registry_id
       - user_id
     delivery:
       insert:
@@ -89,33 +87,48 @@ db:
       - phone
       - email
       - valid
-    org:
+    ind:
       insert:
-      - OrgNrRHF
-      - RHF
-      - OrgNrHF
-      - HF
-      - Hfkortnavn
-      - OrgNrShus
-      - OrgNavnEnhetsreg
-      - SykehusnavnLang
-      - SykehusNavn
-      - TaMed
-    indicator:
-      insert:
-      - IndID
-      - Register
-      - IndTittel
-      - IndNavn
-      - MaalNivaaGronn
-      - MaalNivaaGul
-      - MaalRetn
-      - BeskrivelseKort
-      - BeskrivelseLang
+      - id
+      - dg_id
+      - include
+      - title
+      - name
+      - type
+      - level_green
+      - level_yellow
+      - level_direction
+      - short_description
+      - long_description
+      - registry_id
     registry:
       insert:
-      - Register
+      - id
+      - name
       - full_name
+    hospital:
+      insert:
+      - orgnr
+      - full_name
+      - short_name
+      - hf_orgnr
+    hf:
+      insert:
+      - orgnr
+      - full_name
+      - short_name
+      - rhf_orgnr
+    rhf:
+      insert:
+      - orgnr
+      - full_name
+      - short_name
+      - nation_orgnr
+    nation:
+      insert:
+      - orgnr
+      - full_name
+      - short_name
 role:
   none: NONE
   provider: PROVIDER
@@ -149,31 +162,35 @@ profile:
     text: Logg ut
     url: https://mongr.no/imongr/logout
 upload:
+  file:
+    vars:
+    - year
+    - orgnr
+    - ind_id
+    - var
+    - denominator
   reciept:
     title: Fantastisk!
     body: Dine data er nå lastet inn
   fail: Kontakt SKDE!
   ok: Datasettet er klart til å sendes inn
   data_var_ind:
-  - 1
-  - 2
   - 3
   - 4
   - 5
   - 6
   - 7
-  - 9
   check:
     missing_var: |-
      Manglende variabler:
     invalid_var: |-
       Ugyldige variabler:
     invalid_org: |-
-      Ukjent OrgNrShus (kontakt SKDE):
+      Ukjent orgnr (kontakt SKDE):
     invalid_ind: |-
       Ukjent indikator (kontakt SKDE):
     none_numeric_var: |-
-      En eller flere verdier i Variabel er ikke numerisk
+      En eller flere verdier i var er ikke numerisk
     duplicate_delivery: |-
       Et identisk datasett finnes allerede
   doc:
@@ -188,40 +205,50 @@ upload:
       Her vises en utsnitt av datasett du har lastet opp. Juster parametrene i
       menyen på venstresiden slik at norske tegn (æøå) representeres riktig og
       tallene fremstår slik de skal. <b>Merk at når du sender nye data til
-      server vil alle gamle data for angitt register overskrives/slettes</b>.
-      Følgende indikatorer (KvalIndID) er gyldige for
-    Aar: >
+      server vil alle gamle data tilsvarende indikatorer gitt i datasettet
+      overskrives/slettes</b>. Følgende indikatorer (ind_id) er gyldige for
+    year: >
       året for hendelsen
     ShNavn: >
       registerets navn på enheten knyttet til hendelsen
     ReshId: >
       registerets numeriske ID (ofte RESH) på enheten knyttet til hendelsen
-    OrgNrShus: >
+    orgnr: >
       organisasjonsnummeret til sykehus/HF knyttet til hendelsen, hentet fra
       tilsendt fil SykehusNavnStruktur
-    Variabel: >
-      enten en binær indikator (0/1) for fremstilling av andel måloppnåelse,
+    var: >
+      en binær verdi (0/1) per hendelse for fremstilling av andel måloppnåelse
       eller en numerisk variabel for fremstilling av gjennomsnitt eller median.
-      Angis i utgangspunktet for hver enkelt tilfelle men kan også benyttes til
-      å angi aggregert verdi for et gitt antall tilfeller som da må angis i
-      "nevner" (se under)
-    nevner: >
-      valgfri; nevner som angir antall tilfeller der tilsvarende Variabel
-      representerer en aggregert verdi (av flere tilfeller)
-    KvalIndID: >
+      Angis i utgangspunktet for hver enkelt hendelse men kan også benyttes til
+      å angi aggregert verdi for et gitt antall hendelser. Antall hendelser gis
+      i <i>denominator</i> (se under)
+    denominator: >
+      heltall som angir antall hendelser for tilsvarende verdi i <i>var</i>.
+      For enkelthendelser skal verdien være 1 og for et aggregat av hendelser
+      skal verdien være større enn 1
+    ind_id: >
       identifikator for kvalitetsindikator, skal samsvare med identifikator
       gitt i Indikatorbeskrivelse
     Register: >
       Velges fra menyen til venstre og trenger ikke være med i datafila som
       lastes opp
+    submit:
+      warning: >
+        Merk: nye data vil overskrive alle eksisterende indikatorer for
 aggregate:
   data_var_ind:
-  - 1
-  - 2
+  - 3
   - 4
   - 5
   - 6
   - 7
+  unit_level:
+    hospital: hospital
+    hf: hf
+    rhf: rhf
+    national: national
+  orgnr:
+    suffix: orgnr_
 download:
   tab:
   - data

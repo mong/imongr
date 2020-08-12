@@ -6,4 +6,34 @@ indicator <- qmongrdata::IndBeskr
 ind <- indicator$IndID == "nra"
 indicator <- indicator[!ind, ]
 
-usethis::use_data(indicator, overwrite = TRUE)
+# add registry ids
+indicator$registry_id <-
+  dplyr::left_join(indicator, imongr::registry, by = c("Register" = "name"))$id
+
+# select whatever vars to bring
+indicator <- indicator %>%
+  dplyr::select(., IndID, Register, IndTittel, IndNavn, MaalNivaaGronn,
+                MaalNivaaGul, MaalRetn, BeskrivelseKort, BeskrivelseLang,
+                indikatorType, registry_id)
+
+
+# make the actual (renamed) table
+ind <- data.frame(id = indicator$IndID,
+                  title = indicator$IndTittel,
+                  name = indicator$IndNavn,
+                  level_green = indicator$MaalNivaaGronn,
+                  level_yellow = indicator$MaalNivaaGul,
+                  level_direction = indicator$MaalRetn,
+                  short_description = indicator$BeskrivelseKort,
+                  long_description = indicator$BeskrivelseLang,
+                  type = indicator$indikatorType,
+                  registry_id = indicator$registry_id,
+                  stringsAsFactors = FALSE)
+
+# until present in data, add new field 'include'
+ind <- cbind(ind, include = TRUE)
+
+# add sg_id (self reference)
+ind <- cbind(ind, dg_id = NA)
+
+usethis::use_data(ind, overwrite = TRUE)

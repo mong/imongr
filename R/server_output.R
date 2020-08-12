@@ -43,11 +43,11 @@ profile_ui <- function(conf, pool, valid_user, iusr, igrs) {
 #' @rdname server_output
 #' @export
 select_registry_ui <- function(conf, pool) {
-  regs <- get_user_registries(pool)
+  regs <- get_user_registry_select(pool)
   if (length(regs) == 0) {
     regs <- c(conf$upload$fail)
   }
-  shiny::selectInput("registry", "Velg register:", regs, selected = regs[1])
+  shiny::selectInput("registry", "Velg register:", regs)
 }
 
 
@@ -57,17 +57,17 @@ select_registry_ui <- function(conf, pool) {
 #' @export
 submit_ui <- function(conf, pool, upload_file, registry, df) {
 
-  if (!is.null(upload_file) && !"nevner" %in% names(df)) {
-    df <- cbind(df, nevner = NA)
+  if (!is.null(upload_file) && !"denominator" %in% names(df)) {
+    df <- cbind(df, denominator = 1L)
   }
   if (!is.null(upload_file) &&
       !(conf$upload$fail %in% registry) &&
-      all(!check_upload(cbind(df, Register = registry), pool)$fail)) {
+      all(!check_upload(registry, df, pool)$fail)) {
     shiny::tagList(
     shiny::actionButton("submit", "Send til server",
                         shiny::icon("paper-plane")),
-    shiny::p(paste("Merk: nye data vil overskrive alle eksisterende data for",
-                   registry))
+    shiny::p(paste(conf$upload$doc$submit$warning,
+                   get_registry_name(pool, registry)))
     )
   } else {
     NULL
@@ -81,10 +81,10 @@ error_report_ui <- function(pool, df, upload_file, registry) {
   if (is.null(upload_file)) {
     NULL
   } else {
-    if (!"nevner" %in% names(df)) {
-      df <- cbind(df, nevner = NA)
+    if (!"denominator" %in% names(df)) {
+      df <- cbind(df, denominator = NA)
     }
-    check_report(cbind(df, Register = registry), pool)
+    check_report(registry, df, pool)
   }
 }
 
@@ -94,8 +94,10 @@ upload_sample_text_ui <- function(pool, conf, upload_file, registry) {
   if (is.null(upload_file)) {
     NULL
   } else {
-    paste0(conf$upload$doc$sample, " ", registry, ": <i>",
-          paste(get_registry_indicators(pool, registry)$IndID,
+    paste0(conf$upload$doc$sample, " ", get_registry_name(pool, registry,
+                                                          full_name = TRUE),
+           ": <i>",
+          paste(get_registry_indicators(pool, registry)$id,
                 collapse = ", "),
           "</i>.")
   }

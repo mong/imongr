@@ -3,6 +3,7 @@
 #' @param pool Data base pool object
 #' @param conf List of configuration
 #' @param df Data frame
+#' @param registry Integer registry id
 #' @param path Character path to a file
 #' @param sep Character filed sep
 #' @param dec Character decimal sep
@@ -22,10 +23,10 @@ NULL
 
 #' @rdname upload
 #' @export
-check_report <- function(df, pool) {
+check_report <- function(registry, df, pool) {
 
   conf <- get_config()
-  r <- check_upload(df, pool)
+  r <- check_upload(registry, df, pool)
 
   if (all(!r$fail)) {
     msg <- paste("<font color=\"#00FF00\">", conf$upload$ok)
@@ -43,7 +44,7 @@ check_report <- function(df, pool) {
 
 #' @rdname upload
 #' @export
-check_upload <- function(df, pool) {
+check_upload <- function(registry, df, pool) {
 
   unit <- character()
   fail <- logical()
@@ -54,7 +55,8 @@ check_upload <- function(df, pool) {
   for (i in seq_len(length(conf$upload$check))) {
     unit[i] <- names(conf$upload$check)[i]
     r <- do.call(paste0("check_", unit[i]),
-                 args = list(df = df, conf = conf, pool = pool))
+                 args = list(registry = registry, df = df, conf = conf,
+                             pool = pool))
     fail[i] <- r$fail
     report[i] <- paste(r$report, collapse = ", ")
   }
@@ -64,11 +66,10 @@ check_upload <- function(df, pool) {
 
 #' @rdname upload
 #' @export
-check_missing_var <- function(df, conf, pool) {
+check_missing_var <- function(registry, df, conf, pool) {
 
   fail <- TRUE
-  report <- setdiff(conf$db$tab$data$insert[conf$upload$data_var_ind],
-                    names(df))
+  report <- setdiff(conf$upload$file$vars, names(df))
   if (length(report) == 0) {
     fail <- FALSE
   }
@@ -77,11 +78,10 @@ check_missing_var <- function(df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_invalid_var <- function(df, conf, pool) {
+check_invalid_var <- function(registry, df, conf, pool) {
 
   fail <- TRUE
-  report <- setdiff(names(df),
-                    conf$db$tab$data$insert[conf$upload$data_var_ind])
+  report <- setdiff(names(df), conf$upload$file$vars)
   if (length(report) == 0) {
     fail <- FALSE
   }
@@ -91,11 +91,11 @@ check_invalid_var <- function(df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_invalid_org <- function(df, conf, pool) {
+check_invalid_org <- function(registry, df, conf, pool) {
 
   fail <- TRUE
-  if ("OrgNrShus" %in% names(df)) {
-    report <- setdiff(df$OrgNrShus, get_org(pool)$OrgNrShus)
+  if ("orgnr" %in% names(df)) {
+    report <- setdiff(df$orgnr, get_all_orgnr(pool)$orgnr)
   } else {
     report <- "Field missing"
   }
@@ -108,13 +108,13 @@ check_invalid_org <- function(df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_invalid_ind <- function(df, conf, pool) {
+check_invalid_ind <- function(registry, df, conf, pool) {
 
   fail <- TRUE
-  registry <- df$Register[1]
-  if ("KvalIndID" %in% names(df)) {
-    report <- setdiff(df$KvalIndID,
-                      get_registry_indicators(pool, registry)$IndID)
+
+  if ("ind_id" %in% names(df)) {
+    report <- setdiff(df$ind_id,
+                      get_registry_indicators(pool, registry)$id)
   } else {
     report <- "Field missing"
   }
@@ -127,12 +127,12 @@ check_invalid_ind <- function(df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_none_numeric_var <- function(df, conf, pool) {
+check_none_numeric_var <- function(registry, df, conf, pool) {
 
   fail <- TRUE
   report <- ""
-  if ("Variabel" %in% names(df)) {
-    if (is.numeric(df$Variabel)) {
+  if ("var" %in% names(df)) {
+    if (is.numeric(df$var)) {
       fail <- FALSE
     }
   } else {
@@ -144,7 +144,7 @@ check_none_numeric_var <- function(df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_duplicate_delivery <- function(df, conf, pool) {
+check_duplicate_delivery <- function(registry, df, conf, pool) {
 
   fail <- delivery_exist_in_db(pool, df)
   report <- ""
@@ -162,12 +162,8 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
   df <- read.csv(path, header = TRUE, sep = sep, dec = dec,
                  fileEncoding = encoding)
 
-  if ("Register" %in% names(df)) {
-    df <- df[, !(names(df) %in% c("Register"))]
-  }
-
-  if (!"nevner" %in% names(df)) {
-    df <- cbind(df, nevner = NA)
+  if (!"denominator" %in% names(df)) {
+    df <- cbind(df, denominator = 1L)
   }
 
   df

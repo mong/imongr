@@ -4,17 +4,20 @@
 \alias{ops}
 \alias{get_user_data}
 \alias{get_user_id}
+\alias{get_user_registries}
+\alias{get_user_registry_select}
 \alias{get_user_latest_delivery_id}
 \alias{get_registry_data}
+\alias{get_indicators_registry}
 \alias{md5_checksum}
 \alias{delivery_exist_in_db}
 \alias{retire_user_deliveries}
+\alias{delete_indicator_data}
 \alias{delete_registry_data}
 \alias{delete_agg_data}
 \alias{insert_data}
 \alias{insert_agg_data}
 \alias{get_all_user_data}
-\alias{get_user_registries}
 \alias{get_user_deliveries}
 \title{Functions for data operations in imongr}
 \usage{
@@ -26,17 +29,23 @@ get_user_id(pool)
 
 get_user_registries(pool)
 
+get_user_registry_select(pool)
+
 get_user_deliveries(pool)
 
 get_user_latest_delivery_id(pool)
 
 get_registry_data(pool, registry)
 
+get_indicators_registry(pool, indicator)
+
 md5_checksum(df)
 
 delivery_exist_in_db(pool, df)
 
 retire_user_deliveries(pool)
+
+delete_indicator_data(pool, df)
 
 delete_registry_data(pool, df)
 
@@ -49,7 +58,9 @@ insert_agg_data(pool, df)
 \arguments{
 \item{pool}{Database connection pool object}
 
-\item{registry}{Character registry name}
+\item{registry}{Integer registry id}
+
+\item{indicator}{Character vector of indicator ids}
 
 \item{df}{Data frame of relevant data}
 }

@@ -87,9 +87,12 @@ test_that("error is provided when the current user is not in db", {
 
 ## then onto some content from package ready-made data
 if (is.null(check_db(is_test_that = FALSE))) {
+  insert_tab(pool, table = "nation", df = imongr::nation)
+  insert_tab(pool, table = "rhf", df = imongr::rhf)
+  insert_tab(pool, table = "hf", df = imongr::hf)
+  insert_tab(pool, table = "hospital", df = imongr::hospital)
   insert_tab(pool, table = "registry", df = imongr::registry)
-  insert_tab(pool, table = "org", df = imongr::org)
-  insert_tab(pool, table = "indicator", df = imongr::indicator)
+  insert_tab(pool, table = "ind", df = imongr::ind)
   insert_tab(pool, table = "user", df = imongr::user)
   insert_tab(pool, table = "user_registry", df = imongr::user_registry)
   insert_tab(pool, table = "delivery", df = imongr::delivery)
@@ -114,26 +117,29 @@ test_that("a consistent md5 checksum of a data frame can be provided", {
                "ed91fb7bafe2bd55f90522e1104a13f1")
 })
 
+conf <- get_config()
 test_that("no (real) delivery has been made yet", {
   check_db()
   expect_false(delivery_exist_in_db(pool, df = imongr::data[1:100, ]))
 })
 
+### data frame for re-use next two tests
+df <- imongr::data[1:100, ]
+df_var_ind <- names(df) %in% conf$db$tab$data$insert[conf$upload$data_var_ind]
+df <- df[, df_var_ind]
+
 ### make a delivery
 if (is.null(check_db(is_test_that = FALSE))) {
-  insert_data(pool, df = imongr::data[1:100, c(1:7, 9)])
+  insert_data(pool, df)
 }
 
 test_that("the delivery has alrady been made", {
   check_db()
-  expect_error(insert_data(pool, df = imongr::data[1:100, c(1:7, 9)]))
+  expect_error(
+    insert_data(pool, df)
+  )
 })
 
-test_that("existing org will not be (re-)created", {
-  check_db()
-  expect_equal(create_imongr_org(pool, df = imongr::org[1, ]),
-               "Organization already exists. Nothing to do!")
-})
 
 test_that("existing user will not be (re-)created", {
   check_db()
@@ -156,16 +162,10 @@ test_that("error on delete when no 'Register' or several registries", {
 
 test_that("data from a registry can be fetched", {
   check_db()
-  registry <- levels(as.factor(imongr::data[1:100, ]$Register))[1]
+  registry <- levels(as.factor(imongr::registry$id))[1]
   expect_equal(class(get_registry_data(pool, registry)), "data.frame")
 })
 
-test_that("a new organization can be created", {
-  check_db()
-  df <- imongr::org[1, ]
-  df$OrgNrShus <- 10000000 # nolint
-  expect_true(create_imongr_org(pool, df))
-})
 
 test_that("a new user can be created", {
   check_db()
@@ -181,9 +181,11 @@ test_that("a new user can be created", {
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
+  conf <- get_config()
   pool::dbExecute(pool,
-                  paste("DROP TABLE data, user_registry, delivery,",
-                        "user, org, indicator, registry, agg_data;"))
+                  paste("DROP TABLE",
+                        paste(names(conf$db$tab), collapse = ", "), ";")
+  )
 }
 ## if db dropped on travis the coverage reporting will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&

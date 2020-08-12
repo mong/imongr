@@ -14,27 +14,29 @@
 \alias{sample_df}
 \title{Title}
 \usage{
-check_report(df, pool)
+check_report(registry, df, pool)
 
-check_upload(df, pool)
+check_upload(registry, df, pool)
 
-check_missing_var(df, conf, pool)
+check_missing_var(registry, df, conf, pool)
 
-check_invalid_var(df, conf, pool)
+check_invalid_var(registry, df, conf, pool)
 
-check_invalid_org(df, conf, pool)
+check_invalid_org(registry, df, conf, pool)
 
-check_invalid_ind(df, conf, pool)
+check_invalid_ind(registry, df, conf, pool)
 
-check_none_numeric_var(df, conf, pool)
+check_none_numeric_var(registry, df, conf, pool)
 
-check_duplicate_delivery(df, conf, pool)
+check_duplicate_delivery(registry, df, conf, pool)
 
 csv_to_df(path, sep = ",", dec, encoding = "UTF-8")
 
 sample_df(df, skip = c(""), n, random = FALSE)
 }
 \arguments{
+\item{registry}{Integer registry id}
+
 \item{df}{Data frame}
 
 \item{pool}{Data base pool object}

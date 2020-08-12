@@ -75,9 +75,12 @@ insert_sample_data <- function(include_data_table = TRUE) {
 
   pool <- make_pool()
 
+  insert_tab(pool, table = "nation", df = imongr::nation)
+  insert_tab(pool, table = "rhf", df = imongr::rhf)
+  insert_tab(pool, table = "hf", df = imongr::hf)
+  insert_tab(pool, table = "hospital", df = imongr::hospital)
   insert_tab(pool, table = "registry", df = imongr::registry)
-  insert_tab(pool, table = "org", df = imongr::org)
-  insert_tab(pool, table = "indicator", df = imongr::indicator)
+  insert_tab(pool, table = "ind", df = imongr::ind)
   insert_tab(pool, table = "user", df = imongr::user)
   insert_tab(pool, table = "user_registry", df = imongr::user_registry)
   insert_tab(pool, table = "delivery", df = imongr::delivery)
@@ -106,7 +109,7 @@ delete_all_data <- function(prompt = TRUE) {
   if (ans == "YES") {
     conf <- get_config()
     tabs <- names(conf$db$tab)
-    query <- "DROP TABLE "
+    query <- "DROP TABLE IF EXISTS "
     pool <- make_pool()
     message("...dropping tables...")
     for (i in seq_len(length(tabs))) {

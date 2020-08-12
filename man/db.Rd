@@ -11,8 +11,10 @@
 \alias{get_delivery}
 \alias{get_user}
 \alias{get_user_registry}
-\alias{get_org}
 \alias{get_indicator}
+\alias{get_flat_org}
+\alias{get_all_orgnr}
+\alias{get_org}
 \alias{get_registry_indicators}
 \alias{get_registry}
 \title{Low level database functions for imongr}
@@ -42,6 +44,10 @@ get_indicator(pool, sample = NA)
 get_registry_indicators(pool, registry)
 
 get_registry(pool, sample = NA)
+
+get_flat_org(pool)
+
+get_all_orgnr(pool)
 }
 \arguments{
 \item{pool}{a database connection pool object}
@@ -54,7 +60,7 @@ get_registry(pool, sample = NA)
 size, \emph{e.g.} when \code{sample = 0.1} approximately 10\% of
 observations are returned. Default is \code{NA} which will return all data}
 
-\item{registry}{Character string defining registry}
+\item{registry}{Integer defining registry id}
 }
 \value{
 Database pool object, data frame or status message

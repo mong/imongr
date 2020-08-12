@@ -94,9 +94,12 @@ test_that("test tables can be indexed", {
 
 test_that("database can be populated with test data", {
   check_db()
+  expect_true(insert_tab(pool, table = "nation", df = imongr::nation))
+  expect_true(insert_tab(pool, table = "rhf", df = imongr::rhf))
+  expect_true(insert_tab(pool, table = "hf", df = imongr::hf))
+  expect_true(insert_tab(pool, table = "hospital", df = imongr::hospital))
   expect_true(insert_tab(pool, table = "registry", df = imongr::registry))
-  expect_true(insert_tab(pool, table = "org", df = imongr::org))
-  expect_true(insert_tab(pool, table = "indicator", df = imongr::indicator))
+  expect_true(insert_tab(pool, table = "ind", df = imongr::ind))
   expect_true(insert_tab(pool, table = "user", df = imongr::user))
   expect_true(insert_tab(pool, table = "user_registry",
                          df = imongr::user_registry))
@@ -146,23 +149,22 @@ test_that("user data can be fetched from test database", {
   expect_true(dim(get_user(pool, sample = .9))[1] <= dim(imongr::user)[1])
 })
 
-test_that("org data can be fetched from test database", {
-  check_db()
-  expect_equal(dim(get_org(pool))[1], dim(imongr::org)[1])
-  expect_true(dim(get_org(pool, sample = .1))[1] < dim(imongr::org)[1])
-})
-
 test_that("indicator data can be fetched from test database", {
   check_db()
-  expect_equal(dim(get_indicator(pool)), dim(imongr::indicator))
+  expect_equal(dim(get_indicator(pool)), dim(imongr::ind))
   expect_true(
-    dim(get_indicator(pool, sample = .1))[1] < dim(imongr::indicator)[1]
+    dim(get_indicator(pool, sample = .1))[1] < dim(imongr::ind)[1]
   )
+})
+
+test_that("registry name can be fetched from test database", {
+  check_db()
+  expect_equal(class(get_registry_name(pool, 1)), "character")
 })
 
 test_that("registries and indicators per registry can be fetched", {
   check_db()
-  registries <- levels(as.factor(imongr::data$Register))
+  registries <- unique(imongr::registry$id)
   expect_equal(class(get_registry_indicators(pool, registries[1])),
                "data.frame")
   expect_equal(class(get_registry(pool)), "data.frame")
@@ -187,7 +189,7 @@ test_that("aggregated data can be fetched from test database", {
 
 test_that("get_table wrapper function do work", {
   check_db()
-  expect_equal(class(get_table(pool, "org")), "data.frame")
+  expect_equal(class(get_table(pool, "user")), "data.frame")
 })
 
 test_that("pool cannot be established when missing credentials", {
@@ -209,8 +211,9 @@ test_that("pool cannot be established when missing credentials", {
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool,
-                  paste("DROP TABLE data, user_registry, delivery,",
-                        "user, org, indicator, registry, agg_data;"))
+                  paste("DROP TABLE",
+                        paste(names(conf$db$tab), collapse = ", "), ";")
+  )
 }
 
 ## if db dropped on travis the following coverage will fail...

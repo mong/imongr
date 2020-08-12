@@ -25,17 +25,6 @@ check_db <- function(is_test_that = TRUE) {
   }
 }
 
-# make a sample df to be used for the remaining tests
-df <- data.frame(Aar = 2016,
-                 ShNavn = "UNN-Tromsoe",
-                 ReshId = 601225,
-                 OrgNrShus = 974795787,
-                 Variabel = 0,
-                 nevner = NA,
-                 KvalIndID = "norgast1",
-                 Register = "norgast")
-
-
 # For the remianing tests we need a test database
 ## first off with no data
 if (is.null(check_db(is_test_that = FALSE))) {
@@ -65,14 +54,11 @@ if (is.null(check_db(is_test_that = FALSE))) {
 conf <- get_config()
 
 # make a sample df
-df <- data.frame(Aar = 2016,
-                 ShNavn = "UNN-Tromsoe",
-                 ReshId = 601225,
-                 OrgNrShus = 974795787,
-                 Variabel = 0,
-                 nevner = NA,
-                 KvalIndID = "norgast1",
-                 Register = "norgast")
+df <- data.frame(year = 2018,
+                 orgnr = 974633574,
+                 ind_id = "norgast_andel_avdoede_bykspytt_tolv",
+                 var = 0,
+                 denominator = 1)
 
 # we need a user and groups defined
 Sys.setenv(SHINYPROXY_USERNAME = "mongr")
@@ -97,9 +83,10 @@ test_that("select list of registries is provided (if any)", {
 
 test_that("submit ui is provided", {
   check_db()
-  expect_null(submit_ui(conf, pool, NULL, "norgast", df))
+  expect_null(submit_ui(conf, pool, NULL, 10, df))
   expect_equal(class(
-    submit_ui(conf, pool, TRUE, "norgast", df[, !names(df) %in% "nevner"]))[1],
+    submit_ui(conf, pool, TRUE, 10,
+              df[, !names(df) %in% c("denominator", "registry_id")]))[1],
     "shiny.tag.list"
   )
 })
@@ -109,16 +96,16 @@ test_that("error report is provided", {
   expect_null(error_report_ui(pool, df, NULL, "norgast"))
   expect_equal(class(
     error_report_ui(pool, df[, !names(df) %in% c("nevner", "Register")], TRUE,
-                    "norgast")),
+                    10)),
     "character"
   )
 })
 
 test_that("upload sample text is provided", {
   check_db()
-  expect_null(upload_sample_text_ui(pool, conf, NULL, "norgast"))
+  expect_null(upload_sample_text_ui(pool, conf, NULL, 4))
   expect_equal(class(
-    upload_sample_text_ui(pool, conf, TRUE, "norgast")),
+    upload_sample_text_ui(pool, conf, TRUE, 4)),
     "character"
   )
 })
@@ -139,8 +126,9 @@ test_that("text for var doc ui is provided", {
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool,
-                  paste("DROP TABLE data, user_registry, delivery,",
-                        "user, org, indicator, registry, agg_data;"))
+                  paste("DROP TABLE",
+                        paste(names(conf$db$tab), collapse = ", "), ";")
+  )
 }
 ## if db dropped on travis the coverage reporting will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&

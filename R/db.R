@@ -15,7 +15,7 @@
 #' kept in order.
 #'
 #' @param pool a database connection pool object
-#' @param registry Character string defining registry
+#' @param registry Integer defining registry id
 #' @param table string defining target database table
 #' @param sample Numeric in the range 0 to 1 defining the relative sub-sample
 #' size, \emph{e.g.} when \code{sample = 0.1} approximately 10\% of
@@ -24,7 +24,8 @@
 #' @return Database pool object, data frame or status message
 #' @name db
 #' @aliases make_pool drain_pool insert_tab get_table get_agg_data get_data
-#' get_delivery get_user get_user_registry
+#' get_delivery get_user get_user_registry get_indicator
+#' get_flat_org get_all_orgnr
 NULL
 
 #' @rdname db
@@ -252,9 +253,9 @@ get_indicator <- function(pool, sample = NA) {
   conf <- get_config()
   query <- paste0("
 SELECT
-  ", paste0(conf$db$tab$indicator$insert, collapse = ",\n "), "
+  ", paste0(conf$db$tab$ind$insert, collapse = ",\n "), "
 FROM
-  indicator")
+  ind")
 
   if (!is.na(sample) && sample > 0 && sample < 1) {
     query <- paste(query, "\nWHERE\n  RAND() <", sample)
@@ -263,17 +264,18 @@ FROM
   pool::dbGetQuery(pool, query)
 }
 
+
 #' @rdname db
 #' @export
 get_registry_indicators <- function(pool, registry) {
 
   query <- paste0("
 SELECT
-  IndID
+  id
 FROM
-  indicator
+  ind
 WHERE
-  Register='", registry, "';"
+  registry_id=", registry, ";"
   )
 
   pool::dbGetQuery(pool, query)
@@ -293,6 +295,51 @@ FROM
   if (!is.na(sample) && sample > 0 && sample < 1) {
     query <- paste(query, "\nWHERE\n  RAND() <", sample)
   }
+
+  pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname db
+#' @export
+get_flat_org <- function(pool) {
+
+  conf <- get_config()
+  suffix <- conf$aggregate$orgnr$suffix
+  query <- paste0("
+SELECT
+  hos.short_name AS ", conf$aggregate$unit_level$hospital, ",
+  hos.orgnr AS ", paste0(suffix, conf$aggregate$unit_level$hospital), ",
+  h.short_name AS ", conf$aggregate$unit_level$hf, ",
+  h.orgnr AS ", paste0(suffix, conf$aggregate$unit_level$hf), ",
+  r.short_name AS ", conf$aggregate$unit_level$rhf, ",
+  r.orgnr AS ", paste0(suffix, conf$aggregate$unit_level$rhf), ",
+  n.short_name AS ", conf$aggregate$unit_level$national, ",
+  n.orgnr AS ", paste0(suffix, conf$aggregate$unit_level$national), "
+FROM
+  hospital hos
+LEFT JOIN hf h ON hos.hf_orgnr= h.orgnr
+LEFT JOIN rhf r ON h.rhf_orgnr = r.orgnr
+LEFT JOIN nation n ON r.nation_orgnr = n.orgnr;"
+  )
+
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db
+#' @export
+get_all_orgnr <- function(pool) {
+
+  query <- "
+SELECT orgnr, 'hospital' AS unit_level FROM hospital
+UNION
+SELECT orgnr, 'hf' AS unit_level FROM hf
+UNION
+SELECT orgnr, 'rhf' AS unit_level FROM rhf
+UNION
+SELECT orgnr, 'national' AS unit_level FROM nation
+  "
 
   pool::dbGetQuery(pool, query)
 }
