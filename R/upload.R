@@ -113,7 +113,6 @@ check_invalid_ind <- function(registry, df, conf, pool) {
   fail <- TRUE
 
   if ("ind_id" %in% names(df)) {
-    indicator <- unique(df$ind_id)
     report <- setdiff(df$ind_id,
                       get_registry_indicators(pool, registry)$id)
   } else {

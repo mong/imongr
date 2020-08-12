@@ -36,4 +36,3 @@ WHERE
     pool::dbGetQuery(pool, query)$name
   }
 }
-
