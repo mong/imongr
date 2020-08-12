@@ -113,28 +113,22 @@ get_user_deliveries <- function(pool) {
 
   query <- paste0("
 SELECT
-  d.time AS Dato,
-  d.time AS Tid,
-  r.name AS Register,
-  SUBSTRING(d.md5_checksum, 1, 7) as Referanse
+  delivery.time AS Dato,
+  delivery.time AS Tid,
+  SUBSTRING(delivery.md5_checksum, 1, 7) as Referanse,
+  GROUP_CONCAT(DISTINCT data.ind_id SEPARATOR ',\n') AS Indikatorer
 FROM
-  delivery d
+  data
 LEFT JOIN
-  user u
+  delivery
 ON
-  d.user_id=u.id
-LEFT JOIN
-  user_registry ur
-ON
-  u.id=ur.user_id
-LEFT JOIN
-  registry r
-ON
-  ur.registry_id=r.id
+  data.delivery_id=delivery.id
 WHERE
-  d.user_id=", get_user_id(pool), "
+  delivery.user_id=", get_user_id(pool), "
+GROUP BY
+  data.delivery_id
 ORDER BY
-  d.time DESC;")
+  delivery.time DESC;")
 
   df <- pool::dbGetQuery(pool, query)
 
