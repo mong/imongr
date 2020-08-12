@@ -1,3 +1,13 @@
+# imongr 0.5.0
+
+* redesign of data model
+* delivery depending on indicator(s) rather than registry
+* interdependence of indicators, primarily for dg
+
+# imongr 0.4.2
+
+* shiny package from CRAN (and not latest from github)
+
 # imongr 0.4.1
 
 * fix bug in data aggregation
