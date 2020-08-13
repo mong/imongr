@@ -64,7 +64,7 @@ version_info <- function(newline = "<br>") {
 no_opt_out_ok <- function() {
 
   conf <- get_config()
-  msg <- conf$app_text$info$action_button$no_opt_out_ok
+  msg <- conf$app_text$action_button$no_opt_out_ok
   sample(msg, 1)
 
 }

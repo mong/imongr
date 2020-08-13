@@ -42,12 +42,15 @@ profile_ui <- function(conf, pool, valid_user, iusr, igrs) {
 
 #' @rdname server_output
 #' @export
-select_registry_ui <- function(conf, pool) {
+select_registry_ui <- function(pool, conf, input_id) {
   regs <- get_user_registry_select(pool)
+  label <- conf$app_text$select$registry$ok
   if (length(regs) == 0) {
-    regs <- c(conf$upload$fail)
+    label <- conf$app_text$select$registry$missing
+  } else {
+
   }
-  shiny::selectInput("registry", "Velg register:", regs)
+  shiny::selectInput(input_id, label, regs)
 }
 
 

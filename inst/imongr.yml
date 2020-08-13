@@ -32,19 +32,25 @@ app_text:
       Please find the full lisence here:
       <a href="https://mong.github.io/imongr/LICENSE.html">https://mong.github.io/imongr/LICENSE.html</a><br>
       <br>
-    action_button:
-      no_opt_out_ok:
-      - Den er grei
-      - Om du sier det, så
-      - Ok, da
-      - Javel, da
-      - Ja, da er det vel sånn
-      - Fint
-      - Flott!
-      - Klart
-      - Mottatt
-      - Akkurat
-      - Livet er herlig!
+  select:
+    registry:
+      ok: |-
+        Velg register:
+      missing: |-
+        Ingen registre? Kontakt SKDE!
+  action_button:
+    no_opt_out_ok:
+    - Den er grei
+    - Om du sier det, så
+    - Ok, da
+    - Javel, da
+    - Ja, da er det vel sånn
+    - Fint
+    - Flott!
+    - Klart
+    - Mottatt
+    - Akkurat
+    - Livet er herlig!
 db:
   host: env
   name: env
