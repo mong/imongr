@@ -36,7 +36,7 @@
 #' in a data frame
 #' @return Data frame in raw, grouped or aggregated form
 #' @name aggregate
-#' @aliases agg add_unit_id make_group compute_group compute_indicator_mean
+#' @aliases agg make_group compute_group compute_indicator_mean
 #' compute_indicator_median get_indicator_level
 NULL
 
@@ -80,21 +80,6 @@ agg <- function(df, org, ind) {
   agg
 }
 
-#' @rdname aggregate
-#' @export
-add_unit_id <- function(df, org) {
-
-  df <- df %>%
-    dplyr::left_join(
-      org %>%
-        dplyr::select(
-          .data[["OrgNrShus"]],
-          .data[["OrgNrHF"]],
-          .data[["OrgNrRHF"]]
-        ),
-      by = "OrgNrShus"
-    )
-}
 
 #' @rdname aggregate
 #' @export
