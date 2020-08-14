@@ -2,7 +2,6 @@
 
 export("%>%")
 export(.data)
-export(add_unit_id)
 export(adminer_url)
 export(agg)
 export(app_server)

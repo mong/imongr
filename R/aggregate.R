@@ -36,7 +36,7 @@
 #' in a data frame
 #' @return Data frame in raw, grouped or aggregated form
 #' @name aggregate
-#' @aliases agg make_group compute_group compute_indicator_mean
+#' @aliases agg agg_from_level make_group compute_group compute_indicator_mean
 #' compute_indicator_median get_indicator_level
 NULL
 
@@ -54,19 +54,55 @@ agg <- function(df, org, ind) {
                 ". Cannot go on!"))
   }
 
-  # now, data contains orgnr independent of unit level
-  # temporary workaround until aggregation is redefined
-  df <- dplyr::left_join(df, org, by = c("orgnr" = "orgnr_hospital"))
-  names(df)[names(df) == "orgnr"] <- "orgnr_hospital"
+ unit_levels <- unique(df$unit_level)
 
-  groups <- paste0(conf$aggregate$orgnr$suffix, conf$aggregate$unit_level)
-  unit_levels <- unlist(conf$aggregate$unit_level, use.names = FALSE)
+ aggs <- data.frame()
+ for (i in seq_len(length(unit_levels))) {
+   agg <- agg_from_level(df[df$unit_level == unit_levels[i], ], org, ind, conf,
+                         conf$aggregate$unit_level[[unit_levels[i]]]$level)
+   aggs <- rbind(aggs, agg)
+ }
+
+ aggs <- aggs %>%
+   dplyr::group_by(year, ind_id, orgnr) %>%
+   dplyr::summarise(var = sum(var),
+                    denominator = sum(denominator),
+                    unit_level = unique(unit_level),
+                    unit_name = unique(unit_name)) %>%
+   dplyr::ungroup() %>%
+   as.data.frame()
+
+}
+
+agg_from_level <- function(df, org, ind, conf, from_level) {
+
+  all_unit_levels <- names(conf$aggregate$unit_level)
+  unit_levels <- all_unit_levels[from_level:length(all_unit_levels)]
+  groups <- paste0(conf$aggregate$orgnr$prefix, unit_levels)
+
+  # data must be singel level only
+  data_level <- unique(df$unit_level)
+  stopifnot(length(data_level) == 1)
+
+  # level as defined in data must correspond to requested from_level
+  stopifnot(data_level == all_unit_levels[from_level])
+
+  # rename orgnr var in data corresponing to this level
+  names(df)[names(df) == "orgnr"] <- groups[1]
+
+  # join in flat org from this level and up
+  org <- org[, names(org) %in% c(unit_levels, groups)]
+  df <- dplyr::left_join(df, org, by = groups[1])
 
   agg <- data.frame()
 
   for (i in seq_len(length(groups))) {
-    idf <- make_group(df, group = groups[i])
-    idf <- compute_group(idf, ind)
+    print(paste("Aggregating unit level", unit_levels[i]))
+    idf <- df %>%
+      dplyr::group_by(.data[["year"]], .data[["ind_id"]], .data[[groups[i]]])
+    idf <- dplyr::summarise(idf, var = sum(var), denominator = sum(denominator))
+    #idf <- make_group(df, group = groups[i])
+    #idf <- compute_group(idf, ind)
     idf$unit_level <- rep(unit_levels[i], dim(idf)[1])
     this_org <- org %>%
       dplyr::select(.data[[groups[i]]], .data[[unit_levels[i]]]) %>%
@@ -74,12 +110,23 @@ agg <- function(df, org, ind) {
     idf <- dplyr::left_join(idf, this_org, by = groups[i])
     names(idf)[names(idf) == groups[i]] <- "orgnr"
     names(idf)[names(idf) == unit_levels[i]] <- "unit_name"
+    idf <- idf %>%
+      dplyr::ungroup() %>%
+      as.data.frame()
     agg <- rbind(agg, idf)
   }
 
   agg
+
 }
 
+agg_sum <- function(aggs, levels) {
+
+}
+
+agg_residual <- function() {
+
+}
 
 #' @rdname aggregate
 #' @export

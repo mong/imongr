@@ -3,7 +3,7 @@
 \name{aggregate}
 \alias{aggregate}
 \alias{agg}
-\alias{add_unit_id}
+\alias{agg_from_level}
 \alias{make_group}
 \alias{compute_group}
 \alias{compute_indicator_mean}
@@ -12,8 +12,6 @@
 \title{Aggregate hospital data}
 \usage{
 agg(df, org, ind)
-
-add_unit_id(df, org)
 
 make_group(df, group = "")
 

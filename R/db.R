@@ -305,17 +305,17 @@ FROM
 get_flat_org <- function(pool) {
 
   conf <- get_config()
-  suffix <- conf$aggregate$orgnr$suffix
+  prefix <- conf$aggregate$orgnr$prefix
   query <- paste0("
 SELECT
   hos.short_name AS ", conf$aggregate$unit_level$hospital, ",
-  hos.orgnr AS ", paste0(suffix, conf$aggregate$unit_level$hospital), ",
+  hos.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$hospital), ",
   h.short_name AS ", conf$aggregate$unit_level$hf, ",
-  h.orgnr AS ", paste0(suffix, conf$aggregate$unit_level$hf), ",
+  h.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$hf), ",
   r.short_name AS ", conf$aggregate$unit_level$rhf, ",
-  r.orgnr AS ", paste0(suffix, conf$aggregate$unit_level$rhf), ",
+  r.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$rhf), ",
   n.short_name AS ", conf$aggregate$unit_level$national, ",
-  n.orgnr AS ", paste0(suffix, conf$aggregate$unit_level$national), "
+  n.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$national), "
 FROM
   hospital hos
 LEFT JOIN hf h ON hos.hf_orgnr= h.orgnr

@@ -249,12 +249,23 @@ aggregate:
   - 6
   - 7
   unit_level:
-    hospital: hospital
-    hf: hf
-    rhf: rhf
-    national: national
+    hospital:
+      name: hospital
+      level: 1
+    hf:
+      name: hf
+      level: 2
+    rhf:
+      name: rhf
+      level: 3
+    national:
+      name: national
+      level: 4
+  type:
+    mean: andel
+    median: NA
   orgnr:
-    suffix: orgnr_
+    prefix: orgnr_
 download:
   tab:
   - data
