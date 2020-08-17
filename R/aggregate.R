@@ -36,8 +36,8 @@
 #' in a data frame
 #' @return Data frame in raw, grouped or aggregated form
 #' @name aggregate
-#' @aliases agg agg_from_level make_group compute_group compute_indicator_mean
-#' compute_indicator_median get_indicator_level
+#' @aliases agg agg_from_level agg_residual agg_udef make_group compute_group
+#' compute_indicator_mean compute_indicator_median get_indicator_level
 NULL
 
 #' @rdname aggregate
@@ -54,23 +54,46 @@ agg <- function(df, org, ind) {
                 ". Cannot go on!"))
   }
 
- unit_levels <- unique(df$unit_level)
+  unit_levels <- unique(df$unit_level)
 
- aggs <- data.frame()
- for (i in seq_len(length(unit_levels))) {
-   agg <- agg_from_level(df[df$unit_level == unit_levels[i], ], org, ind, conf,
-                         conf$aggregate$unit_level[[unit_levels[i]]]$level)
-   aggs <- rbind(aggs, agg)
- }
+  # aggregate each level
+  aggs <- data.frame()
+  for (i in seq_len(length(unit_levels))) {
+    agg <- agg_from_level(df[df$unit_level == unit_levels[i], ], org, ind, conf,
+                          conf$aggregate$unit_level[[unit_levels[i]]]$level)
+    aggs <- rbind(aggs, agg)
+  }
 
- aggs <- aggs %>%
-   dplyr::group_by(year, ind_id, orgnr) %>%
-   dplyr::summarise(var = sum(var),
-                    denominator = sum(denominator),
-                    unit_level = unique(unit_level),
-                    unit_name = unique(unit_name)) %>%
-   dplyr::ungroup() %>%
-   as.data.frame()
+  # sum over levels (i.e. organizations)
+  aggs <- aggs %>%
+    dplyr::group_by(year, ind_id, orgnr) %>%
+    dplyr::summarise(var = sum(var),
+                     denominator = sum(denominator),
+                     unit_level = unique(unit_level),
+                     unit_name = unique(unit_name)) %>%
+    dplyr::ungroup() %>%
+    as.data.frame()
+
+  # find diffs between levels (if any, to be placed in undefined orgs)
+  diff <- agg_residual(aggs, conf)
+
+  # place residuals in undefined orgs (diffs < 0 will be added to above level)
+  if (dim(diff)[1] > 0) {
+    udef <- agg_udef(diff, conf)
+  } else {
+    udef <- aggs[FALSE, ]
+  }
+
+  # add undefined, if any
+  aggs <- rbind(aggs, udef)
+
+  # fake vars not processed yet
+  aggs <- aggs %>%
+    dplyr::rename(count = denominator)
+  aggs$level <- "T"
+  aggs$desired_level <- "Test"
+
+  aggs
 
 }
 
@@ -120,12 +143,88 @@ agg_from_level <- function(df, org, ind, conf, from_level) {
 
 }
 
-agg_sum <- function(aggs, levels) {
+agg_sum <- function() {
 
 }
 
-agg_residual <- function() {
+agg_residual <- function(aggs, conf) {
 
+  # diff sum levels
+  print("Finding residuals...")
+  sum_unit_level <- aggs %>%
+    dplyr::group_by(year, ind_id, unit_level) %>%
+    dplyr::summarise(var = sum(var),
+                     denominator = sum(denominator))
+
+  ## find diffs descending from top level
+  level <- vector()
+  name <- vector()
+  for (i in seq_len(length(conf$aggregate$unit_level))) {
+    this_unit <-
+      conf$aggregate$unit_level[[names(conf$aggregate$unit_level[i])]]
+    level <- c(level, this_unit$level)
+    name <- c(name, this_unit$name)
+  }
+  desc <-
+    data.frame(name = name, level = level)[order(level, decreasing = TRUE), ]
+  diff <- data.frame()
+  for (i in seq_len(dim(desc)[1] - 1)) {
+    l0 <- sum_unit_level %>%
+      dplyr::filter(unit_level == desc$name[i])
+    l1 <- sum_unit_level %>%
+      dplyr::filter(unit_level == desc$name[i + 1])
+    l1$var_diff <- l0$var - l1$var
+    l1$denominator_diff <- l0$denominator - l1$denominator
+    if (i == 1) {
+      diff <- l1
+    } else {
+      diff <- rbind(diff, l1)
+    }
+  }
+
+  # remove rows with no residuals
+  ind <- diff$var_diff == 0 & diff$denominator_diff == 0
+  as.data.frame(diff[!ind, ])
+
+}
+
+agg_udef <- function(diff, conf) {
+
+  if (any(diff$denominator_diff == 0)) {
+    stop(paste("Got data where denominator difference is 0.",
+               "This must be an error. Stopping!"))
+  }
+  # prep descending name-level data frame
+  level <- vector()
+  name <- vector()
+  for (i in seq_len(length(conf$aggregate$unit_level))) {
+    this_unit <-
+      conf$aggregate$unit_level[[names(conf$aggregate$unit_level[i])]]
+    level <- c(level, this_unit$level)
+    name <- c(name, this_unit$name)
+  }
+  unit <-
+    data.frame(name = name, level = level,
+               stringsAsFactors = FALSE)[order(level), ]
+
+  # add orgnr column to diff data
+  diff <- cbind(diff, orgnr = NA)
+
+  for (i in seq_len(dim(unit)[1] - 1)) {
+    idiff <- diff[diff$unit_level == unit$name[i], ]
+    u0 <- idiff %>%
+      dplyr::filter(denominator_diff > 0)
+    u1 <- idiff %>%
+      dplyr::filter(denominator_diff < 0)
+    u0$orgnr <- conf$aggregate$orgnr$undefined[[unit$name[i]]]
+    u1$orgnr <- conf$aggregate$orgnr$undefined[[unit$name[i + 1]]]
+    u <- rbind(u0, u1)
+    diff[diff$unit_level == unit$name[i]]$orgnr <- u$orgnr
+  }
+
+  diff$var <- diff$var_diff
+  diff$denominator <- diff$denominator_diff
+  diff[, !names(diff) %in% c("var_diff", "denominator_diff")]
 }
 
 #' @rdname aggregate

@@ -4,6 +4,7 @@
 \alias{aggregate}
 \alias{agg}
 \alias{agg_from_level}
+\alias{agg_residual}
 \alias{make_group}
 \alias{compute_group}
 \alias{compute_indicator_mean}

@@ -308,21 +308,23 @@ get_flat_org <- function(pool) {
   prefix <- conf$aggregate$orgnr$prefix
   query <- paste0("
 SELECT
-  hos.short_name AS ", conf$aggregate$unit_level$hospital, ",
-  hos.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$hospital), ",
-  h.short_name AS ", conf$aggregate$unit_level$hf, ",
-  h.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$hf), ",
-  r.short_name AS ", conf$aggregate$unit_level$rhf, ",
-  r.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$rhf), ",
-  n.short_name AS ", conf$aggregate$unit_level$national, ",
-  n.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$national), "
+  hos.short_name AS ", conf$aggregate$unit_level$hospital$name, ",
+  hos.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$hospital$name), ",
+  h.short_name AS ", conf$aggregate$unit_level$hf$name, ",
+  h.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$hf$name), ",
+  r.short_name AS ", conf$aggregate$unit_level$rhf$name, ",
+  r.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$rhf$name), ",
+  n.short_name AS ", conf$aggregate$unit_level$nation$name, ",
+  n.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$nation$name), "
 FROM
   hospital hos
-LEFT JOIN hf h ON hos.hf_orgnr= h.orgnr
-LEFT JOIN rhf r ON h.rhf_orgnr = r.orgnr
-LEFT JOIN nation n ON r.nation_orgnr = n.orgnr;"
+LEFT JOIN hf h ON
+  hos.hf_orgnr=h.orgnr
+LEFT JOIN rhf r ON
+  h.rhf_orgnr=r.orgnr
+LEFT JOIN nation n ON
+  r.nation_orgnr=n.orgnr;"
   )
-
 
   pool::dbGetQuery(pool, query)
 }
@@ -331,15 +333,28 @@ LEFT JOIN nation n ON r.nation_orgnr = n.orgnr;"
 #' @export
 get_all_orgnr <- function(pool) {
 
-  query <- "
-SELECT orgnr, 'hospital' AS unit_level FROM hospital
+  query <- paste0("
+SELECT
+  orgnr,
+  '", conf$aggregate$unit_level$hospital$name, "' AS unit_level
+FROM
+  hospital
 UNION
-SELECT orgnr, 'hf' AS unit_level FROM hf
+SELECT
+  orgnr,
+  '", conf$aggregate$unit_level$hf$name, "' AS unit_level
+FROM
+  hf
 UNION
-SELECT orgnr, 'rhf' AS unit_level FROM rhf
+SELECT orgnr,
+  '", conf$aggregate$unit_level$rhf$name, "' AS unit_level
+FROM
+  rhf
 UNION
-SELECT orgnr, 'national' AS unit_level FROM nation
-  "
+SELECT orgnr,
+  '", conf$aggregate$unit_level$nation$name, "' AS unit_level
+FROM
+  nation;")
 
   pool::dbGetQuery(pool, query)
 }

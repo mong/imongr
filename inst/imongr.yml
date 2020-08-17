@@ -258,14 +258,19 @@ aggregate:
     rhf:
       name: rhf
       level: 3
-    national:
-      name: national
+    nation:
+      name: nation
       level: 4
   type:
     mean: andel
     median: NA
   orgnr:
     prefix: orgnr_
+    undefined:
+      hospital: 444444444
+      hf: 333333333
+      rhf: 222222222
+      nation: 111111111
 download:
   tab:
   - data
