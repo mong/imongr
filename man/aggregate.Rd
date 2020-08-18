@@ -5,6 +5,7 @@
 \alias{agg}
 \alias{agg_from_level}
 \alias{agg_residual}
+\alias{agg_udef}
 \alias{make_group}
 \alias{compute_group}
 \alias{compute_indicator_mean}
@@ -13,6 +14,10 @@
 \title{Aggregate hospital data}
 \usage{
 agg(df, org, ind)
+
+agg_from_level(df, org, ind, conf, from_level)
+
+agg_residual(aggs, conf)
 
 make_group(df, group = "")
 

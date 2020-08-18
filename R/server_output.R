@@ -2,6 +2,7 @@
 #'
 #' @param pool Data base pool object
 #' @param conf List of configuration
+#' @param input_id Character string with shiny ui id
 #' @param valid_user Logical valid user
 #' @param iusr Character string username
 #' @param igrs Character string comma separated user groups

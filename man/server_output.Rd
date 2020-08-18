@@ -36,6 +36,8 @@ var_doc_ui(conf)
 
 \item{igrs}{Character string comma separated user groups}
 
+\item{input_id}{Character string with shiny ui id}
+
 \item{upload_file}{Character string with file to upload}
 
 \item{registry}{Character string definig registry}

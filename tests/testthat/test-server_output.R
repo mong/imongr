@@ -78,7 +78,7 @@ test_that("profile_ui provides a characer string", {
 
 test_that("select list of registries is provided (if any)", {
   check_db()
-  expect_equal(class(select_registry_ui(conf, pool)), "shiny.tag")
+  expect_equal(class(select_registry_ui(pool, conf, "test")), "shiny.tag")
 })
 
 test_that("submit ui is provided", {

@@ -3,9 +3,12 @@
 \name{db_get}
 \alias{db_get}
 \alias{get_registry_name}
+\alias{get_org_name}
 \title{Retreiv data from imongr database}
 \usage{
 get_registry_name(pool, registry, full_name = FALSE)
+
+get_org_name(pool, orgnr)
 }
 \arguments{
 \item{pool}{a database connection pool object}
@@ -13,6 +16,8 @@ get_registry_name(pool, registry, full_name = FALSE)
 \item{registry}{Integer defining registry id}
 
 \item{full_name}{Logical defining if full names is to be returned}
+
+\item{orgnr}{Integer id of organization}
 }
 \value{
 Data object from database

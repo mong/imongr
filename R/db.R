@@ -333,6 +333,8 @@ LEFT JOIN nation n ON
 #' @export
 get_all_orgnr <- function(pool) {
 
+  conf <- get_config()
+
   query <- paste0("
 SELECT
   orgnr,
