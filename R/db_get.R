@@ -11,10 +11,11 @@
 #'
 #' @param pool a database connection pool object
 #' @param registry Integer defining registry id
+#' @param orgnr Integer id of organization
 #' @param full_name Logical defining if full names is to be returned
 #' @return Data object from database
 #' @name db_get
-#' @aliases get_registry_name
+#' @aliases get_registry_name get_org_name
 NULL
 
 #' @rdname db_get
@@ -35,4 +36,40 @@ WHERE
   } else {
     pool::dbGetQuery(pool, query)$name
   }
+}
+
+#' @rdname db_get
+#' @export
+get_org_name <- function(pool, orgnr) {
+
+  query <- paste0("
+SELECT
+  orgnr,
+  short_name
+FROM
+  hospital
+UNION
+SELECT
+  orgnr,
+  short_name
+FROM
+  hf
+UNION
+SELECT
+  orgnr,
+  short_name
+FROM
+  rhf
+UNION
+SELECT
+  orgnr,
+  short_name
+FROM
+  nation;")
+
+  orgs <- pool::dbGetQuery(pool, query)
+
+  orgnr <- tibble::tibble(orgnr = orgnr)
+  dplyr::left_join(orgnr, orgs, by = "orgnr")$short_name
+
 }

@@ -67,7 +67,7 @@ test_that("version info is provided for imongr", {
 test_that("opt out ok messages are provided", {
   conf <- get_config()
   expect_true(
-    no_opt_out_ok() %in% conf$app_text$info$action_button$no_opt_out_ok
+    no_opt_out_ok() %in% conf$app_text$action_button$no_opt_out_ok
   )
 })
 

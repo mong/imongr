@@ -32,19 +32,25 @@ app_text:
       Please find the full lisence here:
       <a href="https://mong.github.io/imongr/LICENSE.html">https://mong.github.io/imongr/LICENSE.html</a><br>
       <br>
-    action_button:
-      no_opt_out_ok:
-      - Den er grei
-      - Om du sier det, så
-      - Ok, da
-      - Javel, da
-      - Ja, da er det vel sånn
-      - Fint
-      - Flott!
-      - Klart
-      - Mottatt
-      - Akkurat
-      - Livet er herlig!
+  select:
+    registry:
+      ok: |-
+        Velg register:
+      missing: |-
+        Ingen registre? Kontakt SKDE!
+  action_button:
+    no_opt_out_ok:
+    - Den er grei
+    - Om du sier det, så
+    - Ok, da
+    - Javel, da
+    - Ja, da er det vel sånn
+    - Fint
+    - Flott!
+    - Klart
+    - Mottatt
+    - Akkurat
+    - Livet er herlig!
 db:
   host: env
   name: env
@@ -243,12 +249,28 @@ aggregate:
   - 6
   - 7
   unit_level:
-    hospital: hospital
-    hf: hf
-    rhf: rhf
-    national: national
+    hospital:
+      name: hospital
+      level: 1
+    hf:
+      name: hf
+      level: 2
+    rhf:
+      name: rhf
+      level: 3
+    nation:
+      name: nation
+      level: 4
+  type:
+    mean: andel
+    median: NA
   orgnr:
-    suffix: orgnr_
+    prefix: orgnr_
+    undefined:
+      hospital: 444444444
+      hf: 333333333
+      rhf: 222222222
+      nation: 111111111
 download:
   tab:
   - data

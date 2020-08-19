@@ -339,6 +339,10 @@ insert_data <- function(pool, df) {
 #' @export
 insert_agg_data <- function(pool, df) {
 
+  if (!"unit_level" %in% names(df)) {
+    df <- dplyr::left_join(df, get_all_orgnr(pool), by = "orgnr")
+  }
+
   df <- agg(df, get_flat_org(pool), get_table(pool, "indicator"))
   delete_agg_data(pool, df)
   insert_tab(pool, "agg_data", df)

@@ -106,7 +106,7 @@ app_server <- function(input, output, session) {
 
   ## ui sidebar panel
   output$select_registry <- shiny::renderUI({
-    select_registry_ui(conf, pool)
+    select_registry_ui(pool, conf, input_id = "registry")
   })
 
   output$upload_file <- shiny::renderUI({
@@ -173,11 +173,7 @@ app_server <- function(input, output, session) {
   })
 
   output$select_download_registry <- shiny::renderUI({
-    regs <- get_user_registry_select(pool)
-    if (length(regs) == 0) {
-      regs <- c(conf$upload$fail)
-    }
-    shiny::selectInput("download_registry", "Velg register:", regs)
+    select_registry_ui(pool, conf, input_id = "download_registry")
   })
 
   output$select_db_table <- shiny::renderUI({
