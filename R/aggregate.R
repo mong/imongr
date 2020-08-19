@@ -19,7 +19,7 @@
 #'   \item{var}{Summarised indicator value, for instance mean or median}
 #'   \item{level}{Code providing evaluated discret level such as 'H' (high),
 #'   'M' (intermediate) and 'L' (low)}
-#'   \item{desired_level}{Name providing the desired level such as 'Lavt' (low)
+#'   \item{level_direction}{Name providing the desired level such as 'Lavt' (low)
 #'   or 'Høyt' (high)}
 #'   \item{unit_level}{Code provideing level of aggregation such as 'hospital',
 #'   'hf' (health trust), 'rhf' (regional health trust) and 'national'}
@@ -88,18 +88,16 @@ agg <- function(df, org, ind) {
   # add undefined, if any
   aggs <- rbind(aggs, udef)
 
-  # fake vars not processed yet
-  aggs <- aggs %>%
-    dplyr::rename(count = denominator)
-  aggs$var <- aggs$var / aggs$count
-  # aggs$level <- "T"
-  # aggs$desired_level <- "Test"
+  # make parts
+  aggs$var <- aggs$var / aggs$denominator
 
   aggs <- aggs %>%
     dplyr::arrange(ind_id, year, unit_level) %>%
     dplyr::ungroup()
 
-  get_indicator_level(aggs, ind)
+  aggs <- get_indicator_level(aggs, ind)
+
+  aggs
 
 }
 
@@ -356,7 +354,7 @@ compute_indicator_median <- function(gdf)  {
 #' @export
 get_indicator_level <- function(gdf, ind) {
   gdf$level <- ""
-  gdf$desired_level <- ""
+  gdf$level_direction <- NA
   high <- function(value, green, yellow) {
     if (value > green) {
       level <- "H"
@@ -365,8 +363,8 @@ get_indicator_level <- function(gdf, ind) {
     } else {
       level <- "L"
     }
-    desired_level <-  "H\u00F8yt"
-    return(list(level = level, desired_level = desired_level))
+    level_direction <- 1
+    return(list(level = level, level_direction = level_direction))
   }
   low <- function(value, green, yellow) {
     if (value < green) {
@@ -376,8 +374,8 @@ get_indicator_level <- function(gdf, ind) {
     } else {
       level <- "L"
     }
-    desired_level <-  "Lavt"
-    return(list(level = level, desired_level = desired_level))
+    level_direction <- 0
+    return(list(level = level, level_direction = level_direction))
   }
   lapply(
     seq_len(nrow(gdf)),
@@ -402,18 +400,18 @@ get_indicator_level <- function(gdf, ind) {
             )
           }
         } else {
-          desired_level <- switch(
+          level_direction <- switch(
             paste(ind[["level_direction"]]),
-            "1" =  "H\u00F8yt",
-            "0" =  "Lavt"
+            "1" =  1,
+            "0" =  0
           )
-          level <- list(level = "undefined", desired_level = desired_level)
+          level <- list(level = "undefined", level_direction = level_direction)
         }
       } else{
-        level <- list(level = "undefined", desired_level = "undefined")
+        level <- list(level = "undefined", level_direction = NA)
       }
       gdf$level[x] <<- level$level
-      gdf$desired_level[x] <<- level$desired_level
+      gdf$level_direction[x] <<- level$level_direction
     }
   )
 

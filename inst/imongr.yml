@@ -64,10 +64,10 @@ db:
       - unit_name
       - orgnr
       - year
-      - count
+      - denominator
       - var
       - level
-      - desired_level
+      - level_direction
     data:
       insert:
       - delivery_id
