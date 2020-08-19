@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS `agg_data` (
   `denominator` int(10) unsigned NOT NULL,
   `var` double(9,5) unsigned NOT NULL,
   `level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
-  `desired_level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
+  `level_direction` TINYINT,
   `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
   KEY `year` (`year`),
