@@ -191,6 +191,7 @@ agg_residual <- function(aggs, conf) {
   set1 <- paste(l0$year, l0$ind_id, sep = ";")
   setd <- setdiff(set0, set1)
   if (length(setd) > 0) {
+    print("-- -- adding undefined entries...")
     lt <- tibble::tibble(year = as.integer(gsub(";(.+?)$", "", setd)),
                          ind_id = gsub("^(.+?);", "", setd),
                          unit_level = desc$name[1],
@@ -210,6 +211,7 @@ agg_residual <- function(aggs, conf) {
     set1 <- paste(l1$year, l1$ind_id, sep = ";")
     setd <- setdiff(set0, set1)
     if (length(setd) > 0) {
+      print("-- -- adding undefined entries...")
       lt <- tibble::tibble(year = as.integer(gsub(";(.+?)$", "", setd)),
                            ind_id = gsub("^(.+?);", "", setd),
                            unit_level = desc$name[i + 1],
