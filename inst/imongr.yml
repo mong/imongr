@@ -64,7 +64,7 @@ db:
       - unit_name
       - orgnr
       - year
-      - count
+      - denominator
       - var
       - level
       - desired_level

@@ -88,18 +88,16 @@ agg <- function(df, org, ind) {
   # add undefined, if any
   aggs <- rbind(aggs, udef)
 
-  # fake vars not processed yet
-  aggs <- aggs %>%
-    dplyr::rename(count = denominator)
-  aggs$var <- aggs$var / aggs$count
-  # aggs$level <- "T"
-  # aggs$desired_level <- "Test"
+  # make parts
+  aggs$var <- aggs$var / aggs$denominator
 
   aggs <- aggs %>%
     dplyr::arrange(ind_id, year, unit_level) %>%
     dplyr::ungroup()
 
-  get_indicator_level(aggs, ind)
+  aggs <- get_indicator_level(aggs, ind)
+
+  aggs
 
 }
 
