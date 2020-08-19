@@ -1,3 +1,7 @@
+# imongr 0.6.0
+
+* first take on generic aggregation, with bugs and still missing median handling 
+
 # imongr 0.5.0
 
 * redesign of data model
