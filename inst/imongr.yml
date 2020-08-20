@@ -261,6 +261,19 @@ aggregate:
     nation:
       name: nation
       level: 4
+  udef_unit_level:
+    hospital:
+      name: udef_hospital
+      level: 1
+    hf:
+      name: udef_hf
+      level: 2
+    rhf:
+      name: udef_rhf
+      level: 3
+    nation:
+      name: udef_nation
+      level: 4
   type:
     mean: andel
     median: NA
