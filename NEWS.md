@@ -1,3 +1,8 @@
+# imongr 0.7.0
+
+* minor remodelling of db
+* fixed aggregation of multilevel data, but remains to tested...
+
 # imongr 0.6.0
 
 * first take on generic aggregation, with bugs and still missing median handling 
