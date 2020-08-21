@@ -67,7 +67,10 @@ get_user_id <- function(pool) {
 #' @export
 get_user_registries <- function(pool) {
 
-  query <- paste0("
+  valid_user <- nrow(get_user_data(pool)) > 0
+
+  if (valid_user) {
+    query <- paste0("
 SELECT
   r.name
 FROM
@@ -79,7 +82,10 @@ ON
 WHERE
   ur.user_id=", get_user_id(pool), ";")
 
-  pool::dbGetQuery(pool, query)[, 1]
+    pool::dbGetQuery(pool, query)[, 1]
+  } else {
+    NULL
+  }
 }
 
 
@@ -109,9 +115,12 @@ ORDER BY name;"
 #' @export
 get_user_deliveries <- function(pool) {
 
-  conf <- get_config()
+  valid_user <- nrow(get_user_data(pool)) > 0
 
-  query <- paste0("
+  if (valid_user) {
+    conf <- get_config()
+
+    query <- paste0("
 SELECT
   delivery.time AS Dato,
   delivery.time AS Tid,
@@ -130,15 +139,18 @@ GROUP BY
 ORDER BY
   delivery.time DESC;")
 
-  df <- pool::dbGetQuery(pool, query)
+    df <- pool::dbGetQuery(pool, query)
 
-  # timestamp in db is UTC, convert back to "our" time zone
-  df$Dato <- format(df$Dato, format = conf$app_text$format$date, # nolint
-                    tz = Sys.getenv("TZ"))
-  df$Tid <- format(df$Tid, format = conf$app_text$format$time, # nolint
-                   tz = Sys.getenv("TZ"))
+    # timestamp in db is UTC, convert back to "our" time zone
+    df$Dato <- format(df$Dato, format = conf$app_text$format$date, # nolint
+                      tz = Sys.getenv("TZ"))
+    df$Tid <- format(df$Tid, format = conf$app_text$format$time, # nolint
+                     tz = Sys.getenv("TZ"))
 
-  df
+    df
+  } else {
+    NULL
+  }
 }
 
 #' @rdname ops
