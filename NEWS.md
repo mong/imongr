@@ -1,3 +1,7 @@
+# imongr 0.7.1
+
+* fixed missing check on valid user
+
 # imongr 0.7.0
 
 * minor remodelling of db
