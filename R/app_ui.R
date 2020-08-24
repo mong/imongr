@@ -21,13 +21,16 @@ app_ui <- function() {
       theme = "www/bootstrap.css",
       id = "tabs",
 
-      shiny::tabPanel("Profil",
+      shiny::tabPanel(id = "profile",
+                      shiny::span("Profil", title = "Informasjon om din bruker"),
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("profile")),
           shiny::uiOutput("ui_deliveries_table")
       ),
 
-      shiny::tabPanel("Last",
+      shiny::tabPanel(id = "load",
+                      shiny::span("Last opp data",
+                                  title = "Last opp nye data til sykehusviseren"),
         shiny::sidebarLayout(
           shiny::sidebarPanel(
             shiny::uiOutput("select_registry"),
@@ -74,7 +77,9 @@ app_ui <- function() {
         )
       ),
 
-      shiny::tabPanel("Loss",
+      shiny::tabPanel(id = "download",
+                      shiny::span("Last ned data",
+                                  title = "Last ned data fra sykehusviseren"),
         shiny::sidebarLayout(
           shiny::sidebarPanel(width = 3,
             shiny::uiOutput("select_download_registry"),
@@ -93,7 +98,8 @@ app_ui <- function() {
           )
         )
       ),
-      shiny::tabPanel("Sj\u00e6f",
+      shiny::tabPanel(id = "data_admin",
+                      shiny::span("Adminer", title = "Administrer data"),
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("admin_frame"))
       ),

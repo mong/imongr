@@ -145,9 +145,9 @@ profile:
   pending: >
     Du er nesten klar for bruk av imongr. Det eneste som nå mangeler er
     riktige tilganger og det kan <a href="https://helse-nord.no/skde">SKDE</a>
-    helpe deg med. Ta gjerne kontakt per telefon +4747474747 og spør etter
+    helpe deg med. Ta gjerne kontakt per telefon +47 77 75 58 00 og spør etter
     Arnfinn, Yohannes eller Are. Du kan også sende oss en
-    <a href="mailto:skde@helse-nord.no">e-post</a> om du heller vil.
+    <a href="mailto:sykehusviseren@skde.no">e-post</a> om du heller vil.
   userinfo: >
     Følgende er registrert om deg:
   delivery:
@@ -156,13 +156,14 @@ profile:
     none: >
       Det finnes ingen registrerte dataleveranser fra deg
   howto: >
-    For å laste opp data velg fanen "Last" og følg instruksjonene der. Når du
-    er ferdig kan du logge ut ved å bruke lenken oppe i høyre hjørne. Om du
-    plages kan du alltids ta kontakt med
-    <a href="https://helse-nord.no/skde">SKDE</a> på telefon +4747474747 eller
-    <a href="mailto:skde@helse-nord.no">e-post</a>. Om du ser eller mistenker
-    feil og mangler i denne programvaren setter vi stor pris på om du sier
-    ifra, enten ved bruk av kontaktinformasjonen over eller direkte gjennom
+    For å laste opp data velg fanen "Last opp data" og følg instruksjonene der.
+    Når du er ferdig kan du logge ut ved å bruke lenken oppe i høyre hjørne. Om
+    du plages kan du alltids ta kontakt med
+    <a href="https://helse-nord.no/skde">SKDE</a> på telefon +47 77 75 58 00
+    eller <a href="mailto:sykehusviseren@skde.no">e-post</a>. Om du ser eller
+    mistenker feil og mangler i denne programvaren setter vi stor pris på om du
+    sier ifra, enten ved bruk av kontaktinformasjonen over eller direkte
+    gjennom
     <a href="https://github.com/mong/imongr/issues">vår feilmeldingstjeneste</a>.
   logout:
     text: Logg ut
