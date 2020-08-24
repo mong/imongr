@@ -13,11 +13,11 @@
 #' @param random Logical sample method
 #'
 #' @return whatever
-#' @importFrom utils read.csv
+#' @importFrom utils read.csv URLencode
 #' @name upload
 #' @aliases check_report check_upload check_missing_var check_invalid_var
 #' check_invalid_org check_invalid_ind check_none_numeric_var
-#' check_duplicate_delivery csv_to_df sample_df
+#' check_duplicate_delivery csv_to_df mail_check_report sample_df
 NULL
 
 
@@ -31,16 +31,41 @@ check_report <- function(registry, df, pool) {
   if (all(!r$fail)) {
     msg <- paste("<font color=\"#00FF00\">", conf$upload$ok)
   } else {
+    mail_msg <- ""
     msg <- "<font color=\"#FF0000\">"
     for (i in seq_len(length(r$unit))) {
       if (r$fail[i]) {
         msg <- paste(msg, "<b>", conf$upload$check[r$unit[i]], "</b>",
                      r$report[i], "<br>")
+        mail_msg <- paste(mail_msg, conf$upload$check[r$unit[i]],
+                          r$report[i], "\n")
       }
     }
+    msg <- paste(msg, mail_check_report(pool, registry, mail_msg))
   }
   paste(msg, "</font>")
 }
+
+
+#' @rdname upload
+#' @export
+mail_check_report <- function(pool, registry, mail_msg) {
+
+  user <- get_user_data(pool)
+  to <- "mailto:sykehusviser@skde.no"
+  subject <- paste("imongr: Feilmelding ved opplasting av",
+                   get_registry_name(pool, registry))
+  body <- paste("Hei,",
+                "\n\nDet kan godt hende jeg trenger hjelp med følgende feil:",
+                "\n\n", paste(mail_msg),
+                "\n\nSo long og vennlig hilsen,\n", user$name, "\n", user$phone)
+
+  content <- paste0(to, "?subject=", URLencode(subject), "&body=",
+                    URLencode(body))
+
+  paste0("<a href='", content, "'>Send feilmelding til SKDE</a>")
+}
+
 
 #' @rdname upload
 #' @export

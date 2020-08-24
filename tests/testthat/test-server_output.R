@@ -105,7 +105,7 @@ test_that("upload sample text is provided", {
   check_db()
   expect_null(upload_sample_text_ui(pool, conf, NULL, 4))
   expect_equal(class(
-    upload_sample_text_ui(pool, conf, TRUE, 4)),
+    upload_sample_text_ui(pool, conf, TRUE, 4, indicators = vector())),
     "character"
   )
 })
