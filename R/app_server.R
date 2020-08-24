@@ -145,7 +145,8 @@ app_server <- function(input, output, session) {
   })
 
   output$upload_sample_text <- shiny::renderText({
-    upload_sample_text_ui(pool, conf, input$upload_file, input$registry)
+    upload_sample_text_ui(pool, conf, input$upload_file, input$registry,
+                          indicators = unique(df()$ind_id))
   })
 
   output$upload_sample <- shiny::renderTable({

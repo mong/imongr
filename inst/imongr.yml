@@ -212,7 +212,8 @@ upload:
       menyen på venstresiden slik at norske tegn (æøå) representeres riktig og
       tallene fremstår slik de skal. <b>Merk at når du sender nye data til
       server vil alle gamle data tilsvarende indikatorer gitt i datasettet
-      overskrives/slettes</b>. Følgende indikatorer (ind_id) er gyldige for
+      overskrives/slettes</b>. Følgende indikatorer (med markering for de som
+      finnes i csv-fila) er gyldige for
     year: >
       året for hendelsen
     ShNavn: >

@@ -9,6 +9,7 @@
 #' @param df Data frame
 #' @param upload_file Character string with file to upload
 #' @param registry Character string definig registry
+#' @param indicators Character vector of indicators
 #' @param sample_size Numeric sample size
 #' @param sample_type Character string of sampling type
 #'
@@ -94,16 +95,26 @@ error_report_ui <- function(pool, df, upload_file, registry) {
 
 #' @rdname server_output
 #' @export
-upload_sample_text_ui <- function(pool, conf, upload_file, registry) {
+upload_sample_text_ui <- function(pool, conf, upload_file, registry,
+                                  indicators) {
+
   if (is.null(upload_file)) {
     NULL
   } else {
+    # prep indicatior printing
+    all_indicators <- get_registry_indicators(pool, registry)$id
+    i <- all_indicators %in% indicators
+    start_tag <- rep("<i>", length(all_indicators))
+    end_tag <- rep("</i>", length(all_indicators))
+    start_tag[i] <- "<i><mark>"
+    end_tag[i] <- "</mark></i>"
+    indicators <- paste0(start_tag, all_indicators, end_tag)
+
     paste0(conf$upload$doc$sample, " ", get_registry_name(pool, registry,
                                                           full_name = TRUE),
-           ": <i>",
-          paste(get_registry_indicators(pool, registry)$id,
-                collapse = ", "),
-          "</i>.")
+           ": ",
+          paste(indicators, collapse = ", "),
+          ".")
   }
 }
 
