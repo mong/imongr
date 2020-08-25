@@ -19,8 +19,8 @@
 #'   \item{var}{Summarised indicator value, for instance mean or median}
 #'   \item{level}{Code providing evaluated discret level such as 'H' (high),
 #'   'M' (intermediate) and 'L' (low)}
-#'   \item{level_direction}{Name providing the desired level such as 'Lavt' (low)
-#'   or 'Høyt' (high)}
+#'   \item{level_direction}{Name providing the desired level such as 'Lavt'
+#'   (low) or 'Høyt' (high)}
 #'   \item{unit_level}{Code provideing level of aggregation such as 'hospital',
 #'   'hf' (health trust), 'rhf' (regional health trust) and 'national'}
 #'   \item{unit_name}{Name of the organization unit}
@@ -38,6 +38,7 @@
 #' @name aggregate
 #' @aliases agg agg_from_level agg_residual agg_udef make_group compute_group
 #' compute_indicator_mean compute_indicator_median get_indicator_level
+#' @importFrom rlang .data
 NULL
 
 #' @rdname aggregate
@@ -59,7 +60,8 @@ agg <- function(df, org, ind) {
   # aggregate each level
   aggs <- data.frame()
   for (i in seq_len(length(unit_levels))) {
-    agg <- agg_from_level(df[df$unit_level == unit_levels[i], ], org, ind, conf,
+    agg <- agg_from_level(df[df$unit_level == unit_levels[i], ], org, ind,
+                          conf,
                           conf$aggregate$unit_level[[unit_levels[i]]]$level)
     aggs <- rbind(aggs, agg)
   }
@@ -127,7 +129,8 @@ agg_from_level <- function(df, org, ind, conf, from_level) {
   for (i in seq_len(length(groups))) {
     idf <- df %>%
       dplyr::group_by(.data[["year"]], .data[["ind_id"]], .data[[groups[i]]])
-    idf <- dplyr::summarise(idf, var = sum(var), denominator = sum(denominator))
+    idf <- dplyr::summarise(idf, var = sum(.data$var),
+                            denominator = sum(.data$denominator))
     idf$unit_level <- rep(unit_levels[i], dim(idf)[1])
     this_org <- org %>%
       dplyr::select(.data[[groups[i]]], .data[[unit_levels[i]]]) %>%
