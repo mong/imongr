@@ -5,6 +5,7 @@
 
 app_ui <- function() {
 
+  conf <- get_config()
   shiny::addResourcePath("www", system.file("www", package = "imongr"))
   app_title <- "imongr"
 
@@ -22,15 +23,14 @@ app_ui <- function() {
       id = "tabs",
 
       shiny::tabPanel(id = "profile",
-                      shiny::span("Profil", title = "Informasjon om din bruker"),
+        shiny::span("Profil", title = conf$app_text$tooltip$profile),
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("profile")),
           shiny::uiOutput("ui_deliveries_table")
       ),
 
-      shiny::tabPanel(id = "load",
-                      shiny::span("Last opp data",
-                                  title = "Last opp nye data til sykehusviseren"),
+      shiny::tabPanel(id = "upload",
+        shiny::span("Last opp data", title = conf$app_text$tooltip$upload),
         shiny::sidebarLayout(
           shiny::sidebarPanel(
             shiny::uiOutput("select_registry"),
@@ -78,8 +78,7 @@ app_ui <- function() {
       ),
 
       shiny::tabPanel(id = "download",
-                      shiny::span("Last ned data",
-                                  title = "Last ned data fra sykehusviseren"),
+        shiny::span("Last ned data", title = conf$app_text$tooltip$download),
         shiny::sidebarLayout(
           shiny::sidebarPanel(width = 3,
             shiny::uiOutput("select_download_registry"),
@@ -98,8 +97,8 @@ app_ui <- function() {
           )
         )
       ),
-      shiny::tabPanel(id = "data_admin",
-                      shiny::span("Adminer", title = "Administrer data"),
+      shiny::tabPanel(id = "adminer",
+        shiny::span("Adminer", title = conf$app_text$tooltip$adminer),
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("admin_frame"))
       ),
