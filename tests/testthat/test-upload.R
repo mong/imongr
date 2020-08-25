@@ -35,6 +35,10 @@ env_host <- Sys.getenv("IMONGR_DB_HOST")
 env_user_name <- Sys.getenv("SHINYPROXY_USERNAME")
 env_user_groups <- Sys.getenv("SHINYPROXY_USERGROUPS")
 
+# env that need to be set for below tests
+Sys.setenv(SHINYPROXY_USERNAME = "imongr@mongr.no")
+Sys.setenv(SHINYPROXY_USERGROUPS = "PROVIDER")
+
 # Database infrastructure is only guaranteed at Travis and our own dev env.
 # Tests running on other environments should be skipped
 check_db <- function(is_test_that = TRUE) {
