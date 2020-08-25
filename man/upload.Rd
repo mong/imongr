@@ -11,10 +11,13 @@
 \alias{check_none_numeric_var}
 \alias{check_duplicate_delivery}
 \alias{csv_to_df}
+\alias{mail_check_report}
 \alias{sample_df}
 \title{Title}
 \usage{
 check_report(registry, df, pool)
+
+mail_check_report(pool, registry, mail_msg)
 
 check_upload(registry, df, pool)
 

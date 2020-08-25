@@ -67,8 +67,8 @@ the latter denotes a data frame that has been grouped (by
   \item{var}{Summarised indicator value, for instance mean or median}
   \item{level}{Code providing evaluated discret level such as 'H' (high),
   'M' (intermediate) and 'L' (low)}
-  \item{desired_level}{Name providing the desired level such as 'Lavt' (low)
-  or 'Høyt' (high)}
+  \item{level_direction}{Name providing the desired level such as 'Lavt'
+  (low) or 'Høyt' (high)}
   \item{unit_level}{Code provideing level of aggregation such as 'hospital',
   'hf' (health trust), 'rhf' (regional health trust) and 'national'}
   \item{unit_name}{Name of the organization unit}
