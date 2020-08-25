@@ -11,7 +11,22 @@ norgast <- cbind(norgast, denominator = rep(1, dim(norgast)[1]))
 norgast <- cbind(norgast, unit_level = rep("hospital", dim(norgast)[1]))
 
 
+### add a fake dg for each year and orgnr
+dg <- norgast %>%
+  dplyr::distinct(year, orgnr) %>%
+  dplyr::mutate(ind_id = "norgast_dg",
+                denominator = floor(runif(dplyr::n(), min = 100, max = 1000)),
+                var =
+                  floor(runif(dplyr::n(), min = .3, max = .99) * denominator),
+                delivery_id = 1,
+                unit_level = "hospital") %>%
+  dplyr::select(year, ind_id, var, denominator, orgnr, unit_level, delivery_id) %>%
+  dplyr::arrange(year, ind_id, orgnr)
+
+norgast <- dplyr::bind_rows(norgast, dg)
+
 ### merge registries
 data <- rbind(norgast)
+
 
 usethis::use_data(data, overwrite = TRUE)

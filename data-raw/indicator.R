@@ -33,7 +33,27 @@ ind <- data.frame(id = indicator$IndID,
 # until present in data, add new field 'include'
 ind <- cbind(ind, include = TRUE)
 
-# add sg_id (self reference)
+# add dg_id (self reference)
 ind <- cbind(ind, dg_id = NA)
+
+## until present, fake a norgast dg indicator
+dg_norgast <- data.frame(id = "norgast_dg",
+                         dg_id = NA,
+                         title = "Dekningsgrad for NoRGast",
+                         name = "Dekningsgrad for NoRGast",
+                         level_green = .8,
+                         level_yellow = .6,
+                         level_direction = 1,
+                         short_description = "Dekningsgrad for NoRGast",
+                         long_description = "Dekningsgrad for NoRGast",
+                         type = "dg",
+                         registry_id = 10,
+                         include = TRUE,
+                         stringsAsFactors = FALSE)
+
+ind$dg_id[ind$registry_id == 10] <- "norgast_dg"
+
+# NB due to self-reference of dg indicators place them first in table
+ind <- rbind(dg_norgast, ind)
 
 usethis::use_data(ind, overwrite = TRUE)

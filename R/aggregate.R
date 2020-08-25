@@ -96,7 +96,12 @@ agg <- function(df, org, ind) {
     dplyr::arrange(ind_id, year, unit_level) %>%
     dplyr::ungroup()
 
+  # class values into defined levels
   aggs <- get_indicator_level(aggs, ind)
+
+  # add/update dg and all depending indicators
+  aggs$dg <- NA
+
 
   aggs
 
