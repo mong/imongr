@@ -299,5 +299,9 @@ aggregate:
 download:
   tab:
   - data
+  - ind
+  - hospital
+  - hf
+  - rhf
 adminer:
   url: env

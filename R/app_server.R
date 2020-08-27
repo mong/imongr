@@ -177,7 +177,13 @@ app_server <- function(input, output, session) {
     if (input$download_registry == "") {
       data.frame()
     } else {
-      get_registry_data(pool, input$download_registry)
+      if (input$tab_set == "data") {
+        get_registry_data(pool, input$download_registry)
+      } else if (input$tab_set == "ind") {
+        get_registry_ind(pool, input$download_registry)
+      } else {
+        get_table(pool, input$tab_set)
+      }
     }
   })
 
@@ -214,14 +220,16 @@ app_server <- function(input, output, session) {
 
   output$db_table <- DT::renderDataTable(
     DT::datatable(db_table(), rownames = FALSE,
-                 options = list(
-                   dom = "lftp",
-                   language = list(
-                     lengthMenu = "Vis _MENU_ rader per side",
-                     search = "S\u00f8k:",
-                     info = "Rad _START_ til _END_ av totalt _TOTAL_",
-                     paginate = list(previous = "Forrige", `next` = "Neste")
-                   )))
+      options = list(
+        dom = "lftp",
+        language = list(
+          lengthMenu = "Vis _MENU_ rader per side",
+          search = "S\u00f8k:",
+          info = "Rad _START_ til _END_ av totalt _TOTAL_",
+          paginate = list(previous = "Forrige", `next` = "Neste")
+        )
+      )
+    )
   )
 
   output$ui_db_table <- shiny::renderUI(

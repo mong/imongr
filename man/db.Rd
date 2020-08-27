@@ -11,6 +11,10 @@
 \alias{get_delivery}
 \alias{get_user}
 \alias{get_user_registry}
+\alias{get_hospital}
+\alias{get_hf}
+\alias{get_rhf}
+\alias{get_nation}
 \alias{get_indicator}
 \alias{get_flat_org}
 \alias{get_all_orgnr}
@@ -44,6 +48,14 @@ get_indicator(pool, sample = NA)
 get_registry_indicators(pool, registry)
 
 get_registry(pool, sample = NA)
+
+get_hospital(pool, sample = NA)
+
+get_hf(pool, sample = NA)
+
+get_rhf(pool, sample = NA)
+
+get_nation(pool, sample = NA)
 
 get_flat_org(pool)
 
