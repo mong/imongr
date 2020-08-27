@@ -170,10 +170,10 @@ app_server <- function(input, output, session) {
 
   # loss
   db_table <- shiny::reactive({
-    if (is.numeric(input$download_registry)) {
-      get_registry_data(pool, input$download_registry)
-    } else {
+    if (input$download_registry == "") {
       data.frame()
+    } else {
+      get_registry_data(pool, input$download_registry)
     }
   })
 
