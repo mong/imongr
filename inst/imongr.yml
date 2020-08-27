@@ -213,7 +213,7 @@ upload:
   doc:
     main: >
       Dette er et verktøy for å hjelpe med å legge til data i riktig format
-      i sykehusviser (!). Under er det vist et eksempel på hvordan filen
+      i sykehusviser (!). Nederst er det vist et eksempel på hvordan filen
       skal se ut. Din fil skal være i csv-format med de samme kolonnenavnene
       som i eksempelet. Det skilles mellom små og store bokstaver men
       rekkefølgen på kolonnene kan være tilfeldig. Under følger en forklaring
@@ -245,8 +245,10 @@ upload:
       For enkelthendelser skal verdien være 1 og for et aggregat av hendelser
       skal verdien være større enn 1
     ind_id: >
-      identifikator for kvalitetsindikator, skal samsvare med identifikator
-      gitt i Indikatorbeskrivelse
+      unik id for kvalitetsindikator og som må samsvare med gyldige verdier (se
+      under)
+    valid_ind: >
+      Gyldige kvalitetsindikator id-er for
     Register: >
       Velges fra menyen til venstre og trenger ikke være med i datafila som
       lastes opp

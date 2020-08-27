@@ -40,7 +40,7 @@ var_doc_ui(conf)
 
 \item{upload_file}{Character string with file to upload}
 
-\item{registry}{Character string definig registry}
+\item{registry}{Character string defining registry}
 
 \item{df}{Data frame}
 

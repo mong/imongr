@@ -71,6 +71,8 @@ app_ui <- function() {
             shiny::h3("Veiledning"),
             shiny::htmlOutput("main_doc"),
             shiny::htmlOutput("var_doc"),
+            shiny::htmlOutput("valid_ind"),
+            shiny::tableOutput("valid_ind_tab"),
             shiny::h4("Eksempeldata:"),
             shiny::tableOutput("sample_data"),
           )

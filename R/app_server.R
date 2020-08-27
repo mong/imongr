@@ -165,6 +165,18 @@ app_server <- function(input, output, session) {
     var_doc_ui(conf)
   })
 
+  output$valid_ind <- shiny::renderText({
+    paste0("<h4>", conf$upload$doc$valid_ind, " <i>",
+          get_registry_name(pool, shiny::req(input$registry),
+                            full_name = TRUE),
+          "</i>:</h4>")
+  })
+
+  output$valid_ind_tab <- shiny::renderTable(
+    get_registry_indicators(pool, shiny::req(input$registry)), rownames = TRUE,
+    colnames = FALSE
+  )
+
   output$sample_data <- shiny::renderTable(
     get_data(pool,
              sample = 0.0001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]

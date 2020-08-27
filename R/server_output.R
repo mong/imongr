@@ -8,7 +8,7 @@
 #' @param igrs Character string comma separated user groups
 #' @param df Data frame
 #' @param upload_file Character string with file to upload
-#' @param registry Character string definig registry
+#' @param registry Character string defining registry
 #' @param indicators Character vector of indicators
 #' @param sample_size Numeric sample size
 #' @param sample_type Character string of sampling type
