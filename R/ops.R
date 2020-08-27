@@ -351,6 +351,16 @@ insert_data <- function(pool, df) {
 #' @export
 insert_agg_data <- function(pool, df) {
 
+  # if delivery is a subset of registry indicators AND dg is part of subset,
+  # agg_data for all indicators of the current registry will have to be
+  # updated. NB Condition apply: delivery only consists of indicators from one
+  # registry (logics may be extended to handle multi registry deliveries)
+  indicators <- unique(df$ind_id)
+  registry_id <- get_indicators_registry(pool, indicators)
+  if (!setequal(get_registry_indicators(pool, registry_id)$id, indicators)) {
+    df <- get_registry_data(pool, registry_id)
+  }
+
   if (!"unit_level" %in% names(df)) {
     df <- dplyr::left_join(df, get_all_orgnr(pool), by = "orgnr")
   }

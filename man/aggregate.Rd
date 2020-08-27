@@ -3,6 +3,7 @@
 \name{aggregate}
 \alias{aggregate}
 \alias{agg}
+\alias{agg_dg}
 \alias{agg_from_level}
 \alias{agg_residual}
 \alias{agg_udef}
@@ -14,6 +15,8 @@
 \title{Aggregate hospital data}
 \usage{
 agg(df, org, ind)
+
+agg_dg(aggs, ind)
 
 agg_from_level(df, org, ind, conf, from_level)
 

@@ -36,8 +36,9 @@
 #' in a data frame
 #' @return Data frame in raw, grouped or aggregated form
 #' @name aggregate
-#' @aliases agg agg_from_level agg_residual agg_udef make_group compute_group
-#' compute_indicator_mean compute_indicator_median get_indicator_level
+#' @aliases agg agg_dg agg_from_level agg_residual agg_udef make_group
+#' compute_group compute_indicator_mean compute_indicator_median
+#' get_indicator_level
 #' @importFrom rlang .data
 NULL
 
@@ -100,11 +101,62 @@ agg <- function(df, org, ind) {
   aggs <- get_indicator_level(aggs, ind)
 
   # add/update dg and all depending indicators
-  aggs$dg <- NA
+  aggs <- agg_dg(aggs, ind)
 
 
   aggs
 
+}
+
+#' @rdname aggregate
+#' @export
+agg_dg <- function(aggs, ind) {
+
+  # no dg as outset
+  aggs$dg <- NA
+
+  # map data set ind ids to corresponding dg, new columnn named 'dg_id'
+  ind_id_dg_id <- dplyr::select(ind, .data$id, .data$dg_id)
+  aggs <- aggs %>%
+    dplyr::left_join(ind_id_dg_id, by = c("ind_id" = "id"))
+
+  # dgs from current data that we will work on
+  dgs <- unique(aggs$dg_id[!is.na(aggs$dg_id)])
+
+  # current dg data
+  dg_data <- dplyr::filter(aggs, .data$ind_id %in% dgs)
+
+  # unique years represented by dgs in data, ascending order
+  years <- dplyr::select(dg_data, year) %>%
+    dplyr::distinct() %>%
+    dplyr::arrange() %>%
+    dplyr::pull()
+
+  # dg might not be present for every year, hence start filling in oldest
+  # and consecutively replace these with newer if present. Data older than
+  # the oldest dg will not be provided with a dg and will remain default (NA)
+  # at: temporary aggs for each iteration
+  # dt: temporary dg_data for each iteration
+  for (i in seq_len(length(years))) {
+    at <- dplyr::filter(aggs, year >= years[i]) %>%
+      dplyr::select(!dg)
+    dt <- dplyr::filter(dg_data, year == years[i]) %>%
+      dplyr::select(ind_id, orgnr, var) %>%
+      dplyr::rename(dg_id = ind_id, dg = var)
+
+    # join current year dg into data from current year and newer. Then, move on
+    # with only those vars neede for updating aggs
+    at <- dplyr::left_join(at, dt, by = c("dg_id", "orgnr")) %>%
+      dplyr::select(ind_id, dg_id, unit_level, unit_name, orgnr, year,
+                    denominator, var, level, level_direction, dg)
+
+    # update aggs from current year and newer with dg from current year
+    aggs <- aggs %>%
+      dplyr::filter(year < years[i]) %>%
+      dplyr::bind_rows(at)
+  }
+
+  aggs %>% dplyr::select(!.data$dg_id)
 }
 
 #' @rdname aggregate
