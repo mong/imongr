@@ -57,7 +57,7 @@ app_text:
     upload: |-
       Last opp nye data til sykehusviseren
     download: |-
-      Last ned data fra Sykehusviseren
+      Se på og last ned data fra Sykehusviseren
     adminer: |-
       Administrer data
 db:
