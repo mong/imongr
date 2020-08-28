@@ -133,13 +133,6 @@ if (is.null(check_db(is_test_that = FALSE))) {
   insert_data(pool, df)
 }
 
-test_that("the delivery has alrady been made", {
-  check_db()
-  expect_error(
-    insert_data(pool, df)
-  )
-})
-
 
 test_that("existing user will not be (re-)created", {
   check_db()

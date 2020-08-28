@@ -5,6 +5,7 @@
 
 app_ui <- function() {
 
+  conf <- get_config()
   shiny::addResourcePath("www", system.file("www", package = "imongr"))
   app_title <- "imongr"
 
@@ -21,13 +22,15 @@ app_ui <- function() {
       theme = "www/bootstrap.css",
       id = "tabs",
 
-      shiny::tabPanel("Profil",
+      shiny::tabPanel(id = "profile",
+        shiny::span("Profil", title = conf$app_text$tooltip$profile),
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("profile")),
           shiny::uiOutput("ui_deliveries_table")
       ),
 
-      shiny::tabPanel("Last",
+      shiny::tabPanel(id = "upload",
+        shiny::span("Last opp data", title = conf$app_text$tooltip$upload),
         shiny::sidebarLayout(
           shiny::sidebarPanel(
             shiny::uiOutput("select_registry"),
@@ -68,13 +71,16 @@ app_ui <- function() {
             shiny::h3("Veiledning"),
             shiny::htmlOutput("main_doc"),
             shiny::htmlOutput("var_doc"),
+            shiny::htmlOutput("valid_ind"),
+            shiny::tableOutput("valid_ind_tab"),
             shiny::h4("Eksempeldata:"),
             shiny::tableOutput("sample_data"),
           )
         )
       ),
 
-      shiny::tabPanel("Loss",
+      shiny::tabPanel(id = "download",
+        shiny::span("Last ned data", title = conf$app_text$tooltip$download),
         shiny::sidebarLayout(
           shiny::sidebarPanel(width = 3,
             shiny::uiOutput("select_download_registry"),
@@ -93,7 +99,8 @@ app_ui <- function() {
           )
         )
       ),
-      shiny::tabPanel("Sj\u00e6f",
+      shiny::tabPanel(id = "adminer",
+        shiny::span("Adminer", title = conf$app_text$tooltip$adminer),
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("admin_frame"))
       ),

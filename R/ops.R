@@ -9,9 +9,8 @@
 #' @aliases get_user_data get_user_id get_user_registries
 #' get_user_registry_select
 #' get_user_latest_delivery_id get_registry_data get_indicators_registry
-#' md5_checksum
-#' delivery_exist_in_db retire_user_deliveries delete_indicator_data
-#' delete_registry_data
+#' md5_checksum delivery_exist_in_db duplicate_delivery retire_user_deliveries
+#' delete_indicator_data delete_registry_data
 #' delete_agg_data insert_data insert_agg_data
 NULL
 
@@ -245,6 +244,26 @@ FROM
   }
 }
 
+#' @rdname ops
+#' @export
+duplicate_delivery <- function(pool, df) {
+
+  query <- "
+SELECT
+  md5_checksum
+FROM
+  delivery
+WHERE
+  latest=1;"
+
+  dat <- pool::dbGetQuery(pool, query)
+
+  if (md5_checksum(df) %in% dat$md5_checksum) {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
 
 #' @rdname ops
 #' @export
@@ -325,10 +344,6 @@ WHERE
 #' @export
 insert_data <- function(pool, df) {
 
-  if (delivery_exist_in_db(pool, df)) {
-    stop("This delivery has already been made, data exist in database!")
-  }
-
   delivery <- data.frame(latest = 1,
                          md5_checksum = md5_checksum(df),
                          user_id = get_user_id(pool))
@@ -350,6 +365,16 @@ insert_data <- function(pool, df) {
 #' @rdname ops
 #' @export
 insert_agg_data <- function(pool, df) {
+
+  # if delivery is a subset of registry indicators AND dg is part of subset,
+  # agg_data for all indicators of the current registry will have to be
+  # updated. NB Condition apply: delivery only consists of indicators from one
+  # registry (logics may be extended to handle multi registry deliveries)
+  indicators <- unique(df$ind_id)
+  registry_id <- get_indicators_registry(pool, indicators)
+  if (!setequal(get_registry_indicators(pool, registry_id)$id, indicators)) {
+    df <- get_registry_data(pool, registry_id)
+  }
 
   if (!"unit_level" %in% names(df)) {
     df <- dplyr::left_join(df, get_all_orgnr(pool), by = "orgnr")

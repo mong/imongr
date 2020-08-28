@@ -15,12 +15,46 @@
 #' @param full_name Logical defining if full names is to be returned
 #' @return Data object from database
 #' @name db_get
-#' @aliases get_registry_name get_org_name
+#' @aliases get_registry_ind get_registry_name get_org_name
 NULL
 
 #' @rdname db_get
 #' @export
+get_registry_ind <- function(pool, registry) {
+
+  query <- paste0("
+SELECT
+  id,
+  dg_id,
+  include,
+  title,
+  name,
+  type,
+  measure_unit,
+  min_denominator,
+  min_value,
+  max_value,
+  level_green,
+  level_yellow,
+  level_direction,
+  short_description,
+  long_description
+FROM
+  ind
+WHERE
+  registry_id=", registry, ";")
+
+  pool::dbGetQuery(pool, query)
+
+}
+
+#' @rdname db_get
+#' @export
 get_registry_name <- function(pool, registry, full_name = FALSE) {
+
+  if (missing(registry) | registry == "") {
+    return(character())
+  }
 
   query <- paste0("
 SELECT

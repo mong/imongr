@@ -13,11 +13,11 @@
 #' @param random Logical sample method
 #'
 #' @return whatever
-#' @importFrom utils read.csv
+#' @importFrom utils read.csv URLencode
 #' @name upload
-#' @aliases check_report check_upload check_missing_var check_invalid_var
-#' check_invalid_org check_invalid_ind check_none_numeric_var
-#' check_duplicate_delivery csv_to_df sample_df
+#' @aliases check_report check_upload check_missing_registry check_missing_var
+#' check_invalid_var check_invalid_org check_invalid_ind check_none_numeric_var
+#' check_duplicate_delivery csv_to_df mail_check_report sample_df
 NULL
 
 
@@ -31,16 +31,41 @@ check_report <- function(registry, df, pool) {
   if (all(!r$fail)) {
     msg <- paste("<font color=\"#00FF00\">", conf$upload$ok)
   } else {
+    mail_msg <- ""
     msg <- "<font color=\"#FF0000\">"
     for (i in seq_len(length(r$unit))) {
       if (r$fail[i]) {
         msg <- paste(msg, "<b>", conf$upload$check[r$unit[i]], "</b>",
                      r$report[i], "<br>")
+        mail_msg <- paste(mail_msg, conf$upload$check[r$unit[i]],
+                          r$report[i], "\n")
       }
     }
+    msg <- paste(msg, mail_check_report(pool, registry, mail_msg))
   }
   paste(msg, "</font>")
 }
+
+
+#' @rdname upload
+#' @export
+mail_check_report <- function(pool, registry, mail_msg) {
+
+  user <- get_user_data(pool)
+  to <- "mailto:sykehusviser@skde.no"
+  subject <- paste("imongr: Feilmelding ved opplasting",
+                   get_registry_name(pool, registry))
+  body <- paste("Hei,",
+                "\n\nDet kan godt hende jeg trenger hjelp med følgende feil:",
+                "\n\n", paste(mail_msg),
+                "\n\nSo long og vennlig hilsen,\n", user$name, "\n", user$phone)
+
+  content <- paste0(to, "?subject=", URLencode(subject), "&body=",
+                    URLencode(body))
+
+  paste0("<a href='", content, "'>Send feilmelding til SKDE</a>")
+}
+
 
 #' @rdname upload
 #' @export
@@ -52,16 +77,38 @@ check_upload <- function(registry, df, pool) {
 
   conf <- get_config()
 
-  for (i in seq_len(length(conf$upload$check))) {
-    unit[i] <- names(conf$upload$check)[i]
-    r <- do.call(paste0("check_", unit[i]),
-                 args = list(registry = registry, df = df, conf = conf,
-                             pool = pool))
-    fail[i] <- r$fail
-    report[i] <- paste(r$report, collapse = ", ")
+  # special case if there registry is not defined
+  if (registry == "") {
+    unit <- "missing_registry"
+    fail <- TRUE
+    report <- conf$upload$check_empty
+  } else {
+    for (i in seq_len(length(conf$upload$check))) {
+      unit[i] <- names(conf$upload$check)[i]
+      r <- do.call(paste0("check_", unit[i]),
+                   args = list(registry = registry, df = df, conf = conf,
+                               pool = pool))
+      fail[i] <- r$fail
+      report[i] <- paste(r$report, collapse = ", ")
+    }
   }
   list(unit = unit, fail = fail, report = report)
 }
+
+#' @rdname upload
+#' @export
+check_missing_registry <- function(registry, df, conf, pool) {
+
+  # pro forma, will never fail but present to maintain consistent config
+  fail <- FALSE
+  report <- character()
+  if (registry == "") {
+    fail <- TRUE
+    report <- conf$upload$check_empty
+  }
+  list(fail = fail, report = report)
+}
+
 
 
 #' @rdname upload
@@ -97,7 +144,7 @@ check_invalid_org <- function(registry, df, conf, pool) {
   if ("orgnr" %in% names(df)) {
     report <- setdiff(df$orgnr, get_all_orgnr(pool)$orgnr)
   } else {
-    report <- "Field missing"
+    report <- conf$upload$check_empty
   }
   if (length(report) == 0) {
     fail <- FALSE
@@ -116,7 +163,7 @@ check_invalid_ind <- function(registry, df, conf, pool) {
     report <- setdiff(df$ind_id,
                       get_registry_indicators(pool, registry)$id)
   } else {
-    report <- "Field missing"
+    report <- conf$upload$check_empty
   }
   if (length(report) == 0) {
     fail <- FALSE
@@ -136,7 +183,7 @@ check_none_numeric_var <- function(registry, df, conf, pool) {
       fail <- FALSE
     }
   } else {
-    report <- "Field missing"
+    report <- conf$upload$check_empty
   }
   list(fail = fail, report = report)
 }
@@ -146,7 +193,7 @@ check_none_numeric_var <- function(registry, df, conf, pool) {
 #' @export
 check_duplicate_delivery <- function(registry, df, conf, pool) {
 
-  fail <- delivery_exist_in_db(pool, df)
+  fail <- duplicate_delivery(pool, df)
   report <- ""
   list(fail = fail, report = report)
 }
@@ -159,8 +206,29 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
     stop(paste("The file", path, "does not exist!"))
   }
 
-  df <- read.csv(path, header = TRUE, sep = sep, dec = dec,
-                 fileEncoding = encoding)
+  std_enc <- c("UTF-8", "LATIN1")
+
+  tryCatch(
+    withCallingHandlers(
+      {
+        df <- read.csv(path, header = TRUE, sep = sep, dec = dec,
+                       fileEncoding = encoding)
+      },
+      warning = function(w) {
+        alternative_encoding <- setdiff(std_enc, encoding)
+        warning(paste("imongr is trying the alternative encoding",
+                      alternative_encoding, "when reading a csv file",
+                      "hopefully recovering from initial warning:\n\t", w))
+        df <<- read.csv(path, header = TRUE, sep = sep, dec = dec,
+                        fileEncoding = alternative_encoding)
+        invokeRestart("silent")
+      }
+      ),
+    error = function(e) {
+      return(e)
+    },
+    finally = {}
+  )
 
   if (!"denominator" %in% names(df)) {
     df <- cbind(df, denominator = 1L)

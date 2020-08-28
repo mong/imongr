@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS ind (
   CONSTRAINT `fk_ind_ind`
     FOREIGN KEY (dg_id) REFERENCES ind (id)
     ON UPDATE CASCADE
-    ON DELETE CASCADE,
+    ON DELETE SET NULL,
   CONSTRAINT `fk_indicator_registry`
     FOREIGN KEY (registry_id) REFERENCES registry (id)
     ON UPDATE CASCADE
@@ -141,6 +141,7 @@ CREATE TABLE IF NOT EXISTS `agg_data` (
   `var` double(9,5) unsigned NOT NULL,
   `level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
   `level_direction` TINYINT,
+  `dg` double(6,5) unsigned DEFAULT NULL,
   `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
   KEY `year` (`year`),

@@ -24,8 +24,8 @@
 #' @return Database pool object, data frame or status message
 #' @name db
 #' @aliases make_pool drain_pool insert_tab get_table get_agg_data get_data
-#' get_delivery get_user get_user_registry get_indicator
-#' get_flat_org get_all_orgnr
+#' get_delivery get_user get_user_registry get_hospital get_hf get_rhf
+#' get_nation get_indicator get_flat_org get_all_orgnr
 NULL
 
 #' @rdname db
@@ -299,6 +299,77 @@ FROM
   pool::dbGetQuery(pool, query)
 }
 
+#' @rdname db
+#' @export
+get_hospital <- function(pool, sample = NA) {
+
+  conf <- get_config()
+  query <- paste0("
+SELECT
+  ", paste0(conf$db$tab$hospital$insert, collapse = ",\n "), "
+FROM
+  hospital")
+
+  if (!is.na(sample) && sample > 0 && sample < 1) {
+    query <- paste(query, "\nWHERE\n  RAND() <", sample)
+  }
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db
+#' @export
+get_hf <- function(pool, sample = NA) {
+
+  conf <- get_config()
+  query <- paste0("
+SELECT
+  ", paste0(conf$db$tab$hf$insert, collapse = ",\n "), "
+FROM
+  hf")
+
+  if (!is.na(sample) && sample > 0 && sample < 1) {
+    query <- paste(query, "\nWHERE\n  RAND() <", sample)
+  }
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db
+#' @export
+get_rhf <- function(pool, sample = NA) {
+
+  conf <- get_config()
+  query <- paste0("
+SELECT
+  ", paste0(conf$db$tab$rhf$insert, collapse = ",\n "), "
+FROM
+  rhf")
+
+  if (!is.na(sample) && sample > 0 && sample < 1) {
+    query <- paste(query, "\nWHERE\n  RAND() <", sample)
+  }
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db
+#' @export
+get_nation <- function(pool, sample = NA) {
+
+  conf <- get_config()
+  query <- paste0("
+SELECT
+  ", paste0(conf$db$tab$nation$insert, collapse = ",\n "), "
+FROM
+  nation")
+
+  if (!is.na(sample) && sample > 0 && sample < 1) {
+    query <- paste(query, "\nWHERE\n  RAND() <", sample)
+  }
+
+  pool::dbGetQuery(pool, query)
+}
 
 #' @rdname db
 #' @export

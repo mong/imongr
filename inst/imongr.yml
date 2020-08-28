@@ -51,6 +51,15 @@ app_text:
     - Mottatt
     - Akkurat
     - Livet er herlig!
+  tooltip:
+    profile: |-
+      Informasjon om din bruker
+    upload: |-
+      Last opp nye data til sykehusviseren
+    download: |-
+      Se på og last ned data fra Sykehusviseren
+    adminer: |-
+      Administrer data
 db:
   host: env
   name: env
@@ -68,6 +77,7 @@ db:
       - var
       - level
       - level_direction
+      - dg
     data:
       insert:
       - delivery_id
@@ -145,9 +155,9 @@ profile:
   pending: >
     Du er nesten klar for bruk av imongr. Det eneste som nå mangeler er
     riktige tilganger og det kan <a href="https://helse-nord.no/skde">SKDE</a>
-    helpe deg med. Ta gjerne kontakt per telefon +4747474747 og spør etter
+    helpe deg med. Ta gjerne kontakt per telefon +47 77 75 58 00 og spør etter
     Arnfinn, Yohannes eller Are. Du kan også sende oss en
-    <a href="mailto:skde@helse-nord.no">e-post</a> om du heller vil.
+    <a href="mailto:sykehusviseren@skde.no">e-post</a> om du heller vil.
   userinfo: >
     Følgende er registrert om deg:
   delivery:
@@ -156,13 +166,14 @@ profile:
     none: >
       Det finnes ingen registrerte dataleveranser fra deg
   howto: >
-    For å laste opp data velg fanen "Last" og følg instruksjonene der. Når du
-    er ferdig kan du logge ut ved å bruke lenken oppe i høyre hjørne. Om du
-    plages kan du alltids ta kontakt med
-    <a href="https://helse-nord.no/skde">SKDE</a> på telefon +4747474747 eller
-    <a href="mailto:skde@helse-nord.no">e-post</a>. Om du ser eller mistenker
-    feil og mangler i denne programvaren setter vi stor pris på om du sier
-    ifra, enten ved bruk av kontaktinformasjonen over eller direkte gjennom
+    For å laste opp data velg fanen "Last opp data" og følg instruksjonene der.
+    Når du er ferdig kan du logge ut ved å bruke lenken oppe i høyre hjørne. Om
+    du plages kan du alltids ta kontakt med
+    <a href="https://helse-nord.no/skde">SKDE</a> på telefon +47 77 75 58 00
+    eller <a href="mailto:sykehusviseren@skde.no">e-post</a>. Om du ser eller
+    mistenker feil og mangler i denne programvaren setter vi stor pris på om du
+    sier ifra, enten ved bruk av kontaktinformasjonen over eller direkte
+    gjennom
     <a href="https://github.com/mong/imongr/issues">vår feilmeldingstjeneste</a>.
   logout:
     text: Logg ut
@@ -187,8 +198,10 @@ upload:
   - 6
   - 7
   check:
+    missing_registry: |-
+      Ukjent register (kontakt SKDE):
     missing_var: |-
-     Manglende variabler:
+      Manglende variabler:
     invalid_var: |-
       Ugyldige variabler:
     invalid_org: |-
@@ -198,11 +211,13 @@ upload:
     none_numeric_var: |-
       En eller flere verdier i var er ikke numerisk
     duplicate_delivery: |-
-      Et identisk datasett finnes allerede
+      Datasettet er identisk med siste innsending
+  check_empty: |-
+    nødvendig definisjon, verdi eller format finnes ikke
   doc:
     main: >
       Dette er et verktøy for å hjelpe med å legge til data i riktig format
-      i sykehusviser (!). Under er det vist et eksempel på hvordan filen
+      i sykehusviser (!). Nederst er det vist et eksempel på hvordan filen
       skal se ut. Din fil skal være i csv-format med de samme kolonnenavnene
       som i eksempelet. Det skilles mellom små og store bokstaver men
       rekkefølgen på kolonnene kan være tilfeldig. Under følger en forklaring
@@ -212,7 +227,8 @@ upload:
       menyen på venstresiden slik at norske tegn (æøå) representeres riktig og
       tallene fremstår slik de skal. <b>Merk at når du sender nye data til
       server vil alle gamle data tilsvarende indikatorer gitt i datasettet
-      overskrives/slettes</b>. Følgende indikatorer (ind_id) er gyldige for
+      overskrives/slettes</b>. Følgende indikatorer (med markering for de som
+      finnes i csv-fila) er gyldige for
     year: >
       året for hendelsen
     ShNavn: >
@@ -233,8 +249,10 @@ upload:
       For enkelthendelser skal verdien være 1 og for et aggregat av hendelser
       skal verdien være større enn 1
     ind_id: >
-      identifikator for kvalitetsindikator, skal samsvare med identifikator
-      gitt i Indikatorbeskrivelse
+      unik id for kvalitetsindikator og som må samsvare med gyldige verdier
+      (for valgt register, se under)
+    valid_ind: >
+      Gyldige kvalitetsindikator id-er for
     Register: >
       Velges fra menyen til venstre og trenger ikke være med i datafila som
       lastes opp
@@ -287,5 +305,9 @@ aggregate:
 download:
   tab:
   - data
+  - ind
+  - hospital
+  - hf
+  - rhf
 adminer:
   url: env

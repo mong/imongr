@@ -2,10 +2,13 @@
 % Please edit documentation in R/db_get.R
 \name{db_get}
 \alias{db_get}
+\alias{get_registry_ind}
 \alias{get_registry_name}
 \alias{get_org_name}
 \title{Retreiv data from imongr database}
 \usage{
+get_registry_ind(pool, registry)
+
 get_registry_name(pool, registry, full_name = FALSE)
 
 get_org_name(pool, orgnr)

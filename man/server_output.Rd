@@ -19,7 +19,7 @@ submit_ui(conf, pool, upload_file, registry, df)
 
 error_report_ui(pool, df, upload_file, registry)
 
-upload_sample_text_ui(pool, conf, upload_file, registry)
+upload_sample_text_ui(pool, conf, upload_file, registry, indicators)
 
 upload_sample_ui(df, upload_file, registry, sample_size, sample_type)
 
@@ -40,9 +40,11 @@ var_doc_ui(conf)
 
 \item{upload_file}{Character string with file to upload}
 
-\item{registry}{Character string definig registry}
+\item{registry}{Character string defining registry}
 
 \item{df}{Data frame}
+
+\item{indicators}{Character vector of indicators}
 
 \item{sample_size}{Numeric sample size}
 

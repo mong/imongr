@@ -145,7 +145,13 @@ app_server <- function(input, output, session) {
   })
 
   output$upload_sample_text <- shiny::renderText({
-    upload_sample_text_ui(pool, conf, input$upload_file, input$registry)
+    shiny::req(input$registry)
+    if (input$registry == "") {
+      NULL
+    } else {
+      upload_sample_text_ui(pool, conf, input$upload_file, input$registry,
+                            indicators = unique(df()$ind_id))
+    }
   })
 
   output$upload_sample <- shiny::renderTable({
@@ -160,6 +166,18 @@ app_server <- function(input, output, session) {
     var_doc_ui(conf)
   })
 
+  output$valid_ind <- shiny::renderText({
+    paste0("<h4>", conf$upload$doc$valid_ind, " <i>",
+          get_registry_name(pool, shiny::req(input$registry),
+                            full_name = TRUE),
+          "</i>:</h4>")
+  })
+
+  output$valid_ind_tab <- shiny::renderTable(
+    get_registry_indicators(pool, shiny::req(input$registry)), rownames = TRUE,
+    colnames = FALSE
+  )
+
   output$sample_data <- shiny::renderTable(
     get_data(pool,
              sample = 0.0001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
@@ -169,7 +187,17 @@ app_server <- function(input, output, session) {
 
   # loss
   db_table <- shiny::reactive({
-    get_registry_data(pool, input$download_registry)
+    if (input$download_registry == "") {
+      data.frame()
+    } else {
+      if (input$tab_set == "data") {
+        get_registry_data(pool, input$download_registry)
+      } else if (input$tab_set == "ind") {
+        get_registry_ind(pool, input$download_registry)
+      } else {
+        get_table(pool, input$tab_set)
+      }
+    }
   })
 
   output$select_download_registry <- shiny::renderUI({
@@ -205,14 +233,16 @@ app_server <- function(input, output, session) {
 
   output$db_table <- DT::renderDataTable(
     DT::datatable(db_table(), rownames = FALSE,
-                 options = list(
-                   dom = "lftp",
-                   language = list(
-                     lengthMenu = "Vis _MENU_ rader per side",
-                     search = "S\u00f8k:",
-                     info = "Rad _START_ til _END_ av totalt _TOTAL_",
-                     paginate = list(previous = "Forrige", `next` = "Neste")
-                   )))
+      options = list(
+        dom = "lftp",
+        language = list(
+          lengthMenu = "Vis _MENU_ rader per side",
+          search = "S\u00f8k:",
+          info = "Rad _START_ til _END_ av totalt _TOTAL_",
+          paginate = list(previous = "Forrige", `next` = "Neste")
+        )
+      )
+    )
   )
 
   output$ui_db_table <- shiny::renderUI(
