@@ -1,3 +1,14 @@
+# imongr 0.8
+
+* processing dg (coverage) and dependent indicators during aggregation
+* better tab names and with mouseover texts
+* one-click sending of upload error reports in gui
+* more tables for download were added (to be adjusted in future versions)
+* info in gui on valid indicators for selected registry
+* on reading csv file the app will try an alternative encoding before throwing an error
+* extended app config
+* some errors and shortcomings were fixed
+
 # imongr 0.7.1
 
 * fixed missing check on valid user
