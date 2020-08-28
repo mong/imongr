@@ -206,8 +206,29 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
     stop(paste("The file", path, "does not exist!"))
   }
 
-  df <- read.csv(path, header = TRUE, sep = sep, dec = dec,
-                 fileEncoding = encoding)
+  std_enc <- c("UTF-8", "LATIN1")
+
+  tryCatch(
+    withCallingHandlers(
+      {
+        df <- read.csv(path, header = TRUE, sep = sep, dec = dec,
+                       fileEncoding = encoding)
+      },
+      warning = function(w) {
+        alternative_encoding <- setdiff(std_enc, encoding)
+        warning(paste("imongr is trying the alternative encoding",
+                      alternative_encoding, "when reading a csv file",
+                      "hopefully recovering from initial warning:\n\t", w))
+        df <<- read.csv(path, header = TRUE, sep = sep, dec = dec,
+                        fileEncoding = alternative_encoding)
+        invokeRestart("silent")
+      }
+      ),
+    error = function(e) {
+      return(e)
+    },
+    finally = {}
+  )
 
   if (!"denominator" %in% names(df)) {
     df <- cbind(df, denominator = 1L)
