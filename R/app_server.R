@@ -110,18 +110,14 @@ app_server <- function(input, output, session) {
   })
 
   output$upload_file <- shiny::renderUI({
-    if (shiny::req(input$registry) == "") {
-      NULL
-    } else {
-      shiny::fileInput("upload_file", "Velg csv-fil",
-                       buttonLabel = "Velg fil...",
-                       placeholder = "Ingen fil er valgt",
-                       multiple = FALSE,
-                       accept = c("text/csv",
-                                  "text/comma-separated-values,text/plain",
-                                  ".csv")
-      )
-    }
+    shiny::fileInput("upload_file", "Velg csv-fil",
+                     buttonLabel = "Velg fil...",
+                     placeholder = "Ingen fil er valgt",
+                     multiple = FALSE,
+                     accept = c("text/csv",
+                                "text/comma-separated-values,text/plain",
+                                ".csv")
+    )
   })
 
   output$other_encoding <- shiny::renderUI({
@@ -145,12 +141,18 @@ app_server <- function(input, output, session) {
   ## ui main panel
   output$error_report <- shiny::renderText({
     rv$inv_data
+    #shiny::req(input$registry)
     error_report_ui(pool, df(), input$upload_file, input$registry)
   })
 
   output$upload_sample_text <- shiny::renderText({
-    upload_sample_text_ui(pool, conf, input$upload_file, input$registry,
-                          indicators = unique(df()$ind_id))
+    req(input$registry)
+    if (input$registry == "") {
+      NULL
+    } else {
+      upload_sample_text_ui(pool, conf, input$upload_file, input$registry,
+                            indicators = unique(df()$ind_id))
+    }
   })
 
   output$upload_sample <- shiny::renderTable({

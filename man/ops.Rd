@@ -11,6 +11,7 @@
 \alias{get_indicators_registry}
 \alias{md5_checksum}
 \alias{delivery_exist_in_db}
+\alias{duplicate_delivery}
 \alias{retire_user_deliveries}
 \alias{delete_indicator_data}
 \alias{delete_registry_data}
@@ -42,6 +43,8 @@ get_indicators_registry(pool, indicator)
 md5_checksum(df)
 
 delivery_exist_in_db(pool, df)
+
+duplicate_delivery(pool, df)
 
 retire_user_deliveries(pool)
 

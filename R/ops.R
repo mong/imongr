@@ -9,9 +9,8 @@
 #' @aliases get_user_data get_user_id get_user_registries
 #' get_user_registry_select
 #' get_user_latest_delivery_id get_registry_data get_indicators_registry
-#' md5_checksum
-#' delivery_exist_in_db retire_user_deliveries delete_indicator_data
-#' delete_registry_data
+#' md5_checksum delivery_exist_in_db duplicate_delivery retire_user_deliveries
+#' delete_indicator_data delete_registry_data
 #' delete_agg_data insert_data insert_agg_data
 NULL
 
@@ -245,6 +244,26 @@ FROM
   }
 }
 
+#' @rdname ops
+#' @export
+duplicate_delivery <- function(pool, df) {
+
+  query <- "
+SELECT
+  md5_checksum
+FROM
+  delivery
+WHERE
+  latest=1;"
+
+  dat <- pool::dbGetQuery(pool, query)
+
+  if (md5_checksum(df) %in% dat$md5_checksum) {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
 
 #' @rdname ops
 #' @export
@@ -324,10 +343,6 @@ WHERE
 #' @rdname ops
 #' @export
 insert_data <- function(pool, df) {
-
-  if (delivery_exist_in_db(pool, df)) {
-    stop("This delivery has already been made, data exist in database!")
-  }
 
   delivery <- data.frame(latest = 1,
                          md5_checksum = md5_checksum(df),

@@ -112,23 +112,23 @@ if (is.null(check_db(is_test_that = FALSE))) {
 # test that depend on db
 conf <- get_config()
 
-test_that("org id checks is workinig", {
+test_that("org id checks is working", {
   check_db()
   expect_false(check_invalid_org(registry, df, conf, pool)$fail)
   expect_equal(check_invalid_org(registry, df[, !names(df) %in% "orgnr"],
-                                 conf, pool)$report, "Field missing")
+                                 conf, pool)$report, conf$upload$check_empty)
   # set an org id that (assumably) does not exist
-  df$orgnr <- 66
-  expect_true(check_invalid_org(df, conf, pool)$fail)
-  expect_true(length(check_invalid_org(df, conf, pool)$report) > 0)
-  df$ind_id <- 874716782
+  df$orgnr <- -1
+  expect_true(check_invalid_org(registry, df, conf, pool)$fail)
+  expect_true(length(check_invalid_org(registry, df, conf, pool)$report) > 0)
+  df$orgnr <- 974633574
 })
 
 test_that("indicator id check is working", {
   check_db()
   expect_false(check_invalid_ind(registry, df, conf, pool)$fail)
   expect_equal(check_invalid_ind(registry, df[, !names(df) %in% "ind_id"],
-                                 conf, pool)$report, "Field missing")
+                                 conf, pool)$report, conf$upload$check_empty)
   # set an indicator id that does not exist
   df$ind_id <- "nothing"
   expect_true(length(check_invalid_ind(registry, df, conf, pool)$report) > 0)
@@ -138,8 +138,10 @@ test_that("indicator id check is working", {
 test_that("variable (numeric) type check is working", {
   check_db()
   expect_false(check_none_numeric_var(registry, df, conf, pool)$fail)
-  expect_equal(check_none_numeric_var(registry, df[, !names(df) %in% "var"],
-                                     conf, pool)$report, "Field missing")
+  expect_equal(
+    check_none_numeric_var(registry, df[, !names(df) %in% "var"],
+                           conf, pool)$report, conf$upload$check_empty
+  )
   df$var <- as.character(df$var)
   expect_true(check_none_numeric_var(registry, df, conf, pool)$fail)
   df$var <- as.numeric(df$var)

@@ -4,6 +4,7 @@
 \alias{upload}
 \alias{check_report}
 \alias{check_upload}
+\alias{check_missing_registry}
 \alias{check_missing_var}
 \alias{check_invalid_var}
 \alias{check_invalid_org}
@@ -20,6 +21,8 @@ check_report(registry, df, pool)
 mail_check_report(pool, registry, mail_msg)
 
 check_upload(registry, df, pool)
+
+check_missing_registry(registry, df, conf, pool)
 
 check_missing_var(registry, df, conf, pool)
 

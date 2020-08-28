@@ -198,8 +198,10 @@ upload:
   - 6
   - 7
   check:
+    missing_registry: |-
+      Ukjent register (kontakt SKDE):
     missing_var: |-
-     Manglende variabler:
+      Manglende variabler:
     invalid_var: |-
       Ugyldige variabler:
     invalid_org: |-
@@ -209,7 +211,9 @@ upload:
     none_numeric_var: |-
       En eller flere verdier i var er ikke numerisk
     duplicate_delivery: |-
-      Et identisk datasett finnes allerede
+      Datasettet er identisk med siste innsending
+  check_empty: |-
+    nødvendig definisjon, verdi eller format finnes ikke
   doc:
     main: >
       Dette er et verktøy for å hjelpe med å legge til data i riktig format
@@ -245,8 +249,8 @@ upload:
       For enkelthendelser skal verdien være 1 og for et aggregat av hendelser
       skal verdien være større enn 1
     ind_id: >
-      unik id for kvalitetsindikator og som må samsvare med gyldige verdier (se
-      under)
+      unik id for kvalitetsindikator og som må samsvare med gyldige verdier
+      (for valgt register, se under)
     valid_ind: >
       Gyldige kvalitetsindikator id-er for
     Register: >

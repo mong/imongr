@@ -52,6 +52,10 @@ WHERE
 #' @export
 get_registry_name <- function(pool, registry, full_name = FALSE) {
 
+  if (missing(registry) | registry == "") {
+    return(character())
+  }
+
   query <- paste0("
 SELECT
   name,

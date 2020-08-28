@@ -15,8 +15,8 @@
 #' @return whatever
 #' @importFrom utils read.csv URLencode
 #' @name upload
-#' @aliases check_report check_upload check_missing_var check_invalid_var
-#' check_invalid_org check_invalid_ind check_none_numeric_var
+#' @aliases check_report check_upload check_missing_registry check_missing_var
+#' check_invalid_var check_invalid_org check_invalid_ind check_none_numeric_var
 #' check_duplicate_delivery csv_to_df mail_check_report sample_df
 NULL
 
@@ -53,7 +53,7 @@ mail_check_report <- function(pool, registry, mail_msg) {
 
   user <- get_user_data(pool)
   to <- "mailto:sykehusviser@skde.no"
-  subject <- paste("imongr: Feilmelding ved opplasting av",
+  subject <- paste("imongr: Feilmelding ved opplasting",
                    get_registry_name(pool, registry))
   body <- paste("Hei,",
                 "\n\nDet kan godt hende jeg trenger hjelp med følgende feil:",
@@ -77,16 +77,38 @@ check_upload <- function(registry, df, pool) {
 
   conf <- get_config()
 
-  for (i in seq_len(length(conf$upload$check))) {
-    unit[i] <- names(conf$upload$check)[i]
-    r <- do.call(paste0("check_", unit[i]),
-                 args = list(registry = registry, df = df, conf = conf,
-                             pool = pool))
-    fail[i] <- r$fail
-    report[i] <- paste(r$report, collapse = ", ")
+  # special case if there registry is not defined
+  if (registry == "") {
+    unit <- "missing_registry"
+    fail <- TRUE
+    report <- conf$upload$check_empty
+  } else {
+    for (i in seq_len(length(conf$upload$check))) {
+      unit[i] <- names(conf$upload$check)[i]
+      r <- do.call(paste0("check_", unit[i]),
+                   args = list(registry = registry, df = df, conf = conf,
+                               pool = pool))
+      fail[i] <- r$fail
+      report[i] <- paste(r$report, collapse = ", ")
+    }
   }
   list(unit = unit, fail = fail, report = report)
 }
+
+#' @rdname upload
+#' @export
+check_missing_registry <- function(registry, df, conf, pool) {
+
+  # pro forma, will never fail but present to maintain consistent config
+  fail <- FALSE
+  report <- character()
+  if (registry == "") {
+    fail <- TRUE
+    report <- conf$upload$check_empty
+  }
+  list(fail = fail, report = report)
+}
+
 
 
 #' @rdname upload
@@ -122,7 +144,7 @@ check_invalid_org <- function(registry, df, conf, pool) {
   if ("orgnr" %in% names(df)) {
     report <- setdiff(df$orgnr, get_all_orgnr(pool)$orgnr)
   } else {
-    report <- "Field missing"
+    report <- conf$upload$check_empty
   }
   if (length(report) == 0) {
     fail <- FALSE
@@ -141,7 +163,7 @@ check_invalid_ind <- function(registry, df, conf, pool) {
     report <- setdiff(df$ind_id,
                       get_registry_indicators(pool, registry)$id)
   } else {
-    report <- "Field missing"
+    report <- conf$upload$check_empty
   }
   if (length(report) == 0) {
     fail <- FALSE
@@ -161,7 +183,7 @@ check_none_numeric_var <- function(registry, df, conf, pool) {
       fail <- FALSE
     }
   } else {
-    report <- "Field missing"
+    report <- conf$upload$check_empty
   }
   list(fail = fail, report = report)
 }
@@ -171,7 +193,7 @@ check_none_numeric_var <- function(registry, df, conf, pool) {
 #' @export
 check_duplicate_delivery <- function(registry, df, conf, pool) {
 
-  fail <- delivery_exist_in_db(pool, df)
+  fail <- duplicate_delivery(pool, df)
   report <- ""
   list(fail = fail, report = report)
 }
