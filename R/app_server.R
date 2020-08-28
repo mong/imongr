@@ -141,12 +141,11 @@ app_server <- function(input, output, session) {
   ## ui main panel
   output$error_report <- shiny::renderText({
     rv$inv_data
-    #shiny::req(input$registry)
     error_report_ui(pool, df(), input$upload_file, input$registry)
   })
 
   output$upload_sample_text <- shiny::renderText({
-    req(input$registry)
+    shiny::req(input$registry)
     if (input$registry == "") {
       NULL
     } else {
