@@ -1,4 +1,6 @@
-# imongr 0.8
+# imongr 0.9.0
+
+# imongr 0.8.0
 
 * processing dg (coverage) and dependent indicators during aggregation
 * better tab names and with mouseover texts
