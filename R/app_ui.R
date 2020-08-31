@@ -7,29 +7,25 @@ app_ui <- function() {
 
   conf <- get_config()
   shiny::addResourcePath("www", system.file("www", package = "imongr"))
-  app_title <- "imongr"
+  app_title <- "Data i Sykehusviseren"
 
   shiny::tagList(
     shiny::navbarPage(
       title = shiny::div(
-        shiny::a(
-          shiny::includeHTML(
-            system.file("www/logo.svg", package = "imongr")
-          )
-        ), app_title
+        app_title
       ),
       windowTitle = app_title,
       theme = "www/bootstrap.css",
       id = "tabs",
 
-      shiny::tabPanel(id = "profile",
+      shiny::tabPanel(value = "profile",
         shiny::span("Profil", title = conf$app_text$tooltip$profile),
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("profile")),
           shiny::uiOutput("ui_deliveries_table")
       ),
 
-      shiny::tabPanel(id = "upload",
+      shiny::tabPanel(value = "upload",
         shiny::span("Last opp data", title = conf$app_text$tooltip$upload),
         shiny::sidebarLayout(
           shiny::sidebarPanel(
@@ -79,7 +75,7 @@ app_ui <- function() {
         )
       ),
 
-      shiny::tabPanel(id = "download",
+      shiny::tabPanel(value = "download",
         shiny::span("Last ned data", title = conf$app_text$tooltip$download),
         shiny::sidebarLayout(
           shiny::sidebarPanel(width = 3,
@@ -99,8 +95,10 @@ app_ui <- function() {
           )
         )
       ),
-      shiny::tabPanel(id = "adminer",
-        shiny::span("Adminer", title = conf$app_text$tooltip$adminer),
+      shiny::tabPanel(
+        value = "adminer",
+        shiny::span("Adminer", title = conf$app_text$tooltip$adminer,
+                    id = "adminer"),
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("admin_frame"))
       ),

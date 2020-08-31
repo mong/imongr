@@ -28,15 +28,15 @@ app_server <- function(input, output, session) {
   }
 
   # show/hide tabs by user profile
-  shiny::hideTab("tabs", target = "Last")
-  shiny::hideTab("tabs", target = "Loss")
-  shiny::hideTab("tabs", target = "Sj\u00e6f")
+  shiny::hideTab("tabs", target = "upload")
+  shiny::hideTab("tabs", target = "download")
+  shiny::hideTab("tabs", target = "adminer")
   if (valid_user && conf$role$provider %in% igrs) {
-    shiny::showTab("tabs", target = "Last")
-    shiny::showTab("tabs", target = "Loss")
+    shiny::showTab("tabs", target = "upload")
+    shiny::showTab("tabs", target = "download")
   }
   if (valid_user && conf$role$manager %in% igrs) {
-    shiny::showTab("tabs", target = "Sj\u00e6f")
+    shiny::showTab("tabs", target = "adminer")
   }
 
   # app widget
@@ -47,7 +47,7 @@ app_server <- function(input, output, session) {
                                  conf$app_text$info$help,
                                  conf$app_text$info$lisence,
                                  sep = "\n"),
-                           type = "", imageUrl = "www/logo.svg",
+                           type = "",
                            closeOnEsc = TRUE, closeOnClickOutside = TRUE,
                            html = TRUE,
                            confirmButtonText = no_opt_out_ok())
