@@ -56,7 +56,8 @@ mail_check_report <- function(pool, registry, mail_msg) {
   subject <- paste("imongr: Feilmelding ved opplasting",
                    get_registry_name(pool, registry))
   body <- paste("Hei,",
-                "\n\nDet kan godt hende jeg trenger hjelp med følgende feil:",
+                "\n\nDet kan godt hende jeg trenger hjelp med f\u00f8lgende",
+                "feil:",
                 "\n\n", paste(mail_msg),
                 "\n\nSo long og vennlig hilsen,\n", user$name, "\n", user$phone)
 
@@ -209,8 +210,7 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
   std_enc <- c("UTF-8", "LATIN1")
 
   tryCatch(
-    withCallingHandlers(
-      {
+    withCallingHandlers({
         df <- read.csv(path, header = TRUE, sep = sep, dec = dec,
                        fileEncoding = encoding)
       },
@@ -227,7 +227,8 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
     error = function(e) {
       return(e)
     },
-    finally = {}
+    finally = {
+    }
   )
 
   if (!"denominator" %in% names(df)) {
