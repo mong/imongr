@@ -377,15 +377,15 @@ insert_agg_data <- function(pool, df) {
   }
 
   # add registry_id to data
-  ind_reg <- dplyr::select(get_indicator(pool), id, registry_id)
+  ind_reg <- dplyr::select(get_indicator(pool), .data$id, .data$registry_id)
   df <- df %>%
     dplyr::left_join(ind_reg, by = c("ind_id" = "id"))
 
   reg <- unique(df$registry_id)
   for (i in seq_len(length(reg))) {
     message(paste("Aggregating", get_registry_name(pool, reg[i])))
-    dat <- dplyr::filter(df, registry_id == reg[i]) %>%
-      dplyr::select(!registry_id)
+    dat <- dplyr::filter(df, .data$registry_id == reg[i]) %>%
+      dplyr::select(!.data$registry_id)
     # if delivery is a subset of registry indicators AND dg is part of subset,
     # agg_data for all indicators of the current registry must be updated.
     if (!setequal(get_registry_indicators(pool, reg[i]), dat$ind_id)) {
