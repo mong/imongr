@@ -11,6 +11,7 @@
 #' @param n Numeric sample size
 #' @param skip character vector defining data frame variables to skip
 #' @param random Logical sample method
+#' @param mail_msg Character vector holding (part of) email body
 #'
 #' @return whatever
 #' @importFrom utils read.csv URLencode
