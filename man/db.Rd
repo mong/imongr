@@ -8,6 +8,7 @@
 \alias{get_table}
 \alias{get_agg_data}
 \alias{get_data}
+\alias{get_all_data}
 \alias{get_delivery}
 \alias{get_user}
 \alias{get_user_registry}
@@ -34,6 +35,8 @@ get_table(pool, table)
 get_agg_data(pool)
 
 get_data(pool, sample = NA)
+
+get_all_data(pool)
 
 get_delivery(pool, sample = NA)
 
