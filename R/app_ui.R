@@ -10,6 +10,7 @@ app_ui <- function() {
   app_title <- "Data i Sykehusviseren"
 
   shiny::tagList(
+    shinyjs::useShinyjs(),
     shiny::navbarPage(
       title = shiny::div(
         app_title
@@ -101,6 +102,23 @@ app_ui <- function() {
                     id = "adminer"),
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("admin_frame"))
+      ),
+      shiny::tabPanel(
+        value = "mine_field",
+        shiny::span("Minefelt!", title = conf$app_text$tooltip$mine_field),
+        shiny::sidebarLayout(
+          shiny::sidebarPanel(
+            shiny::p("Trå forsiktig!"),
+            shiny::actionButton("agg_all", "Aggreger alle data",
+                                icon = shiny::icon("skull"))
+          ),
+          shiny::mainPanel(
+            shiny::p(shiny::em("System message:")),
+            shiny::verbatimTextOutput("sysMessage"),
+            shiny::p(shiny::em("Function message:")),
+            shiny::verbatimTextOutput("funMessage")
+          )
+        )
       ),
       navbar_widget(),
       shinyalert::useShinyalert()

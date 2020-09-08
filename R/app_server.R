@@ -31,12 +31,14 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "upload")
   shiny::hideTab("tabs", target = "download")
   shiny::hideTab("tabs", target = "adminer")
+  shiny::hideTab("tabs", target = "mine_field")
   if (valid_user && conf$role$provider %in% igrs) {
     shiny::showTab("tabs", target = "upload")
     shiny::showTab("tabs", target = "download")
   }
   if (valid_user && conf$role$manager %in% igrs) {
     shiny::showTab("tabs", target = "adminer")
+    shiny::showTab("tabs", target = "mine_field")
   }
 
   # app widget
@@ -259,6 +261,18 @@ app_server <- function(input, output, session) {
   output$admin_frame <- shiny::renderUI({
     shiny::tags$iframe(src = admin_url, width = "100%", height = 1024,
                        frameborder = "no")
+  })
+
+  # mine field
+  shiny::observeEvent(input$agg_all, {
+    withCallingHandlers({
+      shinyjs::html("sysMessage", "")
+      shinyjs::html("funMessage", "")
+      shinyjs::html("funMessage", agg_all_data(pool))
+    },
+    message = function(m) {
+      shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
+    })
   })
 
 }
