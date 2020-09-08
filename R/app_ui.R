@@ -108,7 +108,7 @@ app_ui <- function() {
         shiny::span("Minefelt!", title = conf$app_text$tooltip$mine_field),
         shiny::sidebarLayout(
           shiny::sidebarPanel(
-            shiny::p("Trå forsiktig!"),
+            shiny::p("Tr\u00e5 forsiktig!"),
             shiny::actionButton("agg_all", "Aggreger alle data",
                                 icon = shiny::icon("skull"))
           ),
