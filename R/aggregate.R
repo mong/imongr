@@ -34,6 +34,9 @@
 #' data on each indicator
 #' @param group Character string defining the name of the grouping variable
 #' in a data frame
+#' @param aggs data frame of (pre) aggregated data
+#' @param conf list of configuration
+#' @param from_level integer specifying from what level to aggregate from
 #' @return Data frame in raw, grouped or aggregated form
 #' @name aggregate
 #' @aliases agg agg_dg agg_from_level agg_residual agg_udef make_group
@@ -69,11 +72,11 @@ agg <- function(df, org, ind) {
 
   # sum over levels (i.e. organizations)
   aggs <- aggs %>%
-    dplyr::group_by(year, ind_id, orgnr) %>%
-    dplyr::summarise(var = sum(var),
-                     denominator = sum(denominator),
-                     unit_level = unique(unit_level),
-                     unit_name = unique(unit_name)) %>%
+    dplyr::group_by(.data$year, .data$ind_id, .data$orgnr) %>%
+    dplyr::summarise(var = sum(.data$var),
+                     denominator = sum(.data$denominator),
+                     unit_level = unique(.data$unit_level),
+                     unit_name = unique(.data$unit_name)) %>%
     dplyr::ungroup() %>%
     as.data.frame()
 
@@ -94,7 +97,7 @@ agg <- function(df, org, ind) {
   aggs$var <- aggs$var / aggs$denominator
 
   aggs <- aggs %>%
-    dplyr::arrange(ind_id, year, unit_level) %>%
+    dplyr::arrange(.data$ind_id, .data$year, .data$unit_level) %>%
     dplyr::ungroup()
 
   # class values into defined levels
@@ -127,7 +130,7 @@ agg_dg <- function(aggs, ind) {
   dg_data <- dplyr::filter(aggs, .data$ind_id %in% dgs)
 
   # unique years represented by dgs in data, ascending order
-  years <- dplyr::select(dg_data, year) %>%
+  years <- dplyr::select(dg_data, .data$year) %>%
     dplyr::distinct() %>%
     dplyr::arrange() %>%
     dplyr::pull()
@@ -138,22 +141,24 @@ agg_dg <- function(aggs, ind) {
   # at: temporary aggs for each iteration
   # dt: temporary dg_data for each iteration
   for (i in seq_len(length(years))) {
-    at <- dplyr::filter(aggs, year >= years[i]) %>%
-      dplyr::select(!dg)
-    dt <- dplyr::filter(dg_data, year == years[i]) %>%
-      dplyr::select(ind_id, orgnr, var) %>%
-      dplyr::rename(dg_id = ind_id, dg = var)
+    at <- dplyr::filter(aggs, .data$year >= years[i]) %>%
+      dplyr::select(!.data$dg)
+    dt <- dplyr::filter(dg_data, .data$year == years[i]) %>%
+      dplyr::select(.data$ind_id, .data$orgnr, .data$var) %>%
+      dplyr::rename(dg_id = .data$ind_id, dg = .data$var)
 
     # join current year dg into data from current year and newer. Then, move on
     # with only those vars neede for updating aggs
     at <- dplyr::left_join(at, dt, by = c("dg_id", "orgnr")) %>%
-      dplyr::select(ind_id, dg_id, unit_level, unit_name, orgnr, year,
-                    denominator, var, level, level_direction, dg)
+      dplyr::select(.data$ind_id, .data$dg_id, .data$unit_level,
+                    .data$unit_name, .data$orgnr, .data$year,
+                    .data$denominator, .data$var, .data$level,
+                    .data$level_direction, .data$dg)
 
     # update aggs from current year and newer with dg from current year
     aggs <- aggs %>%
-      dplyr::filter(year < years[i]) %>%
-      dplyr::bind_rows(at)
+      dplyr::filter(.data$year < years[i]) %>%
+      dplyr::bind_rows(.data$at)
   }
 
   aggs %>% dplyr::select(!.data$dg_id)
@@ -212,9 +217,9 @@ agg_residual <- function(aggs, conf) {
 
   # diff sum levels
   sum_unit_level <- aggs %>%
-    dplyr::group_by(year, ind_id, unit_level) %>%
-    dplyr::summarise(var = sum(var),
-                     denominator = sum(denominator))
+    dplyr::group_by(.data$year, .data$ind_id, .data$unit_level) %>%
+    dplyr::summarise(var = sum(.data$var),
+                     denominator = sum(.data$denominator))
 
   ## sort orgs from tow level and down
   level <- vector()
@@ -234,8 +239,8 @@ agg_residual <- function(aggs, conf) {
 
   # prep initial set
   l0 <- sum_unit_level %>%
-    dplyr::filter(unit_level == desc$name[1]) %>%
-    dplyr::arrange(year, ind_id)
+    dplyr::filter(.data$unit_level == desc$name[1]) %>%
+    dplyr::arrange(.data$year, .data$ind_id)
   set1 <- paste(l0$year, l0$ind_id, sep = ";")
   setd <- setdiff(set0, set1)
   if (length(setd) > 0) {
@@ -246,14 +251,14 @@ agg_residual <- function(aggs, conf) {
                          denominator = 0)
     l0 <- l0 %>%
       dplyr::bind_rows(lt) %>%
-      dplyr::arrange(year, ind_id)
+      dplyr::arrange(.data$year, .data$ind_id)
   }
 
   diff <- data.frame()
   for (i in seq_len(dim(desc)[1] - 1)) {
     l1 <- sum_unit_level %>%
-      dplyr::filter(unit_level == desc$name[i + 1]) %>%
-      dplyr::arrange(year, ind_id)
+      dplyr::filter(.data$unit_level == desc$name[i + 1]) %>%
+      dplyr::arrange(.data$year, .data$ind_id)
     # pad missing year-indicator combinations with 0, if any
     set1 <- paste(l1$year, l1$ind_id, sep = ";")
     setd <- setdiff(set0, set1)
@@ -265,7 +270,7 @@ agg_residual <- function(aggs, conf) {
                            denominator = 0)
       l1 <- l1 %>%
         dplyr::bind_rows(lt) %>%
-        dplyr::arrange(year, ind_id)
+        dplyr::arrange(.data$year, .data$ind_id)
     }
 
     l1$var_diff <- l0$var - l1$var
@@ -310,9 +315,9 @@ agg_udef <- function(diff, conf) {
   for (i in seq_len(dim(unit)[1] - 1)) {
     idiff <- diff[diff$unit_level == unit$name[i], ]
     u0 <- idiff %>%
-      dplyr::filter(denominator_diff > 0)
+      dplyr::filter(.data$denominator_diff > 0)
     u1 <- idiff %>%
-      dplyr::filter(denominator_diff < 0)
+      dplyr::filter(.data$denominator_diff < 0)
     if (length(u0$orgnr) > 0) {
       u0$orgnr <- conf$aggregate$orgnr$undefined[[unit$name[i]]]
       u0$unit_name <- conf$aggregate$udef_unit_level[[unit$name[i]]]$name
@@ -339,8 +344,8 @@ agg_udef <- function(diff, conf) {
   set0 <- unique(paste(diff$year, diff$ind_id, sep = ";"))
 
   # downwards inherit for each level and combination of year and indicator
-  l0 <- dplyr::filter(diff, unit_level == unit$name[1]) %>%
-    dplyr::arrange(year, ind_id)
+  l0 <- dplyr::filter(diff, .data$unit_level == unit$name[1]) %>%
+    dplyr::arrange(.data$year, .data$ind_id)
   set1 <- paste(l0$year, l0$ind_id, sep = ";")
   setd <- setdiff(set0, set1)
   if (length(setd) > 0) {
@@ -357,13 +362,13 @@ agg_udef <- function(diff, conf) {
                            conf$aggregate$udef_unit_level[[unit$name[1]]]$name)
     l0 <- l0 %>%
       dplyr::bind_rows(lt) %>%
-      dplyr::arrange(year, ind_id)
+      dplyr::arrange(.data$year, .data$ind_id)
   }
 
   l <- l0
   for (i in seq_len(dim(unit)[1] - 1)) {
-    l1 <- dplyr::filter(diff, unit_level == unit$name[i + 1]) %>%
-      dplyr::arrange(year, ind_id)
+    l1 <- dplyr::filter(diff, .data$unit_level == unit$name[i + 1]) %>%
+      dplyr::arrange(.data$year, .data$ind_id)
     # pad missing year-indicator combinations with 0, if any
     set1 <- paste(l1$year, l1$ind_id, sep = ";")
     setd <- setdiff(set0, set1)
@@ -382,7 +387,7 @@ agg_udef <- function(diff, conf) {
         )
       l1 <- l1 %>%
         dplyr::bind_rows(lt) %>%
-        dplyr::arrange(year, ind_id)
+        dplyr::arrange(.data$year, .data$ind_id)
     }
     l1$var_diff <- l1$var_diff + l0$var_diff
     l1$denominator_diff <- l1$denominator_diff + l0$denominator_diff

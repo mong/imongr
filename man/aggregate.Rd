@@ -41,6 +41,12 @@ be obtained by \code{get_flat_org(pool)}}
 \item{ind}{Data frame holding the indicator db table providing all
 data on each indicator}
 
+\item{aggs}{data frame of (pre) aggregated data}
+
+\item{conf}{list of configuration}
+
+\item{from_level}{integer specifying from what level to aggregate from}
+
 \item{group}{Character string defining the name of the grouping variable
 in a data frame}
 

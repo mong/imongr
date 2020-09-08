@@ -24,8 +24,8 @@
 #' @return Database pool object, data frame or status message
 #' @name db
 #' @aliases make_pool drain_pool insert_tab get_table get_agg_data get_data
-#' get_delivery get_user get_user_registry get_hospital get_hf get_rhf
-#' get_nation get_indicator get_flat_org get_all_orgnr
+#' get_all_data get_delivery get_user get_user_registry get_hospital get_hf
+#' get_rhf get_nation get_indicator get_flat_org get_all_orgnr
 NULL
 
 #' @rdname db
@@ -170,6 +170,20 @@ WHERE
   pool::dbGetQuery(pool, query)
 }
 
+
+#' @rdname db
+#' @export
+get_all_data <- function(pool) {
+
+  conf <- get_config()
+  query <- paste0("
+SELECT
+  ", paste0("var.", conf$db$tab$data$insert, collapse = ",\n  "), "
+FROM
+  data var;")
+
+  pool::dbGetQuery(pool, query)
+}
 
 #' @rdname db
 #' @export

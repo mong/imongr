@@ -1,4 +1,12 @@
-# imongr 0.8
+# imongr 0.9.0
+
+* removed bling-bling from gui
+* colour and fonts made more consistent with frame host
+* multi registry aggregation
+* all data (re-) aggration available in app
+* fixed missing variable pronouns and docs
+
+# imongr 0.8.0
 
 * processing dg (coverage) and dependent indicators during aggregation
 * better tab names and with mouseover texts

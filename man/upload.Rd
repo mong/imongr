@@ -47,6 +47,8 @@ sample_df(df, skip = c(""), n, random = FALSE)
 
 \item{pool}{Data base pool object}
 
+\item{mail_msg}{Character vector holding (part of) email body}
+
 \item{conf}{List of configuration}
 
 \item{path}{Character path to a file}

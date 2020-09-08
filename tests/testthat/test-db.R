@@ -111,7 +111,7 @@ test_that("agg_data can be populated from existing (test) data", {
   check_db()
   # to save ptime, use just a sub-sample of data (reused on retreival)
   data_sample <- get_data(pool, sample = .4)
-  expect_true(insert_agg_data(pool, data_sample))
+  expect_message(insert_agg_data(pool, data_sample))
 })
 
 test_that("function provides error when inserting non-consistent data", {

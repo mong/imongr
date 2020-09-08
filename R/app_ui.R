@@ -7,29 +7,26 @@ app_ui <- function() {
 
   conf <- get_config()
   shiny::addResourcePath("www", system.file("www", package = "imongr"))
-  app_title <- "imongr"
+  app_title <- "Data i Sykehusviseren"
 
   shiny::tagList(
+    shinyjs::useShinyjs(),
     shiny::navbarPage(
       title = shiny::div(
-        shiny::a(
-          shiny::includeHTML(
-            system.file("www/logo.svg", package = "imongr")
-          )
-        ), app_title
+        app_title
       ),
       windowTitle = app_title,
       theme = "www/bootstrap.css",
       id = "tabs",
 
-      shiny::tabPanel(id = "profile",
+      shiny::tabPanel(value = "profile",
         shiny::span("Profil", title = conf$app_text$tooltip$profile),
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("profile")),
           shiny::uiOutput("ui_deliveries_table")
       ),
 
-      shiny::tabPanel(id = "upload",
+      shiny::tabPanel(value = "upload",
         shiny::span("Last opp data", title = conf$app_text$tooltip$upload),
         shiny::sidebarLayout(
           shiny::sidebarPanel(
@@ -79,7 +76,7 @@ app_ui <- function() {
         )
       ),
 
-      shiny::tabPanel(id = "download",
+      shiny::tabPanel(value = "download",
         shiny::span("Last ned data", title = conf$app_text$tooltip$download),
         shiny::sidebarLayout(
           shiny::sidebarPanel(width = 3,
@@ -99,10 +96,29 @@ app_ui <- function() {
           )
         )
       ),
-      shiny::tabPanel(id = "adminer",
-        shiny::span("Adminer", title = conf$app_text$tooltip$adminer),
+      shiny::tabPanel(
+        value = "adminer",
+        shiny::span("Adminer", title = conf$app_text$tooltip$adminer,
+                    id = "adminer"),
         shiny::mainPanel(width = 12,
           shiny::htmlOutput("admin_frame"))
+      ),
+      shiny::tabPanel(
+        value = "mine_field",
+        shiny::span("Minefelt!", title = conf$app_text$tooltip$mine_field),
+        shiny::sidebarLayout(
+          shiny::sidebarPanel(
+            shiny::p("Tr\u00e5 forsiktig!"),
+            shiny::actionButton("agg_all", "Aggreger alle data",
+                                icon = shiny::icon("skull"))
+          ),
+          shiny::mainPanel(
+            shiny::p(shiny::em("System message:")),
+            shiny::verbatimTextOutput("sysMessage"),
+            shiny::p(shiny::em("Function message:")),
+            shiny::verbatimTextOutput("funMessage")
+          )
+        )
       ),
       navbar_widget(),
       shinyalert::useShinyalert()

@@ -11,7 +11,7 @@
 #' get_user_latest_delivery_id get_registry_data get_indicators_registry
 #' md5_checksum delivery_exist_in_db duplicate_delivery retire_user_deliveries
 #' delete_indicator_data delete_registry_data
-#' delete_agg_data insert_data insert_agg_data
+#' delete_agg_data insert_data insert_agg_data agg_all_data
 NULL
 
 
@@ -366,21 +366,48 @@ insert_data <- function(pool, df) {
 #' @export
 insert_agg_data <- function(pool, df) {
 
-  # if delivery is a subset of registry indicators AND dg is part of subset,
-  # agg_data for all indicators of the current registry will have to be
-  # updated. NB Condition apply: delivery only consists of indicators from one
-  # registry (logics may be extended to handle multi registry deliveries)
-  indicators <- unique(df$ind_id)
-  registry_id <- get_indicators_registry(pool, indicators)
-  if (!setequal(get_registry_indicators(pool, registry_id)$id, indicators)) {
-    df <- get_registry_data(pool, registry_id)
-  }
+  # data for re-use
+  org <- get_flat_org(pool)
+  ind <- get_table(pool, "indicator")
+  all_orgnr <- get_all_orgnr(pool)
 
+  #make sure we have unit_names
   if (!"unit_level" %in% names(df)) {
-    df <- dplyr::left_join(df, get_all_orgnr(pool), by = "orgnr")
+    df <- dplyr::left_join(df, all_orgnr, by = "orgnr")
   }
 
-  df <- agg(df, get_flat_org(pool), get_table(pool, "indicator"))
-  delete_agg_data(pool, df)
-  insert_tab(pool, "agg_data", df)
+  # add registry_id to data
+  ind_reg <- dplyr::select(get_indicator(pool), .data$id, .data$registry_id)
+  df <- df %>%
+    dplyr::left_join(ind_reg, by = c("ind_id" = "id"))
+
+  reg <- unique(df$registry_id)
+  for (i in seq_len(length(reg))) {
+    message(paste("Aggregating", get_registry_name(pool, reg[i])))
+    dat <- dplyr::filter(df, .data$registry_id == reg[i]) %>%
+      dplyr::select(!.data$registry_id)
+    # if delivery is a subset of registry indicators AND dg is part of subset,
+    # agg_data for all indicators of the current registry must be updated.
+    if (!setequal(get_registry_indicators(pool, reg[i]), dat$ind_id)) {
+      message("...subset provided, fetching a compleete data set")
+      dat <- get_registry_data(pool, reg[i])
+      if (!"unit_level" %in% names(dat)) {
+        dat <- dplyr::left_join(dat, all_orgnr, by = "orgnr")
+      }
+    }
+    message("...aggregating")
+    dat <- agg(dat, org, ind)
+    message("...delete old agg data")
+    delete_agg_data(pool, dat)
+    message("...inserting fresh agg data")
+    insert_tab(pool, "agg_data", dat)
+  }
+  message("Done!")
+}
+
+#' @rdname ops
+#' @export
+agg_all_data <- function(pool) {
+
+  insert_agg_data(pool, get_all_data(pool))
 }
