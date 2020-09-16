@@ -91,7 +91,7 @@ check_upload <- function(registry, df, pool) {
                    args = list(registry = registry, df = df, conf = conf,
                                pool = pool))
       fail[i] <- r$fail
-      report[i] <- paste(r$report, collapse = ", ")
+      report[i] <- paste(paste0("'", r$report, "'"), collapse = ", ")
     }
   }
   list(unit = unit, fail = fail, report = report)
