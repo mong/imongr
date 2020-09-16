@@ -223,9 +223,11 @@ app_server <- function(input, output, session) {
     content = function(file) {
       switch(input$file_format,
               `csv` = utils::write.csv(db_table(), file,
-                                       fileEncoding = input$loss_enc),
+                                       fileEncoding = input$loss_enc,
+                                       row.names = FALSE),
               `csv (nordisk)` = utils::write.csv2(db_table(), file,
-                                                 fileEncoding = input$loss_enc),
+                                                 fileEncoding = input$loss_enc,
+                                                 row.names = FALSE),
               `excel-csv` = readr::write_excel_csv(db_table(), file),
               `excel-csv (nordisk)` = readr::write_excel_csv2(db_table(), file),
               `rds` = readr::write_rds(db_table(), file)
