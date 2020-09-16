@@ -330,7 +330,7 @@ DELETE FROM
 WHERE
   "
 
-  ind <- levels(as.factor(df$ind_id))
+  ind <- unique(df$ind_id)
   condition <- paste(paste0("'", ind, "'"), collapse = ", ")
   condition <- paste0("ind_id IN (", condition, ");")
 
