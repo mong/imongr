@@ -369,7 +369,9 @@ insert_agg_data <- function(pool, df) {
   # data for re-use
   org <- get_flat_org(pool)
   ind <- get_table(pool, "indicator")
-  all_orgnr <- get_all_orgnr(pool)
+  all_orgnr_shortname <- get_all_orgnr(pool, include_short_name = TRUE)
+  all_orgnr <- all_orgnr_shortname %>%
+    dplyr::select(!.data$short_name)
 
   #make sure we have unit_names
   if (!"unit_level" %in% names(df)) {
@@ -399,7 +401,7 @@ insert_agg_data <- function(pool, df) {
       }
     }
     message("...aggregating")
-    dat <- agg(dat, org, ind)
+    dat <- agg(dat, org, ind, all_orgnr_shortname)
     message("...delete old agg data")
     delete_agg_data(pool, dat)
     message("...inserting fresh agg data")

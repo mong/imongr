@@ -32,6 +32,8 @@
 #' be obtained by \code{get_flat_org(pool)}
 #' @param ind Data frame holding the indicator db table providing all
 #' data on each indicator
+#' @param orgnr_shortname data frame with short names for each org number as
+#' obtained by get_all_orgnr(pool, include_short_name = TRUE)
 #' @param group Character string defining the name of the grouping variable
 #' in a data frame
 #' @param aggs data frame of (pre) aggregated data
@@ -47,7 +49,7 @@ NULL
 
 #' @rdname aggregate
 #' @export
-agg <- function(df, org, ind) {
+agg <- function(df, org, ind, orgnr_shortname) {
 
   conf <- get_config()
 
@@ -58,6 +60,26 @@ agg <- function(df, org, ind) {
     stop(paste0("Missing var(s) in df: ", paste(missing_var, collapse = ", "),
                 ". Cannot go on!"))
   }
+
+
+  # DANGER! As of the Sep 15 2020 project meeting, pre-aggregate on short_name
+  # DANGER! A less risky way of proper handling of 'groups' should be applied
+  # DANGER! at a later stage
+  warning("Pre-aggregating by short name")
+  message(paste("  ...rows before pre-aggregation:", dim(df)[1]))
+  orgnr_shortname <- orgnr_shortname[, !names(orgnr_shortname) == "unit_level"]
+  df <- df %>%
+    dplyr::left_join(orgnr_shortname, by = "orgnr")
+  df <- df %>%
+    dplyr::group_by(.data$year, .data$ind_id, .data$unit_level,
+                    .data$short_name) %>%
+    dplyr::summarise(var = sum(.data$var),
+                     denominator = sum(.data$denominator),
+                     orgnr = min(orgnr)) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(!.data$short_name)
+  message(paste("  ...rows after pre-aggregation:", dim(df)[1]))
+ # End DANGER!
 
   unit_levels <- unique(df$unit_level)
 

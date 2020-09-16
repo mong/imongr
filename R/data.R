@@ -76,6 +76,17 @@
 #' }
 "orgnr"
 
+#' Organization structure short_name example data
+#'
+#' All orgs with unit_level and short_names.
+#' @format Data frame with example data
+#' \describe{
+#'   \item{orgnr}{}
+#'   \item{unit_level}{}
+#'   \item{short_name}{}
+#' }
+"orgnr_shortname"
+
 #' Registry example data for qmongr data store
 #'
 #' Meta data to allow interactions with qmong data. Only used for testing in

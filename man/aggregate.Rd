@@ -14,7 +14,7 @@
 \alias{get_indicator_level}
 \title{Aggregate hospital data}
 \usage{
-agg(df, org, ind)
+agg(df, org, ind, orgnr_shortname)
 
 agg_dg(aggs, ind)
 
@@ -42,6 +42,9 @@ be obtained by \code{get_flat_org(pool)}}
 
 \item{ind}{Data frame holding the indicator db table providing all
 data on each indicator}
+
+\item{orgnr_shortname}{data frame with short names for each org number as
+obtained by get_all_orgnr(pool, include_short_name = TRUE)}
 
 \item{aggs}{data frame of (pre) aggregated data}
 
