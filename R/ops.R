@@ -392,8 +392,6 @@ insert_agg_data <- function(pool, df) {
     # agg_data for all indicators of the current registry must be updated.
     if (!setequal(get_registry_indicators(pool, reg[i])$id,
                   unique(dat$ind_id))) {
-      print(paste("reg inds:", get_registry_indicators(pool, reg[i])$id))
-      print(paste("data inds:", unique(dat$ind_id)))
       message("...subset provided, fetching a compleete data set")
       dat <- get_registry_data(pool, reg[i])
       if (!"unit_level" %in% names(dat)) {
