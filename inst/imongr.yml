@@ -162,9 +162,9 @@ profile:
     Følgende er registrert om deg:
   delivery:
     status: >
-      Tidligere dataleveranser:
+      Vis tidligere dataleveranser:
     none: >
-      Det finnes ingen registrerte dataleveranser fra deg
+      Det finnes ingen registrerte dataleveranser fra deg.
   howto: >
     For å laste opp data velg fanen "Last opp data" og følg instruksjonene der.
     Når du er ferdig kan du logge ut ved å bruke lenken oppe i høyre hjørne. Om

@@ -330,7 +330,7 @@ DELETE FROM
 WHERE
   "
 
-  ind <- levels(as.factor(df$ind_id))
+  ind <- unique(df$ind_id)
   condition <- paste(paste0("'", ind, "'"), collapse = ", ")
   condition <- paste0("ind_id IN (", condition, ");")
 
@@ -388,7 +388,8 @@ insert_agg_data <- function(pool, df) {
       dplyr::select(!.data$registry_id)
     # if delivery is a subset of registry indicators AND dg is part of subset,
     # agg_data for all indicators of the current registry must be updated.
-    if (!setequal(get_registry_indicators(pool, reg[i]), dat$ind_id)) {
+    if (!setequal(get_registry_indicators(pool, reg[i])$id,
+                  unique(dat$ind_id))) {
       message("...subset provided, fetching a compleete data set")
       dat <- get_registry_data(pool, reg[i])
       if (!"unit_level" %in% names(dat)) {

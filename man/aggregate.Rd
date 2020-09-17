@@ -22,6 +22,8 @@ agg_from_level(df, org, ind, conf, from_level)
 
 agg_residual(aggs, conf)
 
+agg_udef(diff, conf)
+
 make_group(df, group = "")
 
 compute_group(gdf, ind)

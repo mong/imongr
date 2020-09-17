@@ -61,10 +61,15 @@ app_server <- function(input, output, session) {
   })
 
   output$deliveries_table <- DT::renderDataTable(
-    DT::datatable(get_user_deliveries(pool), rownames = FALSE,
-                  options = list(dom = "tp", pageLength = 10, language = list(
-                                 paginate = list(previous = "Forrige",
-                                                 `next` = "Neste"))))
+    if (input$deliver_history) {
+      DT::datatable(get_user_deliveries(pool), rownames = FALSE,
+                    options = list(dom = "tp", pageLength = 10,
+                      language = list(
+                        paginate = list(previous = "Forrige",
+                                        `next` = "Neste"))))
+    } else {
+      NULL
+    }
   )
 
   output$ui_deliveries_table <- shiny::renderUI(

@@ -416,32 +416,43 @@ LEFT JOIN nation n ON
 
 #' @rdname db
 #' @export
-get_all_orgnr <- function(pool) {
+get_all_orgnr <- function(pool, include_short_name = FALSE) {
 
   conf <- get_config()
 
   query <- paste0("
 SELECT
   orgnr,
-  '", conf$aggregate$unit_level$hospital$name, "' AS unit_level
+  '", conf$aggregate$unit_level$hospital$name, "' AS unit_level,
+  short_name
 FROM
   hospital
 UNION
 SELECT
   orgnr,
-  '", conf$aggregate$unit_level$hf$name, "' AS unit_level
+  '", conf$aggregate$unit_level$hf$name, "' AS unit_level,
+  short_name
 FROM
   hf
 UNION
 SELECT orgnr,
-  '", conf$aggregate$unit_level$rhf$name, "' AS unit_level
+  '", conf$aggregate$unit_level$rhf$name, "' AS unit_level,
+  short_name
 FROM
   rhf
 UNION
 SELECT orgnr,
-  '", conf$aggregate$unit_level$nation$name, "' AS unit_level
+  '", conf$aggregate$unit_level$nation$name, "' AS unit_level,
+  short_name
 FROM
   nation;")
 
-  pool::dbGetQuery(pool, query)
+  dat <- pool::dbGetQuery(pool, query)
+
+  if (!include_short_name) {
+    dat <- dat %>%
+      dplyr::select(!.data$short_name)
+  }
+
+  dat
 }

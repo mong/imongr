@@ -59,6 +59,7 @@ agg <- function(df, org, ind) {
                 ". Cannot go on!"))
   }
 
+
   unit_levels <- unique(df$unit_level)
 
   # aggregate each level
@@ -92,6 +93,21 @@ agg <- function(df, org, ind) {
 
   # add undefined, if any
   aggs <- rbind(aggs, udef)
+
+  # DANGER! As of the Sep 15 2020 project meeting, pre-aggregate on short_name
+  # DANGER! A less risky way of proper handling of 'groups' should be applied
+  # DANGER! at a later stage
+  warning("Pre-aggregating by short name")
+  message(paste("  ...rows before pre-aggregation:", dim(df)[1]))
+  aggs <- aggs %>%
+    dplyr::group_by(.data$year, .data$ind_id, .data$unit_level,
+                    .data$unit_name) %>%
+    dplyr::summarise(var = sum(.data$var),
+                     denominator = sum(.data$denominator),
+                     orgnr = min(.data$orgnr))
+  message(paste("  ...rows after pre-aggregation:", dim(df)[1]))
+  # DANGER end!
+
 
   # make parts
   aggs$var <- aggs$var / aggs$denominator
@@ -146,10 +162,10 @@ agg_dg <- function(aggs, ind) {
     dt <- dplyr::filter(dg_data, .data$year == years[i]) %>%
       dplyr::select(.data$ind_id, .data$orgnr, .data$var) %>%
       dplyr::rename(dg_id = .data$ind_id, dg = .data$var)
-
     # join current year dg into data from current year and newer. Then, move on
-    # with only those vars neede for updating aggs
-    at <- dplyr::left_join(at, dt, by = c("dg_id", "orgnr")) %>%
+    # with only those vars needed for updating aggs
+    at <- at %>%
+      dplyr::left_join(dt, by = c("dg_id", "orgnr")) %>%
       dplyr::select(.data$ind_id, .data$dg_id, .data$unit_level,
                     .data$unit_name, .data$orgnr, .data$year,
                     .data$denominator, .data$var, .data$level,
@@ -158,7 +174,7 @@ agg_dg <- function(aggs, ind) {
     # update aggs from current year and newer with dg from current year
     aggs <- aggs %>%
       dplyr::filter(.data$year < years[i]) %>%
-      dplyr::bind_rows(.data$at)
+      dplyr::bind_rows(at)
   }
 
   aggs %>% dplyr::select(!.data$dg_id)
@@ -290,6 +306,8 @@ agg_residual <- function(aggs, conf) {
 
 }
 
+#' @rdname aggregate
+#' @export
 agg_udef <- function(diff, conf) {
 
   if (any(diff$denominator_diff == 0)) {

@@ -62,7 +62,7 @@ get_nation(pool, sample = NA)
 
 get_flat_org(pool)
 
-get_all_orgnr(pool)
+get_all_orgnr(pool, include_short_name = FALSE)
 }
 \arguments{
 \item{pool}{a database connection pool object}
