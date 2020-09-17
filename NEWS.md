@@ -2,6 +2,7 @@
 
 * added spooky aggregation on names as well (should be changed in future versions)
 * opt in delivery history to speed up app init
+* fixed horrific bug in data aggregation
 
 # imongr 0.9.0
 
