@@ -2,10 +2,9 @@ conf <- get_config()
 df <- imongr::data
 org <- imongr::org #flattened organization table as obtained by get_flat_org()
 ind <- imongr::ind
-orgnr_shortname <- imongr::orgnr_shortname
 
 test_that("example data can be aggregated", {
-  expect_equal(class(agg(df, org, ind, orgnr_shortname)), "data.frame")
+  expect_true("data.frame" %in% class(agg(df, org, ind)))
 })
 
 test_that("error is provided when compulsory varaibles are missing", {

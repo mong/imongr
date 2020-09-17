@@ -32,8 +32,6 @@
 #' be obtained by \code{get_flat_org(pool)}
 #' @param ind Data frame holding the indicator db table providing all
 #' data on each indicator
-#' @param orgnr_shortname data frame with short names for each org number as
-#' obtained by get_all_orgnr(pool, include_short_name = TRUE)
 #' @param group Character string defining the name of the grouping variable
 #' in a data frame
 #' @param aggs data frame of (pre) aggregated data
@@ -49,7 +47,7 @@ NULL
 
 #' @rdname aggregate
 #' @export
-agg <- function(df, org, ind, orgnr_shortname) {
+agg <- function(df, org, ind) {
 
   conf <- get_config()
 
