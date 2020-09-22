@@ -112,7 +112,9 @@ app_ui <- function() {
           shiny::sidebarPanel(
             shiny::p("Tr\u00e5 forsiktig!"),
             shiny::actionButton("agg_all", "Aggreger alle data",
-                                icon = shiny::icon("skull"))
+                                icon = shiny::icon("skull")),
+            shiny::hr(),
+            shiny::actionButton("clean_agg", "Rydd aggregerte data")
           ),
           shiny::mainPanel(
             shiny::p(shiny::em("System message:")),
