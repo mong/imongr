@@ -142,9 +142,9 @@ ORDER BY
 
     # timestamp in db is UTC, convert back to "our" time zone
     df$Dato <- format(df$Dato, format = conf$app_text$format$date, # nolint
-                      tz = Sys.getenv("TZ"))
+                      tz = conf$app_text$format$tz)
     df$Tid <- format(df$Tid, format = conf$app_text$format$time, # nolint
-                     tz = Sys.getenv("TZ"))
+                     tz = conf$app_text$format$tz)
 
     df
   } else {
