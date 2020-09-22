@@ -281,5 +281,15 @@ app_server <- function(input, output, session) {
       shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
     })
   })
+  shiny::observeEvent(input$clean_agg, {
+    withCallingHandlers({
+      shinyjs::html("sysMessage", "")
+      shinyjs::html("funMessage", "")
+      shinyjs::html("funMessage", clean_agg_data(pool))
+    },
+    message = function(m) {
+      shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
+    })
+  })
 
 }

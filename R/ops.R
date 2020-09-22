@@ -11,7 +11,7 @@
 #' get_user_latest_delivery_id get_registry_data get_indicators_registry
 #' md5_checksum delivery_exist_in_db duplicate_delivery retire_user_deliveries
 #' delete_indicator_data delete_registry_data
-#' delete_agg_data insert_data insert_agg_data agg_all_data
+#' delete_agg_data insert_data insert_agg_data agg_all_data clean_agg_data
 NULL
 
 
@@ -142,9 +142,9 @@ ORDER BY
 
     # timestamp in db is UTC, convert back to "our" time zone
     df$Dato <- format(df$Dato, format = conf$app_text$format$date, # nolint
-                      tz = Sys.getenv("TZ"))
+                      tz = conf$app_text$format$tz)
     df$Tid <- format(df$Tid, format = conf$app_text$format$time, # nolint
-                     tz = Sys.getenv("TZ"))
+                     tz = conf$app_text$format$tz)
 
     df
   } else {
@@ -411,4 +411,32 @@ insert_agg_data <- function(pool, df) {
 agg_all_data <- function(pool) {
 
   insert_agg_data(pool, get_all_data(pool))
+}
+
+#' @rdname ops
+#' @export
+clean_agg_data <- function(pool) {
+
+  message("Start cleaning agg_data")
+
+  # remove data for indicators not present in ind table
+  global_indicator <- get_indicator(pool)$id
+  agg_data_indicator <- unique(get_agg_data(pool)$ind_id)
+  orphant_indicator <- setdiff(agg_data_indicator, global_indicator)
+  if (length(orphant_indicator > 0)) {
+    orphant <- paste0("'", orphant_indicator, "'")
+    orphant <- paste0(orphant, collapse = ", ")
+    message(paste("... found orphant indicators:", orphant))
+    query <- paste0("
+DELETE FROM
+  agg_data
+WHERE
+  ind_id IN (", orphant, ");"
+    )
+    message("...deleting orphant indicators from agg_data table")
+    pool::dbExecute(pool, query)
+  } else {
+    message("No mess, nothing to do")
+  }
+  message("Done!")
 }

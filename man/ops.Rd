@@ -19,6 +19,7 @@
 \alias{insert_data}
 \alias{insert_agg_data}
 \alias{agg_all_data}
+\alias{clean_agg_data}
 \alias{get_all_user_data}
 \alias{get_user_deliveries}
 \title{Functions for data operations in imongr}
@@ -60,6 +61,8 @@ insert_data(pool, df)
 insert_agg_data(pool, df)
 
 agg_all_data(pool)
+
+clean_agg_data(pool)
 }
 \arguments{
 \item{pool}{Database connection pool object}

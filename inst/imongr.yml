@@ -4,6 +4,8 @@ app_text:
       %A %e. %B %Y
     time: |-
       %H:%M:%S
+    tz: |-
+      Europe/Oslo
   info:
     title: Informasjon
     version:

@@ -1,3 +1,10 @@
+# imongr 0.11.0
+
+* clean-up button in app for agg_data
+* configurabel time zone (default Oslo) for delivery history
+* removed row names in downloaded data
+* increased allowed cyclomatic complexity of functions mosty to avoid devops spam...
+
 # imongr 0.10.0
 
 * added spooky aggregation on names as well (should be changed in future versions)
