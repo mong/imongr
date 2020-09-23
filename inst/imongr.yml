@@ -283,16 +283,16 @@ aggregate:
       level: 4
   udef_unit_level:
     hospital:
-      name: udef_hospital
+      name: Udefinerte sykehus
       level: 1
     hf:
-      name: udef_hf
+      name: Udefinerte HF
       level: 2
     rhf:
-      name: udef_rhf
+      name: Udefinerte RHF
       level: 3
     nation:
-      name: udef_nation
+      name: Udefinerte land
       level: 4
   type:
     mean: andel
