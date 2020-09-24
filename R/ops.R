@@ -88,27 +88,6 @@ WHERE
 
 #' @rdname ops
 #' @export
-delete_registry_data <- function(pool, df) {
-
-  if (!"registry_id" %in% names(df)) {
-    stop("Data frame has no notion of 'registry' (id). Cannot go on!")
-  }
-  reg <- unique(df$registry_id)
-  if (length(reg) > 1) {
-    stop("Data can only represent one registry. Cannot go on!")
-  }
-
-  query <- paste0("
-DELETE FROM
-  data
-WHERE
-  registry_id=", reg, ";")
-
-  pool::dbExecute(pool, query)
-}
-
-#' @rdname ops
-#' @export
 delete_agg_data <- function(pool, df) {
 
   query <- "
@@ -197,7 +176,7 @@ insert_agg_data <- function(pool, df) {
 #' @export
 agg_all_data <- function(pool) {
 
-  insert_agg_data(pool, get_all_data(pool))
+  insert_agg_data(pool, get_table(pool, "data"))
 }
 
 #' @rdname ops

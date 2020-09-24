@@ -140,20 +140,21 @@ test_that("existing user will not be (re-)created", {
     "User already exists. Nothing to do!")
 })
 
-test_that("error on delete when no 'Register' or several registries", {
-  check_db()
-  df <- imongr::data
-  expect_error(delete_registry_data(pool, df))
-  names(df)[names(df) == "Register"] <- "missing"
-  expect_error(delete_registry_data(pool, df))
-})
-
 test_that("data from a registry can be fetched", {
   check_db()
   registry <- levels(as.factor(imongr::registry$id))[1]
   expect_equal(class(get_registry_data(pool, registry)), "data.frame")
 })
 
+test_that("data can be aggregated", {
+  check_db()
+  expect_message(agg_all_data(pool))
+})
+
+test_that("agg data can be cleaned", {
+  check_db()
+  expect_message(clean_agg_data(pool))
+})
 
 test_that("a new user can be created", {
   check_db()

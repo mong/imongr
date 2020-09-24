@@ -13,8 +13,6 @@
 \alias{get_org_name}
 \alias{get_flat_org}
 \alias{get_all_orgnr}
-\alias{get_data}
-\alias{get_all_data}
 \alias{get_user}
 \alias{get_registry_indicators}
 \alias{get_all_user_data}
@@ -50,10 +48,6 @@ get_org_name(pool, orgnr)
 get_flat_org(pool)
 
 get_all_orgnr(pool, include_short_name = FALSE)
-
-get_data(pool, sample = NA)
-
-get_all_data(pool)
 
 get_user(pool, sample = NA)
 

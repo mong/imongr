@@ -23,8 +23,6 @@ retire_user_deliveries(pool)
 
 delete_indicator_data(pool, df)
 
-delete_registry_data(pool, df)
-
 delete_agg_data(pool, df)
 
 insert_data(pool, df)

@@ -77,6 +77,19 @@ test_that("an upload csv can be converted to a data frame", {
   file.remove(csv_file)
 })
 
+test_that("encoding magic can be performed on csv file", {
+  df_nordic <- rbind(df[, !names(df) %in% "nevner"],
+                     data.frame(year = 2018,
+                                orgnr = 974633574,
+                                ind_id = "æøåÆØÅ",
+                                var = 0,
+                                denominator = 1))
+  csv_file <- tempfile(fileext = ".csv")
+  write.csv(df_nordic, file = csv_file, fileEncoding = "LATIN1")
+  expect_warning(csv_to_df(csv_file, dec = "."))
+  file.remove(csv_file)
+})
+
 test_that("a (sub) sample df can be provided", {
   expect_equal(class(sample_df(df, skip = c("nevner"), n = 2)), "data.frame")
   expect_equal(class(sample_df(df, n = NA)), "data.frame")
@@ -160,6 +173,15 @@ test_that("check report (wrapper) function is working", {
                "character")
 })
 
+test_that("reports are provided even if registry is not defined", {
+  check_db()
+  expect_equal(class(check_report("", df, pool)), "character")
+})
+
+test_that("pro forma check on missing registry returns a list", {
+  check_db()
+  expect_equal(class(check_missing_registry("", df, conf, pool)), "list")
+})
 
 # clean up
 ## drop tables (in case tests are re-run on the same instance)

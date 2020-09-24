@@ -18,9 +18,9 @@
 #' @aliases get_user_data get_user_id get_user_registries
 #' get_user_registry_select get_user_latest_delivery_id get_registry_data
 #' get_indicators_registryget_registry_ind get_registry_name get_org_name
-#' get_flat_org get_all_orgnr get_data get_all_data get_user
-#' get_registry_indicators
+#' get_flat_org get_all_orgnr get_user get_registry_indicators
 NULL
+
 
 #' @rdname db_get
 #' @export
@@ -117,6 +117,7 @@ ORDER BY name;"
   tibble::deframe(pool::dbGetQuery(pool, query))
 }
 
+
 #' @rdname db_get
 #' @export
 get_user_deliveries <- function(pool) {
@@ -158,6 +159,7 @@ ORDER BY
     NULL
   }
 }
+
 
 #' @rdname db_get
 #' @export
@@ -249,6 +251,7 @@ WHERE
 
 }
 
+
 #' @rdname db_get
 #' @export
 get_registry_name <- function(pool, registry, full_name = FALSE) {
@@ -272,6 +275,7 @@ WHERE
     pool::dbGetQuery(pool, query)$name
   }
 }
+
 
 #' @rdname db_get
 #' @export
@@ -309,6 +313,7 @@ FROM
 
 }
 
+
 #' @rdname db_get
 #' @export
 get_flat_org <- function(pool) {
@@ -337,6 +342,7 @@ LEFT JOIN nation n ON
 
   pool::dbGetQuery(pool, query)
 }
+
 
 #' @rdname db_get
 #' @export
@@ -381,44 +387,6 @@ FROM
   dat
 }
 
-#' @rdname db_get
-#' @export
-get_data <- function(pool, sample = NA) {
-
-  conf <- get_config()
-  query <- paste0("
-SELECT
-  ", paste0("var.", conf$db$tab$data$insert, collapse = ",\n  "), "
-FROM
-  data var
-LEFT JOIN
-  delivery d
-ON
-  var.delivery_id = d.id
-WHERE
-  d.latest = 1")
-
-  if (!is.na(sample) && sample > 0 && sample < 1) {
-    query <- paste(query, "AND RAND() <", sample)
-  }
-
-  pool::dbGetQuery(pool, query)
-}
-
-
-#' @rdname db_get
-#' @export
-get_all_data <- function(pool) {
-
-  conf <- get_config()
-  query <- paste0("
-SELECT
-  ", paste0("var.", conf$db$tab$data$insert, collapse = ",\n  "), "
-FROM
-  data var;")
-
-  pool::dbGetQuery(pool, query)
-}
 
 #' @rdname db_get
 #' @export
@@ -439,6 +407,7 @@ WHERE
 
   pool::dbGetQuery(pool, query)
 }
+
 
 #' @rdname db_get
 #' @export

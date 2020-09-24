@@ -186,8 +186,8 @@ app_server <- function(input, output, session) {
   )
 
   output$sample_data <- shiny::renderTable(
-    get_data(pool,
-             sample = 0.0001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
+    get_table(pool, "data",
+      sample = 0.00001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
   )
 
 

@@ -114,25 +114,46 @@ test_that("agg_data can be populated from existing (test) data", {
   expect_message(insert_agg_data(pool, data_sample))
 })
 
+test_that("a complete set will be aggregated when subset of inds are provided", {
+  check_db()
+  dat <- get_table(pool, "data")
+  ind <- unique(dat$ind_id)[1]
+  dat <- dat[dat$ind_id == ind, ]
+  expect_message(insert_agg_data(pool, dat))
+})
+
 test_that("function provides error when inserting non-consistent data", {
   check_db()
-  expect_error(insert_tab(pool, table = "wrong_table", df = data.frame))
-  expect_error(insert_tab(pool, table = "org",
+  expect_error(insert_table(pool, table = "wrong_table", df = data.frame))
+  expect_error(insert_table(pool, table = "org",
                           df = cbind(imongr::org, unvalid_var = 1)))
-  expect_error(insert_tab(pool, table = "org",
+  expect_error(insert_table(pool, table = "org",
                           df = data.frame(name = "", OrgNr = 123456789,
                                           valid = 1)))
-  org_wrong_name <- imongr::org
-  true_name <- names(org_wrong_name)[1]
-  wrong_name <- paste0(true_name, "borked")
-  names(org_wrong_name)[1] <- wrong_name
-  expect_error(insert_tab(pool, table = "org", df = org_wrong_name))
+  wrong_var_name <- data.frame(delivery_id = 100,
+                               unit_level = "hospital",
+                               orgnr = 974633574,
+                               year = 2018,
+                               var = 0,
+                               numerator = 1,
+                               ind_id = "norgast_andel_avdoede_bykspytt_tolv")
+  expect_error(insert_table(pool, table = "data", df = wrong_var_name))
+  too_many_vars <- data.frame(delivery_id = 100,
+                              unit_level = "hospital",
+                              orgnr = 974633574,
+                              year = 2018,
+                              var = 0,
+                              denominator = 1,
+                              ind_id = "norgast_andel_avdoede_bykspytt_tolv",
+                              sucker = TRUE)
+  expect_error(insert_table(pool, table = "data", df = too_many_vars))
 })
 
 test_that("data can be fetched from test database", {
   check_db()
-  expect_equal(dim(get_data(pool)), dim(imongr::data))
-  expect_true(dim(get_data(pool, sample = .1))[1] < dim(imongr::data)[1])
+  expect_equal(dim(get_table(pool, "data")), dim(imongr::data))
+  expect_true(dim(get_table(pool, "data", sample = .1))[1] <
+                dim(imongr::data)[1])
 })
 
 test_that("delivery data can be fetched from test database", {
@@ -171,6 +192,26 @@ test_that("registries and indicators per registry can be fetched", {
   expect_true(
     dim(get_table(pool, "registry", sample = .5))[1] < dim(imongr::registry)[1]
   )
+})
+
+test_that("an indicators registry can be found", {
+  check_db()
+  indicator <- get_table(pool, "ind")$id[1]
+  expect_equal(class(get_indicators_registry(pool, indicator)), "integer")
+})
+
+test_that("all indicator data subset for a registry can be provided", {
+  check_db()
+  registry <- unique(imongr::registry$id)[1]
+  expect_equal(class(get_registry_ind(pool, registry)), "data.frame")
+  expect_true(dim(get_registry_ind(pool, registry))[1] > 0)
+  expect_true(dim(get_registry_ind(pool, registry))[2] > 0)
+})
+
+test_that("an org name is provided from org number", {
+  check_db()
+  orgnr <- unique(imongr::hospital$orgnr)[1]
+  expect_equal(class(get_org_name(pool, orgnr)), "character")
 })
 
 test_that("user_registry data can be fetched from test database", {
