@@ -2,14 +2,6 @@
 % Please edit documentation in R/ops.R
 \name{ops}
 \alias{ops}
-\alias{get_user_data}
-\alias{get_user_id}
-\alias{get_user_registries}
-\alias{get_user_registry_select}
-\alias{get_user_latest_delivery_id}
-\alias{get_registry_data}
-\alias{get_indicators_registry}
-\alias{md5_checksum}
 \alias{delivery_exist_in_db}
 \alias{duplicate_delivery}
 \alias{retire_user_deliveries}
@@ -20,30 +12,9 @@
 \alias{insert_agg_data}
 \alias{agg_all_data}
 \alias{clean_agg_data}
-\alias{get_all_user_data}
-\alias{get_user_deliveries}
+\alias{create_imongr_user}
 \title{Functions for data operations in imongr}
 \usage{
-get_all_user_data(pool)
-
-get_user_data(pool)
-
-get_user_id(pool)
-
-get_user_registries(pool)
-
-get_user_registry_select(pool)
-
-get_user_deliveries(pool)
-
-get_user_latest_delivery_id(pool)
-
-get_registry_data(pool, registry)
-
-get_indicators_registry(pool, indicator)
-
-md5_checksum(df)
-
 delivery_exist_in_db(pool, df)
 
 duplicate_delivery(pool, df)
@@ -63,15 +34,17 @@ insert_agg_data(pool, df)
 agg_all_data(pool)
 
 clean_agg_data(pool)
+
+create_imongr_user(pool, df)
 }
 \arguments{
 \item{pool}{Database connection pool object}
 
+\item{df}{Data frame of relevant data}
+
 \item{registry}{Integer registry id}
 
 \item{indicator}{Character vector of indicator ids}
-
-\item{df}{Data frame of relevant data}
 }
 \value{
 Relevant values from the current environment and database

@@ -94,23 +94,23 @@ test_that("test tables can be indexed", {
 
 test_that("database can be populated with test data", {
   check_db()
-  expect_true(insert_tab(pool, table = "nation", df = imongr::nation))
-  expect_true(insert_tab(pool, table = "rhf", df = imongr::rhf))
-  expect_true(insert_tab(pool, table = "hf", df = imongr::hf))
-  expect_true(insert_tab(pool, table = "hospital", df = imongr::hospital))
-  expect_true(insert_tab(pool, table = "registry", df = imongr::registry))
-  expect_true(insert_tab(pool, table = "ind", df = imongr::ind))
-  expect_true(insert_tab(pool, table = "user", df = imongr::user))
-  expect_true(insert_tab(pool, table = "user_registry",
+  expect_true(insert_table(pool, table = "nation", df = imongr::nation))
+  expect_true(insert_table(pool, table = "rhf", df = imongr::rhf))
+  expect_true(insert_table(pool, table = "hf", df = imongr::hf))
+  expect_true(insert_table(pool, table = "hospital", df = imongr::hospital))
+  expect_true(insert_table(pool, table = "registry", df = imongr::registry))
+  expect_true(insert_table(pool, table = "ind", df = imongr::ind))
+  expect_true(insert_table(pool, table = "user", df = imongr::user))
+  expect_true(insert_table(pool, table = "user_registry",
                          df = imongr::user_registry))
-  expect_true(insert_tab(pool, table = "delivery", df = imongr::delivery))
-  expect_true(insert_tab(pool, table = "data", df = imongr::data))
+  expect_true(insert_table(pool, table = "delivery", df = imongr::delivery))
+  expect_true(insert_table(pool, table = "data", df = imongr::data))
 })
 
 test_that("agg_data can be populated from existing (test) data", {
   check_db()
   # to save ptime, use just a sub-sample of data (reused on retreival)
-  data_sample <- get_data(pool, sample = .4)
+  data_sample <- get_table(pool, "data", sample = .4)
   expect_message(insert_agg_data(pool, data_sample))
 })
 
@@ -137,9 +137,9 @@ test_that("data can be fetched from test database", {
 
 test_that("delivery data can be fetched from test database", {
   check_db()
-  expect_equal(dim(get_delivery(pool)), dim(imongr::delivery))
+  expect_equal(dim(get_table(pool, "delivery")), dim(imongr::delivery))
   expect_true(
-    dim(get_delivery(pool, sample = .9))[1] <= dim(imongr::delivery)[1]
+    dim(get_table(pool, "delivery", .9))[1] <= dim(imongr::delivery)[1]
   )
 })
 
@@ -151,9 +151,9 @@ test_that("user data can be fetched from test database", {
 
 test_that("indicator data can be fetched from test database", {
   check_db()
-  expect_equal(dim(get_indicator(pool)), dim(imongr::ind))
+  expect_equal(dim(get_table(pool, "ind")), dim(imongr::ind))
   expect_true(
-    dim(get_indicator(pool, sample = .1))[1] < dim(imongr::ind)[1]
+    dim(get_table(pool, "ind", sample = .1))[1] < dim(imongr::ind)[1]
   )
 })
 
@@ -167,24 +167,24 @@ test_that("registries and indicators per registry can be fetched", {
   registries <- unique(imongr::registry$id)
   expect_equal(class(get_registry_indicators(pool, registries[1])),
                "data.frame")
-  expect_equal(class(get_registry(pool)), "data.frame")
+  expect_equal(class(get_table(pool, "registry")), "data.frame")
   expect_true(
-    dim(get_registry(pool, sample = .5))[1] < dim(imongr::registry)[1]
+    dim(get_table(pool, "registry", sample = .5))[1] < dim(imongr::registry)[1]
   )
 })
 
 test_that("user_registry data can be fetched from test database", {
   check_db()
-  expect_equal(class(get_user_registry(pool)), "data.frame")
+  expect_equal(class(get_table(pool, "user_registry")), "data.frame")
   expect_true(
-    dim(get_user_registry(pool, sample = .5))[1] <
+    dim(get_table(pool, "user_registry", sample = .5))[1] <
       dim(imongr::user_registry)[1]
   )
 })
 
 test_that("aggregated data can be fetched from test database", {
   check_db()
-  expect_equal(class(get_agg_data(pool)), "data.frame")
+  expect_equal(class(get_table(pool, "agg_data")), "data.frame")
 })
 
 test_that("get_table wrapper function do work", {

@@ -1,5 +1,6 @@
 #' Tools and whatever
 #'
+#' @param df A data frame
 #' @param include_data_table Logical defining if the data table is to be
 #' populated by data too. By default TRUE
 #' @param newline String element defining line break for formatting. Default is
@@ -7,9 +8,23 @@
 #' @param prompt Logical to prompt for user input. Default is TRUE
 #' @return Invisible
 #' @name misc
-#' @aliases navbar_widget version_info no_opt_out_ok insert_sample_data
-#' delete_all_data
+#' @aliases md5_checksum navbar_widget version_info no_opt_out_ok
+#' insert_sample_data delete_all_data
 NULL
+
+
+#' @rdname misc
+#' @export
+md5_checksum <- function(df) {
+
+  fn <- tempfile()
+  utils::write.csv(df, file = fn)
+  fc <- file(fn, "r")
+  t <- readLines(fc)
+  close(fc)
+  digest::digest(paste0(t, collapse = ""), algo = "md5", serialize = FALSE)
+
+}
 
 
 #' @rdname misc
@@ -75,18 +90,18 @@ insert_sample_data <- function(include_data_table = TRUE) {
 
   pool <- make_pool()
 
-  insert_tab(pool, table = "nation", df = imongr::nation)
-  insert_tab(pool, table = "rhf", df = imongr::rhf)
-  insert_tab(pool, table = "hf", df = imongr::hf)
-  insert_tab(pool, table = "hospital", df = imongr::hospital)
-  insert_tab(pool, table = "registry", df = imongr::registry)
-  insert_tab(pool, table = "ind", df = imongr::ind)
-  insert_tab(pool, table = "user", df = imongr::user)
-  insert_tab(pool, table = "user_registry", df = imongr::user_registry)
-  insert_tab(pool, table = "delivery", df = imongr::delivery)
+  insert_table(pool, table = "nation", df = imongr::nation)
+  insert_table(pool, table = "rhf", df = imongr::rhf)
+  insert_table(pool, table = "hf", df = imongr::hf)
+  insert_table(pool, table = "hospital", df = imongr::hospital)
+  insert_table(pool, table = "registry", df = imongr::registry)
+  insert_table(pool, table = "ind", df = imongr::ind)
+  insert_table(pool, table = "user", df = imongr::user)
+  insert_table(pool, table = "user_registry", df = imongr::user_registry)
+  insert_table(pool, table = "delivery", df = imongr::delivery)
 
   if (include_data_table) {
-    insert_tab(pool, table = "data", df = imongr::data)
+    insert_table(pool, table = "data", df = imongr::data)
   }
 
   drain_pool(pool)

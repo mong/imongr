@@ -4,65 +4,17 @@
 \alias{db}
 \alias{make_pool}
 \alias{drain_pool}
-\alias{insert_tab}
+\alias{insert_table}
 \alias{get_table}
-\alias{get_agg_data}
-\alias{get_data}
-\alias{get_all_data}
-\alias{get_delivery}
-\alias{get_user}
-\alias{get_user_registry}
-\alias{get_hospital}
-\alias{get_hf}
-\alias{get_rhf}
-\alias{get_nation}
-\alias{get_indicator}
-\alias{get_flat_org}
-\alias{get_all_orgnr}
-\alias{get_org}
-\alias{get_registry_indicators}
-\alias{get_registry}
 \title{Low level database functions for imongr}
 \usage{
 make_pool()
 
 drain_pool(pool)
 
-insert_tab(pool, table, df)
+insert_table(pool, table, df)
 
-get_table(pool, table)
-
-get_agg_data(pool)
-
-get_data(pool, sample = NA)
-
-get_all_data(pool)
-
-get_delivery(pool, sample = NA)
-
-get_user(pool, sample = NA)
-
-get_org(pool, sample = NA)
-
-get_user_registry(pool, sample = NA)
-
-get_indicator(pool, sample = NA)
-
-get_registry_indicators(pool, registry)
-
-get_registry(pool, sample = NA)
-
-get_hospital(pool, sample = NA)
-
-get_hf(pool, sample = NA)
-
-get_rhf(pool, sample = NA)
-
-get_nation(pool, sample = NA)
-
-get_flat_org(pool)
-
-get_all_orgnr(pool, include_short_name = FALSE)
+get_table(pool, table, sample = NA)
 }
 \arguments{
 \item{pool}{a database connection pool object}
@@ -74,8 +26,6 @@ get_all_orgnr(pool, include_short_name = FALSE)
 \item{sample}{Numeric in the range 0 to 1 defining the relative sub-sample
 size, \emph{e.g.} when \code{sample = 0.1} approximately 10\% of
 observations are returned. Default is \code{NA} which will return all data}
-
-\item{registry}{Integer defining registry id}
 }
 \value{
 Database pool object, data frame or status message

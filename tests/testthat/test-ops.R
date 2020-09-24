@@ -87,16 +87,16 @@ test_that("error is provided when the current user is not in db", {
 
 ## then onto some content from package ready-made data
 if (is.null(check_db(is_test_that = FALSE))) {
-  insert_tab(pool, table = "nation", df = imongr::nation)
-  insert_tab(pool, table = "rhf", df = imongr::rhf)
-  insert_tab(pool, table = "hf", df = imongr::hf)
-  insert_tab(pool, table = "hospital", df = imongr::hospital)
-  insert_tab(pool, table = "registry", df = imongr::registry)
-  insert_tab(pool, table = "ind", df = imongr::ind)
-  insert_tab(pool, table = "user", df = imongr::user)
-  insert_tab(pool, table = "user_registry", df = imongr::user_registry)
-  insert_tab(pool, table = "delivery", df = imongr::delivery)
-  insert_tab(pool, table = "data", df = imongr::data[1:100, ])
+  insert_table(pool, table = "nation", df = imongr::nation)
+  insert_table(pool, table = "rhf", df = imongr::rhf)
+  insert_table(pool, table = "hf", df = imongr::hf)
+  insert_table(pool, table = "hospital", df = imongr::hospital)
+  insert_table(pool, table = "registry", df = imongr::registry)
+  insert_table(pool, table = "ind", df = imongr::ind)
+  insert_table(pool, table = "user", df = imongr::user)
+  insert_table(pool, table = "user_registry", df = imongr::user_registry)
+  insert_table(pool, table = "delivery", df = imongr::delivery)
+  insert_table(pool, table = "data", df = imongr::data[1:100, ])
 }
 
 Sys.setenv(SHINYPROXY_USERNAME = "mongr")
@@ -110,11 +110,6 @@ test_that("all users data can be provided", {
   expect_equal(class(get_all_user_data(pool)), "data.frame")
   expect_equal(class(get_user_registries(pool)), "character")
   expect_equal(class(get_user_deliveries(pool)), "data.frame")
-})
-
-test_that("a consistent md5 checksum of a data frame can be provided", {
-  expect_equal(md5_checksum(data.frame(name = "imongr")),
-               "ed91fb7bafe2bd55f90522e1104a13f1")
 })
 
 conf <- get_config()

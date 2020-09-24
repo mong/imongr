@@ -2,6 +2,7 @@
 % Please edit documentation in R/misc.R
 \name{misc}
 \alias{misc}
+\alias{md5_checksum}
 \alias{navbar_widget}
 \alias{version_info}
 \alias{no_opt_out_ok}
@@ -9,6 +10,8 @@
 \alias{delete_all_data}
 \title{Tools and whatever}
 \usage{
+md5_checksum(df)
+
 navbar_widget()
 
 version_info(newline = "<br>")
@@ -20,6 +23,8 @@ insert_sample_data(include_data_table = TRUE)
 delete_all_data(prompt = TRUE)
 }
 \arguments{
+\item{df}{A data frame}
+
 \item{newline}{String element defining line break for formatting. Default is
 \code{<br>}}
 
