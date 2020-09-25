@@ -2,8 +2,6 @@
 #'
 #' @param pool Database connection pool object
 #' @param df Data frame of relevant data
-#' @param registry Integer registry id
-#' @param indicator Character vector of indicator ids
 #' @return Relevant values from the current environment and database
 #' @name ops
 #' @aliases delivery_exist_in_db duplicate_delivery retire_user_deliveries

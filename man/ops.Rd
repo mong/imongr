@@ -39,10 +39,6 @@ create_imongr_user(pool, df)
 \item{pool}{Database connection pool object}
 
 \item{df}{Data frame of relevant data}
-
-\item{registry}{Integer registry id}
-
-\item{indicator}{Character vector of indicator ids}
 }
 \value{
 Relevant values from the current environment and database

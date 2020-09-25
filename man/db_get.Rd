@@ -2,6 +2,7 @@
 % Please edit documentation in R/db_get.R
 \name{db_get}
 \alias{db_get}
+\alias{get_indicator}
 \alias{get_user_data}
 \alias{get_user_id}
 \alias{get_user_registries}
@@ -21,6 +22,8 @@
 \alias{get_registry_ind}
 \title{Retreiv data from imongr database}
 \usage{
+get_indicator(pool)
+
 get_all_user_data(pool)
 
 get_user_data(pool)
@@ -58,9 +61,16 @@ get_registry_indicators(pool, registry)
 
 \item{registry}{Integer defining registry id}
 
+\item{indicator}{Character vector of indicator ids}
+
 \item{full_name}{Logical defining if full names is to be returned}
 
 \item{orgnr}{Integer id of organization}
+
+\item{include_short_name}{Logical if variable 'short_name' is to be returned}
+
+\item{sample}{Integer in range \[0, 1\] defining data set subsample size.
+Defaults to NA in which case all data is returned}
 }
 \value{
 Data object from database

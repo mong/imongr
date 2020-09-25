@@ -22,7 +22,7 @@ app_server <- function(input, output, session) {
 
   # if unknown, add user as pendig in imongr
   if (!known_user) {
-    insert_tab(pool, "user",
+    insert_table(pool, "user",
                data.frame(user_name = iusr, name = "", phone = "", email = "",
                           valid = 0))
   }

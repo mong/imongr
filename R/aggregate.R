@@ -34,9 +34,10 @@
 #' data on each indicator
 #' @param group Character string defining the name of the grouping variable
 #' in a data frame
-#' @param aggs data frame of (pre) aggregated data
-#' @param conf list of configuration
-#' @param from_level integer specifying from what level to aggregate from
+#' @param aggs Data frame of (pre) aggregated data
+#' @param diff Data frame with diff data
+#' @param conf List of configuration
+#' @param from_level Integer specifying from what level to aggregate from
 #' @return Data frame in raw, grouped or aggregated form
 #' @name aggregate
 #' @aliases agg agg_dg agg_from_level agg_residual agg_udef make_group
