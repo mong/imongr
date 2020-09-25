@@ -6,3 +6,148 @@ development:
 template:
   params:
     bootswatch: flatly
+
+reference:
+  - title: Configuration
+    desc: >
+      Handling configuration
+    contents:
+    - create_config
+    - write_config
+    - get_config
+    - check_config
+
+  - title: Database
+    desc: >
+      Basic database interaction
+    contents:
+    - make_pool
+    - drain_pool
+    - insert_table
+    - get_table
+
+  - title: Get data
+    desc: >
+      Retrieve data from database
+    contents:
+    - get_indicator
+    - get_all_user_data
+    - get_user_data
+    - get_user_id
+    - get_user_registries
+    - get_user_registry_select
+    - get_user_deliveries
+    - get_user_latest_delivery_id
+    - get_registry_data
+    - get_indicators_registry
+    - get_registry_ind
+    - get_registry_name
+    - get_org_name
+    - get_flat_org
+    - get_all_orgnr
+    - get_user
+    - get_registry_indicators
+
+  - title: Data operations
+    desc: >
+      Speciffic data operations
+    contents:
+    - delivery_exist_in_db
+    - duplicate_delivery
+    - retire_user_deliveries
+    - delete_indicator_data
+    - delete_agg_data
+    - insert_data
+    - insert_agg_data
+    - agg_all_data
+    - clean_agg_data
+    - create_imongr_user
+
+  - title: Aggregation
+    desc: >
+      Prepare data for qmongr by aggregation
+    contents:
+    - agg
+    - agg_dg
+    - agg_from_level
+    - agg_residual
+    - agg_udef
+    - get_indicator_level
+
+  - title: Environment
+    desc: >
+      Provides relevant settings
+    contents:
+    - get_user_name
+    - get_user_groups
+    - db_host
+    - db_name
+    - db_username
+    - db_password
+    - adminer_url
+
+  - title: Upload data
+    desc: >
+      Processing and validation of upload data
+    contents:
+    - check_report
+    - mail_check_report
+    - check_upload
+    - check_missing_registry
+    - check_missing_var
+    - check_invalid_var
+    - check_invalid_org
+    - check_invalid_ind
+    - check_none_numeric_var
+    - check_duplicate_delivery
+    - csv_to_df
+    - sample_df
+
+  - title: Tools
+    desc: >
+      Miscellaneous functions
+    contents:
+    - md5_checksum
+    - navbar_widget
+    - version_info
+    - no_opt_out_ok
+    - insert_sample_data
+    - delete_all_data
+
+  - title: App server output
+    desc: >
+      For use by the app server function
+    contents:
+    - profile_ui
+    - select_registry_ui
+    - submit_ui
+    - error_report_ui
+    - upload_sample_text_ui
+    - upload_sample_ui
+    - var_doc_ui
+
+  - title: App
+    desc: >
+      Application server, user interface and start-up
+    contents:
+    - run_app
+    - app_server
+    - app_ui
+
+  - title: Data
+    desc: >
+      Package data, mosty for testing
+    contents:
+    - data
+    - delivery
+    - hf
+    - hospital
+    - ind
+    - nation
+    - org
+    - orgnr
+    - orgnr_shortname
+    - registry
+    - rhf
+    - user
+    - user_registry
