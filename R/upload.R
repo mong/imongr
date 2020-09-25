@@ -1,4 +1,7 @@
-#' Title
+#' Upload data to imongr
+#'
+#' Various functions used when data are being uploaded to imongr. All checks
+#' regarding consistency goes here
 #'
 #' @param pool Data base pool object
 #' @param conf List of configuration
