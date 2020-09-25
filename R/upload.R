@@ -46,7 +46,6 @@ check_report <- function(registry, df, pool) {
       }
     }
     msg <- paste(msg, mail_check_report(pool, registry, mail_msg))
-    print(msg)
   }
   paste(msg, "</font>")
 }
