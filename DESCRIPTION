@@ -1,6 +1,6 @@
 Package: imongr
 Title: I Handle the Data for qmongr 
-Version: 0.11.0
+Version: 0.12.0
 Authors@R: c(
     person(given = "Are",
            family = "Edvardsen",
@@ -22,6 +22,7 @@ Imports:
     digest,
     dplyr,
     DT,
+    lifecycle,
     magrittr,
     pool,
     readr,

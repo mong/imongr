@@ -13,13 +13,28 @@
 #' @param registry Integer defining registry id
 #' @param orgnr Integer id of organization
 #' @param full_name Logical defining if full names is to be returned
+#' @param indicator Character vector of indicator ids
+#' @param include_short_name Logical if variable 'short_name' is to be returned
+#' @param sample Integer in range \[0, 1\] defining data set subsample size.
+#' Defaults to NA in which case all data is returned
 #' @return Data object from database
 #' @name db_get
-#' @aliases get_user_data get_user_id get_user_registries
+#' @aliases get_indicator get_user_data get_user_id get_user_registries
 #' get_user_registry_select get_user_latest_delivery_id get_registry_data
 #' get_indicators_registryget_registry_ind get_registry_name get_org_name
 #' get_flat_org get_all_orgnr get_user get_registry_indicators
 NULL
+
+
+#' @rdname db_get
+#' @export
+get_indicator <- function(pool) {
+
+  lifecycle::deprecate_warn("0.12.0", "imongr::get_indicator()",
+                            "imongr::get_table()")
+
+  get_table(pool, "ind")
+}
 
 
 #' @rdname db_get
