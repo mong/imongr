@@ -7,10 +7,6 @@
 \alias{agg_from_level}
 \alias{agg_residual}
 \alias{agg_udef}
-\alias{make_group}
-\alias{compute_group}
-\alias{compute_indicator_mean}
-\alias{compute_indicator_median}
 \alias{get_indicator_level}
 \title{Aggregate hospital data}
 \usage{
@@ -23,14 +19,6 @@ agg_from_level(df, org, ind, conf, from_level)
 agg_residual(aggs, conf)
 
 agg_udef(diff, conf)
-
-make_group(df, group = "")
-
-compute_group(gdf, ind)
-
-compute_indicator_mean(gdf)
-
-compute_indicator_median(gdf)
 
 get_indicator_level(gdf, ind)
 }
@@ -51,10 +39,10 @@ data on each indicator}
 
 \item{diff}{Data frame with diff data}
 
+\item{gdf}{Data frame of grouped data}
+
 \item{group}{Character string defining the name of the grouping variable
 in a data frame}
-
-\item{gdf}{Data frame of grouped data}
 }
 \value{
 Data frame in raw, grouped or aggregated form
