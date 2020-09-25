@@ -46,6 +46,7 @@ check_report <- function(registry, df, pool) {
       }
     }
     msg <- paste(msg, mail_check_report(pool, registry, mail_msg))
+    print(msg)
   }
   paste(msg, "</font>")
 }
@@ -62,7 +63,7 @@ mail_check_report <- function(pool, registry, mail_msg) {
   body <- paste("Hei,",
                 "\n\nDet kan godt hende jeg trenger hjelp med f\u00f8lgende",
                 "feil:",
-                "\n\n", paste(mail_msg),
+                "\n\n", paste(gsub("'", "", mail_msg)),
                 "\n\nSo long og vennlig hilsen,\n", user$name, "\n", user$phone)
 
   content <- paste0(to, "?subject=", URLencode(subject), "&body=",
