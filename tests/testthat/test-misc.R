@@ -27,6 +27,10 @@ check_db <- function(is_test_that = TRUE) {
   }
 }
 
+test_that("a consistent md5 checksum of a data frame can be provided", {
+  expect_equal(md5_checksum(data.frame(name = "imongr")),
+               "ed91fb7bafe2bd55f90522e1104a13f1")
+})
 
 # For the remianing tests we need a test database
 ## first off with no data

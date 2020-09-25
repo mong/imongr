@@ -15,7 +15,6 @@
 #' kept in order.
 #'
 #' @param pool a database connection pool object
-#' @param registry Integer defining registry id
 #' @param table string defining target database table
 #' @param sample Numeric in the range 0 to 1 defining the relative sub-sample
 #' size, \emph{e.g.} when \code{sample = 0.1} approximately 10\% of
@@ -23,9 +22,7 @@
 #' @param df data frame containing data to be inserted into a database
 #' @return Database pool object, data frame or status message
 #' @name db
-#' @aliases make_pool drain_pool insert_tab get_table get_agg_data get_data
-#' get_all_data get_delivery get_user get_user_registry get_hospital get_hf
-#' get_rhf get_nation get_indicator get_flat_org get_all_orgnr
+#' @aliases make_pool drain_pool insert_table get_table
 NULL
 
 #' @rdname db
@@ -94,7 +91,7 @@ drain_pool <- function(pool) {
 
 #' @rdname db
 #' @export
-insert_tab <- function(pool, table, df) {
+insert_table <- function(pool, table, df) {
 
   conf <- get_config()
 
@@ -126,333 +123,18 @@ insert_tab <- function(pool, table, df) {
 
 #' @rdname db
 #' @export
-get_table <- function(pool, table) {
-
-  f <- paste0("get_", table)
-  do.call(f, args = list(pool = pool))
-}
-
-#' @rdname db
-#' @export
-get_agg_data <- function(pool) {
+get_table <- function(pool, table, sample = NA) {
 
   conf <- get_config()
   query <- paste0("
 SELECT
-  ", paste0(conf$db$tab$agg_data$insert, collapse = ",\n "), "
+  ", paste0(conf$db$tab[[table]]$insert, collapse = ",\n  "), "
 FROM
-  agg_data;")
-
-  pool::dbGetQuery(pool, query)
-}
-
-#' @rdname db
-#' @export
-get_data <- function(pool, sample = NA) {
-
-  conf <- get_config()
-  query <- paste0("
-SELECT
-  ", paste0("var.", conf$db$tab$data$insert, collapse = ",\n  "), "
-FROM
-  data var
-LEFT JOIN
-  delivery d
-ON
-  var.delivery_id = d.id
-WHERE
-  d.latest = 1")
-
-  if (!is.na(sample) && sample > 0 && sample < 1) {
-    query <- paste(query, "AND RAND() <", sample)
-  }
-
-  pool::dbGetQuery(pool, query)
-}
-
-
-#' @rdname db
-#' @export
-get_all_data <- function(pool) {
-
-  conf <- get_config()
-  query <- paste0("
-SELECT
-  ", paste0("var.", conf$db$tab$data$insert, collapse = ",\n  "), "
-FROM
-  data var;")
-
-  pool::dbGetQuery(pool, query)
-}
-
-#' @rdname db
-#' @export
-get_delivery <- function(pool, sample = NA) {
-
-  conf <- get_config()
-  query <- paste0("
-SELECT
-  ", paste0(conf$db$tab$delivery$insert, collapse = ",\n "), "
-FROM
-  delivery")
+  ", table)
 
   if (!is.na(sample) && sample > 0 && sample < 1) {
     query <- paste(query, "\nWHERE\n  RAND() <", sample)
   }
 
   pool::dbGetQuery(pool, query)
-}
-
-
-#' @rdname db
-#' @export
-get_user <- function(pool, sample = NA) {
-
-  conf <- get_config()
-  query <- paste0("
-SELECT
-  ", paste0(conf$db$tab$user$insert, collapse = ",\n "), "
-FROM
-  user
-WHERE
-  valid=1")
-
-  if (!is.na(sample) && sample > 0 && sample < 1) {
-    query <- paste(query, "AND RAND() <", sample)
-  }
-
-  pool::dbGetQuery(pool, query)
-}
-
-
-#' @rdname db
-#' @export
-get_org <- function(pool, sample = NA) {
-
-  query <- paste0("
-SELECT
-  *
-FROM
-  org")
-
-  if (!is.na(sample) && sample > 0 && sample < 1) {
-    query <- paste(query, "\nWHERE\n  RAND() <", sample)
-  }
-
-  pool::dbGetQuery(pool, query)
-}
-
-
-#' @rdname db
-#' @export
-get_user_registry <- function(pool, sample = NA) {
-
-  query <- paste0("
-SELECT
-  *
-FROM
-  user_registry")
-
-  if (!is.na(sample) && sample > 0 && sample < 1) {
-    query <- paste(query, "\nWHERE\n  RAND() <", sample)
-  }
-
-  pool::dbGetQuery(pool, query)
-}
-
-#' @rdname db
-#' @export
-get_indicator <- function(pool, sample = NA) {
-
-  conf <- get_config()
-  query <- paste0("
-SELECT
-  ", paste0(conf$db$tab$ind$insert, collapse = ",\n "), "
-FROM
-  ind")
-
-  if (!is.na(sample) && sample > 0 && sample < 1) {
-    query <- paste(query, "\nWHERE\n  RAND() <", sample)
-  }
-
-  pool::dbGetQuery(pool, query)
-}
-
-
-#' @rdname db
-#' @export
-get_registry_indicators <- function(pool, registry) {
-
-  query <- paste0("
-SELECT
-  id
-FROM
-  ind
-WHERE
-  registry_id=", registry, ";"
-  )
-
-  pool::dbGetQuery(pool, query)
-}
-
-#' @rdname db
-#' @export
-get_registry <- function(pool, sample = NA) {
-
-  conf <- get_config()
-  query <- paste0("
-SELECT
-  ", paste0(conf$db$tab$registry$insert, collapse = ",\n "), "
-FROM
-  registry")
-
-  if (!is.na(sample) && sample > 0 && sample < 1) {
-    query <- paste(query, "\nWHERE\n  RAND() <", sample)
-  }
-
-  pool::dbGetQuery(pool, query)
-}
-
-#' @rdname db
-#' @export
-get_hospital <- function(pool, sample = NA) {
-
-  conf <- get_config()
-  query <- paste0("
-SELECT
-  ", paste0(conf$db$tab$hospital$insert, collapse = ",\n "), "
-FROM
-  hospital")
-
-  if (!is.na(sample) && sample > 0 && sample < 1) {
-    query <- paste(query, "\nWHERE\n  RAND() <", sample)
-  }
-
-  pool::dbGetQuery(pool, query)
-}
-
-#' @rdname db
-#' @export
-get_hf <- function(pool, sample = NA) {
-
-  conf <- get_config()
-  query <- paste0("
-SELECT
-  ", paste0(conf$db$tab$hf$insert, collapse = ",\n "), "
-FROM
-  hf")
-
-  if (!is.na(sample) && sample > 0 && sample < 1) {
-    query <- paste(query, "\nWHERE\n  RAND() <", sample)
-  }
-
-  pool::dbGetQuery(pool, query)
-}
-
-#' @rdname db
-#' @export
-get_rhf <- function(pool, sample = NA) {
-
-  conf <- get_config()
-  query <- paste0("
-SELECT
-  ", paste0(conf$db$tab$rhf$insert, collapse = ",\n "), "
-FROM
-  rhf")
-
-  if (!is.na(sample) && sample > 0 && sample < 1) {
-    query <- paste(query, "\nWHERE\n  RAND() <", sample)
-  }
-
-  pool::dbGetQuery(pool, query)
-}
-
-#' @rdname db
-#' @export
-get_nation <- function(pool, sample = NA) {
-
-  conf <- get_config()
-  query <- paste0("
-SELECT
-  ", paste0(conf$db$tab$nation$insert, collapse = ",\n "), "
-FROM
-  nation")
-
-  if (!is.na(sample) && sample > 0 && sample < 1) {
-    query <- paste(query, "\nWHERE\n  RAND() <", sample)
-  }
-
-  pool::dbGetQuery(pool, query)
-}
-
-#' @rdname db
-#' @export
-get_flat_org <- function(pool) {
-
-  conf <- get_config()
-  prefix <- conf$aggregate$orgnr$prefix
-  query <- paste0("
-SELECT
-  hos.short_name AS ", conf$aggregate$unit_level$hospital$name, ",
-  hos.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$hospital$name), ",
-  h.short_name AS ", conf$aggregate$unit_level$hf$name, ",
-  h.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$hf$name), ",
-  r.short_name AS ", conf$aggregate$unit_level$rhf$name, ",
-  r.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$rhf$name), ",
-  n.short_name AS ", conf$aggregate$unit_level$nation$name, ",
-  n.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$nation$name), "
-FROM
-  hospital hos
-LEFT JOIN hf h ON
-  hos.hf_orgnr=h.orgnr
-LEFT JOIN rhf r ON
-  h.rhf_orgnr=r.orgnr
-LEFT JOIN nation n ON
-  r.nation_orgnr=n.orgnr;"
-  )
-
-  pool::dbGetQuery(pool, query)
-}
-
-#' @rdname db
-#' @export
-get_all_orgnr <- function(pool, include_short_name = FALSE) {
-
-  conf <- get_config()
-
-  query <- paste0("
-SELECT
-  orgnr,
-  '", conf$aggregate$unit_level$hospital$name, "' AS unit_level,
-  short_name
-FROM
-  hospital
-UNION
-SELECT
-  orgnr,
-  '", conf$aggregate$unit_level$hf$name, "' AS unit_level,
-  short_name
-FROM
-  hf
-UNION
-SELECT orgnr,
-  '", conf$aggregate$unit_level$rhf$name, "' AS unit_level,
-  short_name
-FROM
-  rhf
-UNION
-SELECT orgnr,
-  '", conf$aggregate$unit_level$nation$name, "' AS unit_level,
-  short_name
-FROM
-  nation;")
-
-  dat <- pool::dbGetQuery(pool, query)
-
-  if (!include_short_name) {
-    dat <- dat %>%
-      dplyr::select(!.data$short_name)
-  }
-
-  dat
 }

@@ -2,25 +2,75 @@
 % Please edit documentation in R/db_get.R
 \name{db_get}
 \alias{db_get}
-\alias{get_registry_ind}
+\alias{get_indicator}
+\alias{get_user_data}
+\alias{get_user_id}
+\alias{get_user_registries}
+\alias{get_user_registry_select}
+\alias{get_user_latest_delivery_id}
+\alias{get_registry_data}
+\alias{get_indicators_registryget_registry_ind}
 \alias{get_registry_name}
 \alias{get_org_name}
+\alias{get_flat_org}
+\alias{get_all_orgnr}
+\alias{get_user}
+\alias{get_registry_indicators}
+\alias{get_all_user_data}
+\alias{get_user_deliveries}
+\alias{get_indicators_registry}
+\alias{get_registry_ind}
 \title{Retreiv data from imongr database}
 \usage{
+get_indicator(pool)
+
+get_all_user_data(pool)
+
+get_user_data(pool)
+
+get_user_id(pool)
+
+get_user_registries(pool)
+
+get_user_registry_select(pool)
+
+get_user_deliveries(pool)
+
+get_user_latest_delivery_id(pool)
+
+get_registry_data(pool, registry)
+
+get_indicators_registry(pool, indicator)
+
 get_registry_ind(pool, registry)
 
 get_registry_name(pool, registry, full_name = FALSE)
 
 get_org_name(pool, orgnr)
+
+get_flat_org(pool)
+
+get_all_orgnr(pool, include_short_name = FALSE)
+
+get_user(pool, sample = NA)
+
+get_registry_indicators(pool, registry)
 }
 \arguments{
 \item{pool}{a database connection pool object}
 
 \item{registry}{Integer defining registry id}
 
+\item{indicator}{Character vector of indicator ids}
+
 \item{full_name}{Logical defining if full names is to be returned}
 
 \item{orgnr}{Integer id of organization}
+
+\item{include_short_name}{Logical if variable 'short_name' is to be returned}
+
+\item{sample}{Integer in range \[0, 1\] defining data set subsample size.
+Defaults to NA in which case all data is returned}
 }
 \value{
 Data object from database

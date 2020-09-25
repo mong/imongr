@@ -1,3 +1,10 @@
+# imongr 0.12.0
+
+* consolidated functions, also removing some
+* increased testing
+* small changes to config
+* organized functions into categories in web site docs
+
 # imongr 0.11.0
 
 * clean-up button in app for agg_data

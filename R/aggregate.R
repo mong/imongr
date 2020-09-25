@@ -34,14 +34,13 @@
 #' data on each indicator
 #' @param group Character string defining the name of the grouping variable
 #' in a data frame
-#' @param aggs data frame of (pre) aggregated data
-#' @param conf list of configuration
-#' @param from_level integer specifying from what level to aggregate from
+#' @param aggs Data frame of (pre) aggregated data
+#' @param diff Data frame with diff data
+#' @param conf List of configuration
+#' @param from_level Integer specifying from what level to aggregate from
 #' @return Data frame in raw, grouped or aggregated form
 #' @name aggregate
-#' @aliases agg agg_dg agg_from_level agg_residual agg_udef make_group
-#' compute_group compute_indicator_mean compute_indicator_median
-#' get_indicator_level
+#' @aliases agg agg_dg agg_from_level agg_residual agg_udef get_indicator_level
 #' @importFrom rlang .data
 NULL
 
@@ -424,73 +423,6 @@ agg_udef <- function(diff, conf) {
   diff[, !names(diff) %in% c("var_diff", "denominator_diff")]
 }
 
-#' @rdname aggregate
-#' @export
-make_group <- function(df, group = "") {
-
-  df <- df %>%
-    dplyr::group_by(
-      .data[["year"]],
-      .data[["ind_id"]]
-    )
-
-  if (group != "") {
-    df <- df %>%
-      dplyr::group_by(
-        .data[[group]],
-        .add = TRUE
-      )
-  }
-
-  df
-}
-
-#' @rdname aggregate
-#' @export
-compute_group <- function(gdf, ind) {
-
-  indicator_median <- ind$id[is.na(ind$type)]
-  indicator_mean <- ind$id[ind$type == "andel"]
-  indicator_mean <- indicator_mean[!is.na(indicator_mean)]
-
-  gmean <- gdf %>%
-    dplyr::filter(.data[["ind_id"]] %in% indicator_mean) %>%
-    compute_indicator_mean()
-
-  gmedian <- gdf %>%
-    dplyr::filter(.data[["ind_id"]] %in% indicator_median) %>%
-    compute_indicator_median()
-
-  g <- dplyr::bind_rows(gmean, gmedian) %>%
-    dplyr::arrange(.data[["ind_id"]]) %>%
-    dplyr::ungroup() %>%
-    as.data.frame()
-
-  get_indicator_level(gdf = g, ind)
-}
-
-
-#' @rdname aggregate
-#' @export
-compute_indicator_mean <- function(gdf)  {
-
-  gdf %>%
-    dplyr::summarise(
-      count = dplyr::n(),
-      var = mean(.data[["var"]])
-    )
-}
-
-#' @rdname aggregate
-#' @export
-compute_indicator_median <- function(gdf)  {
-
-  gdf %>%
-    dplyr::summarise(
-      count = dplyr::n(),
-      var = stats::median(.data[["var"]])
-    )
-}
 
 #' @rdname aggregate
 #' @importFrom rlang .data

@@ -14,7 +14,7 @@
 \alias{csv_to_df}
 \alias{mail_check_report}
 \alias{sample_df}
-\title{Title}
+\title{Upload data to imongr}
 \usage{
 check_report(registry, df, pool)
 
@@ -69,5 +69,6 @@ sample_df(df, skip = c(""), n, random = FALSE)
 whatever
 }
 \description{
-Title
+Various functions used when data are being uploaded to imongr. All checks
+regarding consistency goes here
 }

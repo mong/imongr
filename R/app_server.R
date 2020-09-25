@@ -22,7 +22,7 @@ app_server <- function(input, output, session) {
 
   # if unknown, add user as pendig in imongr
   if (!known_user) {
-    insert_tab(pool, "user",
+    insert_table(pool, "user",
                data.frame(user_name = iusr, name = "", phone = "", email = "",
                           valid = 0))
   }
@@ -186,8 +186,8 @@ app_server <- function(input, output, session) {
   )
 
   output$sample_data <- shiny::renderTable(
-    get_data(pool,
-             sample = 0.0001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
+    get_table(pool, "data",
+      sample = 0.00001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
   )
 
 

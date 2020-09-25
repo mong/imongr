@@ -13,10 +13,228 @@
 #' @param registry Integer defining registry id
 #' @param orgnr Integer id of organization
 #' @param full_name Logical defining if full names is to be returned
+#' @param indicator Character vector of indicator ids
+#' @param include_short_name Logical if variable 'short_name' is to be returned
+#' @param sample Integer in range \[0, 1\] defining data set subsample size.
+#' Defaults to NA in which case all data is returned
 #' @return Data object from database
 #' @name db_get
-#' @aliases get_registry_ind get_registry_name get_org_name
+#' @aliases get_indicator get_user_data get_user_id get_user_registries
+#' get_user_registry_select get_user_latest_delivery_id get_registry_data
+#' get_indicators_registryget_registry_ind get_registry_name get_org_name
+#' get_flat_org get_all_orgnr get_user get_registry_indicators
 NULL
+
+
+#' @rdname db_get
+#' @export
+get_indicator <- function(pool) {
+
+  lifecycle::deprecate_warn("0.12.0", "imongr::get_indicator()",
+                            "imongr::get_table()")
+
+  get_table(pool, "ind")
+}
+
+
+#' @rdname db_get
+#' @export
+get_all_user_data <- function(pool) {
+
+  query <- paste0("
+SELECT
+  *
+FROM
+  user
+WHERE
+  user_name='", get_user_name(), "';")
+
+  pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname db_get
+#' @export
+get_user_data <- function(pool) {
+
+  query <- paste0("
+SELECT
+  *
+FROM
+  user
+WHERE
+  valid = 1 AND
+  user_name='", get_user_name(), "';")
+
+  pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname db_get
+#' @export
+get_user_id <- function(pool) {
+
+  df <- get_user_data(pool)
+
+  if (dim(df)[1] == 0) {
+    stop("No data on the current user!")
+  }
+
+  df$id
+}
+
+
+#' @rdname db_get
+#' @export
+get_user_registries <- function(pool) {
+
+  valid_user <- nrow(get_user_data(pool)) > 0
+
+  if (valid_user) {
+    query <- paste0("
+SELECT
+  r.name
+FROM
+  user_registry ur
+LEFT JOIN
+  registry r
+ON
+  ur.registry_id=r.id
+WHERE
+  ur.user_id=", get_user_id(pool), ";")
+
+    pool::dbGetQuery(pool, query)[, 1]
+  } else {
+    NULL
+  }
+}
+
+
+#' @rdname db_get
+#' @export
+get_user_registry_select <- function(pool) {
+
+  query <- paste0("
+SELECT
+  r.name AS name,
+  r.id AS value
+FROM
+  user_registry ur
+LEFT JOIN
+  registry r
+ON
+  ur.registry_id=r.id
+WHERE
+  ur.user_id=", get_user_id(pool), "
+ORDER BY name;"
+  )
+
+  tibble::deframe(pool::dbGetQuery(pool, query))
+}
+
+
+#' @rdname db_get
+#' @export
+get_user_deliveries <- function(pool) {
+
+  valid_user <- nrow(get_user_data(pool)) > 0
+
+  if (valid_user) {
+    conf <- get_config()
+
+    query <- paste0("
+SELECT
+  delivery.time AS Dato,
+  delivery.time AS Tid,
+  SUBSTRING(delivery.md5_checksum, 1, 7) as Referanse,
+  GROUP_CONCAT(DISTINCT data.ind_id SEPARATOR ',\n') AS Indikatorer
+FROM
+  data
+LEFT JOIN
+  delivery
+ON
+  data.delivery_id=delivery.id
+WHERE
+  delivery.user_id=", get_user_id(pool), "
+GROUP BY
+  data.delivery_id
+ORDER BY
+  delivery.time DESC;")
+
+    df <- pool::dbGetQuery(pool, query)
+
+    # timestamp in db is UTC, convert back to "our" time zone
+    df$Dato <- format(df$Dato, format = conf$app_text$format$date, # nolint
+                      tz = conf$app_text$format$tz)
+    df$Tid <- format(df$Tid, format = conf$app_text$format$time, # nolint
+                     tz = conf$app_text$format$tz)
+
+    df
+  } else {
+    NULL
+  }
+}
+
+
+#' @rdname db_get
+#' @export
+get_user_latest_delivery_id <- function(pool) {
+
+  query <- paste0("
+SELECT
+  id
+FROM
+  delivery
+WHERE
+  latest=1 AND
+  user_id=", get_user_id(pool), ";")
+
+  df <- pool::dbGetQuery(pool, query)
+  df$id
+}
+
+
+#' @rdname db_get
+#' @export
+get_registry_data <- function(pool, registry) {
+
+  conf <- get_config()
+  fields <- paste(conf$db$tab$data$insert[conf$upload$data_var_ind],
+                  collapse = ",\n  ")
+
+  query <- paste0("
+SELECT
+  d.", fields, "
+FROM
+  data d
+LEFT JOIN
+  ind i
+ON
+  d.ind_id = i.id
+WHERE
+  i.registry_id=", registry, ";")
+
+  pool::dbGetQuery(pool, query)
+
+}
+
+
+#' @rdname db_get
+#' @export
+get_indicators_registry <- function(pool, indicator) {
+
+  query <- paste0("
+SELECT
+  DISTINCT registry_id AS rid
+FROM
+  ind
+WHERE
+  id IN ('", paste0(indicator, collapse = "', '"), "');"
+  )
+
+  pool::dbGetQuery(pool, query)$rid
+}
+
 
 #' @rdname db_get
 #' @export
@@ -48,6 +266,7 @@ WHERE
 
 }
 
+
 #' @rdname db_get
 #' @export
 get_registry_name <- function(pool, registry, full_name = FALSE) {
@@ -71,6 +290,7 @@ WHERE
     pool::dbGetQuery(pool, query)$name
   }
 }
+
 
 #' @rdname db_get
 #' @export
@@ -106,4 +326,116 @@ FROM
   orgnr <- tibble::tibble(orgnr = orgnr)
   dplyr::left_join(orgnr, orgs, by = "orgnr")$short_name
 
+}
+
+
+#' @rdname db_get
+#' @export
+get_flat_org <- function(pool) {
+
+  conf <- get_config()
+  prefix <- conf$aggregate$orgnr$prefix
+  query <- paste0("
+SELECT
+  hos.short_name AS ", conf$aggregate$unit_level$hospital$name, ",
+  hos.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$hospital$name), ",
+  h.short_name AS ", conf$aggregate$unit_level$hf$name, ",
+  h.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$hf$name), ",
+  r.short_name AS ", conf$aggregate$unit_level$rhf$name, ",
+  r.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$rhf$name), ",
+  n.short_name AS ", conf$aggregate$unit_level$nation$name, ",
+  n.orgnr AS ", paste0(prefix, conf$aggregate$unit_level$nation$name), "
+FROM
+  hospital hos
+LEFT JOIN hf h ON
+  hos.hf_orgnr=h.orgnr
+LEFT JOIN rhf r ON
+  h.rhf_orgnr=r.orgnr
+LEFT JOIN nation n ON
+  r.nation_orgnr=n.orgnr;"
+  )
+
+  pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname db_get
+#' @export
+get_all_orgnr <- function(pool, include_short_name = FALSE) {
+
+  conf <- get_config()
+
+  query <- paste0("
+SELECT
+  orgnr,
+  '", conf$aggregate$unit_level$hospital$name, "' AS unit_level,
+  short_name
+FROM
+  hospital
+UNION
+SELECT
+  orgnr,
+  '", conf$aggregate$unit_level$hf$name, "' AS unit_level,
+  short_name
+FROM
+  hf
+UNION
+SELECT orgnr,
+  '", conf$aggregate$unit_level$rhf$name, "' AS unit_level,
+  short_name
+FROM
+  rhf
+UNION
+SELECT orgnr,
+  '", conf$aggregate$unit_level$nation$name, "' AS unit_level,
+  short_name
+FROM
+  nation;")
+
+  dat <- pool::dbGetQuery(pool, query)
+
+  if (!include_short_name) {
+    dat <- dat %>%
+      dplyr::select(!.data$short_name)
+  }
+
+  dat
+}
+
+
+#' @rdname db_get
+#' @export
+get_user <- function(pool, sample = NA) {
+
+  conf <- get_config()
+  query <- paste0("
+SELECT
+  ", paste0(conf$db$tab$user$insert, collapse = ",\n "), "
+FROM
+  user
+WHERE
+  valid=1")
+
+  if (!is.na(sample) && sample > 0 && sample < 1) {
+    query <- paste(query, "AND RAND() <", sample)
+  }
+
+  pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname db_get
+#' @export
+get_registry_indicators <- function(pool, registry) {
+
+  query <- paste0("
+SELECT
+  id
+FROM
+  ind
+WHERE
+  registry_id=", registry, ";"
+  )
+
+  pool::dbGetQuery(pool, query)
 }
