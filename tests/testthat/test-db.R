@@ -114,7 +114,7 @@ test_that("agg_data can be populated from existing (test) data", {
   expect_message(insert_agg_data(pool, data_sample))
 })
 
-test_that("a complete set will be aggregated when subset of inds are provided", {
+test_that("a complete set will be aggregated if given subset of inds", {
   check_db()
   dat <- get_table(pool, "data")
   ind <- unique(dat$ind_id)[1]
