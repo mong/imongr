@@ -113,6 +113,7 @@ db:
       - title
       - name
       - type
+      - min_denominator
       - level_green
       - level_yellow
       - level_direction

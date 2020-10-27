@@ -1,3 +1,7 @@
+# imongr 0.13.0
+
+* provide new field 'min_denominator' from ind table
+
 # imongr 0.12.0
 
 * consolidated functions, also removing some
