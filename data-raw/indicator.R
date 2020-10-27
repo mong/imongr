@@ -33,6 +33,9 @@ ind <- data.frame(id = indicator$IndID,
 # until present in data, add new field 'include'
 ind <- cbind(ind, include = TRUE)
 
+# stunt for min_denominator
+ind <- cbind(ind, min_denominator = NA)
+
 # add dg_id (self reference)
 ind <- cbind(ind, dg_id = NA)
 
