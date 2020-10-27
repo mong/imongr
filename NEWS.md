@@ -1,3 +1,7 @@
+# imongr 0.14.0
+
+* add (missing) endpoints for 'green' when aggregating levels 
+
 # imongr 0.13.0
 
 * provide new field 'min_denominator' from ind table
