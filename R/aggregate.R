@@ -431,7 +431,7 @@ get_indicator_level <- function(gdf, ind) {
   gdf$level <- ""
   gdf$level_direction <- NA
   high <- function(value, green, yellow) {
-    if (value > green) {
+    if (value >= green) {
       level <- "H"
     } else if (value < green & value > yellow) {
       level <- "M"
@@ -442,7 +442,7 @@ get_indicator_level <- function(gdf, ind) {
     return(list(level = level, level_direction = level_direction))
   }
   low <- function(value, green, yellow) {
-    if (value < green) {
+    if (value <= green) {
       level <- "H"
     } else if (value > green & value < yellow) {
       level <- "M"
