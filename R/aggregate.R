@@ -433,7 +433,7 @@ get_indicator_level <- function(gdf, ind) {
   high <- function(value, green, yellow) {
     if (value >= green) {
       level <- "H"
-    } else if (value < green & value > yellow) {
+    } else if (value < green & value >= yellow) {
       level <- "M"
     } else {
       level <- "L"
@@ -444,7 +444,7 @@ get_indicator_level <- function(gdf, ind) {
   low <- function(value, green, yellow) {
     if (value <= green) {
       level <- "H"
-    } else if (value > green & value < yellow) {
+    } else if (value > green & value <= yellow) {
       level <- "M"
     } else {
       level <- "L"
