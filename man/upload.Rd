@@ -16,6 +16,7 @@
 \alias{sample_df}
 \alias{check_numeric_var}
 \alias{check_natural_var}
+\alias{check_numeric_denominator}
 \alias{check_natural_denominator}
 \alias{check_zero_denominator}
 \title{Upload data to imongr}
@@ -39,6 +40,8 @@ check_invalid_ind(registry, df, conf, pool)
 check_numeric_var(registry, df, conf, pool)
 
 check_natural_var(registry, df, conf, pool)
+
+check_numeric_denominator(registry, df, conf, pool)
 
 check_natural_denominator(registry, df, conf, pool)
 
