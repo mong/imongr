@@ -310,8 +310,11 @@ agg_residual <- function(aggs, conf) {
 agg_udef <- function(diff, conf) {
 
   if (any(diff$denominator_diff == 0)) {
-    stop(paste("Got data where denominator difference is 0.",
-               "This must be an error. Stopping!"))
+    warning(paste("Got data where denominator difference is 0 when",
+                  "aggregating undefined organizations. This is a strong",
+                  "indication of error in the underlying data. As a first",
+                  "step, check that events are not duplicated across",
+                  "organization levels."))
   }
   # prep ascending name-level data frame
   level <- vector()
