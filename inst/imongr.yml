@@ -211,12 +211,14 @@ upload:
       Ukjent orgnr (kontakt SKDE):
     invalid_ind: |-
       Ukjent indikator (kontakt SKDE):
-    none_numeric_var: |-
+    numeric_var: |-
       En eller flere verdier i var er ikke numerisk
     natural_var: |-
       En eller flere verdier i var er ikke naturlige tall (inkludert 0)
     natural_denominator: |-
       En eller flere verdier i denominator er ikke naturlige tall
+    zero_denominator: |-
+      En eller flere verdier i denominator er lik 0
     duplicate_delivery: |-
       Datasettet er identisk med siste innsending
   check_empty: |-

@@ -14,7 +14,10 @@
 \alias{csv_to_df}
 \alias{mail_check_report}
 \alias{sample_df}
+\alias{check_numeric_var}
 \alias{check_natural_var}
+\alias{check_natural_denominator}
+\alias{check_zero_denominator}
 \title{Upload data to imongr}
 \usage{
 check_report(registry, df, pool)
@@ -33,9 +36,13 @@ check_invalid_org(registry, df, conf, pool)
 
 check_invalid_ind(registry, df, conf, pool)
 
-check_none_numeric_var(registry, df, conf, pool)
+check_numeric_var(registry, df, conf, pool)
 
 check_natural_var(registry, df, conf, pool)
+
+check_natural_denominator(registry, df, conf, pool)
+
+check_zero_denominator(registry, df, conf, pool)
 
 check_duplicate_delivery(registry, df, conf, pool)
 

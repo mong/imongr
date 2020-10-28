@@ -179,7 +179,7 @@ check_invalid_ind <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_none_numeric_var <- function(registry, df, conf, pool) {
+check_numeric_var <- function(registry, df, conf, pool) {
 
   fail <- TRUE
   report <- ""
@@ -218,6 +218,22 @@ check_natural_denominator <- function(registry, df, conf, pool) {
   report <- ""
   if ("denominator" %in% names(df) && is.numeric(df$denominator)) {
     if (all(is.natural(df$denominator))) {
+      fail <- FALSE
+    }
+  } else {
+    report <- conf$upload$check_impossible
+  }
+  list(fail = fail, report = report)
+}
+
+#' @rdname upload
+#' @export
+check_zero_denominator <- function(registry, df, conf, pool) {
+
+  fail <- TRUE
+  report <- ""
+  if ("denominator" %in% names(df) && is.numeric(df$denominator)) {
+    if (all(df$denominator > 0)) {
       fail <- FALSE
     }
   } else {
