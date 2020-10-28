@@ -210,6 +210,21 @@ check_natural_var <- function(registry, df, conf, pool) {
   list(fail = fail, report = report)
 }
 
+#' @rdname upload
+#' @export
+check_natural_denominator <- function(registry, df, conf, pool) {
+
+  fail <- TRUE
+  report <- ""
+  if ("denominator" %in% names(df) && is.numeric(df$denominator)) {
+    if (all(is.natural(df$denominator))) {
+      fail <- FALSE
+    }
+  } else {
+    report <- conf$upload$check_impossible
+  }
+  list(fail = fail, report = report)
+}
 
 #' @rdname upload
 #' @export
