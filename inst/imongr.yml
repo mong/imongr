@@ -14,8 +14,8 @@ app_text:
     help: >
       <br>
       Om du trenger hjelp til bruk av denne programvaren ta kontakt med SKDE på
-      <a href="mailto:skde@helse-nord.no">e-post</a> eller telefon +4747474747
-      og spør etter Are, Arnfinn eller Yohannes<br>
+      <a href="mailto:skde@helse-nord.no">e-post</a> eller telefon
+      +47 77 75 58 00 og spør etter Are, Arnfinn eller Yohannes<br>
       <br>
     lisence: >
       imongr: data contribution to qmongr ("Sykehusviseren")
@@ -237,9 +237,9 @@ upload:
       på innholdet i kolonnene.
     sample: >
       Her vises en utsnitt av datasett du har lastet opp. Juster parametrene i
-      menyen på venstresiden slik at norske tegn (æøå) representeres riktig og
-      tallene fremstår slik de skal. <b>Merk at når du sender nye data til
-      server vil alle gamle data tilsvarende indikatorer gitt i datasettet
+      menyen på venstresiden slik at eventuelle norske tegn (æøå) representeres
+      riktig og tallene fremstår slik de skal. <b>Merk at når du sender nye data
+      så vil alle gamle data for tilsvarende indikatorer gitt i datasettet
       overskrives/slettes</b>. Følgende indikatorer (med markering for de som
       finnes i csv-fila) er gyldige for
     year: >
@@ -252,15 +252,14 @@ upload:
       organisasjonsnummeret til sykehus/HF knyttet til hendelsen, hentet fra
       tilsendt fil SykehusNavnStruktur
     var: >
-      en binær verdi (0/1) per hendelse for fremstilling av andel måloppnåelse
-      eller en numerisk variabel for fremstilling av gjennomsnitt eller median.
-      Angis i utgangspunktet for hver enkelt hendelse men kan også benyttes til
-      å angi aggregert verdi for et gitt antall hendelser. Antall hendelser gis
-      i <i>denominator</i> (se under)
+      et positivt heltall større eller lik 0 for fremstilling av andel
+      måloppnåelse. Angis i utgangspunktet for hver enkelt hendelse (som 0
+      eller 1) men kan også benyttes til å angi aggregert verdi for et gitt
+      antall hendelser. Antall hendelser gis i <i>denominator</i> (se under)
     denominator: >
-      heltall som angir antall hendelser for tilsvarende verdi i <i>var</i>.
-      For enkelthendelser skal verdien være 1 og for et aggregat av hendelser
-      skal verdien være større enn 1
+      et positivt heltall større enn 0 som angir antall hendelser for
+      tilsvarende verdi i <i>var</i>. For enkelthendelser skal verdien være 1
+      og for et aggregat av hendelser skal verdien være større enn 1
     ind_id: >
       unik id for kvalitetsindikator og som må samsvare med gyldige verdier
       (for valgt register, se under)
