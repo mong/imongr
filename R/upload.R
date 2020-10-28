@@ -196,6 +196,23 @@ check_none_numeric_var <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
+check_natural_var <- function(registry, df, conf, pool) {
+
+  fail <- TRUE
+  report <- ""
+  if ("var" %in% names(df) && is.numeric(df$var)) {
+    if (all(is.natural(df$var))) {
+      fail <- FALSE
+    }
+  } else {
+    report <- conf$upload$check_impossible
+  }
+  list(fail = fail, report = report)
+}
+
+
+#' @rdname upload
+#' @export
 check_duplicate_delivery <- function(registry, df, conf, pool) {
 
   fail <- duplicate_delivery(pool, df)

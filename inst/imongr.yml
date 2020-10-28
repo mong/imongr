@@ -213,10 +213,14 @@ upload:
       Ukjent indikator (kontakt SKDE):
     none_numeric_var: |-
       En eller flere verdier i var er ikke numerisk
+    natural_var: |-
+      En eller flere verdier i var er ikke naturlige tall (inkludert 0)
     duplicate_delivery: |-
       Datasettet er identisk med siste innsending
   check_empty: |-
     nødvendig definisjon, verdi eller format finnes ikke
+  check_impossible: |-
+    testen kunne ikke gjennomføres, se eventuelt andre feilmeldinger
   doc:
     main: >
       Dette er et verktøy for å hjelpe med å legge til data i riktig format
