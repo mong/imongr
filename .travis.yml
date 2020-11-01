@@ -29,6 +29,7 @@ r_github_packages:
   - rstudio/shiny
 
 before_install:
+  - sudo apt-get -y install libharfbuzz-dev libfribidi-dev
   - mysql -e "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8' COLLATE = 'utf8_danish_ci';"
   - R CMD build .
   - docker build -t $DOCKER_ORG/$IMAGE_NAME .
