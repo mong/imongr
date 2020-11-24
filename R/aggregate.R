@@ -61,6 +61,11 @@ agg <- function(df, org, ind) {
 
   unit_levels <- unique(df$unit_level)
 
+  print("XXXXXXXXXXXXXXXX1")
+  print(length(unit_levels))
+  print(unit_levels)
+  print(names(df))
+  print("XXXXXXXXXXXXXXXX1")
   # aggregate each level
   aggs <- data.frame()
   for (i in seq_len(length(unit_levels))) {
@@ -71,6 +76,9 @@ agg <- function(df, org, ind) {
   }
 
   # sum over levels (i.e. organizations)
+  print("XXXXXXXXXXXXXXXX2")
+  print(aggs)
+  print("XXXXXXXXXXXXXXXX2")
   aggs <- aggs %>%
     dplyr::group_by(.data$year, .data$ind_id, .data$orgnr) %>%
     dplyr::summarise(var = sum(.data$var),
@@ -80,6 +88,7 @@ agg <- function(df, org, ind) {
     dplyr::ungroup() %>%
     as.data.frame()
 
+  print("YYYYYYYYYYYYYYYY")
   # find diffs between levels (if any, to be placed in undefined orgs)
   diff <- agg_residual(aggs, conf)
 
