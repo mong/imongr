@@ -10,13 +10,9 @@ test_that("Has issue 75 been fixed", {
 
   ind_descr <- readRDS(file = "data/ind.rds")
   org_structure <- readRDS(file = "data/org.rds")
+  all_orgnr <- readRDS(file = "data/all_orgnr.rds")
 
-
+  diabetes <- dplyr::left_join(diabetes, all_orgnr, by = "orgnr")
   testthat::expect_equal_to_reference(agg(diabetes, org_structure, ind_descr), "data/diabetes_agg.rda")
 
 })
-
-#diabetes <- csv_to_df("tests/testthat/data/diabetes_voksne.csv", sep = ";", dec = ",")
-
-#pool <- make_pool()
-#all_orgnr <- get_all_orgnr(pool)
