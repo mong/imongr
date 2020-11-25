@@ -216,7 +216,7 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
   tryCatch(
     withCallingHandlers({
         df <- read.csv(path, header = TRUE, sep = sep, dec = dec,
-                       fileEncoding = encoding)
+                       fileEncoding = encoding, stringsAsFactors = FALSE)
       },
       warning = function(w) {
         alternative_encoding <- setdiff(std_enc, encoding)
@@ -224,7 +224,8 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
                       alternative_encoding, "when reading a csv file",
                       "hopefully recovering from initial warning:\n\t", w))
         df <<- read.csv(path, header = TRUE, sep = sep, dec = dec,
-                        fileEncoding = alternative_encoding)
+                        fileEncoding = alternative_encoding,
+                        stringsAsFactors = FALSE)
         invokeRestart("silent")
       }
       ),
