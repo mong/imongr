@@ -20,6 +20,9 @@ test_that("Has issue 75 been fixed", {
   all_orgnr <- readRDS(file = "data/all_orgnr.rds")
 
   diabetes <- dplyr::left_join(diabetes, all_orgnr, by = "orgnr")
-  testthat::expect_equal_to_reference(agg(diabetes, org_structure, ind_descr), "data/diabetes_agg.rda")
+  testthat::expect_equal_to_reference(diabetes, "data/diabetes.rda")
+  diabetes_agg <- agg(diabetes, org_structure, ind_descr)
+  print(diabetes_agg)
+  testthat::expect_equal_to_reference(diabetes_agg, "data/diabetes_agg.rda")
 
 })
