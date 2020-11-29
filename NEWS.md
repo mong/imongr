@@ -1,3 +1,7 @@
+# imongr 0.14.1
+
+* Revert https://github.com/mong/imongr/commit/144ac9 introduced in release `0.13.0` (aggregating before putting raw data in db)
+
 # imongr 0.14.0
 
 * add (missing) endpoints for 'green' when aggregating levels 
