@@ -22,7 +22,8 @@ test_that("Test agg() with files", {
 
   diabetes <- dplyr::left_join(diabetes, all_orgnr, by = "orgnr")
   testthat::expect_equal_to_reference(diabetes, "data/diabetes.rda")
-  diabetes_agg <- agg(diabetes, org_structure, ind_descr)
+  diabetes_agg <- agg(diabetes, org_structure, ind_descr) %>%
+    dplyr::arrange(orgnr, var)
   testthat::expect_equal_to_reference(diabetes_agg, "data/diabetes_agg.rda")
 
 })
