@@ -3,7 +3,7 @@
 <!-- badges: start -->
 [![Version](https://img.shields.io/github/v/release/mong/imongr?sort=semver)](https://github.com/mong/imongr/releases)
 [![Travis build status](https://travis-ci.org/mong/imongr.svg?branch=master)](https://travis-ci.org/mong/imongr)
-[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/mong/imongr?branch=master&svg=true)](https://ci.appveyor.com/project/mong/imongr)
+[![R build status](https://github.com/mong/imongr/workflows/R-CMD-check/badge.svg)](https://github.com/mong/imongr/actions)
 [![Codecov test coverage](https://codecov.io/gh/mong/imongr/branch/master/graph/badge.svg)](https://codecov.io/gh/mong/imongr?branch=master)
 [![GitHub open issues](https://img.shields.io/github/issues/mong/imongr.svg)](https://github.com/mong/imongr/issues)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
