@@ -1,0 +1,29 @@
+<svg class="logo" height="100%" width="100%" viewBox="0 0 346 400" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <g>
+    <defs>
+      <linearGradient id="MyGradient">
+        <stop offset="0%" stop-color="#009933" />
+        <stop offset="16.5%" stop-color="#33cc33" />
+        <stop offset="50%" stop-color="#009933" />
+        <stop offset="83.5%" stop-color="#33cc33" />
+        <stop offset="100%" stop-color="#009933" />
+      </linearGradient>
+    </defs>
+    <path id="mongr" d="M 23 50 q 50 -90 100 0 q 50 90 100 0 q 50 -90 100 0
+    s 18 18 18 300 q -50 -90 -112 0 q -50 90 -112 0 q -50 -90 -112 0
+    s 0 -282 18 -300" stroke="url(#MyGradient)" stroke-width="10"   fill="url(#MyGradient)" />
+	<path id="i"
+        fill="white" stroke="white" stroke-width="1"
+        d="M 204.00,115.00
+           C 204.00,115.00 204.00,146.00 204.00,146.00
+             204.00,146.00 142.00,146.00 142.00,146.00
+             142.00,146.00 142.00,115.00 142.00,115.00
+             142.00,115.00 204.00,115.00 204.00,115.00 Z
+           M 204.00,158.00
+           C 204.00,158.00 204.00,352.00 204.00,352.00
+             204.00,352.00 142.00,352.00 142.00,352.00
+             142.00,352.00 142.00,158.00 142.00,158.00
+             142.00,158.00 204.00,158.00 204.00,158.00 Z" />
+    Sorry, your browser does not support inline SVG.
+  </g>
+</svg>
