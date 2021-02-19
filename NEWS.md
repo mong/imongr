@@ -1,3 +1,11 @@
+# imongr 0.15.1
+
+* Updated `DESCRIPTION` with release version, updated `NEWS.md`, and removed `.travis.yml`
+
+# imongr 0.15.0
+
+* Use Github actions instead of Travis and Appveyor
+
 # imongr 0.14.1
 
 * Revert https://github.com/mong/imongr/commit/144ac9 introduced in release `0.13.0` (aggregating before putting raw data in db)
