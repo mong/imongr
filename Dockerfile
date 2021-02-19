@@ -1,16 +1,17 @@
-FROM hnskde/imongr-base-r
+FROM hnskde/imongr-base-r:1.2.0
 
 LABEL maintainer "Are Edvardsen <are.edvardsen@helse-nord.no>"
 LABEL no.mongr.cd.enable="true"
 
 ## add package tarball
+# hadolint ignore=DL3010
 COPY *.tar.gz .
 
 ## install package
-RUN R CMD INSTALL --clean *.tar.gz
+RUN R CMD INSTALL --clean ./*.tar.gz
 
 ## clean up
-RUN rm *.tar.gz
+RUN rm ./*.tar.gz
 
 EXPOSE 3838
 
