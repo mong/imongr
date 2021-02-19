@@ -49,7 +49,6 @@ after_success:
     fi
   - rm -rf imongr.Rcheck
   - Rscript -e 'pkgdown::build_site()'
-  - wget https://raw.githubusercontent.com/mong/scripts/master/travis/docker_push
 
 deploy:
   # our site to gh_pages
@@ -60,11 +59,4 @@ deploy:
     local_dir: docs
     on:
       branch: master
-      condition: $TRAVIS_R_VERSION_STRING == "release"
-  # our image to dockerhub
-  - provider: script
-    script: bash docker_push
-    skip_cleanup: true
-    on:
-      all_branches: true
       condition: $TRAVIS_R_VERSION_STRING == "release"
