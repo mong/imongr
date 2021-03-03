@@ -11,10 +11,27 @@ app_ui <- function() {
 
   shiny::tagList(
     shinyjs::useShinyjs(),
+    shiny::tags$head(
+      shiny::tags$style(type = "text/css",
+                        paste0("body {",
+                               "font-family: Arial, Helvetica, sans-serif;",
+                               "color: #3b3b3b;}")),
+      shiny::tags$style(type = "text/css",
+                        paste0(".navbar-default { background-color: #f2f2f2;}")),
+      shiny::tags$style(type = "text/css",
+                        paste0(".navbar-default .navbar-brand {",
+                               "color: #1b1b1b;}")),
+      shiny::tags$style(type = "text/css",
+                        paste0(".navbar-default .navbar-nav > li > a {",
+                               "color: #1b1b1b;}")),
+      shiny::tags$style(type = "text/css",
+                        paste0(".navbar-default .navbar-nav > .active > a:focus {",
+                               "color: #000000;",
+                               "background-color: #ffffff;}"))
+    ),
     shiny::navbarPage(
       title = shiny::div(app_title),
       windowTitle = app_title,
-      theme = "www/bootstrap.css",
       id = "tabs",
 
       shiny::tabPanel(value = "profile",
