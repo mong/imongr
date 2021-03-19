@@ -29,15 +29,8 @@ app_ui <- function() {
                                "color: #000000;",
                                "background-color: #ffffff;}")),
       shiny::tags$style(type = "text/css",
-                        paste0(".navbar-brand  a {",
-                               "color: #18bc9c; text-decoration: none;}")),
-      shiny::tags$style(type = "text/css",
                         paste0(".navbar-brand  a:hover, .navbar-brand  a:focus {",
                                "text-decoration: underline;}")),
-      shiny::tags$style(type = "text/css",
-                        paste0(".container-fluid .navbar-brand:hover,.container-fluid .navbar-brand:focus {",
-                               "color: #18bc9c;}")),
-
     ),
     shiny::navbarPage(
       title = shiny::div(app_title),
