@@ -29,6 +29,7 @@ jobs:
           do
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
+          sudo apt-get install libharfbuzz-dev libfribidi-dev libcurl4-openssl-dev
       - name: Install and Build 🔧
         run: |
           Rscript -e 'install.packages(c("roxygen2", "pkgdown"))'
