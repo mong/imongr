@@ -3,16 +3,16 @@
 #   \code{grant all privileges on [DATABASE].* to '[USER]'@'localhost';}
 # where [DATABASE] and [USER] correspond to whatever given in imongr config:
 #   \code{conf <- imongr::get_config()}
-# When run at Travis build servers [USER] must be set to 'travis' and with
+# When run at Github Actions build servers [USER] must be set to 'actions' and with
 # an empty password (as also assumed in the above localhost example). See also
-# .travis.yml
+# .github/workflows/R-CMD-check.yml
 
-# Database infrastructure is only guaranteed at Travis and our own dev env.
+# Database infrastructure is only guaranteed at Github Actions and our own dev env.
 # Tests running on other environments should be skipped:
 check_db <- function(is_test_that = TRUE) {
   if (Sys.getenv("IMONGR_CONTEXT") == "DEV") {
     NULL
-  } else if (Sys.getenv("TRAVIS") == "true") {
+  } else if (Sys.getenv("CI") == "true") {
     NULL
   } else {
     if (is_test_that) {
@@ -257,9 +257,9 @@ if (is.null(check_db(is_test_that = FALSE))) {
   )
 }
 
-## if db dropped on travis the following coverage will fail...
+## if db dropped on Github Actions the following coverage will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
-    Sys.getenv("TRAVIS") != "true") {
+    Sys.getenv("CI") != "true") {
   pool::dbExecute(pool, "drop database testdb;")
 }
 ## finally, drain pool

@@ -39,12 +39,12 @@ env_user_groups <- Sys.getenv("SHINYPROXY_USERGROUPS")
 Sys.setenv(SHINYPROXY_USERNAME = "imongr@mongr.no")
 Sys.setenv(SHINYPROXY_USERGROUPS = "PROVIDER")
 
-# Database infrastructure is only guaranteed at Travis and our own dev env.
-# Tests running on other environments should be skipped
+# Database infrastructure is only guaranteed at Github Actions and
+# our own dev env. Tests running on other environments should be skipped.
 check_db <- function(is_test_that = TRUE) {
   if (Sys.getenv("IMONGR_CONTEXT") == "DEV") {
     NULL
-  } else if (Sys.getenv("TRAVIS") == "true") {
+  } else if (Sys.getenv("CI") == "true") {
     NULL
   } else {
     if (is_test_that) {
@@ -191,9 +191,9 @@ if (is.null(check_db(is_test_that = FALSE))) {
                         paste(names(conf$db$tab), collapse = ", "), ";")
   )
 }
-## if db dropped on travis the coverage reporting will fail...
+## if db dropped on Github Actions the coverage reporting will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
-    Sys.getenv("TRAVIS") != "true") {
+    Sys.getenv("CI") != "true") {
   pool::dbExecute(pool, "drop database testdb;")
 }
 ## drain pool
