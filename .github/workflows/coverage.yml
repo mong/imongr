@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      IMONGR_DB_HOST: "127.0.0.1"
+      IMONGR_DB_NAME: "testdb"
+      IMONGR_DB_USER: "travis"
+      IMONGR_DB_PASS: ""
     steps:
       - uses: actions/checkout@v2
 
