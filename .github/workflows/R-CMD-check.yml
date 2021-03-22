@@ -32,11 +32,6 @@ jobs:
       IMONGR_DB_NAME: "testdb"
       IMONGR_DB_USER: "travis"
       IMONGR_DB_PASS: ""
-    services:
-      mariadb:
-        image: mariadb:latest
-        ports:
-          - 3306
     steps:
       - uses: actions/checkout@v2
 
@@ -80,6 +75,7 @@ jobs:
         shell: Rscript {0}
       - name: Create db
         run: |
+          sudo service mysql start
           mysql -e "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8' COLLATE = 'utf8_danish_ci';"
       - name: Check
         env:
