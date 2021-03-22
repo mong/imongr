@@ -74,7 +74,9 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
-
+      - name: Create db
+        run: |
+          mysql -e "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8' COLLATE = 'utf8_danish_ci';"
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false

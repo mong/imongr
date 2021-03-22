@@ -53,6 +53,10 @@ jobs:
           remotes::install_cran("covr")
         shell: Rscript {0}
 
+      - name: Create db
+        run: |
+          mysql -e "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8' COLLATE = 'utf8_danish_ci';"
+
       - name: Test coverage
         run: covr::codecov()
         shell: Rscript {0}
