@@ -32,7 +32,11 @@ jobs:
       IMONGR_DB_NAME: "testdb"
       IMONGR_DB_USER: "travis"
       IMONGR_DB_PASS: ""
-
+    services:
+      mariadb:
+        image: mariadb:latest
+        ports:
+          - 3306
     steps:
       - uses: actions/checkout@v2
 
