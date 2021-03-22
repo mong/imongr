@@ -60,6 +60,7 @@ jobs:
 
       - name: Create db
         run: |
+          sudo service mysql start
           mysql -e "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8' COLLATE = 'utf8_danish_ci';"
 
       - name: Test coverage
