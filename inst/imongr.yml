@@ -240,9 +240,15 @@ upload:
       registerets navn på enheten knyttet til hendelsen
     ReshId: >
       registerets numeriske ID (ofte RESH) på enheten knyttet til hendelsen
+    context: >
+      definisjon av hvordan orgnr (se under) er brukt for å kategorisere data.
+      Hvis orgnr refererer til behandlende enhet (sykehus, hf eller rhf) skal
+      verdien settes til <i>caregiver</i>. Hvis orgnr refererer til bo-område
+      (helseforetaket som har pasientens hjemmeadressen i sitt opptaksområde)
+      skal verdien settes til <i>recident</i>
     orgnr: >
-      organisasjonsnummeret til sykehus/HF knyttet til hendelsen, hentet fra
-      tilsendt fil SykehusNavnStruktur
+      organisasjonsnummeret til sykehuset, hf-et eller rhf-et som er knyttet
+      til hendelsen, enten som behandlende enhet eller som opptaksområde
     var: >
       en binær verdi (0/1) per hendelse for fremstilling av andel måloppnåelse
       eller en numerisk variabel for fremstilling av gjennomsnitt eller median.
