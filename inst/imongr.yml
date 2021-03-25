@@ -82,9 +82,9 @@ db:
       - dg
     data:
       insert:
-      - context
       - delivery_id
       - unit_level
+      - context
       - orgnr
       - year
       - var
@@ -196,6 +196,7 @@ upload:
   fail: Kontakt SKDE!
   ok: Datasettet er klart til å sendes inn
   data_var_ind:
+  - 3
   - 4
   - 5
   - 6
