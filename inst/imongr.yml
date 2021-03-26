@@ -73,6 +73,7 @@ db:
       - ind_id
       - unit_level
       - unit_name
+      - context
       - orgnr
       - year
       - denominator
@@ -277,6 +278,7 @@ aggregate:
   - 5
   - 6
   - 7
+  - 8
   unit_level:
     hospital:
       name: hospital

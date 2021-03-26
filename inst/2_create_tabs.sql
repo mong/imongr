@@ -136,6 +136,7 @@ CREATE TABLE IF NOT EXISTS `agg_data` (
   `ind_id` varchar(63) COLLATE utf8_danish_ci NOT NULL,
   `unit_level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
   `unit_name` varchar(255) COLLATE utf8_danish_ci NOT NULL,
+  `context` varchar(127) COLLATE utf8_danish_ci NOT NULL,
   `orgnr` int(10) unsigned NOT NULL,
   `year` smallint(5) unsigned NOT NULL,
   `denominator` int(10) unsigned NOT NULL,
