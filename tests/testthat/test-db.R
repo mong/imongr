@@ -12,7 +12,7 @@
 check_db <- function(is_test_that = TRUE) {
   if (Sys.getenv("IMONGR_CONTEXT") == "DEV") {
     NULL
-  } else if (Sys.getenv("TRAVIS") == "true") {
+  } else if (Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") == "true") {
     NULL
   } else {
     if (is_test_that) {
