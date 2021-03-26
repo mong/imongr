@@ -50,6 +50,7 @@ jobs:
           else
             echo "GITHUB_ACTIONS_RUN_DB_UNIT_TESTS=false" >> $GITHUB_ENV
           fi
+
       - name: Set up MySQL, ubuntu only
         if: runner.os == 'Linux'
         run: |
