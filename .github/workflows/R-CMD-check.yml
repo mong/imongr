@@ -54,6 +54,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE IF NOT EXISTS testdb;' -uroot -proot
 
       - name: Query dependencies
         run: |
