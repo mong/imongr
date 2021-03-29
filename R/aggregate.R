@@ -96,7 +96,7 @@ agg <- function(df, org, ind) {
   # DANGER! As of the Sep 15 2020 project meeting, pre-aggregate on short_name
   # DANGER! A less risky way of proper handling of 'groups' should be applied
   # DANGER! at a later stage
-  warning("Pre-aggregating by short name")
+  message("Pre-aggregating by short name")
   message(paste("  ...rows before pre-aggregation:", dim(df)[1]))
   aggs <- aggs %>%
     dplyr::group_by(.data$year, .data$ind_id, .data$unit_level,
