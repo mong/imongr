@@ -13,12 +13,22 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_ACTIONS_RUN_DB_UNIT_TESTS: true
+      IMONGR_DB_HOST: "localhost"
+      IMONGR_DB_NAME: "testdb"
+      IMONGR_DB_USER: "root"
+      IMONGR_DB_PASS: "root"
     steps:
       - uses: actions/checkout@v2
 
       - uses: r-lib/actions/setup-r@v1
 
       - uses: r-lib/actions/setup-pandoc@v1
+
+      - name: Set up MySQL, ubuntu only
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE IF NOT EXISTS testdb;' -uroot -proot
 
       - name: Query dependencies
         run: |
@@ -35,7 +45,6 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
       - name: Install system dependencies Linux
-        if: runner.os == 'Linux'
         run: |
           while read -r cmd
           do
