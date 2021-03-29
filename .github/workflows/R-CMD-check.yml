@@ -28,10 +28,7 @@ jobs:
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
-      IMONGR_DB_HOST: "127.0.0.1"
-      IMONGR_DB_NAME: "testdb"
-      IMONGR_DB_USER: "travis"
-      IMONGR_DB_PASS: ""
+
     steps:
       - uses: actions/checkout@v2
 
@@ -40,6 +37,25 @@ jobs:
           r-version: ${{ matrix.config.r }}
 
       - uses: r-lib/actions/setup-pandoc@v1
+
+      - name: Db unit tests in ubuntu/linux only
+        if: runner.os != 'Windows'
+        run: |
+          if [[ ${{ runner.os }} == Linux ]]; then
+            echo "GITHUB_ACTIONS_RUN_DB_UNIT_TESTS=true" >> $GITHUB_ENV
+            echo "IMONGR_DB_HOST=localhost" >> $GITHUB_ENV
+            echo "IMONGR_DB_NAME=testdb" >> $GITHUB_ENV
+            echo "IMONGR_DB_USER=root" >> $GITHUB_ENV
+            echo "IMONGR_DB_PASS=root" >> $GITHUB_ENV
+          else
+            echo "GITHUB_ACTIONS_RUN_DB_UNIT_TESTS=false" >> $GITHUB_ENV
+          fi
+
+      - name: Set up MySQL, ubuntu only
+        if: runner.os == 'Linux'
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE IF NOT EXISTS testdb;' -uroot -proot
 
       - name: Query dependencies
         run: |
@@ -73,10 +89,7 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
-      - name: Create db
-        run: |
-          sudo service mysql start
-          mysql -e "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8' COLLATE = 'utf8_danish_ci';"
+
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
