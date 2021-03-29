@@ -12,7 +12,7 @@
 check_db <- function(is_test_that = TRUE) {
   if (Sys.getenv("IMONGR_CONTEXT") == "DEV") {
     NULL
-  } else if (Sys.getenv("CI") == "true") {
+  } else if (Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") == "true") {
     NULL
   } else {
     if (is_test_that) {
@@ -259,7 +259,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
 
 ## if db dropped on Github Actions the following coverage will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
-    Sys.getenv("CI") != "true") {
+    Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
   pool::dbExecute(pool, "drop database testdb;")
 }
 ## finally, drain pool
