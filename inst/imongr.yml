@@ -60,6 +60,8 @@ app_text:
       Last opp nye data til sykehusviseren
     download: |-
       Se på og last ned data fra Sykehusviseren
+    medfield: |-
+      Angi fagområde(r) for registrene
     adminer: |-
       Administrer data
 db:

@@ -133,6 +133,21 @@ app_ui <- function() {
                       )
       ),
       shiny::tabPanel(
+        value = "medfield",
+        shiny::span("Fagområder",
+                    title = conf$app_text$tooltip$medfield,
+                    id = "medfield"),
+        shiny::sidebarLayout(
+          shiny::sidebarPanel(
+            width = 3,
+            shiny::uiOutput("select_medfield_registry")
+          ),
+          shiny::mainPanel(
+            shiny::uiOutput("registry_medfield_header")
+          )
+        )
+      ),
+      shiny::tabPanel(
         value = "adminer",
         shiny::span("Adminer",
                     title = conf$app_text$tooltip$adminer,

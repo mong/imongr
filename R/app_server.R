@@ -30,6 +30,7 @@ app_server <- function(input, output, session) {
   # show/hide tabs by user profile
   shiny::hideTab("tabs", target = "upload")
   shiny::hideTab("tabs", target = "download")
+  shiny::hideTab("tabs", target = "medfield")
   shiny::hideTab("tabs", target = "adminer")
   shiny::hideTab("tabs", target = "mine_field")
   if (valid_user && conf$role$provider %in% igrs) {
@@ -37,6 +38,7 @@ app_server <- function(input, output, session) {
     shiny::showTab("tabs", target = "download")
   }
   if (valid_user && conf$role$manager %in% igrs) {
+    shiny::showTab("tabs", target = "medfield")
     shiny::showTab("tabs", target = "adminer")
     shiny::showTab("tabs", target = "mine_field")
   }
@@ -258,6 +260,16 @@ app_server <- function(input, output, session) {
     DT::dataTableOutput("db_table")
   )
 
+  # registry medfields
+  output$select_medfield_registry <- shiny::renderUI({
+    select_registry_ui(pool, conf, input_id = "medfield_registry")
+  })
+  output$registry_medfield_header <- shiny::renderText({
+    paste0("<h2>", "Angi fagområder for", " <i>",
+           get_registry_name(pool, shiny::req(input$medfield_registry),
+                             full_name = TRUE),
+           "</i>:</h2>")
+  })
 
   # our db admin interface
   admin_url <- paste0(adminer_url(), "/?",
