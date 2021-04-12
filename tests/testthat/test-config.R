@@ -21,3 +21,4 @@ test_that("local config can be made from a list in session", {
 
 # clean up
 file.remove(conf_file)
+file.remove(paste0(tmpdir, "/", "_imongr.yml"))
