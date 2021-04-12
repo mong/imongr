@@ -120,6 +120,16 @@ db:
       - short_description
       - long_description
       - registry_id
+    registry_medfield:
+      insert:
+      - id
+      - registry_id
+      - medfield_id
+    medfield:
+      insert:
+      - id
+      - name
+      - full_name
     registry:
       insert:
       - id

@@ -105,6 +105,10 @@ test_that("database can be populated with test data", {
                          df = imongr::user_registry))
   expect_true(insert_table(pool, table = "delivery", df = imongr::delivery))
   expect_true(insert_table(pool, table = "data", df = imongr::data))
+  expect_true(insert_table(pool, table = "medfield",
+                           df = imongr::medfield))
+  expect_true(insert_table(pool, table = "registry_medfield",
+                           df = imongr::registry_medfield))
 })
 
 test_that("agg_data can be populated from existing (test) data", {
