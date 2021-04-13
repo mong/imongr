@@ -16,7 +16,8 @@ app_server <- function(input, output, session) {
   igrs <- get_user_groups()
   conf <- get_config()
   pool <- make_pool()
-  rv <- shiny::reactiveValues(inv_data = 0)
+  rv <- shiny::reactiveValues(inv_data = 0,
+                              medfield_summary = character())
   known_user <- nrow(get_all_user_data(pool)) > 0
   valid_user <- nrow(get_user_data(pool)) > 0
 
@@ -261,14 +262,52 @@ app_server <- function(input, output, session) {
   )
 
   # registry medfields
+  medfield_data <- get_table(pool, "medfield")
+
+  rv$medfield_summary <- medfield_summary_text_ui(pool, conf, medfield_data)
+
+  shiny::observeEvent(input$update_medfield, {
+    registry_medfield_update <- data.frame(
+      registry_id = rep(input$medfield_registry,
+                        length(input$select_medfield)),
+      medfield_id = input$select_medfield
+    )
+    update_registry_medfield(pool, registry_medfield_update)
+    rv$medfield_summary <- medfield_summary_text_ui(pool, conf, medfield_data)
+  })
+
   output$select_medfield_registry <- shiny::renderUI({
     select_registry_ui(pool, conf, input_id = "medfield_registry")
   })
+  output$select_registry_medfield <- shiny::renderUI({
+    shiny::req(input$medfield_registry)
+    if (dim(medfield_data)[1] > 0) {
+      all_medfield <- medfield_data$id
+      names(all_medfield) <- medfield_data$name
+    } else {
+      all_medfield <- list(`Not defined!` = 0)
+    }
+    medfield <- get_registry_medfield(pool, input$medfield_registry)
+    if (!is.null(dim(medfield))) {
+      current_medfield <- medfield$medfield_id
+      #names(current_medfield) <- medfield$name
+    } else {
+      current_medfield <- NULL
+    }
+    shiny::selectInput(inputId = "select_medfield",
+                       label = "Velg fagområde(r):",
+                       choices = all_medfield,
+                       selected = current_medfield,
+                       multiple = TRUE)
+  })
   output$registry_medfield_header <- shiny::renderText({
-    paste0("<h2>", "Angi fagområder for", " <i>",
+    paste0("<h2>", conf$medfield$text$heading, " <i>",
            get_registry_name(pool, shiny::req(input$medfield_registry),
                              full_name = TRUE),
-           "</i>:</h2>")
+           "</i>:</h2><br>", conf$medfield$text$body)
+  })
+  output$registry_medfield_summary <- shiny::renderText({
+    rv$medfield_summary
   })
 
   # our db admin interface

@@ -16,6 +16,8 @@
 \alias{get_all_orgnr}
 \alias{get_user}
 \alias{get_registry_indicators}
+\alias{get_registry_medfield}
+\alias{get_medfield_registry}
 \alias{get_all_user_data}
 \alias{get_user_deliveries}
 \alias{get_indicators_registry}
@@ -55,6 +57,10 @@ get_all_orgnr(pool, include_short_name = FALSE)
 get_user(pool, sample = NA)
 
 get_registry_indicators(pool, registry)
+
+get_registry_medfield(pool, registry)
+
+get_medfield_registry(pool, medfield)
 }
 \arguments{
 \item{pool}{a database connection pool object}

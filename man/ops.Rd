@@ -13,6 +13,7 @@
 \alias{agg_all_data}
 \alias{clean_agg_data}
 \alias{create_imongr_user}
+\alias{update_registry_medfield}
 \title{Functions for data operations in imongr}
 \usage{
 delivery_exist_in_db(pool, df)
@@ -34,6 +35,8 @@ agg_all_data(pool)
 clean_agg_data(pool)
 
 create_imongr_user(pool, df)
+
+update_registry_medfield(pool, df)
 }
 \arguments{
 \item{pool}{Database connection pool object}

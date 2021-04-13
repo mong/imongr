@@ -140,10 +140,14 @@ app_ui <- function() {
         shiny::sidebarLayout(
           shiny::sidebarPanel(
             width = 3,
-            shiny::uiOutput("select_medfield_registry")
+            shiny::uiOutput("select_medfield_registry"),
+            shiny::uiOutput("select_registry_medfield"),
+            shiny::actionButton("update_medfield", label = "Oppdatér",
+                                icon = shiny::icon("paper-plane"))
           ),
           shiny::mainPanel(
-            shiny::uiOutput("registry_medfield_header")
+            shiny::uiOutput("registry_medfield_header"),
+            shiny::uiOutput("registry_medfield_summary")
           )
         )
       ),

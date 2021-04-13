@@ -7,6 +7,7 @@
 #' @aliases delivery_exist_in_db duplicate_delivery retire_user_deliveries
 #' delete_indicator_data delete_registry_data delete_agg_data insert_data
 #' insert_agg_data agg_all_data clean_agg_data create_imongr_user
+#' update_registry_medfield
 NULL
 
 
@@ -217,4 +218,20 @@ create_imongr_user <- function(pool, df) {
     msg <- insert_table(pool, "user", df)
     return(msg)
   }
+}
+
+#' @rdname ops
+#' @export
+update_registry_medfield <- function(pool, df) {
+
+  query <- paste0("
+DELETE FROM
+  registry_medfield
+WHERE
+  registry_id IN (", paste0(df$registry_id, collapse = ", "), ");")
+
+  pool::dbExecute(pool, query)
+
+  pool::dbWriteTable(pool, "registry_medfield", df, append = TRUE,
+                     row.names = FALSE)
 }

@@ -274,6 +274,17 @@ upload:
     submit:
       warning: >
         Merk: nye data vil overskrive alle eksisterende indikatorer for
+medfield:
+  text:
+    heading: >
+      Angi fagområder for
+    body: >
+      Bruk menyen til venstre og velg ønskede medisinske fagoråder for hvert
+      enkelt register. Trykk deretter 'Oppdatér'.
+    summary: >
+      Alle eksisterende fagoråder med tilhørende registre
+    missing: >
+      Ingen registre tilhørende dette fagområdet.
 aggregate:
   data_var_ind:
   - 3
