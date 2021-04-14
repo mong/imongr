@@ -12,25 +12,31 @@ app_ui <- function() {
   shiny::tagList(
     shinyjs::useShinyjs(),
     shiny::tags$head(
-      shiny::tags$style(type = "text/css",
-                        paste0("body {",
-                               "font-family: Arial, Helvetica, sans-serif;",
-                               "color: #3b3b3b;}")),
-      shiny::tags$style(type = "text/css",
-                        paste0(".navbar-default { background-color: #f2f2f2;}")),
-      shiny::tags$style(type = "text/css",
-                        paste0(".navbar-default .navbar-brand {",
-                               "color: #1b1b1b;line-height: 1;}")),
-      shiny::tags$style(type = "text/css",
-                        paste0(".navbar-default .navbar-nav > li > a {",
-                               "color: #1b1b1b;}")),
-      shiny::tags$style(type = "text/css",
-                        paste0(".navbar-default .navbar-nav > .active > a:focus {",
-                               "color: #000000;",
-                               "background-color: #ffffff;}")),
-      shiny::tags$style(type = "text/css",
-                        paste0(".navbar-brand  a:hover, .navbar-brand  a:focus {",
-                               "text-decoration: underline;}")),
+      shiny::tags$style(
+        type = "text/css",
+        paste0("body {",
+               "font-family: Arial, Helvetica, sans-serif;",
+               "color: #3b3b3b;}")),
+      shiny::tags$style(
+        type = "text/css",
+        paste0(".navbar-default { background-color: #f2f2f2;}")),
+      shiny::tags$style(
+        type = "text/css",
+        paste0(".navbar-default .navbar-brand {",
+               "color: #1b1b1b;line-height: 1;}")),
+      shiny::tags$style(
+        type = "text/css",
+        paste0(".navbar-default .navbar-nav > li > a {",
+               "color: #1b1b1b;}")),
+      shiny::tags$style(
+        type = "text/css",
+        paste0(".navbar-default .navbar-nav > .active > a:focus {",
+               "color: #000000;",
+               "background-color: #ffffff;}")),
+      shiny::tags$style(
+        type = "text/css",
+        paste0(".navbar-brand  a:hover, .navbar-brand  a:focus {",
+               "text-decoration: underline;}")),
     ),
     shiny::navbarPage(
       title = shiny::div(app_title),

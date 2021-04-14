@@ -128,8 +128,8 @@ test_that("text for medfield summary is properly provided", {
   df <- imongr::medfield
   expect_equal(class(medfield_summary_text_ui(pool, conf, df)),
                "character")
-  df <- rbind(df, data.frame(id=100, name="anon",
-                             full_name="medfield with no registries"))
+  df <- rbind(df, data.frame(id = 100, name = "anon",
+                             full_name = "medfield with no registries"))
   expect_equal(class(medfield_summary_text_ui(pool, conf, df)),
                "character")
 })

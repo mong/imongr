@@ -290,7 +290,6 @@ app_server <- function(input, output, session) {
     medfield <- get_registry_medfield(pool, input$medfield_registry)
     if (!is.null(dim(medfield))) {
       current_medfield <- medfield$medfield_id
-      #names(current_medfield) <- medfield$name
     } else {
       current_medfield <- NULL
     }
