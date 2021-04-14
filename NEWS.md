@@ -1,3 +1,8 @@
+# imongr 0.16.0
+
+* Extended data model to cover registry medical fields (topics) #101
+* Added GUI for managing registry and medical field relations
+
 # imongr 0.15.1
 
 * Updated `DESCRIPTION` with release version, updated `NEWS.md`, and removed `.travis.yml`
