@@ -145,19 +145,21 @@ var_doc_ui <- function(conf) {
 medfield_summary_text_ui <- function(pool, conf, df) {
 
   if (dim(df)[1] > 0) {
-    txt <- paste0("<h2>", conf$medfield$text$summary, "</h2><br>")
+    txt <- paste0("<h2>", conf$medfield$text$summary, "</h2>\n")
     for (i in seq_len(length(df$id))) {
-      txt <- paste0(txt, "<h3>", df$name[i], "</h3><br>")
+      txt <- paste0(txt, "<h3>", df$full_name[i], "</h3>\n")
       regs <- get_medfield_registry(pool, df$id[i])
       if (dim(regs)[1] > 0) {
-        regtxt <- paste(get_registry_name(pool,
-                                          registry = regs$registry_id,
-                                          full_name = TRUE),
-                        collapse = ", ")
+        regtxt <- paste0("<ul>\n\t<li>",
+                         paste(get_registry_name(pool,
+                                                 registry = regs$registry_id,
+                                                 full_name = FALSE),
+                               collapse = "</li>\n\t<li>"),
+                         "</li>\n</ul>")
       } else {
         regtxt <- conf$medfield$text$missing
       }
-      txt <- paste0(txt, regtxt, "<br>")
+      txt <- paste0(txt, regtxt)
     }
     txt
   } else {
