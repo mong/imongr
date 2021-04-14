@@ -282,7 +282,7 @@ medfield:
       Bruk menyen til venstre og velg ønskede medisinske fagoråder for hvert
       enkelt register. Trykk deretter 'Oppdatér'.
     summary: >
-      Alle eksisterende fagoråder med tilhørende registre
+      Alle eksisterende fagområder med tilhørende registre
     missing: >
       Ingen registre tilhørende dette fagområdet.
 aggregate:
