@@ -11,7 +11,7 @@ env_user_groups <- Sys.getenv("SHINYPROXY_USERGROUPS")
 create_config()
 
 
-# Database infrastructure is only guaranteed at Github Actions and 
+# Database infrastructure is only guaranteed at Github Actions and
 # our own dev env. Tests running on other environments should be skipped.
 check_db <- function(is_test_that = TRUE) {
   if (Sys.getenv("IMONGR_CONTEXT") == "DEV") {

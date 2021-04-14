@@ -232,6 +232,22 @@ test_that("aggregated data can be fetched from test database", {
   expect_equal(class(get_table(pool, "agg_data")), "data.frame")
 })
 
+test_that("medfields of registries can be fetched", {
+  check_db()
+  expect_equal(class(get_registry_medfield(pool, 1)), "data.frame")
+})
+
+test_that("registries medfields can be fetched", {
+  check_db()
+  expect_equal(class(get_medfield_registry(pool, 1)), "data.frame")
+})
+
+test_that("registry-medfield tab can be updated", {
+  check_db()
+  df <- imongr::registry_medfield
+  expect_invisible(update_registry_medfield(pool, df))
+})
+
 test_that("get_table wrapper function do work", {
   check_db()
   expect_equal(class(get_table(pool, "user")), "data.frame")

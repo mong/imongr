@@ -122,6 +122,18 @@ test_that("text for var doc ui is provided", {
   expect_equal(class(var_doc_ui(conf)), "character")
 })
 
+test_that("text for medfield summary is properly provided", {
+  check_db()
+  expect_null(medfield_summary_text_ui(pool, conf, data.frame()))
+  df <- imongr::medfield
+  expect_equal(class(medfield_summary_text_ui(pool, conf, df)),
+               "character")
+  df <- rbind(df, data.frame(id=100, name="anon",
+                             full_name="medfield with no registries"))
+  expect_equal(class(medfield_summary_text_ui(pool, conf, df)),
+               "character")
+})
+
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
