@@ -5,7 +5,7 @@ LABEL no.mongr.cd.enable="true"
 
 ## add package tarball
 # hadolint ignore=DL3010
-COPY *.tar.gz .
+COPY *.tar.gz /.
 
 ## install package
 RUN R CMD INSTALL --clean ./*.tar.gz
