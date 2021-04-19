@@ -10,10 +10,10 @@ WORKDIR /app/R
 COPY *.tar.gz .
 
 ## install package
-RUN R CMD INSTALL --clean *.tar.gz
+RUN R CMD INSTALL --clean ./*.tar.gz
 
 ## clean up
-RUN rm *.tar.gz
+RUN rm ./*.tar.gz
 
 EXPOSE 3838
 
