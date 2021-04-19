@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.15.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.16.0</span>
       </span>
     </div>
 
@@ -93,23 +93,7 @@
 <div id="development" class="section level2">
 <h2 class="hasAnchor">
 <a href="#development" class="anchor"></a>Development</h2>
-<div id="first-time-setup" class="section level3">
-<h3 class="hasAnchor">
-<a href="#first-time-setup" class="anchor"></a>First time setup</h3>
-<ol>
-<li>Fire up docker-compose (<code>docker-compose up</code>)</li>
-<li>Enter <em>RStudio</em> on <a href="http://localhost:8787/" class="uri">http://localhost:8787/</a>
-</li>
-<li>Set up <code>imongr</code> inside docker. Either do <code>git clone git@github.com:mong/imongr</code> and create new project based on folder, or create new project based on git repository. Dependencies can be installed by first install <code>remotes</code> (<code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("remotes")</a></code>) and then install <code>imongr</code> from <code>github</code> (<code><a href="https://remotes.r-lib.org/reference/install_github.html">remotes::install_github("mong/imongr")</a></code>).</li>
-<li>Define user, groups etc.</li>
-</ol>
-<pre><code><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv(SHINYPROXY_USERNAME="imongr@mongr.no")
-Sys.setenv(SHINYPROXY_USERGROUPS="MANAGER,PROVIDER")</a></code></pre>
-<ol>
-<li>Download the current version of the database from <a href="https://mongr.no/imongr/app_direct/imongr/" class="uri">https://mongr.no/imongr/app_direct/imongr/</a> (Adminer, Export, output gzip, Format SQL).</li>
-<li>Fire up <code>imongr</code> (<code><a href="reference/run_app.html">imongr::run_app()</a></code>) and import current version of the database (Adminer, Import, Execute).</li>
-</ol>
-</div>
+<p>See <a href="https://mong.github.io/mong/#/utvikling">mong documentation</a></p>
 </div>
 <div id="ethics" class="section level2">
 <h2 class="hasAnchor">
@@ -154,7 +138,6 @@ Sys.setenv(SHINYPROXY_USERGROUPS="MANAGER,PROVIDER")</a></code></pre>
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/mong/imongr/releases"><img src="https://img.shields.io/github/v/release/mong/imongr?sort=semver" alt="Version"></a></li>
-<li><a href="https://travis-ci.org/mong/imongr"><img src="https://travis-ci.org/mong/imongr.svg?branch=master" alt="Travis build status"></a></li>
 <li><a href="https://github.com/mong/imongr/actions"><img src="https://github.com/mong/imongr/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
 <li><a href="https://codecov.io/gh/mong/imongr?branch=master"><img src="https://codecov.io/gh/mong/imongr/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://github.com/mong/imongr/issues"><img src="https://img.shields.io/github/issues/mong/imongr.svg" alt="GitHub open issues"></a></li>
