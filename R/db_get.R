@@ -23,6 +23,7 @@
 #' get_user_registry_select get_user_latest_delivery_id get_registry_data
 #' get_indicators_registryget_registry_ind get_registry_name get_org_name
 #' get_flat_org get_all_orgnr get_user get_registry_indicators
+#' get_registry_medfield get_medfield_registry
 NULL
 
 
@@ -271,7 +272,7 @@ WHERE
 #' @export
 get_registry_name <- function(pool, registry, full_name = FALSE) {
 
-  if (missing(registry) | registry == "") {
+  if (missing(registry) | paste(registry, collapse = "") == "") {
     return(character())
   }
 
@@ -282,7 +283,7 @@ SELECT
 FROM
   registry
 WHERE
-  id=", registry, ";")
+  id IN (", paste(registry, collapse = ", "), ");")
 
   if (full_name) {
     pool::dbGetQuery(pool, query)$full_name
@@ -435,6 +436,44 @@ FROM
   ind
 WHERE
   registry_id=", registry, ";"
+  )
+
+  pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname db_get
+#' @export
+get_registry_medfield <- function(pool, registry) {
+
+  query <- paste0("
+SELECT
+  mr.medfield_id,
+  m.name,
+  m.full_name
+FROM
+  registry_medfield mr
+LEFT JOIN medfield m ON
+  mr.medfield_id=m.id
+WHERE
+  mr.registry_id=", registry, ";"
+  )
+
+  pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname db_get
+#' @export
+get_medfield_registry <- function(pool, medfield) {
+
+  query <- paste0("
+SELECT
+  DISTINCT(registry_id)
+FROM
+  registry_medfield
+WHERE
+  medfield_id=", medfield, ";"
   )
 
   pool::dbGetQuery(pool, query)

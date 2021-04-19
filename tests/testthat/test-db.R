@@ -3,11 +3,12 @@
 #   \code{grant all privileges on [DATABASE].* to '[USER]'@'localhost';}
 # where [DATABASE] and [USER] correspond to whatever given in imongr config:
 #   \code{conf <- imongr::get_config()}
-# When run at Github Actions build servers [USER] must be set to 'actions' and with
-# an empty password (as also assumed in the above localhost example). See also
-# .github/workflows/R-CMD-check.yml
+# When run at Github Actions build servers [USER] must be set to 'actions' and
+# with an empty password (as also assumed in the above localhost example).
+# See also .github/workflows/R-CMD-check.yml
 
-# Database infrastructure is only guaranteed at Github Actions and our own dev env.
+# Database infrastructure is only guaranteed at Github Actions and our own
+# dev env.
 # Tests running on other environments should be skipped:
 check_db <- function(is_test_that = TRUE) {
   if (Sys.getenv("IMONGR_CONTEXT") == "DEV") {
@@ -105,6 +106,10 @@ test_that("database can be populated with test data", {
                          df = imongr::user_registry))
   expect_true(insert_table(pool, table = "delivery", df = imongr::delivery))
   expect_true(insert_table(pool, table = "data", df = imongr::data))
+  expect_true(insert_table(pool, table = "medfield",
+                           df = imongr::medfield))
+  expect_true(insert_table(pool, table = "registry_medfield",
+                           df = imongr::registry_medfield))
 })
 
 test_that("agg_data can be populated from existing (test) data", {
@@ -226,6 +231,22 @@ test_that("user_registry data can be fetched from test database", {
 test_that("aggregated data can be fetched from test database", {
   check_db()
   expect_equal(class(get_table(pool, "agg_data")), "data.frame")
+})
+
+test_that("medfields of registries can be fetched", {
+  check_db()
+  expect_equal(class(get_registry_medfield(pool, 1)), "data.frame")
+})
+
+test_that("registries medfields can be fetched", {
+  check_db()
+  expect_equal(class(get_medfield_registry(pool, 1)), "data.frame")
+})
+
+test_that("registry-medfield tab can be updated", {
+  check_db()
+  df <- imongr::registry_medfield
+  expect_invisible(update_registry_medfield(pool, df))
 })
 
 test_that("get_table wrapper function do work", {

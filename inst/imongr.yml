@@ -60,6 +60,8 @@ app_text:
       Last opp nye data til sykehusviseren
     download: |-
       Se på og last ned data fra Sykehusviseren
+    medfield: |-
+      Angi fagområde(r) for registrene
     adminer: |-
       Administrer data
 db:
@@ -122,6 +124,16 @@ db:
       - short_description
       - long_description
       - registry_id
+    registry_medfield:
+      insert:
+      - id
+      - registry_id
+      - medfield_id
+    medfield:
+      insert:
+      - id
+      - name
+      - full_name
     registry:
       insert:
       - id
@@ -271,6 +283,17 @@ upload:
     submit:
       warning: >
         Merk: nye data vil overskrive alle eksisterende indikatorer for
+medfield:
+  text:
+    heading: >
+      Angi fagområder for
+    body: >
+      Bruk menyen til venstre og velg ønskede medisinske fagoråder for hvert
+      enkelt register. Trykk deretter 'Oppdatér'.
+    summary: >
+      Alle eksisterende fagområder med tilhørende registre
+    missing: >
+      Ingen registre tilhørende dette fagområdet.
 aggregate:
   data_var_ind:
   - 3

@@ -99,6 +99,9 @@ insert_sample_data <- function(include_data_table = TRUE) {
   insert_table(pool, table = "user", df = imongr::user)
   insert_table(pool, table = "user_registry", df = imongr::user_registry)
   insert_table(pool, table = "delivery", df = imongr::delivery)
+  insert_table(pool, table = "medfield", df = imongr::medfield)
+  insert_table(pool, table = "registry_medfield",
+               df = imongr::registry_medfield)
 
   if (include_data_table) {
     insert_table(pool, table = "data", df = imongr::data)

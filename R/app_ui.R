@@ -12,25 +12,31 @@ app_ui <- function() {
   shiny::tagList(
     shinyjs::useShinyjs(),
     shiny::tags$head(
-      shiny::tags$style(type = "text/css",
-                        paste0("body {",
-                               "font-family: Arial, Helvetica, sans-serif;",
-                               "color: #3b3b3b;}")),
-      shiny::tags$style(type = "text/css",
-                        paste0(".navbar-default { background-color: #f2f2f2;}")),
-      shiny::tags$style(type = "text/css",
-                        paste0(".navbar-default .navbar-brand {",
-                               "color: #1b1b1b;line-height: 1;}")),
-      shiny::tags$style(type = "text/css",
-                        paste0(".navbar-default .navbar-nav > li > a {",
-                               "color: #1b1b1b;}")),
-      shiny::tags$style(type = "text/css",
-                        paste0(".navbar-default .navbar-nav > .active > a:focus {",
-                               "color: #000000;",
-                               "background-color: #ffffff;}")),
-      shiny::tags$style(type = "text/css",
-                        paste0(".navbar-brand  a:hover, .navbar-brand  a:focus {",
-                               "text-decoration: underline;}")),
+      shiny::tags$style(
+        type = "text/css",
+        paste0("body {",
+               "font-family: Arial, Helvetica, sans-serif;",
+               "color: #3b3b3b;}")),
+      shiny::tags$style(
+        type = "text/css",
+        paste0(".navbar-default { background-color: #f2f2f2;}")),
+      shiny::tags$style(
+        type = "text/css",
+        paste0(".navbar-default .navbar-brand {",
+               "color: #1b1b1b;line-height: 1;}")),
+      shiny::tags$style(
+        type = "text/css",
+        paste0(".navbar-default .navbar-nav > li > a {",
+               "color: #1b1b1b;}")),
+      shiny::tags$style(
+        type = "text/css",
+        paste0(".navbar-default .navbar-nav > .active > a:focus {",
+               "color: #000000;",
+               "background-color: #ffffff;}")),
+      shiny::tags$style(
+        type = "text/css",
+        paste0(".navbar-brand  a:hover, .navbar-brand  a:focus {",
+               "text-decoration: underline;}")),
     ),
     shiny::navbarPage(
       title = shiny::div(app_title),
@@ -131,6 +137,25 @@ app_ui <- function() {
                           shiny::uiOutput("ui_db_table")
                         )
                       )
+      ),
+      shiny::tabPanel(
+        value = "medfield",
+        shiny::span("Fagområder",
+                    title = conf$app_text$tooltip$medfield,
+                    id = "medfield"),
+        shiny::sidebarLayout(
+          shiny::sidebarPanel(
+            width = 3,
+            shiny::uiOutput("select_medfield_registry"),
+            shiny::uiOutput("select_registry_medfield"),
+            shiny::actionButton("update_medfield", label = "Oppdatér",
+                                icon = shiny::icon("paper-plane"))
+          ),
+          shiny::mainPanel(
+            shiny::uiOutput("registry_medfield_header"),
+            shiny::uiOutput("registry_medfield_summary")
+          )
+        )
       ),
       shiny::tabPanel(
         value = "adminer",
