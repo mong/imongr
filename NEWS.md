@@ -1,3 +1,7 @@
+# imongr 0.16.1
+
+* Include all registries in GUI for managing registry and medical field relations ([PR #105](https://github.com/mong/imongr/pull/105))
+
 # imongr 0.16.0
 
 * Extended data model to cover registry medical fields (topics) #101
