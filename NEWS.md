@@ -1,3 +1,7 @@
+# imongr 0.16.1
+
+* Changed logout url according to new (but temporary) domain imongr.skde.org (#106)
+
 # imongr 0.16.0
 
 * Extended data model to cover registry medical fields (topics) #101
