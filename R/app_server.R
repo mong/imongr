@@ -58,6 +58,15 @@ app_server <- function(input, output, session) {
                            confirmButtonText = no_opt_out_ok())
   )
 
+  # Common context selector?
+  output$select_context <- shiny::renderUI({
+    shiny::selectInput("context", "Velg miljø:",
+                       choices = list(Produksjon = "prod",
+                                      Dataverifisering = "verify",
+                                      QA = "qa"),
+                       selected = "prod")
+  })
+
   # profil
   output$profile <- shiny::renderText({
     profile_ui(conf, pool, valid_user, iusr, igrs)

@@ -46,10 +46,16 @@ app_ui <- function() {
       shiny::tabPanel(value = "profile",
                       shiny::span("Profil",
                                   title = conf$app_text$tooltip$profile),
-                      shiny::mainPanel(width = 12,
-                                       shiny::htmlOutput("profile")),
-                      shiny::checkboxInput("deliver_history",
-                                           conf$profile$delivery$status),
+                      shiny::sidebarLayout(
+                        shiny::sidebarPanel(
+                          shiny::uiOutput("select_context")
+                        ),
+                        shiny::mainPanel(
+                          shiny::htmlOutput("profile"),
+                          shiny::checkboxInput("deliver_history",
+                                               conf$profile$delivery$status)
+                        )
+                      ),
                       shiny::uiOutput("ui_deliveries_table")
       ),
 
