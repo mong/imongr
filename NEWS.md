@@ -1,6 +1,10 @@
-# imongr 0.16.1
+# imongr 0.16.2
 
 * Include all registries in GUI for managing registry and medical field relations ([PR #105](https://github.com/mong/imongr/pull/105))
+
+# imongr 0.16.1
+
+* Changed logout url according to new (but temporary) domain imongr.skde.org (#106)
 
 # imongr 0.16.0
 
