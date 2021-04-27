@@ -194,7 +194,7 @@ profile:
     <a href="https://github.com/mong/imongr/issues">vår feilmeldingstjeneste</a>.
   logout:
     text: Logg ut
-    url: https://mongr.no/imongr/logout
+    url: https://imongr.skde.org/logout
 upload:
   file:
     vars:
