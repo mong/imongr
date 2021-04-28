@@ -16,16 +16,24 @@ app_server <- function(input, output, session) {
   igrs <- get_user_groups()
   conf <- get_config()
   pool <- make_pool()
-  rv <- shiny::reactiveValues(inv_data = 0,
-                              medfield_summary = character())
+  medfield_data <- get_table(pool, "medfield")
+  rv <- shiny::reactiveValues(
+    inv_data = 0,
+    medfield_summary = medfield_summary_text_ui(pool, conf, medfield_data),
+    pool = make_pool()
+  )
+
+  # allways from default db, never selectable by user
   known_user <- nrow(get_all_user_data(pool)) > 0
   valid_user <- nrow(get_user_data(pool)) > 0
 
-  # if unknown, add user as pendig in imongr
+  # if unknown, add user as pendig in default db
   if (!known_user) {
-    insert_table(pool, "user",
-               data.frame(user_name = iusr, name = "", phone = "", email = "",
-                          valid = 0))
+    insert_table(
+      pool, "user",
+      data.frame(
+        user_name = iusr, name = "", phone = "", email = "", valid = 0)
+      )
   }
 
   # show/hide tabs by user profile
@@ -58,23 +66,38 @@ app_server <- function(input, output, session) {
                            confirmButtonText = no_opt_out_ok())
   )
 
+  shiny::observeEvent(input$context, {
+    drain_pool(rv$pool)
+    rv$pool <- make_pool(context = input$context)
+    medfield_data <- get_table(rv$pool, "medfield")
+    rv$medfield_summary = medfield_summary_text_ui(rv$pool, conf, medfield_data)
+  })
+
   # Common context selector?
   output$select_context <- shiny::renderUI({
+    if (valid_user) {
     shiny::selectInput("context", "Velg miljø:",
                        choices = list(Produksjon = "prod",
                                       Dataverifisering = "verify",
                                       QA = "qa"),
                        selected = "prod")
+    } else {
+      NULL
+    }
+  })
+
+  output$current_context <- shiny::renderText({
+    paste("Miljø:", input$context)
   })
 
   # profil
   output$profile <- shiny::renderText({
-    profile_ui(conf, pool, valid_user, iusr, igrs)
+    profile_ui(conf, rv$pool, valid_user, iusr, igrs)
   })
 
   output$deliveries_table <- DT::renderDataTable(
     if (input$deliver_history) {
-      DT::datatable(get_user_deliveries(pool), rownames = FALSE,
+      DT::datatable(get_user_deliveries(rv$pool), rownames = FALSE,
                     options = list(dom = "tp", pageLength = 10,
                       language = list(
                         paginate = list(previous = "Forrige",
@@ -96,8 +119,8 @@ app_server <- function(input, output, session) {
     }
   })
   shiny::observeEvent(input$submit, {
-    insert_data(pool, df())
-    insert_agg_data(pool, df())
+    insert_data(rv$pool, df())
+    insert_agg_data(rv$pool, df())
     rv$inv_data <- rv$inv_data + 1
     shinyalert::shinyalert(conf$upload$reciept$title, conf$upload$reciept$body,
                            type = "success", showConfirmButton = FALSE,
@@ -125,7 +148,7 @@ app_server <- function(input, output, session) {
 
   ## ui sidebar panel
   output$select_registry <- shiny::renderUI({
-    select_registry_ui(pool, conf, input_id = "registry")
+    select_registry_ui(rv$pool, conf, input_id = "registry")
   })
 
   output$upload_file <- shiny::renderUI({
@@ -148,7 +171,7 @@ app_server <- function(input, output, session) {
 
   output$submit <- shiny::renderUI({
     rv$inv_data
-    submit_ui(conf, pool, input$upload_file, input$registry, df())
+    submit_ui(conf, rv$pool, input$upload_file, input$registry, df())
   })
 
   output$spinner <- shiny::renderText({
@@ -160,7 +183,7 @@ app_server <- function(input, output, session) {
   ## ui main panel
   output$error_report <- shiny::renderText({
     rv$inv_data
-    error_report_ui(pool, df(), input$upload_file, input$registry)
+    error_report_ui(rv$pool, df(), input$upload_file, input$registry)
   })
 
   output$upload_sample_text <- shiny::renderText({
@@ -168,7 +191,7 @@ app_server <- function(input, output, session) {
     if (input$registry == "") {
       NULL
     } else {
-      upload_sample_text_ui(pool, conf, input$upload_file, input$registry,
+      upload_sample_text_ui(rv$pool, conf, input$upload_file, input$registry,
                             indicators = unique(df()$ind_id))
     }
   })
@@ -187,18 +210,18 @@ app_server <- function(input, output, session) {
 
   output$valid_ind <- shiny::renderText({
     paste0("<h4>", conf$upload$doc$valid_ind, " <i>",
-          get_registry_name(pool, shiny::req(input$registry),
+          get_registry_name(rv$pool, shiny::req(input$registry),
                             full_name = TRUE),
           "</i>:</h4>")
   })
 
   output$valid_ind_tab <- shiny::renderTable(
-    get_registry_indicators(pool, shiny::req(input$registry)), rownames = TRUE,
+    get_registry_indicators(rv$pool, shiny::req(input$registry)), rownames = TRUE,
     colnames = FALSE
   )
 
   output$sample_data <- shiny::renderTable(
-    get_table(pool, "data",
+    get_table(rv$pool, "data",
       sample = 0.00001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
   )
 
@@ -210,17 +233,17 @@ app_server <- function(input, output, session) {
       data.frame()
     } else {
       if (input$tab_set == "data") {
-        get_registry_data(pool, input$download_registry)
+        get_registry_data(rv$pool, input$download_registry)
       } else if (input$tab_set == "ind") {
-        get_registry_ind(pool, input$download_registry)
+        get_registry_ind(rv$pool, input$download_registry)
       } else {
-        get_table(pool, input$tab_set)
+        get_table(rv$pool, input$tab_set)
       }
     }
   })
 
   output$select_download_registry <- shiny::renderUI({
-    select_registry_ui(pool, conf, input_id = "download_registry")
+    select_registry_ui(rv$pool, conf, input_id = "download_registry")
   })
 
   output$select_db_table <- shiny::renderUI({
