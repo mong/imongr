@@ -15,6 +15,8 @@
 #' kept in order.
 #'
 #' @param pool a database connection pool object
+#' @param context Character string defining the environment context. Must be
+#' one of \code{c("prod", "verify", "qa")}. Default value is \code{"prod"}.
 #' @param table string defining target database table
 #' @param sample Numeric in the range 0 to 1 defining the relative sub-sample
 #' size, \emph{e.g.} when \code{sample = 0.1} approximately 10\% of
@@ -27,12 +29,12 @@ NULL
 
 #' @rdname db
 #' @export
-make_pool <- function() {
+make_pool <- function(context = "prod") {
 
   pool::dbPool(
     drv = RMariaDB::MariaDB(),
     dbname = db_name(),
-    host = db_host(),
+    host = db_host(context),
     username = db_username(),
     password = db_password(),
     idleTimeout = 60000
