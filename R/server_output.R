@@ -3,6 +3,7 @@
 #' @param pool Data base pool object
 #' @param conf List of configuration
 #' @param input_id Character string with shiny ui id
+#' @param context Character string with user selected (db) context
 #' @param valid_user Logical valid user
 #' @param iusr Character string username
 #' @param igrs Character string comma separated user groups
@@ -44,7 +45,7 @@ profile_ui <- function(conf, pool, valid_user, iusr, igrs) {
 
 #' @rdname server_output
 #' @export
-select_registry_ui <- function(pool, conf, input_id) {
+select_registry_ui <- function(pool, conf, input_id, context) {
   regs <- get_user_registry_select(pool)
   label <- conf$app_text$select$registry$ok
   if (length(regs) == 0) {
@@ -52,7 +53,13 @@ select_registry_ui <- function(pool, conf, input_id) {
   } else {
 
   }
-  shiny::selectInput(input_id, label, regs)
+  shiny::tagList(
+    shiny::h3(paste("Miljø:", switch(context,
+                                     prod = "produksjon",
+                                     verify = "dataverifisering",
+                                     qa = "QA"))),
+    shiny::selectInput(input_id, label, regs)
+  )
 }
 
 

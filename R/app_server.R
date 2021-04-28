@@ -20,6 +20,7 @@ app_server <- function(input, output, session) {
   rv <- shiny::reactiveValues(
     inv_data = 0,
     medfield_summary = medfield_summary_text_ui(pool, conf, medfield_data),
+    context = "Miljø: Produksjon",
     pool = make_pool()
   )
 
@@ -68,6 +69,7 @@ app_server <- function(input, output, session) {
 
   shiny::observeEvent(input$context, {
     drain_pool(rv$pool)
+    rv$context <- input$context
     rv$pool <- make_pool(context = input$context)
     medfield_data <- get_table(rv$pool, "medfield")
     rv$medfield_summary = medfield_summary_text_ui(rv$pool, conf, medfield_data)
@@ -84,10 +86,6 @@ app_server <- function(input, output, session) {
     } else {
       NULL
     }
-  })
-
-  output$current_context <- shiny::renderText({
-    paste("Miljø:", input$context)
   })
 
   # profil
@@ -148,7 +146,8 @@ app_server <- function(input, output, session) {
 
   ## ui sidebar panel
   output$select_registry <- shiny::renderUI({
-    select_registry_ui(rv$pool, conf, input_id = "registry")
+    select_registry_ui(rv$pool, conf, input_id = "registry",
+                       context = input$context)
   })
 
   output$upload_file <- shiny::renderUI({
@@ -243,7 +242,8 @@ app_server <- function(input, output, session) {
   })
 
   output$select_download_registry <- shiny::renderUI({
-    select_registry_ui(rv$pool, conf, input_id = "download_registry")
+    select_registry_ui(rv$pool, conf, input_id = "download_registry",
+                       context = input$context)
   })
 
   output$select_db_table <- shiny::renderUI({
@@ -309,7 +309,8 @@ app_server <- function(input, output, session) {
   })
 
   output$select_medfield_registry <- shiny::renderUI({
-    select_registry_ui(pool, conf, input_id = "medfield_registry")
+    select_registry_ui(pool, conf, input_id = "medfield_registry",
+                       context = input$context)
   })
   output$select_registry_medfield <- shiny::renderUI({
     shiny::req(input$medfield_registry)

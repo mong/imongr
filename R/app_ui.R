@@ -64,7 +64,6 @@ app_ui <- function() {
                                   title = conf$app_text$tooltip$upload),
                       shiny::sidebarLayout(
                         shiny::sidebarPanel(
-                          shiny::htmlOutput("current_context"),
                           shiny::uiOutput("select_registry"),
                           shiny::uiOutput("upload_file"),
                           shiny::radioButtons("sep", "Kolonneseparator",
