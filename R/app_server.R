@@ -364,7 +364,7 @@ app_server <- function(input, output, session) {
     withCallingHandlers({
       shinyjs::html("sysMessage", "")
       shinyjs::html("funMessage", "")
-      shinyjs::html("funMessage", agg_all_data(pool))
+      shinyjs::html("funMessage", agg_all_data(rv$pool))
     },
     message = function(m) {
       shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
@@ -374,7 +374,7 @@ app_server <- function(input, output, session) {
     withCallingHandlers({
       shinyjs::html("sysMessage", "")
       shinyjs::html("funMessage", "")
-      shinyjs::html("funMessage", clean_agg_data(pool))
+      shinyjs::html("funMessage", clean_agg_data(rv$pool))
     },
     message = function(m) {
       shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
