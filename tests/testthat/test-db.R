@@ -257,7 +257,7 @@ test_that("get_table wrapper function do work", {
 test_that("pool cannot be established when missing credentials", {
   file.remove("_imongr.yml")
   Sys.unsetenv("IMONGR_DB_HOST")
-  expect_error(make_pool(), "IMONGR_DB_HOST")
+  expect_error(make_pool(), "No database name defined in config or environment varaible IMONGR_DB_NAME. Cannot go on.")
   Sys.setenv(IMONGR_DB_HOST = "test")
   Sys.unsetenv("IMONGR_DB_NAME")
   expect_error(make_pool(), "IMONGR_DB_NAME")

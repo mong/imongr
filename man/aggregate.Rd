@@ -64,6 +64,8 @@ the latter denotes a data frame that has been grouped (by
   \item{year}{The year of the current record}
   \item{ind_id}{Indicator ID}
   \item{orgnr}{Organization ID}
+  \item{context}{How orgnr is to be understood, \emph{e.g.} caregiver,
+  or patient residency}
   \item{count}{Number of observations of the current record}
   \item{var}{Summarised indicator value, for instance mean or median}
   \item{level}{Code providing evaluated discret level such as 'H' (high),
