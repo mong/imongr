@@ -114,7 +114,10 @@ agg <- function(df, org, ind) {
   aggs$var <- aggs$var / aggs$denominator
 
   aggs <- aggs %>%
-    dplyr::arrange(.data$context, .data$ind_id, .data$year, .data$unit_level) %>%
+    dplyr::arrange(.data$context,
+                   .data$ind_id,
+                   .data$year,
+                   .data$unit_level) %>%
     dplyr::ungroup()
 
   # class values into defined levels
