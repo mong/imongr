@@ -78,15 +78,35 @@ test_that("profile_ui provides a characer string", {
 
 test_that("select list of registries is provided (if any)", {
   check_db()
-  expect_equal(class(select_registry_ui(pool, conf, "test")), "shiny.tag")
+  expect_true("shiny.tag.list" %in% class(
+    select_registry_ui(pool, conf, "test", "prod")))
+  expect_true("shiny.tag.list" %in% class(
+    select_registry_ui(pool, conf, "test", "verify")))
+  expect_true("shiny.tag.list" %in% class(
+    select_registry_ui(pool, conf, "test", "qa")))
+  expect_true("shiny.tag.list" %in% class(
+    select_registry_ui(pool, conf, "test", "prod", "reg")))
 })
 
 test_that("submit ui is provided", {
   check_db()
-  expect_null(submit_ui(conf, pool, NULL, 10, df))
+  expect_null(submit_ui(conf, pool, NULL, 10, df, "prod"))
   expect_equal(class(
     submit_ui(conf, pool, TRUE, 10,
-              df[, !names(df) %in% c("denominator", "registry_id")]))[1],
+              df[, !names(df) %in% c("denominator", "registry_id")],
+              "prod"))[1],
+    "shiny.tag.list"
+  )
+  expect_equal(class(
+    submit_ui(conf, pool, TRUE, 10,
+              df[, !names(df) %in% c("denominator", "registry_id")],
+              "verify"))[1],
+    "shiny.tag.list"
+  )
+  expect_equal(class(
+    submit_ui(conf, pool, TRUE, 10,
+              df[, !names(df) %in% c("denominator", "registry_id")],
+              "qa"))[1],
     "shiny.tag.list"
   )
 })
