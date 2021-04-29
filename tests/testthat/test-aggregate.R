@@ -18,6 +18,7 @@ test_that("data from higher lever org can be spread downwards in agg_data", {
                              orgnr = 1,
                              var = 33,
                              ind_id = "norgast_saarruptur",
+                             context = "caregiver",
                              delivery_id = 11,
                              denominator = 100,
                              unit_level = "nation"))
@@ -29,6 +30,7 @@ test_that("data from mid level can be spread both ways (up and down orgs)", {
                              orgnr = 983974899,
                              var = 11,
                              ind_id = "norgast_saarruptur",
+                             context = "caregiver",
                              delivery_id = 11,
                              denominator = 33,
                              unit_level = "nation"))

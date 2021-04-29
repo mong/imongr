@@ -48,7 +48,9 @@ profile_ui <- function(conf, pool, valid_user, iusr, igrs) {
 #' @export
 select_registry_ui <- function(pool, conf, input_id, context,
                                current_reg = character()) {
-  regs <- get_user_registry_select(pool)
+  regs <- get_table(pool, "registry") %>%
+    dplyr::transmute(name, id) %>%
+    tibble::deframe()
   label <- conf$app_text$select$registry$ok
   if (length(regs) == 0) {
     label <- conf$app_text$select$registry$missing
