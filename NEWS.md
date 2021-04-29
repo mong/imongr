@@ -1,3 +1,7 @@
+# imongr 0.17.0
+
+* Added new variable 'context' to data ([#100](https://github.com/mong/imongr/pull/100))
+
 # imongr 0.16.2
 
 * Include all registries in GUI for managing registry and medical field relations ([PR #105](https://github.com/mong/imongr/pull/105))
