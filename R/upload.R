@@ -33,7 +33,7 @@ check_report <- function(registry, df, pool) {
   r <- check_upload(registry, df, pool)
 
   if (all(!r$fail)) {
-    msg <- paste("<font color=\"#00FF00\">", conf$upload$ok)
+    msg <- paste("<font color=\"#00B300\">", conf$upload$ok)
   } else {
     mail_msg <- ""
     msg <- "<font color=\"#FF0000\">"

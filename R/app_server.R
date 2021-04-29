@@ -16,12 +16,18 @@ app_server <- function(input, output, session) {
   igrs <- get_user_groups()
   conf <- get_config()
   pool <- make_pool()
-  medfield_data <- get_table(pool, "medfield")
   rv <- shiny::reactiveValues(
     inv_data = 0,
-    medfield_summary = medfield_summary_text_ui(pool, conf, medfield_data),
-    context = "Miljø: Produksjon",
-    pool = make_pool()
+    medfield_data = get_table(pool, "medfield"),
+    medfield_summary = medfield_summary_text_ui(pool, conf,
+                                                get_table(pool, "medfield")),
+    upload_reg = character(),
+    download_reg = character(),
+    pool = make_pool(),
+    admin_url = paste0(adminer_url(), "/?",
+                        "server=", db_host(), "&",
+                        "username=", db_username(), "&",
+                        "db=", db_name())
   )
 
   # allways from default db, never selectable by user
@@ -69,10 +75,17 @@ app_server <- function(input, output, session) {
 
   shiny::observeEvent(input$context, {
     drain_pool(rv$pool)
-    rv$context <- input$context
+    rv$upload_reg <- input$registry
+    rv$download_reg <- input$download_registry
+    rv$admin_url <- paste0(adminer_url(), "/?",
+                           "server=", db_host(context = input$context), "&",
+                           "username=", db_username(), "&",
+                           "db=", db_name())
     rv$pool <- make_pool(context = input$context)
     medfield_data <- get_table(rv$pool, "medfield")
-    rv$medfield_summary = medfield_summary_text_ui(rv$pool, conf, medfield_data)
+    rv$medfield_summary =
+      medfield_summary_text_ui(rv$pool, conf, get_table(rv$pool, "medfield"))
+    rv$inv_data <- rv$inv_data + 1
   })
 
   # Common context selector?
@@ -147,7 +160,7 @@ app_server <- function(input, output, session) {
   ## ui sidebar panel
   output$select_registry <- shiny::renderUI({
     select_registry_ui(rv$pool, conf, input_id = "registry",
-                       context = input$context)
+                       context = input$context, current_reg = rv$upload_reg)
   })
 
   output$upload_file <- shiny::renderUI({
@@ -170,7 +183,8 @@ app_server <- function(input, output, session) {
 
   output$submit <- shiny::renderUI({
     rv$inv_data
-    submit_ui(conf, rv$pool, input$upload_file, input$registry, df())
+    submit_ui(conf, rv$pool, input$upload_file, input$registry, df(),
+              input$context)
   })
 
   output$spinner <- shiny::renderText({
@@ -243,7 +257,7 @@ app_server <- function(input, output, session) {
 
   output$select_download_registry <- shiny::renderUI({
     select_registry_ui(rv$pool, conf, input_id = "download_registry",
-                       context = input$context)
+                       context = input$context, current_reg = rv$download_reg)
   })
 
   output$select_db_table <- shiny::renderUI({
@@ -294,33 +308,30 @@ app_server <- function(input, output, session) {
   )
 
   # registry medfields
-  medfield_data <- get_table(pool, "medfield")
-
-  rv$medfield_summary <- medfield_summary_text_ui(pool, conf, medfield_data)
-
   shiny::observeEvent(input$update_medfield, {
     registry_medfield_update <- data.frame(
       registry_id = rep(input$medfield_registry,
                         length(input$select_medfield)),
       medfield_id = input$select_medfield
     )
-    update_registry_medfield(pool, registry_medfield_update)
-    rv$medfield_summary <- medfield_summary_text_ui(pool, conf, medfield_data)
+    update_registry_medfield(rv$pool, registry_medfield_update)
+    rv$medfield_summary <-
+      medfield_summary_text_ui(rv$pool, conf, medfield_data)
   })
 
   output$select_medfield_registry <- shiny::renderUI({
-    select_registry_ui(pool, conf, input_id = "medfield_registry",
+    select_registry_ui(rv$pool, conf, input_id = "medfield_registry",
                        context = input$context)
   })
   output$select_registry_medfield <- shiny::renderUI({
     shiny::req(input$medfield_registry)
-    if (dim(medfield_data)[1] > 0) {
-      all_medfield <- medfield_data$id
-      names(all_medfield) <- medfield_data$name
+    if (dim(rv$medfield_data)[1] > 0) {
+      all_medfield <- rv$medfield_data$id
+      names(all_medfield) <- rv$medfield_data$name
     } else {
       all_medfield <- list(`Not defined!` = 0)
     }
-    medfield <- get_registry_medfield(pool, input$medfield_registry)
+    medfield <- get_registry_medfield(rv$pool, input$medfield_registry)
     if (!is.null(dim(medfield))) {
       current_medfield <- medfield$medfield_id
     } else {
@@ -334,7 +345,7 @@ app_server <- function(input, output, session) {
   })
   output$registry_medfield_header <- shiny::renderText({
     paste0("<h2>", conf$medfield$text$heading, " <i>",
-           get_registry_name(pool, shiny::req(input$medfield_registry),
+           get_registry_name(rv$pool, shiny::req(input$medfield_registry),
                              full_name = TRUE),
            "</i>:</h2><br>", conf$medfield$text$body)
   })
@@ -343,13 +354,8 @@ app_server <- function(input, output, session) {
   })
 
   # our db admin interface
-  admin_url <- paste0(adminer_url(), "/?",
-                      "server=", db_host(), "&",
-                      "username=", db_username(), "&",
-                      "db=", db_name())
-
   output$admin_frame <- shiny::renderUI({
-    shiny::tags$iframe(src = admin_url, width = "100%", height = 1024,
+    shiny::tags$iframe(src = rv$admin_url, width = "100%", height = 1024,
                        frameborder = "no")
   })
 
@@ -374,5 +380,20 @@ app_server <- function(input, output, session) {
       shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
     })
   })
-
+  output$mine_field_uc <- shiny::renderUI({
+    shiny::tagList(
+      shiny::HTML(
+        paste0("<h3 style='color:",
+               switch(input$context,
+                      prod = "green;'>Produksjon</h2>",
+                      verify = "orange;'>Dataverifisering</h2>",
+                      qa = "red;'>QA</h3>"))
+      ),
+      shiny::p("Tr\u00e5 forsiktig!"),
+      shiny::actionButton("agg_all", "Aggreger alle data",
+                          icon = shiny::icon("skull")),
+      shiny::hr(),
+      shiny::actionButton("clean_agg", "Rydd aggregerte data")
+    )
+  })
 }
