@@ -95,7 +95,7 @@ app_server <- function(input, output, session) {
                        choices = list(Produksjon = "prod",
                                       Dataverifisering = "verify",
                                       QA = "qa"),
-                       selected = "prod")
+                       selected = "verify")
     } else {
       NULL
     }
