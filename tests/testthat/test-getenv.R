@@ -41,10 +41,10 @@ test_that("env db username is provided", {
 })
 
 test_that("env db name is provided", {
-  Sys.unsetenv("IMONGR_DB_NAME")
-  expect_error(db_name())
   Sys.setenv(IMONGR_DB_NAME = "testdb")
   expect_equal(db_name(), "testdb")
+  Sys.unsetenv("IMONGR_DB_NAME")
+  expect_error(db_name())
 })
 
 test_that("env db password is provided", {
