@@ -22,7 +22,6 @@ test_that("env is provided for groups", {
 })
 
 test_that("env db host is provided", {
-  check_db()
   expect_error(db_host(context = "undefined environment"))
   Sys.unsetenv("IMONGR_DB_HOST")
   expect_error(db_host())
@@ -35,7 +34,6 @@ test_that("env db host is provided", {
 })
 
 test_that("env db name is provided", {
-  check_db()
   Sys.unsetenv("IMONGR_DB_NAME")
   expect_error(db_name())
   Sys.setenv(IMONGR_DB_NAME = "testdb")
@@ -43,7 +41,6 @@ test_that("env db name is provided", {
 })
 
 test_that("env db username is provided", {
-  check_db()
   Sys.unsetenv("IMONGR_DB_USER")
   expect_error(db_username())
   Sys.setenv(IMONGR_DB_USER = "testdbuser")
@@ -51,7 +48,6 @@ test_that("env db username is provided", {
 })
 
 test_that("env db password is provided", {
-  check_db()
   Sys.unsetenv("IMONGR_DB_PASS")
   expect_error(db_password())
   Sys.setenv(IMONGR_DB_PASS = "testdbpass")
@@ -59,7 +55,6 @@ test_that("env db password is provided", {
 })
 
 test_that("env adminer url is provided", {
-  check_db()
   Sys.unsetenv("IMONGR_ADMINER_URL")
   expect_warning(adminer_url())
   Sys.setenv(IMONGR_ADMINER_URL = "testadminerurl")
