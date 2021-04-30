@@ -385,8 +385,8 @@ app_server <- function(input, output, session) {
       shiny::HTML(
         paste0("<h3 style='color:",
                switch(input$context,
-                      prod = "green;'>Produksjon</h2>",
-                      verify = "orange;'>Dataverifisering</h2>",
+                      prod = "green;'>Produksjon</h3>",
+                      verify = "orange;'>Dataverifisering</h3>",
                       qa = "red;'>QA</h3>"))
       ),
       shiny::p("Tr\u00e5 forsiktig!"),

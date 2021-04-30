@@ -66,8 +66,8 @@ select_registry_ui <- function(pool, conf, input_id, context,
     shiny::HTML(
       paste0("<h3 style='color:",
              switch(context,
-                    prod = "green;'>Produksjon</h2>",
-                    verify = "orange;'>Dataverifisering</h2>",
+                    prod = "green;'>Produksjon</h3>",
+                    verify = "orange;'>Dataverifisering</h3>",
                     qa = "red;'>QA</h3>"))
     ),
     shiny::selectInput(input_id, label, regs, selected = reg)
