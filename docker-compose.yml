@@ -13,6 +13,29 @@ services:
     volumes:
       - ./inst:/docker-entrypoint-initdb.d
 
+  db-verify:
+    image: mariadb
+    restart: "no"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: imongr
+      MYSQL_USER: imongr
+      MYSQL_PASSWORD: imongr
+    volumes:
+      - ./inst:/docker-entrypoint-initdb.d
+
+  db-qa:
+    image: mariadb
+    restart: "no"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: imongr
+      MYSQL_USER: imongr
+      MYSQL_PASSWORD: imongr
+    volumes:
+      - ./inst:/docker-entrypoint-initdb.d
+
+
   dev:
     depends_on:
       - db
@@ -29,6 +52,8 @@ services:
       PASSWORD: password
       IMONGR_CONTEXT: DEV
       IMONGR_DB_HOST: db
+      IMONGR_DB_HOST_VERIFY: db-verify
+      IMONGR_DB_HOST_QA: db-qa
       IMONGR_DB_NAME: imongr
       IMONGR_DB_USER: imongr
       IMONGR_DB_PASS: imongr
