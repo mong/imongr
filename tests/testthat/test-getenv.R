@@ -33,18 +33,18 @@ test_that("env db host is provided", {
   expect_equal(db_host(context = "qa"), "testhost_qa")
 })
 
-test_that("env db name is provided", {
-  Sys.unsetenv("IMONGR_DB_NAME")
-  expect_error(db_name())
-  Sys.setenv(IMONGR_DB_NAME = "testdb")
-  expect_equal(db_name(), "testdb")
-})
-
 test_that("env db username is provided", {
   Sys.unsetenv("IMONGR_DB_USER")
   expect_error(db_username())
   Sys.setenv(IMONGR_DB_USER = "testdbuser")
   expect_equal(db_username(), "testdbuser")
+})
+
+test_that("env db name is provided", {
+  Sys.unsetenv("IMONGR_DB_NAME")
+  expect_error(db_name())
+  Sys.setenv(IMONGR_DB_NAME = "testdb")
+  expect_equal(db_name(), "testdb")
 })
 
 test_that("env db password is provided", {
