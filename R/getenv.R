@@ -1,5 +1,7 @@
 #' Get relevant settings either from config og environmental variables
 #'
+#' @param context Character string defining the environment context. Must be
+#' one of \code{c("prod", "verify", "qa")}. Default value is \code{"prod"}.
 #' @return Character string with settings
 #' @name getenv
 #' @aliases db_host db_name db_username db_password adminer_url
@@ -34,17 +36,27 @@ get_user_groups <- function() {
 
 #' @rdname getenv
 #' @export
-db_host <- function() {
+db_host <- function(context = "prod") {
+
+  stopifnot(context %in% c("prod", "verify", "qa"))
+
+  if (context == "prod") {
+    envvar <- "IMONGR_DB_HOST"
+  } else if (context == "verify") {
+    envvar <- "IMONGR_DB_HOST_VERIFY"
+  } else if (context == "qa") {
+    envvar <- "IMONGR_DB_HOST_QA"
+  }
 
   conf <- get_config()
 
   host <- conf$db$host
   if (host == "env") {
-    if ("IMONGR_DB_HOST" %in% names(Sys.getenv())) {
-      host <- Sys.getenv("IMONGR_DB_HOST")
+    if (envvar %in% names(Sys.getenv())) {
+      host <- Sys.getenv(envvar)
     } else {
-      stop(paste("No database host defined in config or environment",
-                 "varaible IMONGR_DB_HOST. Cannot go on."))
+      stop(paste0("No database host defined in config or environment",
+                 " varaible ", envvar, ". Cannot go on."))
     }
   }
 
@@ -64,7 +76,7 @@ db_name <- function() {
       dbname <- Sys.getenv("IMONGR_DB_NAME")
     } else {
       stop(paste("No database name defined in config or environment",
-                 "varaible IMONGR_DB_NAME. Cannot go on."))
+                 "variable IMONGR_DB_NAME. Cannot go on."))
     }
   }
 

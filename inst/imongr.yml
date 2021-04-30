@@ -198,6 +198,7 @@ profile:
 upload:
   file:
     vars:
+    - context
     - year
     - orgnr
     - ind_id

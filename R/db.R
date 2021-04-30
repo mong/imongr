@@ -15,6 +15,8 @@
 #' kept in order.
 #'
 #' @param pool a database connection pool object
+#' @param context Character string defining the environment context. Must be
+#' one of \code{c("prod", "verify", "qa")}. Default value is \code{"prod"}.
 #' @param table string defining target database table
 #' @param sample Numeric in the range 0 to 1 defining the relative sub-sample
 #' size, \emph{e.g.} when \code{sample = 0.1} approximately 10\% of
@@ -27,56 +29,14 @@ NULL
 
 #' @rdname db
 #' @export
-make_pool <- function() {
-
-  conf <- get_config()
-
-  host <- conf$db$host
-  if (host == "env") {
-    if ("IMONGR_DB_HOST" %in% names(Sys.getenv())) {
-      host <- Sys.getenv("IMONGR_DB_HOST")
-    } else {
-      stop(paste("No database host defined in config or environment",
-                 "varaible IMONGR_DB_HOST. Cannot go on."))
-    }
-  }
-
-  dbname <- conf$db$name
-  if (dbname == "env") {
-    if ("IMONGR_DB_NAME" %in% names(Sys.getenv())) {
-      dbname <- Sys.getenv("IMONGR_DB_NAME")
-    } else {
-      stop(paste("No database name defined in config or environment",
-                 "varaible IMONGR_DB_NAME. Cannot go on."))
-    }
-  }
-
-  username <- conf$db$user
-  if (username == "env") {
-    if ("IMONGR_DB_USER" %in% names(Sys.getenv())) {
-      username <- Sys.getenv("IMONGR_DB_USER")
-    } else {
-      stop(paste("No database username defined in config or environment",
-                 "variable IMONGR_DB_USER. Cannot go on."))
-    }
-  }
-
-  password <- conf$db$pass
-  if (conf$db$pass == "env") {
-    if ("IMONGR_DB_PASS" %in% names(Sys.getenv())) {
-      password <- Sys.getenv("IMONGR_DB_PASS")
-    } else {
-      stop(paste("No database password defined in config or environment",
-                 "variable IMONGR_DB_PASS. Cannot go on."))
-    }
-  }
+make_pool <- function(context = "prod") {
 
   pool::dbPool(
     drv = RMariaDB::MariaDB(),
-    dbname = dbname,
-    host = host,
-    username = username,
-    password = password,
+    dbname = db_name(),
+    host = db_host(context),
+    username = db_username(),
+    password = db_password(),
     idleTimeout = 60000
   )
 }

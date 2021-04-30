@@ -1,3 +1,7 @@
+# imongr 0.18.0
+
+* Added user controlled multiple data backends ([#110](https://github.com/mong/imongr/pull/110))
+
 # imongr 0.17.0
 
 * Added new variable 'context' to data ([#100](https://github.com/mong/imongr/pull/100))

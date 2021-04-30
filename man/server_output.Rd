@@ -14,9 +14,9 @@
 \usage{
 profile_ui(conf, pool, valid_user, iusr, igrs)
 
-select_registry_ui(pool, conf, input_id)
+select_registry_ui(pool, conf, input_id, context, current_reg = character())
 
-submit_ui(conf, pool, upload_file, registry, df)
+submit_ui(conf, pool, upload_file, registry, df, context)
 
 error_report_ui(pool, df, upload_file, registry)
 
@@ -38,6 +38,10 @@ var_doc_ui(conf)
 \item{igrs}{Character string comma separated user groups}
 
 \item{input_id}{Character string with shiny ui id}
+
+\item{context}{Character string with user selected (db) context}
+
+\item{current_reg}{Character string defining previously selected registry}
 
 \item{upload_file}{Character string with file to upload}
 

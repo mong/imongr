@@ -254,8 +254,11 @@ test_that("get_table wrapper function do work", {
   expect_equal(class(get_table(pool, "user")), "data.frame")
 })
 
+
+file.remove("_imongr.yml")
+
 test_that("pool cannot be established when missing credentials", {
-  file.remove("_imongr.yml")
+  check_db()
   Sys.unsetenv("IMONGR_DB_HOST")
   expect_error(make_pool(), "IMONGR_DB_HOST")
   Sys.setenv(IMONGR_DB_HOST = "test")

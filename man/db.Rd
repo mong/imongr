@@ -8,7 +8,7 @@
 \alias{get_table}
 \title{Low level database functions for imongr}
 \usage{
-make_pool()
+make_pool(context = "prod")
 
 drain_pool(pool)
 
@@ -17,6 +17,9 @@ insert_table(pool, table, df)
 get_table(pool, table, sample = NA)
 }
 \arguments{
+\item{context}{Character string defining the environment context. Must be
+one of \code{c("prod", "verify", "qa")}. Default value is \code{"prod"}.}
+
 \item{pool}{a database connection pool object}
 
 \item{table}{string defining target database table}

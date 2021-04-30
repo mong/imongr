@@ -46,10 +46,16 @@ app_ui <- function() {
       shiny::tabPanel(value = "profile",
                       shiny::span("Profil",
                                   title = conf$app_text$tooltip$profile),
-                      shiny::mainPanel(width = 12,
-                                       shiny::htmlOutput("profile")),
-                      shiny::checkboxInput("deliver_history",
-                                           conf$profile$delivery$status),
+                      shiny::sidebarLayout(
+                        shiny::sidebarPanel(
+                          shiny::uiOutput("select_context")
+                        ),
+                        shiny::mainPanel(
+                          shiny::htmlOutput("profile"),
+                          shiny::checkboxInput("deliver_history",
+                                               conf$profile$delivery$status)
+                        )
+                      ),
                       shiny::uiOutput("ui_deliveries_table")
       ),
 
@@ -170,11 +176,7 @@ app_ui <- function() {
         shiny::span("Minefelt!", title = conf$app_text$tooltip$mine_field),
         shiny::sidebarLayout(
           shiny::sidebarPanel(
-            shiny::p("Tr\u00e5 forsiktig!"),
-            shiny::actionButton("agg_all", "Aggreger alle data",
-                                icon = shiny::icon("skull")),
-            shiny::hr(),
-            shiny::actionButton("clean_agg", "Rydd aggregerte data")
+            shiny::uiOutput("mine_field_uc")
           ),
           shiny::mainPanel(
             shiny::p(shiny::em("System message:")),

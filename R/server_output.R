@@ -3,6 +3,8 @@
 #' @param pool Data base pool object
 #' @param conf List of configuration
 #' @param input_id Character string with shiny ui id
+#' @param context Character string with user selected (db) context
+#' @param current_reg Character string defining previously selected registry
 #' @param valid_user Logical valid user
 #' @param iusr Character string username
 #' @param igrs Character string comma separated user groups
@@ -44,17 +46,38 @@ profile_ui <- function(conf, pool, valid_user, iusr, igrs) {
 
 #' @rdname server_output
 #' @export
-select_registry_ui <- function(pool, conf, input_id) {
-  regs <- get_table(pool, "registry") %>%
-    dplyr::transmute(name, id) %>%
-    tibble::deframe()
+select_registry_ui <- function(pool, conf, input_id, context,
+                               current_reg = character()) {
+
+  if (conf$role$manager %in% get_user_groups()) {
+    regs <- get_table(pool, "registry") %>%
+      dplyr::transmute(.data$name, .data$id) %>%
+      tibble::deframe()
+  } else {
+    regs <- get_user_registry_select(pool)
+  }
+
   label <- conf$app_text$select$registry$ok
   if (length(regs) == 0) {
     label <- conf$app_text$select$registry$missing
+    reg <- NULL
   } else {
-
+    if (length(current_reg) == 0) {
+      reg <- regs[1]
+    } else {
+      reg <- current_reg
+    }
   }
-  shiny::selectInput(input_id, label, regs)
+  shiny::tagList(
+    shiny::HTML(
+      paste0("<h3 style='color:",
+             switch(context,
+                    prod = "green;'>Produksjon</h3>",
+                    verify = "orange;'>Dataverifisering</h3>",
+                    qa = "red;'>QA</h3>"))
+    ),
+    shiny::selectInput(input_id, label, regs, selected = reg)
+  )
 }
 
 
@@ -62,7 +85,7 @@ select_registry_ui <- function(pool, conf, input_id) {
 
 #' @rdname server_output
 #' @export
-submit_ui <- function(conf, pool, upload_file, registry, df) {
+submit_ui <- function(conf, pool, upload_file, registry, df, context) {
 
   if (!is.null(upload_file) && !"denominator" %in% names(df)) {
     df <- cbind(df, denominator = 1L)
@@ -71,7 +94,12 @@ submit_ui <- function(conf, pool, upload_file, registry, df) {
       !(conf$upload$fail %in% registry) &&
       all(!check_upload(registry, df, pool)$fail)) {
     shiny::tagList(
-    shiny::actionButton("submit", "Send til server",
+    shiny::actionButton("submit",
+                        paste("Send til",
+                              switch(context,
+                                     prod = "produksjonsserver",
+                                     verify = "verifiseringsserver",
+                                     qa = "QA-server")),
                         shiny::icon("paper-plane")),
     shiny::p(paste(conf$upload$doc$submit$warning,
                    get_registry_name(pool, registry)))
@@ -112,9 +140,9 @@ upload_sample_text_ui <- function(pool, conf, upload_file, registry,
     end_tag[i] <- "</mark></i>"
     indicators <- paste0(start_tag, all_indicators, end_tag)
 
-    paste0(conf$upload$doc$sample, " ", get_registry_name(pool, registry,
+    paste0(conf$upload$doc$sample, " <b>", get_registry_name(pool, registry,
                                                           full_name = TRUE),
-           ": ",
+           "</b>: ",
           paste(indicators, collapse = ", "),
           ".")
   }

@@ -22,17 +22,15 @@ test_that("env is provided for groups", {
 })
 
 test_that("env db host is provided", {
+  expect_error(db_host(context = "undefined environment"))
   Sys.unsetenv("IMONGR_DB_HOST")
   expect_error(db_host())
   Sys.setenv(IMONGR_DB_HOST = "testhost")
   expect_equal(db_host(), "testhost")
-})
-
-test_that("env db name is provided", {
-  Sys.unsetenv("IMONGR_DB_NAME")
-  expect_error(db_name())
-  Sys.setenv(IMONGR_DB_NAME = "testdb")
-  expect_equal(db_name(), "testdb")
+  Sys.setenv(IMONGR_DB_HOST_VERIFY = "testhost_verify")
+  expect_equal(db_host(context = "verify"), "testhost_verify")
+  Sys.setenv(IMONGR_DB_HOST_QA = "testhost_qa")
+  expect_equal(db_host(context = "qa"), "testhost_qa")
 })
 
 test_that("env db username is provided", {
@@ -40,6 +38,13 @@ test_that("env db username is provided", {
   expect_error(db_username())
   Sys.setenv(IMONGR_DB_USER = "testdbuser")
   expect_equal(db_username(), "testdbuser")
+})
+
+test_that("env db name is provided", {
+  Sys.setenv(IMONGR_DB_NAME = "testdb")
+  expect_equal(db_name(), "testdb")
+  Sys.unsetenv("IMONGR_DB_NAME")
+  expect_error(db_name())
 })
 
 test_that("env db password is provided", {
