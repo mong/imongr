@@ -54,7 +54,8 @@ if (is.null(check_db(is_test_that = FALSE))) {
 conf <- get_config()
 
 # make a sample df
-df <- data.frame(year = 2018,
+df <- data.frame(context = "caregiver",
+                 year = 2018,
                  orgnr = 974633574,
                  ind_id = "norgast_andel_avdoede_bykspytt_tolv",
                  var = 0,
