@@ -48,9 +48,15 @@ profile_ui <- function(conf, pool, valid_user, iusr, igrs) {
 #' @export
 select_registry_ui <- function(pool, conf, input_id, context,
                                current_reg = character()) {
-  regs <- get_table(pool, "registry") %>%
-    dplyr::transmute(name, id) %>%
-    tibble::deframe()
+
+  if (conf$role$manager %in% get_user_groups()) {
+    regs <- get_table(pool, "registry") %>%
+      dplyr::transmute(.data$name, .data$id) %>%
+      tibble::deframe()
+  } else {
+    regs <- get_user_registry_select(pool)
+  }
+
   label <- conf$app_text$select$registry$ok
   if (length(regs) == 0) {
     label <- conf$app_text$select$registry$missing
