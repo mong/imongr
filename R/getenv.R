@@ -76,7 +76,7 @@ db_name <- function() {
       dbname <- Sys.getenv("IMONGR_DB_NAME")
     } else {
       stop(paste("No database name defined in config or environment",
-                 "varaible IMONGR_DB_NAME. Cannot go on."))
+                 "variable IMONGR_DB_NAME. Cannot go on."))
     }
   }
 
