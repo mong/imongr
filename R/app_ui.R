@@ -164,6 +164,25 @@ app_ui <- function() {
         )
       ),
       shiny::tabPanel(
+        value = "reguser",
+        shiny::span("Brukere",
+                    title = conf$app_text$tooltip$reguser,
+                    id = "reguser"),
+        shiny::sidebarLayout(
+          shiny::sidebarPanel(
+            width = 3,
+            shiny::uiOutput("select_user_registry"),
+            shiny::uiOutput("select_registry_user"),
+            shiny::actionButton("update_reguser", label = "Oppdatér",
+                                icon = shiny::icon("paper-plane"))
+          ),
+          shiny::mainPanel(
+            shiny::uiOutput("registry_user_header"),
+            shiny::uiOutput("registry_user_summary")
+          )
+        )
+      ),
+      shiny::tabPanel(
         value = "adminer",
         shiny::span("Adminer",
                     title = conf$app_text$tooltip$adminer,

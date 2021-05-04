@@ -18,7 +18,7 @@
 #' @return shiny ui objects to be provided by the shiny server function
 #' @name server_output
 #' @aliases select_registry_ui submit_ui error_report_ui upload_sample_text_ui
-#' upload_sample_ui var_doc_ui medfield_summary_text_ui
+#' upload_sample_ui var_doc_ui medfield_summary_text_ui reguser_summary_text_ui
 NULL
 
 
@@ -188,6 +188,31 @@ medfield_summary_text_ui <- function(pool, conf, df) {
                          "</li>\n</ul>")
       } else {
         regtxt <- conf$medfield$text$missing
+      }
+      txt <- paste0(txt, regtxt)
+    }
+    txt
+  } else {
+    NULL
+  }
+}
+
+reguser_summary_text_ui <- function(pool, conf, df) {
+
+  if (dim(df)[1] > 0) {
+    txt <- paste0("<h2>", conf$reguser$text$summary, "</h2>\n")
+    for (i in seq_len(length(df$id))) {
+      txt <- paste0(txt, "<h3>", df$full_name[i], "</h3>\n")
+      regs <- get_user_registry(pool, df$id[i])
+      if (dim(regs)[1] > 0) {
+        regtxt <- paste0("<ul>\n\t<li>",
+                         paste(get_registry_name(pool,
+                                                 registry = regs$registry_id,
+                                                 full_name = FALSE),
+                               collapse = "</li>\n\t<li>"),
+                         "</li>\n</ul>")
+      } else {
+        regtxt <- conf$reguser$text$missing
       }
       txt <- paste0(txt, regtxt)
     }

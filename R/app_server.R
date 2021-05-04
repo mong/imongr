@@ -21,6 +21,9 @@ app_server <- function(input, output, session) {
     medfield_data = get_table(pool, "medfield"),
     medfield_summary = medfield_summary_text_ui(pool, conf,
                                                 get_table(pool, "medfield")),
+    user_data = get_table(pool, "user"),
+    user_summary =
+      reguser_summary_text_ui(pool, conf, get_table(pool, "user")),
     upload_reg = character(),
     download_reg = character(),
     pool = make_pool(),
@@ -30,7 +33,7 @@ app_server <- function(input, output, session) {
                         "db=", db_name())
   )
 
-  # allways from default db, never selectable by user
+  # always from default db, never selectable by user
   known_user <- nrow(get_all_user_data(pool)) > 0
   valid_user <- nrow(get_user_data(pool)) > 0
 
@@ -83,8 +86,11 @@ app_server <- function(input, output, session) {
                            "db=", db_name())
     rv$pool <- make_pool(context = input$context)
     medfield_data <- get_table(rv$pool, "medfield")
-    rv$medfield_summary =
+    rv$medfield_summary <-
       medfield_summary_text_ui(rv$pool, conf, get_table(rv$pool, "medfield"))
+    user_data <- get_table(rv$pool, "user")
+    rv$user_summary <-
+      reguser_summary_text_ui(rv$pool, conf, get_table(rv$pool, "user"))
     rv$inv_data <- rv$inv_data + 1
   })
 
@@ -351,6 +357,52 @@ app_server <- function(input, output, session) {
   })
   output$registry_medfield_summary <- shiny::renderText({
     rv$medfield_summary
+  })
+
+  # user registries
+  shiny::observeEvent(input$update_reguser, {
+    registry_user_update <- data.frame(
+      registry_id = rep(input$user_registry,
+                        length(input$select_user)),
+      user_id = input$select_user
+    )
+    update_registry_user(rv$pool, registry_user_update)
+    rv$user_summary <-
+      reguser_summary_text_ui(rv$pool, conf, user_data)
+  })
+
+  output$select_user_registry <- shiny::renderUI({
+    select_registry_ui(rv$pool, conf, input_id = "user_registry",
+                       context = input$context)
+  })
+  output$select_registry_user <- shiny::renderUI({
+    shiny::req(input$user_registry)
+    if (dim(rv$user_data)[1] > 0) {
+      all_user <- rv$user_data$id
+      names(all_user) <- rv$user_data$name
+    } else {
+      all_user <- list(`Not defined!` = 0)
+    }
+    reguser <- get_registry_user(rv$pool, input$user_registry)
+    if (!is.null(dim(reguser))) {
+      current_reguser <- reguser$user_id
+    } else {
+      current_reguser <- NULL
+    }
+    shiny::selectInput(inputId = "select_user",
+                       label = "Velg bruker(e):",
+                       choices = all_user,
+                       selected = current_reguser,
+                       multiple = TRUE)
+  })
+  output$registry_user_header <- shiny::renderText({
+    paste0("<h2>", conf$reguser$text$heading, " <i>",
+           get_registry_name(rv$pool, shiny::req(input$user_registry),
+                             full_name = TRUE),
+           "</i>:</h2><br>", conf$reguser$text$body)
+  })
+  output$registry_user_summary <- shiny::renderText({
+    rv$user_summary
   })
 
   # our db admin interface

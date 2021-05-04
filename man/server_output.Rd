@@ -9,6 +9,7 @@
 \alias{upload_sample_ui}
 \alias{var_doc_ui}
 \alias{medfield_summary_text_ui}
+\alias{reguser_summary_text_ui}
 \alias{profile_ui}
 \title{Functions that provide server output}
 \usage{

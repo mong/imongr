@@ -11,6 +11,7 @@
 #'
 #' @param pool a database connection pool object
 #' @param registry Integer defining registry id
+#' @param user Integer defining user id
 #' @param orgnr Integer id of organization
 #' @param full_name Logical defining if full names is to be returned
 #' @param indicator Character vector of indicator ids
@@ -23,7 +24,8 @@
 #' get_user_registry_select get_user_latest_delivery_id get_registry_data
 #' get_indicators_registryget_registry_ind get_registry_name get_org_name
 #' get_flat_org get_all_orgnr get_user get_registry_indicators
-#' get_registry_medfield get_medfield_registry
+#' get_registry_medfield get_medfield_registry get_registry_user
+#' get_user_registry
 NULL
 
 
@@ -474,6 +476,42 @@ FROM
   registry_medfield
 WHERE
   medfield_id=", medfield, ";"
+  )
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
+get_registry_user <- function(pool, registry) {
+
+  query <- paste0("
+SELECT
+  user_registry.user_id,
+  user.name
+FROM
+  user_registry
+LEFT JOIN user ON
+  user_registry.user_id=user.id
+WHERE
+  user_registry.registry_id=", registry, ";"
+  )
+
+  pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname db_get
+#' @export
+get_user_registry <- function(pool, user) {
+
+  query <- paste0("
+SELECT
+  DISTINCT(registry_id)
+FROM
+  user_registry
+WHERE
+  user_id=", medfield, ";"
   )
 
   pool::dbGetQuery(pool, query)

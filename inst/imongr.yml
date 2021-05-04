@@ -62,6 +62,8 @@ app_text:
       Se på og last ned data fra Sykehusviseren
     medfield: |-
       Angi fagområde(r) for registrene
+    reguser: |-
+      Angi bruker(e) for registrene
     adminer: |-
       Administrer data
 db:
@@ -295,6 +297,17 @@ medfield:
       Alle eksisterende fagområder med tilhørende registre
     missing: >
       Ingen registre tilhørende dette fagområdet.
+reguser:
+  text:
+    heading: >
+      Angi brukere for
+    body: >
+      Bruk menyen til venstre og velg ønskede brukere for hvert
+      enkelt register. Trykk deretter 'Oppdatér'.
+    summary: >
+      Alle eksisterende brukere med tilhørende registre
+    missing: >
+      Ingen registre tilhørende denne brukeren.
 aggregate:
   data_var_ind:
   - 3
