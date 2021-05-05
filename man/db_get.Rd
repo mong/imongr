@@ -15,6 +15,7 @@
 \alias{get_flat_org}
 \alias{get_all_orgnr}
 \alias{get_user}
+\alias{get_users}
 \alias{get_registry_indicators}
 \alias{get_registry_medfield}
 \alias{get_medfield_registry}
@@ -57,6 +58,8 @@ get_flat_org(pool)
 get_all_orgnr(pool, include_short_name = FALSE)
 
 get_user(pool, sample = NA)
+
+get_users(pool, valid = TRUE)
 
 get_registry_indicators(pool, registry)
 

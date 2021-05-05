@@ -21,9 +21,9 @@ app_server <- function(input, output, session) {
     medfield_data = get_table(pool, "medfield"),
     medfield_summary = medfield_summary_text_ui(pool, conf,
                                                 get_table(pool, "medfield")),
-    user_data = get_table(pool, "user"),
+    user_data = get_users(pool),
     user_summary =
-      reguser_summary_text_ui(pool, conf, get_table(pool, "user")),
+      reguser_summary_text_ui(pool, conf, get_users(pool)),
     upload_reg = character(),
     download_reg = character(),
     pool = make_pool(),
@@ -85,12 +85,12 @@ app_server <- function(input, output, session) {
                            "username=", db_username(), "&",
                            "db=", db_name())
     rv$pool <- make_pool(context = input$context)
-    medfield_data <- get_table(rv$pool, "medfield")
+    rv$medfield_data <- get_table(rv$pool, "medfield")
     rv$medfield_summary <-
       medfield_summary_text_ui(rv$pool, conf, get_table(rv$pool, "medfield"))
-    user_data <- get_table(rv$pool, "user")
+    rv$user_data <- get_users(rv$pool)
     rv$user_summary <-
-      reguser_summary_text_ui(rv$pool, conf, get_table(rv$pool, "user"))
+      reguser_summary_text_ui(rv$pool, conf, get_users(rv$pool))
     rv$inv_data <- rv$inv_data + 1
   })
 
@@ -322,7 +322,7 @@ app_server <- function(input, output, session) {
     )
     update_registry_medfield(rv$pool, registry_medfield_update)
     rv$medfield_summary <-
-      medfield_summary_text_ui(rv$pool, conf, medfield_data)
+      medfield_summary_text_ui(rv$pool, conf, rv$medfield_data)
   })
 
   output$select_medfield_registry <- shiny::renderUI({
@@ -368,7 +368,7 @@ app_server <- function(input, output, session) {
     )
     update_registry_user(rv$pool, registry_user_update)
     rv$user_summary <-
-      reguser_summary_text_ui(rv$pool, conf, user_data)
+      reguser_summary_text_ui(rv$pool, conf, rv$user_data)
   })
 
   output$select_user_registry <- shiny::renderUI({
@@ -379,7 +379,7 @@ app_server <- function(input, output, session) {
     shiny::req(input$user_registry)
     if (dim(rv$user_data)[1] > 0) {
       all_user <- rv$user_data$id
-      names(all_user) <- rv$user_data$name
+      names(all_user) <- rv$user_data$user_name
     } else {
       all_user <- list(`Not defined!` = 0)
     }

@@ -202,7 +202,7 @@ reguser_summary_text_ui <- function(pool, conf, df) {
   if (dim(df)[1] > 0) {
     txt <- paste0("<h2>", conf$reguser$text$summary, "</h2>\n")
     for (i in seq_len(length(df$id))) {
-      txt <- paste0(txt, "<h3>", df$full_name[i], "</h3>\n")
+      txt <- paste0(txt, "<h3>", df$user_name[i], "</h3>\n")
       regs <- get_user_registry(pool, df$id[i])
       if (dim(regs)[1] > 0) {
         regtxt <- paste0("<ul>\n\t<li>",
