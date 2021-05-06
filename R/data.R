@@ -176,3 +176,28 @@
 #'   \item{delivery_id}{Numeric id referencing the delivery}
 #'   }
 "data"
+
+#' registry_medfield example data for qmongr data store
+#'
+#' Meta data to allow interactions with qmong data. Only used for testing in
+#' this package. Please refer to the overall data model (ref)
+#' @format Data frame with made up values
+#' \describe{
+#'   \item{id}{}
+#'   \item{registry_id}{}
+#'   \item{medfield_id}{}
+#' }
+"registry_medfield"
+
+#' medfield example data for qmongr data store
+#'
+#' Meta data to allow interactions with qmong data. Only used for testing in
+#' this package. Please refer to the overall data model (ref)
+#' @format Data frame with made up values
+#' \describe{
+#'   \item{id}{}
+#'   \item{name}{}
+#'   \item{full_name}{}
+#' }
+"medfield"
+
