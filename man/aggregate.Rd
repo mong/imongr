@@ -40,9 +40,6 @@ data on each indicator}
 \item{diff}{Data frame with diff data}
 
 \item{gdf}{Data frame of grouped data}
-
-\item{group}{Character string defining the name of the grouping variable
-in a data frame}
 }
 \value{
 Data frame in raw, grouped or aggregated form

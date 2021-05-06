@@ -11,7 +11,9 @@
 #'
 #' @param pool a database connection pool object
 #' @param registry Integer defining registry id
+#' @param medfield Integer defining medfield id
 #' @param user Integer defining user id
+#' @param valid Logical if to select valid user only. TRUE by default
 #' @param orgnr Integer id of organization
 #' @param full_name Logical defining if full names is to be returned
 #' @param indicator Character vector of indicator ids

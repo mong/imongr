@@ -87,6 +87,10 @@ get_user_registry(pool, user)
 \item{sample}{Integer in range \[0, 1\] defining data set subsample size.
 Defaults to NA in which case all data is returned}
 
+\item{valid}{Logical if to select valid user only. TRUE by default}
+
+\item{medfield}{Integer defining medfield id}
+
 \item{user}{Integer defining user id}
 }
 \value{
