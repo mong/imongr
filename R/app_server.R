@@ -345,7 +345,7 @@ app_server <- function(input, output, session) {
       current_medfield <- NULL
     }
     shiny::selectInput(inputId = "select_medfield",
-                       label = "Velg fagområde(r):",
+                       label = "Velg fagomr\u00e5de(r):",
                        choices = all_medfield,
                        selected = current_medfield,
                        multiple = TRUE)

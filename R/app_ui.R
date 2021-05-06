@@ -146,7 +146,7 @@ app_ui <- function() {
       ),
       shiny::tabPanel(
         value = "medfield",
-        shiny::span("Fagområder",
+        shiny::span("Fagomr\u00e5der",
                     title = conf$app_text$tooltip$medfield,
                     id = "medfield"),
         shiny::sidebarLayout(
@@ -154,7 +154,7 @@ app_ui <- function() {
             width = 3,
             shiny::uiOutput("select_medfield_registry"),
             shiny::uiOutput("select_registry_medfield"),
-            shiny::actionButton("update_medfield", label = "Oppdatér",
+            shiny::actionButton("update_medfield", label = "Oppdat\u00e9r",
                                 icon = shiny::icon("paper-plane"))
           ),
           shiny::mainPanel(
@@ -173,7 +173,7 @@ app_ui <- function() {
             width = 3,
             shiny::uiOutput("select_user_registry"),
             shiny::uiOutput("select_registry_user"),
-            shiny::actionButton("update_reguser", label = "Oppdatér",
+            shiny::actionButton("update_reguser", label = "Oppdat\u00e9r",
                                 icon = shiny::icon("paper-plane"))
           ),
           shiny::mainPanel(
