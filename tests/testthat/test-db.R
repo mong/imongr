@@ -175,6 +175,12 @@ test_that("user data can be fetched from test database", {
   expect_true(dim(get_user(pool, sample = .9))[1] <= dim(imongr::user)[1])
 })
 
+test_that("all user can be fetched", {
+  check_db()
+  expect_equal(class(get_users(pool)), "data.frame")
+  expect_equal(class(get_users(pool, valid = FALSE)), "data.frame")
+})
+
 test_that("indicator data can be fetched from test database", {
   check_db()
   expect_equal(dim(get_table(pool, "ind")), dim(imongr::ind))
@@ -243,10 +249,22 @@ test_that("registries medfields can be fetched", {
   expect_equal(class(get_medfield_registry(pool, 1)), "data.frame")
 })
 
+
 test_that("registry-medfield tab can be updated", {
   check_db()
   df <- imongr::registry_medfield
   expect_invisible(update_registry_medfield(pool, df))
+})
+
+test_that("users registries can be fetched", {
+  check_db()
+  expect_equal(class(get_registry_user(pool, 1)), "data.frame")
+})
+
+test_that("users registries can be updated", {
+  check_db()
+  df <- imongr::user_registry
+  expect_invisible(update_registry_user(pool, df))
 })
 
 test_that("get_table wrapper function do work", {
