@@ -97,7 +97,7 @@ app_server <- function(input, output, session) {
   # Common context selector?
   output$select_context <- shiny::renderUI({
     if (valid_user) {
-    shiny::selectInput("context", "Velg miljø:",
+    shiny::selectInput("context", "Velg milj\u00f8:",
                        choices = list(Produksjon = "prod",
                                       Dataverifisering = "verify",
                                       QA = "qa"),
