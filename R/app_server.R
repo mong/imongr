@@ -235,7 +235,8 @@ app_server <- function(input, output, session) {
   })
 
   output$valid_ind_tab <- shiny::renderTable(
-    get_registry_indicators(rv$pool, shiny::req(input$registry)), rownames = TRUE,
+    get_registry_indicators(rv$pool, shiny::req(input$registry)),
+    rownames = TRUE,
     colnames = FALSE
   )
 
