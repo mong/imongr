@@ -11,3 +11,4 @@
 ^codecov\.yml$
 ^Dockerfile$
 ^LICENSE\.md$
+^\.github$
