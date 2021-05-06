@@ -172,6 +172,8 @@ var_doc_ui <- function(conf) {
   l
 }
 
+#' @rdname server_output
+#' @export
 medfield_summary_text_ui <- function(pool, conf, df) {
 
   if (dim(df)[1] > 0) {
@@ -197,6 +199,8 @@ medfield_summary_text_ui <- function(pool, conf, df) {
   }
 }
 
+#' @rdname server_output
+#' @export
 reguser_summary_text_ui <- function(pool, conf, df) {
 
   if (dim(df)[1] > 0) {
