@@ -46,7 +46,14 @@ reference:
     - get_flat_org
     - get_all_orgnr
     - get_user
+    - get_users
     - get_registry_indicators
+    - get_registry_medfield
+    - get_medfield_registry
+    - get_registry_user
+    - get_user_registry
+
+
 
   - title: Data operations
     desc: >
@@ -62,6 +69,8 @@ reference:
     - agg_all_data
     - clean_agg_data
     - create_imongr_user
+    - update_registry_medfield
+    - update_registry_user
 
   - title: Aggregation
     desc: >

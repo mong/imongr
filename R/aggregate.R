@@ -34,8 +34,6 @@
 #' be obtained by \code{get_flat_org(pool)}
 #' @param ind Data frame holding the indicator db table providing all
 #' data on each indicator
-#' @param group Character string defining the name of the grouping variable
-#' in a data frame
 #' @param aggs Data frame of (pre) aggregated data
 #' @param diff Data frame with diff data
 #' @param conf List of configuration

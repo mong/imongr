@@ -49,6 +49,12 @@ if (is.null(check_db(is_test_that = FALSE))) {
   }
 
   insert_sample_data()
+
+  # add a user with no deliveries
+  query <- paste("INSERT INTO user VALUES (10, 'nobody@nowhere.com',",
+                 "'Mr Nobody',",
+                 "'+0000000000', 'nobody@nowhere.com', 1);")
+  pool::dbExecute(pool, query)
 }
 
 conf <- get_config()
@@ -87,6 +93,17 @@ test_that("select list of registries is provided (if any)", {
     select_registry_ui(pool, conf, "test", "qa")))
   expect_true("shiny.tag.list" %in% class(
     select_registry_ui(pool, conf, "test", "prod", "reg")))
+  # test when no deliveries
+  Sys.setenv(SHINYPROXY_USERNAME = "nobody@nowhere.com")
+  expect_true("shiny.tag.list" %in% class(
+    select_registry_ui(pool, conf, "test", "prod")))
+  # test when manager
+  Sys.setenv(SHINYPROXY_USERGROUPS = "PROVIDER,MANAGER")
+  expect_true("shiny.tag.list" %in% class(
+    select_registry_ui(pool, conf, "test", "prod")))
+  # reset
+  Sys.setenv(SHINYPROXY_USERNAME = "mongr")
+  Sys.setenv(SHINYPROXY_USERGROUPS = "G1,G2")
 })
 
 test_that("submit ui is provided", {
@@ -151,6 +168,22 @@ test_that("text for medfield summary is properly provided", {
                "character")
   df <- rbind(df, data.frame(id = 100, name = "anon",
                              full_name = "medfield with no registries"))
+  expect_equal(class(medfield_summary_text_ui(pool, conf, df)),
+               "character")
+})
+
+test_that("text for reguser summary is properly provided", {
+  check_db()
+  expect_null(reguser_summary_text_ui(pool, conf, data.frame()))
+  df <- imongr::user
+  df <- cbind(data.frame(id = seq(1, dim(df)[1])), df)
+  expect_equal(class(reguser_summary_text_ui(pool, conf, df)),
+               "character")
+  df <- rbind(
+    df,
+    data.frame(id = 100, user_name = "nobody@nowhere.com",
+               name = "Mr Nobody", phone = "+0000000000",
+               email = "nobody@nowhere.com", valid = 1))
   expect_equal(class(medfield_summary_text_ui(pool, conf, df)),
                "character")
 })

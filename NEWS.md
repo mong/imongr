@@ -1,3 +1,7 @@
+# imongr 0.19.0
+
+* GUI management of user-registry associations ([#112](https://github.com/mong/imongr/pull/112))
+
 # imongr 0.18.0
 
 * Added user controlled multiple data backends ([#110](https://github.com/mong/imongr/pull/110))

@@ -9,6 +9,7 @@
 \alias{upload_sample_ui}
 \alias{var_doc_ui}
 \alias{medfield_summary_text_ui}
+\alias{reguser_summary_text_ui}
 \alias{profile_ui}
 \title{Functions that provide server output}
 \usage{
@@ -25,6 +26,10 @@ upload_sample_text_ui(pool, conf, upload_file, registry, indicators)
 upload_sample_ui(df, upload_file, registry, sample_size, sample_type)
 
 var_doc_ui(conf)
+
+medfield_summary_text_ui(pool, conf, df)
+
+reguser_summary_text_ui(pool, conf, df)
 }
 \arguments{
 \item{conf}{List of configuration}
