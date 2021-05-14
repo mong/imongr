@@ -7,7 +7,7 @@ app_ui <- function() {
 
   conf <- get_config()
   shiny::addResourcePath("www", system.file("www", package = "imongr"))
-  app_title <- "Data i Sykehusviseren"
+  app_title <- "Data | SKDE"
 
   shiny::tagList(
     shinyjs::useShinyjs(),
