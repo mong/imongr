@@ -87,7 +87,7 @@ are reflected by configuration." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.18.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.19.0</span>
       </span>
     </div>
 
@@ -174,11 +174,17 @@ are reflected by configuration.</p>
 
 <span class='fu'>get_user</span><span class='op'>(</span><span class='va'>pool</span>, sample <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span>
 
+<span class='fu'>get_users</span><span class='op'>(</span><span class='va'>pool</span>, valid <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+
 <span class='fu'>get_registry_indicators</span><span class='op'>(</span><span class='va'>pool</span>, <span class='va'>registry</span><span class='op'>)</span>
 
 <span class='fu'>get_registry_medfield</span><span class='op'>(</span><span class='va'>pool</span>, <span class='va'>registry</span><span class='op'>)</span>
 
-<span class='fu'>get_medfield_registry</span><span class='op'>(</span><span class='va'>pool</span>, <span class='va'>medfield</span><span class='op'>)</span></pre>
+<span class='fu'>get_medfield_registry</span><span class='op'>(</span><span class='va'>pool</span>, <span class='va'>medfield</span><span class='op'>)</span>
+
+<span class='fu'>get_registry_user</span><span class='op'>(</span><span class='va'>pool</span>, <span class='va'>registry</span><span class='op'>)</span>
+
+<span class='fu'>get_user_registry</span><span class='op'>(</span><span class='va'>pool</span>, <span class='va'>user</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -211,6 +217,18 @@ are reflected by configuration.</p>
       <th>sample</th>
       <td><p>Integer in range \[0, 1\] defining data set subsample size.
 Defaults to NA in which case all data is returned</p></td>
+    </tr>
+    <tr>
+      <th>valid</th>
+      <td><p>Logical if to select valid user only. TRUE by default</p></td>
+    </tr>
+    <tr>
+      <th>medfield</th>
+      <td><p>Integer defining medfield id</p></td>
+    </tr>
+    <tr>
+      <th>user</th>
+      <td><p>Integer defining user id</p></td>
     </tr>
     </table>
 
