@@ -1,3 +1,7 @@
+# imongr 0.19.1
+
+* Adjustments of logo, favicon and app title ([#113](https://github.com/mong/imongr/pull/113))
+
 # imongr 0.19.0
 
 * GUI management of user-registry associations ([#112](https://github.com/mong/imongr/pull/112))
