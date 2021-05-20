@@ -1,3 +1,9 @@
+# imongr 0.20.0
+
+* Added new checks for natural numbers and zero denominator ([#114](https://github.com/mong/imongr/pull/114))
+* Also as a result of the above, new functions were added
+* App texts added and updated
+
 # imongr 0.19.1
 
 * Adjustments of logo, favicon and app title ([#113](https://github.com/mong/imongr/pull/113))
