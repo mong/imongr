@@ -8,8 +8,11 @@
 \alias{no_opt_out_ok}
 \alias{insert_sample_data}
 \alias{delete_all_data}
+\alias{is.natural}
 \title{Tools and whatever}
 \usage{
+is.natural(vals, tolerance = .Machine$double.eps^0.5)
+
 md5_checksum(df)
 
 navbar_widget()
@@ -23,6 +26,12 @@ insert_sample_data(include_data_table = TRUE)
 delete_all_data(prompt = TRUE)
 }
 \arguments{
+\item{vals}{A numeric vector}
+
+\item{tolerance}{A (small) positiv floating point number used to evaluate if
+a numeric can be regarded as a whole number. Default depends on the running
+environment and set to \code{.Machine$double.eps^0.5}}
+
 \item{df}{A data frame}
 
 \item{newline}{String element defining line break for formatting. Default is

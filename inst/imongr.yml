@@ -229,12 +229,22 @@ upload:
       Ukjent orgnr (kontakt SKDE):
     invalid_ind: |-
       Ukjent indikator (kontakt SKDE):
-    none_numeric_var: |-
+    numeric_var: |-
       En eller flere verdier i var er ikke numerisk
+    natural_var: |-
+      En eller flere verdier i var er ikke naturlige tall (inkludert 0)
+    numeric_denominator: |-
+      En eller flere verdier i denominator er ikke numerisk
+    natural_denominator: |-
+      En eller flere verdier i denominator er ikke naturlige tall
+    zero_denominator: |-
+      En eller flere verdier i denominator er lik 0
     duplicate_delivery: |-
       Datasettet er identisk med siste innsending
   check_empty: |-
     nødvendig definisjon, verdi eller format finnes ikke
+  check_impossible: |-
+    testen kunne ikke gjennomføres, se eventuelt andre feilmeldinger
   doc:
     main: >
       Dette er et verktøy for å hjelpe med å legge til data i riktig format
@@ -245,9 +255,9 @@ upload:
       på innholdet i kolonnene.
     sample: >
       Her vises en utsnitt av datasett du har lastet opp. Juster parametrene i
-      menyen på venstresiden slik at norske tegn (æøå) representeres riktig og
-      tallene fremstår slik de skal. <b>Merk at når du sender nye data til
-      server vil alle gamle data tilsvarende indikatorer gitt i datasettet
+      menyen på venstresiden slik at eventuelle norske tegn (æøå) representeres
+      riktig og tallene fremstår slik de skal. <b>Merk at når du sender nye data
+      så vil alle gamle data for tilsvarende indikatorer gitt i datasettet
       overskrives/slettes</b>. Følgende indikatorer (med markering for de som
       finnes i csv-fila) er gyldige for
     year: >
@@ -266,15 +276,14 @@ upload:
       organisasjonsnummeret til sykehuset, hf-et eller rhf-et som er knyttet
       til hendelsen, enten som behandlende enhet eller som opptaksområde
     var: >
-      en binær verdi (0/1) per hendelse for fremstilling av andel måloppnåelse
-      eller en numerisk variabel for fremstilling av gjennomsnitt eller median.
-      Angis i utgangspunktet for hver enkelt hendelse men kan også benyttes til
-      å angi aggregert verdi for et gitt antall hendelser. Antall hendelser gis
-      i <i>denominator</i> (se under)
+      et positivt heltall større eller lik 0 for fremstilling av andel
+      måloppnåelse. Angis i utgangspunktet for hver enkelt hendelse (som 0
+      eller 1) men kan også benyttes til å angi aggregert verdi for et gitt
+      antall hendelser. Antall hendelser gis i <i>denominator</i> (se under)
     denominator: >
-      heltall som angir antall hendelser for tilsvarende verdi i <i>var</i>.
-      For enkelthendelser skal verdien være 1 og for et aggregat av hendelser
-      skal verdien være større enn 1
+      et positivt heltall større enn 0 som angir antall hendelser for
+      tilsvarende verdi i <i>var</i>. For enkelthendelser skal verdien være 1
+      og for et aggregat av hendelser skal verdien være større enn 1
     ind_id: >
       unik id for kvalitetsindikator og som må samsvare med gyldige verdier
       (for valgt register, se under)
