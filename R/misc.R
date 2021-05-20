@@ -1,5 +1,9 @@
 #' Tools and whatever
 #'
+#' @param vals A numeric vector
+#' @param tolerance A (small) positiv floating point number used to evaluate if
+#' a numeric can be regarded as a whole number. Default depends on the running
+#' environment and set to \code{.Machine$double.eps^0.5}
 #' @param df A data frame
 #' @param include_data_table Logical defining if the data table is to be
 #' populated by data too. By default TRUE
@@ -8,9 +12,22 @@
 #' @param prompt Logical to prompt for user input. Default is TRUE
 #' @return Invisible
 #' @name misc
-#' @aliases md5_checksum navbar_widget version_info no_opt_out_ok
+#' @aliases natural md5_checksum navbar_widget version_info no_opt_out_ok
 #' insert_sample_data delete_all_data
 NULL
+
+
+#' @rdname misc
+#' @export
+natural <- function(vals, tolerance = .Machine$double.eps^0.5) {
+
+  stopifnot(is.numeric(vals))
+  if (any(vals < 0)) {
+    return(FALSE)
+  }
+  abs(vals - round(vals)) < tolerance
+
+}
 
 
 #' @rdname misc
