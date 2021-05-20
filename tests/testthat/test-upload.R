@@ -150,13 +150,13 @@ test_that("indicator id check is working", {
 
 test_that("variable (numeric) type check is working", {
   check_db()
-  expect_false(check_none_numeric_var(registry, df, conf, pool)$fail)
+  expect_false(check_numeric_var(registry, df, conf, pool)$fail)
   expect_equal(
-    check_none_numeric_var(registry, df[, !names(df) %in% "var"],
+    check_numeric_var(registry, df[, !names(df) %in% "var"],
                            conf, pool)$report, conf$upload$check_empty
   )
   df$var <- as.character(df$var)
-  expect_true(check_none_numeric_var(registry, df, conf, pool)$fail)
+  expect_true(check_numeric_var(registry, df, conf, pool)$fail)
   df$var <- as.numeric(df$var)
 })
 
