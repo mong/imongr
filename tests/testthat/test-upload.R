@@ -148,7 +148,7 @@ test_that("indicator id check is working", {
   df$ind_id <- "norgast_andel_avdoede_bykspytt_tolv"
 })
 
-test_that("variable (numeric) type check is working", {
+test_that("numeric check on var is working", {
   check_db()
   expect_false(check_numeric_var(registry, df, conf, pool)$fail)
   expect_equal(
@@ -158,6 +158,58 @@ test_that("variable (numeric) type check is working", {
   df$var <- as.character(df$var)
   expect_true(check_numeric_var(registry, df, conf, pool)$fail)
   df$var <- as.numeric(df$var)
+})
+
+test_that("numeric check on denominator is working", {
+  check_db()
+  expect_false(check_numeric_denominator(registry, df, conf, pool)$fail)
+  expect_equal(
+    check_numeric_denominator(registry, df[, !names(df) %in% "denominator"],
+                      conf, pool)$report, conf$upload$check_empty
+  )
+  df$denominator <- as.character(df$denominator)
+  expect_true(check_numeric_denominator(registry, df, conf, pool)$fail)
+  df$denominator <- as.numeric(df$denominator)
+})
+
+test_that("natural number check on var is working", {
+  check_db()
+  expect_false(check_natural_var(registry, df, conf, pool)$fail)
+  df$var <- df$var + .1
+  expect_true(check_natural_var(registry, df, conf, pool)$fail)
+  df$var <- df$var - 1000000.1
+  expect_true(check_natural_var(registry, df, conf, pool)$fail)
+  df$var <- df$var + 1000000
+  expect_equal(check_natural_var(registry, df[, !names(df) %in% "var"],
+                                 conf, pool)$report,
+               conf$upload$check_impossible)
+})
+
+test_that("natural number check on denominator is working", {
+  check_db()
+  expect_false(check_natural_denominator(registry, df, conf, pool)$fail)
+  df$denominator <- df$denominator + .1
+  expect_true(check_natural_denominator(registry, df, conf, pool)$fail)
+  df$denominator <- df$denominator - 1000000.1
+  expect_true(check_natural_denominator(registry, df, conf, pool)$fail)
+  df$denominator <- df$denominator + 1000000
+  expect_equal(check_natural_denominator(registry,
+                                         df[, !names(df) %in% "denominator"],
+                                         conf, pool)$report,
+               conf$upload$check_impossible)
+})
+
+test_that("zero check on denominator is working", {
+  check_db()
+  expect_false(check_zero_denominator(registry, df, conf, pool)$fail)
+  orig_denominator <- df$denominator
+  df$denominator <- 0
+  expect_true(check_zero_denominator(registry, df, conf, pool)$fail)
+  df$denominator <- orig_denominator
+  expect_equal(check_zero_denominator(registry,
+                                      df[, !names(df) %in% "denominator"],
+                                      conf, pool)$report,
+               conf$upload$check_impossible)
 })
 
 test_that("duplicate delivery check is present (tested elsewhere)", {
