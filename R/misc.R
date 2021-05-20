@@ -12,14 +12,14 @@
 #' @param prompt Logical to prompt for user input. Default is TRUE
 #' @return Invisible
 #' @name misc
-#' @aliases md5_checksum navbar_widget version_info no_opt_out_ok
+#' @aliases natural md5_checksum navbar_widget version_info no_opt_out_ok
 #' insert_sample_data delete_all_data
 NULL
 
 
 #' @rdname misc
 #' @export
-is.natural <- function(vals, tolerance = .Machine$double.eps^0.5) {
+natural <- function(vals, tolerance = .Machine$double.eps^0.5) {
 
   stopifnot(is.numeric(vals))
   if (any(vals < 0)) {

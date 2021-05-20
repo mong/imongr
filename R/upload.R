@@ -201,7 +201,7 @@ check_natural_var <- function(registry, df, conf, pool) {
   fail <- TRUE
   report <- ""
   if ("var" %in% names(df) && is.numeric(df$var)) {
-    if (all(is.natural(df$var))) {
+    if (all(natural(df$var))) {
       fail <- FALSE
     }
   } else {
@@ -234,7 +234,7 @@ check_natural_denominator <- function(registry, df, conf, pool) {
   fail <- TRUE
   report <- ""
   if ("denominator" %in% names(df) && is.numeric(df$denominator)) {
-    if (all(is.natural(df$denominator))) {
+    if (all(natural(df$denominator))) {
       fail <- FALSE
     }
   } else {

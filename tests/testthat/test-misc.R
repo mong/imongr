@@ -28,10 +28,10 @@ check_db <- function(is_test_that = TRUE) {
 }
 
 test_that("check on natural numbers can be performed", {
-  expect_false(is.natural(-1))
-  expect_true(is.natural(1))
-  expect_equal(is.natural(c(0, 1.1, 2)), c(TRUE, FALSE, TRUE))
-  expect_error(is.natural("1"))
+  expect_false(natural(-1))
+  expect_true(natural(1))
+  expect_equal(natural(c(0, 1.1, 2)), c(TRUE, FALSE, TRUE))
+  expect_error(natural("1"))
 })
 
 test_that("a consistent md5 checksum of a data frame can be provided", {

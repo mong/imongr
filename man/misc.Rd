@@ -2,16 +2,16 @@
 % Please edit documentation in R/misc.R
 \name{misc}
 \alias{misc}
+\alias{natural}
 \alias{md5_checksum}
 \alias{navbar_widget}
 \alias{version_info}
 \alias{no_opt_out_ok}
 \alias{insert_sample_data}
 \alias{delete_all_data}
-\alias{is.natural}
 \title{Tools and whatever}
 \usage{
-is.natural(vals, tolerance = .Machine$double.eps^0.5)
+natural(vals, tolerance = .Machine$double.eps^0.5)
 
 md5_checksum(df)
 
