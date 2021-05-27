@@ -74,12 +74,14 @@ delete_indicator_data <- function(pool, df) {
     stop("Data frame has no notion of 'indicator' (id). Cannot delete!")
   }
   ind <- unique(df$ind_id)
+  context <- unique(df$context)
 
   query <- paste0("
 DELETE FROM
   data
 WHERE
-  ind_id IN ('", paste0(ind, collapse = "', '"), "');")
+  ind_id IN ('", paste0(ind, collapse = "', '"), "') AND
+  context IN ('", paste0(context, collapse = "', '"), "');")
 
   pool::dbExecute(pool, query)
 }
