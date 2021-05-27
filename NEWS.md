@@ -1,6 +1,6 @@
 # imongr 0.20.1
 
-* Fixed bug deleting all indicators regardless of context ([#115](https://github.com/mong/imongr/pull/115))
+* Fixed bug deleting all indicators regardless of context ([#118](https://github.com/mong/imongr/pull/118))
 
 # imongr 0.20.0
 
