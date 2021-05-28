@@ -95,11 +95,16 @@ delete_agg_data <- function(pool, df) {
 DELETE FROM
   agg_data
 WHERE
-  "
+"
 
   ind <- unique(df$ind_id)
-  condition <- paste(paste0("'", ind, "'"), collapse = ", ")
-  condition <- paste0("ind_id IN (", condition, ");")
+  context <- unique(df$context)
+  ic <- paste(paste0("'", ind, "'"), collapse = ", ")
+  cc <- paste(paste0("'", context, "'"), collapse = ", ")
+  condition <- paste0("
+  ind_id IN (", ic, ") AND
+  context IN (", cc, ");"
+  )
 
   query <- paste0(query, condition)
 
