@@ -206,6 +206,10 @@ upload:
     - ind_id
     - var
     - denominator
+    vals:
+      context:
+      - caregiver
+      - recident
   reciept:
     title: Fantastisk!
     body: Dine data er nå lastet inn
@@ -225,6 +229,8 @@ upload:
       Manglende variabler:
     invalid_var: |-
       Ugyldige variabler:
+    invalid_context: |-
+      Ukjent kontekst (context):
     invalid_org: |-
       Ukjent orgnr (kontakt SKDE):
     invalid_ind: |-

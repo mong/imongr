@@ -8,6 +8,7 @@
 \alias{check_missing_var}
 \alias{check_invalid_var}
 \alias{check_invalid_org}
+\alias{check_invalid_context}
 \alias{check_invalid_ind}
 \alias{check_none_numeric_var}
 \alias{check_duplicate_delivery}
@@ -32,6 +33,8 @@ check_missing_registry(registry, df, conf, pool)
 check_missing_var(registry, df, conf, pool)
 
 check_invalid_var(registry, df, conf, pool)
+
+check_invalid_context(registry, df, conf, pool)
 
 check_invalid_org(registry, df, conf, pool)
 

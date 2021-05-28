@@ -56,7 +56,8 @@ check_db <- function(is_test_that = TRUE) {
 }
 
 # make a sample df to be used for the remaining tests
-df <- data.frame(year = 2018,
+df <- data.frame(context = "caregiver",
+                 year = 2018,
                  orgnr = 974633574,
                  ind_id = "norgast_andel_avdoede_bykspytt_tolv",
                  var = 0,
@@ -79,7 +80,8 @@ test_that("an upload csv can be converted to a data frame", {
 
 test_that("encoding magic can be performed on csv file", {
   df_nordic <- rbind(df[, !names(df) %in% "nevner"],
-                     data.frame(year = 2018,
+                     data.frame(context = "caregiver",
+                                year = 2018,
                                 orgnr = 974633574,
                                 ind_id = "æøåÆØÅ",
                                 var = 0,
@@ -124,6 +126,20 @@ if (is.null(check_db(is_test_that = FALSE))) {
 
 # test that depend on db
 conf <- get_config()
+
+test_that("(valid) context check is working", {
+  check_db()
+  expect_false(check_invalid_context(registry, df, conf, pool)$fail)
+  expect_equal(check_invalid_context(registry, df[, !names(df) %in% "context"],
+                                 conf, pool)$report, conf$upload$check_empty)
+  # set an invalid context
+  df$context <- "careprovider"
+  expect_true(check_invalid_context(registry, df, conf, pool)$fail)
+  expect_true(
+    length(check_invalid_context(registry, df, conf, pool)$report) > 0
+  )
+  df$context <- "caregiver"
+})
 
 test_that("org id checks is working", {
   check_db()

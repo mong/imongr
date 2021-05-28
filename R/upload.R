@@ -20,8 +20,9 @@
 #' @importFrom utils read.csv URLencode
 #' @name upload
 #' @aliases check_report check_upload check_missing_registry check_missing_var
-#' check_invalid_var check_invalid_org check_invalid_ind check_none_numeric_var
-#' check_duplicate_delivery csv_to_df mail_check_report sample_df
+#' check_invalid_var check_invalid_org check_invalid_context check_invalid_ind
+#' check_none_numeric_var check_duplicate_delivery csv_to_df mail_check_report
+#' sample_df
 NULL
 
 
@@ -134,6 +135,23 @@ check_invalid_var <- function(registry, df, conf, pool) {
 
   fail <- TRUE
   report <- setdiff(names(df), conf$upload$file$vars)
+  if (length(report) == 0) {
+    fail <- FALSE
+  }
+  list(fail = fail, report = report)
+}
+
+
+#' @rdname upload
+#' @export
+check_invalid_context <- function(registry, df, conf, pool) {
+
+  fail <- TRUE
+  if ("context" %in% names(df)) {
+    report <- setdiff(df$context, conf$upload$file$vals$context)
+  } else {
+    report <- conf$upload$check_empty
+  }
   if (length(report) == 0) {
     fail <- FALSE
   }
