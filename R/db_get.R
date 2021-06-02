@@ -27,7 +27,7 @@
 #' get_indicators_registryget_registry_ind get_registry_name get_org_name
 #' get_flat_org get_all_orgnr get_user get_users get_registry_indicators
 #' get_registry_medfield get_medfield_registry get_registry_user
-#' get_user_registry
+#' get_user_registry get_aggdata_delivery_time
 NULL
 
 
@@ -537,4 +537,59 @@ WHERE
   )
 
   pool::dbGetQuery(pool, query)
+}
+
+
+#' @rdname db_get
+#' @export
+get_aggdata_delivery_time <- function(pool) {
+
+  # get current delivery ids in data
+  query <- paste0("
+SELECT
+  ind_id,
+  context,
+  MAX(delivery_id) as id
+FROM
+  data
+GROUP BY
+  ind_id,
+  context;"
+  )
+
+  dat <- pool::dbGetQuery(pool, query)
+
+  # get delivery data
+  query <- paste0("
+SELECT
+  id,
+  time AS delivery_time
+FROM
+  delivery;"
+  )
+
+  delivery <- pool::dbGetQuery(pool, query)
+
+  # add times to data
+  dat <- dat %>%
+    dplyr::left_join(delivery, by = "id") %>%
+    dplyr::select(!id)
+
+  # get aggdata
+  query <- paste0("
+SELECT
+  id,
+  ind_id,
+  context
+FROM
+  agg_data;"
+  )
+
+  agg <- pool::dbGetQuery(pool, query)
+
+  aggdata_delivery_time <- agg %>%
+    dplyr::left_join(dat, by = c("ind_id", "context")) %>%
+    dplyr::select(id, delivery_time)
+
+  aggdata_delivery_time
 }

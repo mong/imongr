@@ -267,6 +267,16 @@ test_that("users registries can be updated", {
   expect_invisible(update_registry_user(pool, df))
 })
 
+test_that("aggdata delivery times can be provided", {
+  check_db()
+  aggdata_delivery_time <- get_aggdata_delivery_time(pool)
+  expect_equal(class(aggdata_delivery_time), "data.frame")
+  expect_true(class(aggdata_delivery_time$id) %in% c("integer"))
+  expect_true(
+    class(aggdata_delivery_time$delivery_time)[1] %in% c("POSIXct", "POSIXt")
+  )
+})
+
 test_that("get_table wrapper function do work", {
   check_db()
   expect_equal(class(get_table(pool, "user")), "data.frame")

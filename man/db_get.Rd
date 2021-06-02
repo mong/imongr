@@ -21,6 +21,7 @@
 \alias{get_medfield_registry}
 \alias{get_registry_user}
 \alias{get_user_registry}
+\alias{get_aggdata_delivery_time}
 \alias{get_all_user_data}
 \alias{get_user_deliveries}
 \alias{get_indicators_registry}
@@ -70,6 +71,8 @@ get_medfield_registry(pool, medfield)
 get_registry_user(pool, registry)
 
 get_user_registry(pool, user)
+
+get_aggdata_delivery_time(pool)
 }
 \arguments{
 \item{pool}{a database connection pool object}
