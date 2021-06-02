@@ -206,6 +206,10 @@ upload:
     - ind_id
     - var
     - denominator
+    vals:
+      context:
+      - caregiver
+      - recident
   reciept:
     title: Fantastisk!
     body: Dine data er nå lastet inn
@@ -225,6 +229,8 @@ upload:
       Manglende variabler:
     invalid_var: |-
       Ugyldige variabler:
+    invalid_context: |-
+      Ukjent kontekst (context):
     invalid_org: |-
       Ukjent orgnr (kontakt SKDE):
     invalid_ind: |-
@@ -257,9 +263,9 @@ upload:
       Her vises en utsnitt av datasett du har lastet opp. Juster parametrene i
       menyen på venstresiden slik at eventuelle norske tegn (æøå) representeres
       riktig og tallene fremstår slik de skal. <b>Merk at når du sender nye data
-      så vil alle gamle data for tilsvarende indikatorer gitt i datasettet
-      overskrives/slettes</b>. Følgende indikatorer (med markering for de som
-      finnes i csv-fila) er gyldige for
+      så vil alle gamle data for tilsvarende indikatorer og kontekst gitt i
+      datasettet overskrives/slettes</b>. Følgende indikatorer (med markering
+      for de som finnes i csv-fila) er gyldige for
     year: >
       året for hendelsen
     ShNavn: >
