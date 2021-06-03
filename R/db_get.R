@@ -573,7 +573,7 @@ FROM
   # add times to data
   dat <- dat %>%
     dplyr::left_join(delivery, by = "id") %>%
-    dplyr::select(!id)
+    dplyr::select(!.data$id)
 
   # get aggdata
   query <- paste0("
@@ -589,7 +589,7 @@ FROM
 
   aggdata_delivery_time <- agg %>%
     dplyr::left_join(dat, by = c("ind_id", "context")) %>%
-    dplyr::select(id, delivery_time)
+    dplyr::select(.data$id, .data$delivery_time)
 
   # remove missing times
   aggdata_delivery_time[!is.na(aggdata_delivery_time$delivery_time), ]
