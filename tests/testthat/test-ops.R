@@ -157,6 +157,7 @@ test_that("agg data can be cleaned", {
 })
 
 test_that("agg_data delivery_time can be updated without errors", {
+  check_db()
   expect_invisible(update_aggdata_delivery_time(pool))
 })
 
