@@ -208,7 +208,7 @@ WHERE
 #' @export
 agg_all_data <- function(pool) {
 
-  insert_agg_data(pool, get_table(pool, "data"))
+  insert_agg_data(pool, get_table(pool, "data"), update_delivery_time = TRUE)
 }
 
 #' @rdname ops
