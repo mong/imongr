@@ -136,7 +136,7 @@ insert_data <- function(pool, df) {
 
 #' @rdname ops
 #' @export
-insert_agg_data <- function(pool, df, update_delivery_time = FALSE) {
+insert_agg_data <- function(pool, df) {
 
   # data for re-use
   org <- get_flat_org(pool)
@@ -174,11 +174,9 @@ insert_agg_data <- function(pool, df, update_delivery_time = FALSE) {
     delete_agg_data(pool, dat)
     message("...inserting fresh agg data")
     insert_table(pool, "agg_data", dat)
-    if (update_delivery_time) {
-      message("...updating time of delivery")
-      update_aggdata_delivery_time(pool)
-    }
   }
+  message("\nUpdating time of delivery")
+  update_aggdata_delivery_time(pool)
   message("Done!")
 }
 
@@ -208,7 +206,7 @@ WHERE
 #' @export
 agg_all_data <- function(pool) {
 
-  insert_agg_data(pool, get_table(pool, "data"), update_delivery_time = TRUE)
+  insert_agg_data(pool, get_table(pool, "data"))
 }
 
 #' @rdname ops
