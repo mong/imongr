@@ -1,3 +1,7 @@
+# imongr 0.22.0
+
+* Changed processing of target levels to avoid visual "errors" ([#122](https://github.com/mong/imongr/pull/122))
+
 # imongr 0.21.0
 
 * Added new field delivery_time to agg_data table for easier access to last data update in qmongr(js) ([#121](https://github.com/mong/imongr/pull/121))
