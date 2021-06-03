@@ -591,5 +591,7 @@ FROM
     dplyr::left_join(dat, by = c("ind_id", "context")) %>%
     dplyr::select(id, delivery_time)
 
-  aggdata_delivery_time
+  # remove missing times
+  aggdata_delivery_time[!is.na(aggdata_delivery_time$delivery_time), ]
+
 }
