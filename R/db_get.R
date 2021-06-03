@@ -9,6 +9,11 @@
 #' be left unchanged when the data model is altered as long as such changes
 #' are reflected by configuration.
 #'
+#' \code{get_aggdata_delivery_time()} provides a data.frame with the variables
+#' \emph{id} and \emph{delivery_time} where the first one corresponds to the id
+#' field in the agg_data table. The latter is a db TIMESTAMP represented as a
+#' POSIX(c)t object in R
+#'
 #' @param pool a database connection pool object
 #' @param registry Integer defining registry id
 #' @param medfield Integer defining medfield id
