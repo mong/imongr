@@ -114,7 +114,7 @@ test_that("database can be populated with test data", {
 
 test_that("agg_data can be populated from existing (test) data", {
   check_db()
-  # to save ptime, use just a sub-sample of data (reused on retreival)
+  # to save ptime, use just a sub-sample of data (reused on retrieval)
   data_sample <- get_table(pool, "data", sample = .4)
   expect_message(insert_agg_data(pool, data_sample))
 })
@@ -265,6 +265,16 @@ test_that("users registries can be updated", {
   check_db()
   df <- imongr::user_registry
   expect_invisible(update_registry_user(pool, df))
+})
+
+test_that("aggdata delivery times can be provided", {
+  check_db()
+  aggdata_delivery_time <- get_aggdata_delivery_time(pool)
+  expect_equal(class(aggdata_delivery_time), "data.frame")
+  expect_true(class(aggdata_delivery_time$id) %in% c("integer"))
+  expect_true(
+    class(aggdata_delivery_time$delivery_time)[1] %in% c("POSIXct", "POSIXt")
+  )
 })
 
 test_that("get_table wrapper function do work", {

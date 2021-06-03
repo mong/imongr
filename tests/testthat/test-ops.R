@@ -156,6 +156,11 @@ test_that("agg data can be cleaned", {
   expect_message(clean_agg_data(pool))
 })
 
+test_that("agg_data delivery_time can be updated without errors", {
+  check_db()
+  expect_invisible(update_aggdata_delivery_time(pool))
+})
+
 test_that("a new user can be created", {
   check_db()
   expect_true(create_imongr_user(pool, data.frame(

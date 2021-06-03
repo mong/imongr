@@ -1,3 +1,7 @@
+# imongr 0.21.0
+
+* Added new field delivery_time to agg_data table for easier access to last data update in qmongr(js) ([#121](https://github.com/mong/imongr/pull/121))
+
 # imongr 0.20.1
 
 * Fixed bug deleting all indicators regardless of context ([#118](https://github.com/mong/imongr/pull/118))

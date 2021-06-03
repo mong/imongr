@@ -166,6 +166,7 @@ CREATE TABLE IF NOT EXISTS `agg_data` (
   `level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
   `level_direction` TINYINT,
   `dg` double(6,5) unsigned DEFAULT NULL,
+  `delivery_time` timestamp NULL DEFAULT NULL,
   `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
   KEY `year` (`year`),

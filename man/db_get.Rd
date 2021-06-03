@@ -21,6 +21,7 @@
 \alias{get_medfield_registry}
 \alias{get_registry_user}
 \alias{get_user_registry}
+\alias{get_aggdata_delivery_time}
 \alias{get_all_user_data}
 \alias{get_user_deliveries}
 \alias{get_indicators_registry}
@@ -70,6 +71,8 @@ get_medfield_registry(pool, medfield)
 get_registry_user(pool, registry)
 
 get_user_registry(pool, user)
+
+get_aggdata_delivery_time(pool)
 }
 \arguments{
 \item{pool}{a database connection pool object}
@@ -105,4 +108,10 @@ with an error. What the function expects from table names and variable
 names in the data is also defined by the configuration. Thus, functions can
 be left unchanged when the data model is altered as long as such changes
 are reflected by configuration.
+}
+\details{
+\code{get_aggdata_delivery_time()} provides a data.frame with the variables
+\emph{id} and \emph{delivery_time} where the first one corresponds to the id
+field in the agg_data table. The latter is a db TIMESTAMP represented as a
+POSIX(c)t object in R
 }
