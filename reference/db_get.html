@@ -87,7 +87,7 @@ are reflected by configuration." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.20.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.21.0</span>
       </span>
     </div>
 
@@ -184,7 +184,9 @@ are reflected by configuration.</p>
 
 <span class='fu'>get_registry_user</span><span class='op'>(</span><span class='va'>pool</span>, <span class='va'>registry</span><span class='op'>)</span>
 
-<span class='fu'>get_user_registry</span><span class='op'>(</span><span class='va'>pool</span>, <span class='va'>user</span><span class='op'>)</span></pre>
+<span class='fu'>get_user_registry</span><span class='op'>(</span><span class='va'>pool</span>, <span class='va'>user</span><span class='op'>)</span>
+
+<span class='fu'>get_aggdata_delivery_time</span><span class='op'>(</span><span class='va'>pool</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -235,6 +237,12 @@ Defaults to NA in which case all data is returned</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Data object from database</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><code>get_aggdata_delivery_time()</code> provides a data.frame with the variables
+<em>id</em> and <em>delivery_time</em> where the first one corresponds to the id
+field in the agg_data table. The latter is a db TIMESTAMP represented as a
+POSIX(c)t object in R</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
