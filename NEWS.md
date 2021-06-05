@@ -1,6 +1,7 @@
 # imongr 0.22.0
 
 * Changed processing of target levels to avoid visual "errors" ([#122](https://github.com/mong/imongr/pull/122))
+* Reactivated tests on reading csv file and aggregating real data ([#123](https://github.com/mong/imongr/pull/123))
 
 # imongr 0.21.0
 
