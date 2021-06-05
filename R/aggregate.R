@@ -454,8 +454,13 @@ get_indicator_level <- function(gdf, ind) {
       # for signif() must be updated accordingly
       decimals <- nchar(signif(abs(level), digits = 6)) - 2
       # for levels with one decimal place force 2 under same as above assumption
+      # and also enforce 3 decimals for levels below 0.1. Hence, for the current
+      # db type DOUBLE(7,3) the fallback of the below logic is redundant and
+      # only kept in case of a future increase of allowed level decimals in db
       if (decimals < 2) {
         return(2)
+      } else if (level < 0.1) {
+        return(max(decimals, 3))
       } else {
         return(decimals)
       }
