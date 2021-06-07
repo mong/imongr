@@ -442,10 +442,37 @@ agg_udef <- function(diff, conf) {
 get_indicator_level <- function(gdf, ind) {
   gdf$level <- ""
   gdf$level_direction <- NA
+
+  round_digits <- function(level) {
+    # return 2 decimal places for levels equal 1 or greater under the assumption
+    # that integer percentages will always be used in presentations
+    if (level >= 1) {
+      return(2)
+    } else {
+      # NB! significant digits set based on the db field type of levels that is
+      # currently set to DOUBLE(7,3). If db spec changes the number of digits
+      # for signif() must be updated accordingly
+      decimals <- nchar(signif(abs(level), digits = 6)) - 2
+      # for levels with one decimal place force 2 under same as above assumption
+      # and also enforce 3 decimals for levels below 0.1. Hence, for the current
+      # db type DOUBLE(7,3) the fallback of the below logic is redundant and
+      # only kept in case of a future increase of allowed level decimals in db
+      if (decimals < 2) {
+        return(2)
+      } else if (level < 0.1) {
+        return(max(decimals, 3))
+      } else {
+        return(decimals)
+      }
+    }
+  }
   high <- function(value, green, yellow) {
-    if (value >= green) {
+    gd <- round_digits(green)
+    yd <- round_digits(yellow)
+    if (round(value, digits = gd) >= green) {
       level <- "H"
-    } else if (value < green & value >= yellow) {
+    } else if (round(value, digits = gd) < green &
+               round(value, digits = yd) >= yellow) {
       level <- "M"
     } else {
       level <- "L"
@@ -454,9 +481,12 @@ get_indicator_level <- function(gdf, ind) {
     return(list(level = level, level_direction = level_direction))
   }
   low <- function(value, green, yellow) {
-    if (value <= green) {
+    gd <- round_digits(green)
+    yd <- round_digits(yellow)
+    if (round(value, digits = gd) <= green) {
       level <- "H"
-    } else if (value > green & value <= yellow) {
+    } else if (round(value, digits = gd) > green &
+               round(value, digits = yd) <= yellow) {
       level <- "M"
     } else {
       level <- "L"
