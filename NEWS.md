@@ -1,3 +1,7 @@
+# imongr 0.22.1
+
+* Updated contact info and links
+
 # imongr 0.22.0
 
 * Changed processing of target levels to avoid visual "errors" ([#122](https://github.com/mong/imongr/pull/122))
