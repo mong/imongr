@@ -57,7 +57,7 @@ check_report <- function(registry, df, pool) {
 mail_check_report <- function(pool, registry, mail_msg) {
 
   user <- get_user_data(pool)
-  to <- "mailto:sykehusviser@skde.no"
+  to <- "mailto:mong@skde.no"
   subject <- paste("imongr: Feilmelding ved opplasting",
                    get_registry_name(pool, registry))
   body <- paste("Hei,",
