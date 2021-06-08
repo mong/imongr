@@ -1,6 +1,7 @@
 # imongr 0.22.1
 
 * Updated contact info and links
+* Added constraints to the ind table to prevent errors on manual updates
 
 # imongr 0.22.0
 
