@@ -95,7 +95,13 @@ CREATE TABLE IF NOT EXISTS ind (
   CONSTRAINT `fk_indicator_registry`
     FOREIGN KEY (registry_id) REFERENCES registry (id)
     ON UPDATE CASCADE
-    ON DELETE RESTRICT
+    ON DELETE RESTRICT,
+  CONSTRAINT inconsistent_level_values
+    check (case
+      when (level_direction = 0 and level_green > level_yellow) then false
+      when (level_direction = 1 and level_green < level_yellow) then false
+      else true end
+    )
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS user (
