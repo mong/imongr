@@ -25,6 +25,15 @@ ADD CONSTRAINT inconsistent_level_values
       else true end
     )
 
+ALTER TABLE
+  registry
+ADD COLUMN IF NOT EXISTS
+  description VARCHAR(2047)
+AFTER full_name,
+ADD COLUMN IF NOT EXISTS
+  url VARCHAR(1023)
+AFTER full_name;
+
 CREATE INDEX IF NOT EXISTS index_data_context ON data (context);
 
 CREATE INDEX IF NOT EXISTS index_agg_data_context ON agg_data (context);
