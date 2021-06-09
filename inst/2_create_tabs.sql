@@ -97,10 +97,8 @@ CREATE TABLE IF NOT EXISTS ind (
     ON UPDATE CASCADE
     ON DELETE RESTRICT,
   CONSTRAINT inconsistent_level_values
-    check (case
-      when (level_direction = 0 and level_green > level_yellow) then 0
-      when (level_direction = 1 and level_green < level_yellow) then 0
-      else 1 end
+    check ((level_direction = 1 and level_green >= level_yellow) OR
+           (level_direction = 0 and level_green <= level_yellow)
     )
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
