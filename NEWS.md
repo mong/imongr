@@ -3,6 +3,7 @@
 * Updated contact info and links
 * Added constraints to the ind table to prevent errors on manual updates
 * Added url and description fields in registry table
+* Fixed misspelled context
 
 # imongr 0.22.0
 
