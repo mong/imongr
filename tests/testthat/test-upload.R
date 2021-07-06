@@ -201,6 +201,17 @@ test_that("natural number check on var is working", {
                conf$upload$check_impossible)
 })
 
+test_that("check on var <= denominator is working", {
+  check_db()
+  expect_false(check_overflow_var(registry, df, conf, pool)$fail)
+  df$var <- 2
+  df$denominator <- 1
+  expect_true(check_overflow_var(registry, df, conf, pool)$fail)
+  expect_equal(check_overflow_var(registry, df[, !names(df) %in% "var"],
+                                 conf, pool)$report,
+               conf$upload$check_impossible)
+})
+
 test_that("natural number check on denominator is working", {
   check_db()
   expect_false(check_natural_denominator(registry, df, conf, pool)$fail)

@@ -230,6 +230,23 @@ check_natural_var <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
+check_overflow_var <- function(registry, df, conf, pool) {
+
+  fail <- TRUE
+  report <- ""
+  if ("var" %in% names(df) && is.numeric(df$var) &&
+      "denominator" %in% names(df) && is.numeric(df$denominator)) {
+    if (all(df$var <= df$denominator)) {
+      fail <- FALSE
+    }
+  } else {
+    report <- conf$upload$check_impossible
+  }
+  list(fail = fail, report = report)
+}
+
+#' @rdname upload
+#' @export
 check_numeric_denominator <- function(registry, df, conf, pool) {
 
   fail <- TRUE
