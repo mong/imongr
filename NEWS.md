@@ -1,3 +1,9 @@
+# imongr 0.22.2
+
+* Fixed error aggregating dg indicators and applying these to none dg indicators ([#128](https://github.com/mong/imongr/issues/128))
+* Corrected some typos in function docs
+
+
 # imongr 0.22.1
 
 * Updated contact info and links

@@ -56,7 +56,7 @@ is the qmongr database and where tables are used in these function their
 names are kept as is (\emph{org} and \emph{ind}). Other data frames
 passed into or between function are denoted \emph{df} or \emph{gdf} where
 the latter denotes a data frame that has been grouped (by
-\code{dplyr::group_by()}. The aggregate consists of the following varables:
+\code{dplyr::group_by()}. The aggregate consists of the following variables:
 \describe{
   \item{year}{The year of the current record}
   \item{ind_id}{Indicator ID}
@@ -65,11 +65,11 @@ the latter denotes a data frame that has been grouped (by
   or patient residency}
   \item{count}{Number of observations of the current record}
   \item{var}{Summarised indicator value, for instance mean or median}
-  \item{level}{Code providing evaluated discret level such as 'H' (high),
+  \item{level}{Code providing evaluated discrete level such as 'H' (high),
   'M' (intermediate) and 'L' (low)}
   \item{level_direction}{Name providing the desired level such as 'Lavt'
   (low) or 'Høyt' (high)}
-  \item{unit_level}{Code provideing level of aggregation such as 'hospital',
+  \item{unit_level}{Code providing level of aggregation such as 'hospital',
   'hf' (health trust), 'rhf' (regional health trust) and 'national'}
   \item{unit_name}{Name of the organization unit}
 }

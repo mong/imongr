@@ -50,3 +50,43 @@ test_that("aggregation can handle missin level direction for ind", {
   ind$level_direction[1] <- NA
   expect_true("data.frame" %in% class(agg(df, org, ind)))
 })
+
+test_that("child (data record) inherits dg within context", {
+  df_cargiver_parent <- data.frame(
+    year = 2014,
+    orgnr = 874716782,
+    var = 1,
+    ind_id = "norgast_dg",
+    context = "caregiver",
+    delivery_id = 1,
+    denominator = 2,
+    unit_level = "hospital"
+  )
+  df_resident_parent <- data.frame(
+    year = 2014,
+    orgnr = 874716782,
+    var = 1,
+    ind_id = "norgast_dg",
+    context = "resident",
+    delivery_id = 1,
+    denominator = 4,
+    unit_level = "hospital"
+  )
+  df_child <- data.frame(
+    year = 2018,
+    orgnr = 874716782,
+    var = 1,
+    ind_id = "norgast_saarruptur",
+    context = "resident",
+    delivery_id = 1,
+    denominator = 1,
+    unit_level = "hospital"
+  )
+  test_data <- agg(rbind(df_cargiver_parent, df_child), org, ind)
+  test_child <- test_data[test_data$year == 2018, ]
+  expect_true(all(is.na(test_child$dg)))
+  test_data <- agg(rbind(df_resident_parent, df_child), org, ind)
+  test_child <- test_data[test_data$year == 2018, ]
+  expect_true(all(test_child$dg == .25))
+
+})
