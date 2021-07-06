@@ -1,3 +1,8 @@
+# imongr 0.23.0
+
+* Upgraded base R version 4.0.3 -> 4.1.0 
+* Added check for var (numerator) <= denominator ([#130](https://github.com/mong/imongr/issues/130))
+
 # imongr 0.22.2
 
 * Fixed error aggregating dg indicators and applying these to none dg indicators ([#128](https://github.com/mong/imongr/issues/128))
