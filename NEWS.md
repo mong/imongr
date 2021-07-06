@@ -1,5 +1,6 @@
-# imongr 0.22.3
+# imongr 0.23.0
 
+* Upgraded base R version 4.0.3 -> 4.1.0 
 * Added check for var (numerator) <= denominator ([#130](https://github.com/mong/imongr/issues/130))
 
 # imongr 0.22.2
