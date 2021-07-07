@@ -82,7 +82,7 @@ national." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.22.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.22.2</span>
       </span>
     </div>
 
@@ -194,7 +194,7 @@ is the qmongr database and where tables are used in these function their
 names are kept as is (<em>org</em> and <em>ind</em>). Other data frames
 passed into or between function are denoted <em>df</em> or <em>gdf</em> where
 the latter denotes a data frame that has been grouped (by
-<code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>dplyr::group_by()</a></code>. The aggregate consists of the following varables:</p><dl>
+<code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>dplyr::group_by()</a></code>. The aggregate consists of the following variables:</p><dl>
   <dt>year</dt><dd><p>The year of the current record</p></dd>
   <dt>ind_id</dt><dd><p>Indicator ID</p></dd>
   <dt>orgnr</dt><dd><p>Organization ID</p></dd>
@@ -202,11 +202,11 @@ the latter denotes a data frame that has been grouped (by
   or patient residency</p></dd>
   <dt>count</dt><dd><p>Number of observations of the current record</p></dd>
   <dt>var</dt><dd><p>Summarised indicator value, for instance mean or median</p></dd>
-  <dt>level</dt><dd><p>Code providing evaluated discret level such as 'H' (high),
+  <dt>level</dt><dd><p>Code providing evaluated discrete level such as 'H' (high),
   'M' (intermediate) and 'L' (low)</p></dd>
   <dt>level_direction</dt><dd><p>Name providing the desired level such as 'Lavt'
   (low) or 'Høyt' (high)</p></dd>
-  <dt>unit_level</dt><dd><p>Code provideing level of aggregation such as 'hospital',
+  <dt>unit_level</dt><dd><p>Code providing level of aggregation such as 'hospital',
   'hf' (health trust), 'rhf' (regional health trust) and 'national'</p></dd>
   <dt>unit_name</dt><dd><p>Name of the organization unit</p></dd>
 
