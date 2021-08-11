@@ -21,7 +21,8 @@
 #' @return whatever
 #' @importFrom utils read.csv URLencode
 #' @name upload
-#' @aliases check_report check_upload check_missing_registry check_missing_var
+#' @aliases check_report check_upload check_missing_registry check_mixing_ind
+#' check_missing_var
 #' check_invalid_var check_invalid_org check_invalid_context check_invalid_ind
 #' check_none_numeric_var check_duplicate_delivery csv_to_df mail_check_report
 #' sample_df indicator_is_fraction
@@ -117,7 +118,21 @@ check_missing_registry <- function(registry, df, conf, pool) {
   list(fail = fail, report = report)
 }
 
+#' @rdname upload
+#' @export
+check_mixing_ind <- function(registry, df, conf, pool) {
 
+  # upload cannot contain a mix of fractions and other types of indicators
+  ind_is_fraction <- indicator_is_fraction(pool, df, conf, return_ind = TRUE)
+  if (all(ind_is_fraction$is_fraction) | all(!ind_is_fraction$is_fraction)) {
+    list(fail = FALSE, report = "")
+  } else {
+    report <- paste(conf$upload$check$mixing_ind,
+                    paste(ind_is_fraction$ind[!ind_is_fraction$is_fraction],
+                          collapse = ", "))
+    list(fail = TRUE, report = report)
+  }
+}
 
 #' @rdname upload
 #' @export

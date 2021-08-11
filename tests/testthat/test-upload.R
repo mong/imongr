@@ -98,7 +98,7 @@ test_that("a (sub) sample df can be provided", {
   expect_equal(class(sample_df(df, n = 1, random = TRUE)), "data.frame")
 })
 
-# For the remianing tests we need a test database
+# For the remaining tests we need a test database
 ## first off with no data
 if (is.null(check_db(is_test_that = FALSE))) {
   pool <- make_pool()
@@ -126,6 +126,21 @@ if (is.null(check_db(is_test_that = FALSE))) {
 
 # test that depend on db
 conf <- get_config()
+
+df_mix <- rbind(df,
+                data.frame(context = "caregiver",
+                           year = 2018,
+                           orgnr = 974633574,
+                           ind_id = "norgast_dummy",
+                           var = 0,
+                           denominator = 1)
+)
+
+test_that("mixed indicator type check is working", {
+  check_db()
+  expect_true(check_mixing_ind(registry, df_mix, conf, pool)$fail)
+  expect_false(check_mixing_ind(registry, df, conf, pool)$fail)
+})
 
 test_that("(valid) context check is working", {
   check_db()
