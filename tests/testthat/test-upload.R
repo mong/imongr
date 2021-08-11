@@ -262,6 +262,13 @@ test_that("pro forma check on missing registry returns a list", {
   expect_equal(class(check_missing_registry("", df, conf, pool)), "list")
 })
 
+test_that("true fractions can be detected", {
+  check_db()
+  expect_equal(class(indicator_is_fraction(pool, df, conf)), "logical")
+  expect_equal(class(indicator_is_fraction(pool, df, conf, return_ind = TRUE)),
+               "data.frame")
+})
+
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {

@@ -15,6 +15,7 @@
 \alias{csv_to_df}
 \alias{mail_check_report}
 \alias{sample_df}
+\alias{indicator_is_fraction}
 \alias{check_numeric_var}
 \alias{check_natural_var}
 \alias{check_overflow_var}
@@ -58,6 +59,8 @@ check_duplicate_delivery(registry, df, conf, pool)
 csv_to_df(path, sep = ",", dec, encoding = "UTF-8")
 
 sample_df(df, skip = c(""), n, random = FALSE)
+
+indicator_is_fraction(pool, df, conf, return_ind = FALSE)
 }
 \arguments{
 \item{registry}{Integer registry id}
@@ -83,6 +86,9 @@ sample_df(df, skip = c(""), n, random = FALSE)
 \item{n}{Numeric sample size}
 
 \item{random}{Logical sample method}
+
+\item{return_ind}{Logical whether indicators should be returned. FALSE by
+default}
 }
 \value{
 whatever

@@ -325,6 +325,11 @@ reguser:
       Alle eksisterende brukere med tilhørende registre
     missing: >
       Ingen registre tilhørende denne brukeren.
+var:
+  fraction:
+    type:
+    - andel
+    - dg_andel
 aggregate:
   data_var_ind:
   - 3

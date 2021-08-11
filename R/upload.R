@@ -15,6 +15,8 @@
 #' @param skip character vector defining data frame variables to skip
 #' @param random Logical sample method
 #' @param mail_msg Character vector holding (part of) email body
+#' @param return_ind Logical whether indicators should be returned. FALSE by
+#' default
 #'
 #' @return whatever
 #' @importFrom utils read.csv URLencode
@@ -22,7 +24,7 @@
 #' @aliases check_report check_upload check_missing_registry check_missing_var
 #' check_invalid_var check_invalid_org check_invalid_context check_invalid_ind
 #' check_none_numeric_var check_duplicate_delivery csv_to_df mail_check_report
-#' sample_df
+#' sample_df indicator_is_fraction
 NULL
 
 
@@ -364,4 +366,23 @@ sample_df <- function(df, skip = c(""), n, random = FALSE) {
       return(df[1:n, ])
     }
   }
+}
+
+
+#' @rdname upload
+#' @export
+indicator_is_fraction <- function(pool, df, conf, return_ind = FALSE) {
+
+  ind_id <- unique(df$ind_id)
+  ind <- imongr::get_table(pool, "ind")
+  ind <- ind %>%
+    dplyr::filter(.data$id %in% ind_id) %>%
+    dplyr::select(.data$id, .data$type)
+
+  if (!return_ind) {
+    ind$type %in% conf$var$fraction$type
+  } else {
+    data.frame(ind = ind$id, is_fraction = ind$type %in% conf$var$fraction$type)
+  }
+
 }
