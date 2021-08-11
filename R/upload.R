@@ -127,9 +127,8 @@ check_mixing_ind <- function(registry, df, conf, pool) {
   if (all(ind_is_fraction$is_fraction) | all(!ind_is_fraction$is_fraction)) {
     list(fail = FALSE, report = "")
   } else {
-    report <- paste(conf$upload$check$mixing_ind,
-                    paste(ind_is_fraction$ind[!ind_is_fraction$is_fraction],
-                          collapse = ", "))
+    report <- paste(ind_is_fraction$ind[!ind_is_fraction$is_fraction],
+                    collapse = ", ")
     list(fail = TRUE, report = report)
   }
 }
