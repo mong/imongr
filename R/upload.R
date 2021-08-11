@@ -232,6 +232,11 @@ check_numeric_var <- function(registry, df, conf, pool) {
 #' @export
 check_natural_var <- function(registry, df, conf, pool) {
 
+  # dismiss check when indicators are not true fractions
+  if (!all(indicator_is_fraction(pool, df, conf))) {
+    return(list(fail = FALSE, report = ""))
+  }
+
   fail <- TRUE
   report <- ""
   if ("var" %in% names(df) && is.numeric(df$var)) {
@@ -247,6 +252,11 @@ check_natural_var <- function(registry, df, conf, pool) {
 #' @rdname upload
 #' @export
 check_overflow_var <- function(registry, df, conf, pool) {
+
+  # dismiss check when indicators are not true fractions
+  if (!all(indicator_is_fraction(pool, df, conf))) {
+    return(list(fail = FALSE, report = ""))
+  }
 
   fail <- TRUE
   report <- ""

@@ -214,6 +214,8 @@ test_that("natural number check on var is working", {
   expect_equal(check_natural_var(registry, df[, !names(df) %in% "var"],
                                  conf, pool)$report,
                conf$upload$check_impossible)
+  # check dismissed when containing none-fraction indicator data
+  expect_false(check_natural_var(registry, df_mix, conf, pool)$fail)
 })
 
 test_that("check on var <= denominator is working", {
@@ -225,6 +227,8 @@ test_that("check on var <= denominator is working", {
   expect_equal(check_overflow_var(registry, df[, !names(df) %in% "var"],
                                  conf, pool)$report,
                conf$upload$check_impossible)
+  # check dismissed when containing none-fraction indicator data
+  expect_false(check_overflow_var(registry, df_mix, conf, pool)$fail)
 })
 
 test_that("natural number check on denominator is working", {
