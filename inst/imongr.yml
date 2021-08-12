@@ -338,6 +338,7 @@ var:
     type:
     - andel
     - dg_andel
+    - dg
 aggregate:
   data_var_ind:
   - 3
