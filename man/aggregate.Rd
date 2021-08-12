@@ -10,7 +10,7 @@
 \alias{get_indicator_level}
 \title{Aggregate hospital data}
 \usage{
-agg(df, org, ind)
+agg(df, org, ind, ind_noagg = character(), orgnr_name_map)
 
 agg_dg(aggs, ind)
 
@@ -30,6 +30,12 @@ be obtained by \code{get_flat_org(pool)}}
 
 \item{ind}{Data frame holding the indicator db table providing all
 data on each indicator}
+
+\item{ind_noagg}{Character vector identifying indicator (ids) that are not to
+be aggregated (used as is). Default is \code{character()}}
+
+\item{orgnr_name_map}{Data frame with global mapping of organization id and
+name. Applied on data to be used as is (no aggregation).}
 
 \item{aggs}{Data frame of (pre) aggregated data}
 
