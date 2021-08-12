@@ -36,6 +36,8 @@
 #' data on each indicator
 #' @param ind_noagg Character vector identifying indicator (ids) that are not to
 #' be aggregated (used as is). Default is \code{character()}
+#' @param orgnr_name_map Data frame with global mapping of organization id and
+#' name. Applied on data to be used as is (no aggregation).
 #' @param aggs Data frame of (pre) aggregated data
 #' @param diff Data frame with diff data
 #' @param conf List of configuration
@@ -48,7 +50,7 @@ NULL
 
 #' @rdname aggregate
 #' @export
-agg <- function(df, org, ind, ind_noagg = character()) {
+agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
 
   conf <- get_config()
 
@@ -61,10 +63,10 @@ agg <- function(df, org, ind, ind_noagg = character()) {
   }
 
   # split by data that are not for aggregation (none-fraction indicators)
-  df_noagg <- dplyr::filter(df, .data$ind_id %in% ind_noagg)
-  if (length(ind_noagg) > 0) {
-    df_noagg$unit_name <- get_org_name()
-  }
+  df_noagg <- dplyr::filter(df, .data$ind_id %in% ind_noagg) %>%
+    dplyr::left_join(orgnr_name_map, by = "orgnr") %>%
+    dplyr::select(.data$context, .data$year, .data$ind_id, .data$unit_level,
+                  .data$unit_name, .data$var, .data$denominator, .data$orgnr)
   df <- df %>%
     dplyr::filter(!.data$ind_id %in% ind_noagg)
   message(paste("  removed", dim(df_noagg)[1], "rows for indicators that",
@@ -130,9 +132,7 @@ agg <- function(df, org, ind, ind_noagg = character()) {
     dplyr::ungroup()
 
   # add data for indicators that is not aggregated
-  print(names(aggs))
-  print(names(df_noagg))
-  rbind(aggs, df_noagg)
+  aggs <- rbind(aggs, df_noagg)
 
   # class values into defined levels
   aggs <- get_indicator_level(aggs, ind)
