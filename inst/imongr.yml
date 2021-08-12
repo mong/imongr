@@ -258,7 +258,7 @@ upload:
   doc:
     main: >
       Dette er et verktøy for å hjelpe med å legge til data i riktig format.
-      Nederst er det vist et eksempel på hvordan filen
+      Nederst er det vist et eksempel på hvordan filen i de fleste tilfeller
       skal se ut. Din fil skal være i csv-format med de samme kolonnenavnene
       som i eksempelet. Det skilles mellom små og store bokstaver men
       rekkefølgen på kolonnene kan være tilfeldig. Under følger en forklaring
@@ -289,14 +289,20 @@ upload:
       et positivt heltall større eller lik 0 for fremstilling av andel
       måloppnåelse. Angis i utgangspunktet for hver enkelt hendelse (som 0
       eller 1) men kan også benyttes til å angi aggregert verdi for et gitt
-      antall hendelser. Antall hendelser gis i <i>denominator</i> (se under)
+      antall hendelser. Totalt antall hendelser gis i <i>denominator</i>
+      (se under).<br>ALTERNATIV: <i>var</i> kan også representere en
+      ferdigbergnet verdi for gradert måloppnåelse med
+      inntil 3 desimalers nøyaktighet. I fremstilling vil verdien bare kunne gis
+      for organisasjonen den eksplisitt er angitt for
     denominator: >
       et positivt heltall større enn 0 som angir antall hendelser for
       tilsvarende verdi i <i>var</i>. For enkelthendelser skal verdien være 1
-      og for et aggregat av hendelser skal verdien være større enn 1
+      og for et aggregat av hendelser skal verdien være større enn 1.<br>
+      ALTERNATIV: hvis <i>var</i> er angitt som en ferdigberegnet verdi skal
+      <i>denominator</i> alltid settes lik 1
     ind_id: >
-      unik id for kvalitetsindikator og som må samsvare med gyldige verdier
-      (for valgt register, se under)
+      unik id som må samsvare med definerte kvalitetsindikatorer for gjeldende
+      register (se under)
     valid_ind: >
       Gyldige kvalitetsindikator id-er for
     Register: >
