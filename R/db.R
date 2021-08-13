@@ -85,6 +85,9 @@ insert_table <- function(pool, table, df) {
 #' @export
 get_table <- function(pool, table, sample = NA) {
 
+  # make sure we deal in proper encoding
+  pool::dbExecute(pool, 'SET NAMES utf8')
+
   conf <- get_config()
   query <- paste0("
 SELECT
