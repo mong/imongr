@@ -34,6 +34,10 @@
 #' be obtained by \code{get_flat_org(pool)}
 #' @param ind Data frame holding the indicator db table providing all
 #' data on each indicator
+#' @param ind_noagg Character vector identifying indicator (ids) that are not to
+#' be aggregated (used as is). Default is \code{character()}
+#' @param orgnr_name_map Data frame with global mapping of organization id and
+#' name. Applied on data to be used as is (no aggregation).
 #' @param aggs Data frame of (pre) aggregated data
 #' @param diff Data frame with diff data
 #' @param conf List of configuration
@@ -46,7 +50,7 @@ NULL
 
 #' @rdname aggregate
 #' @export
-agg <- function(df, org, ind) {
+agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
 
   conf <- get_config()
 
@@ -58,6 +62,15 @@ agg <- function(df, org, ind) {
                 ". Cannot go on!"))
   }
 
+  # split by data that are not for aggregation (none-fraction indicators)
+  df_noagg <- dplyr::filter(df, .data$ind_id %in% ind_noagg) %>%
+    dplyr::left_join(orgnr_name_map, by = "orgnr") %>%
+    dplyr::select(.data$context, .data$year, .data$ind_id, .data$unit_level,
+                  .data$unit_name, .data$var, .data$denominator, .data$orgnr)
+  df <- df %>%
+    dplyr::filter(!.data$ind_id %in% ind_noagg)
+  message(paste("  removed", dim(df_noagg)[1], "rows for indicators that",
+                "should not be aggregated"))
 
   unit_levels <- unique(df$unit_level)
 
@@ -96,15 +109,15 @@ agg <- function(df, org, ind) {
   # DANGER! As of the Sep 15 2020 project meeting, pre-aggregate on short_name
   # DANGER! A less risky way of proper handling of 'groups' should be applied
   # DANGER! at a later stage
-  message("Pre-aggregating by short name")
-  message(paste("  ...rows before pre-aggregation:", dim(df)[1]))
+  message("  pre-aggregating by short name")
+  message(paste("    rows before pre-aggregation:", dim(df)[1]))
   aggs <- aggs %>%
     dplyr::group_by(.data$context, .data$year, .data$ind_id, .data$unit_level,
                     .data$unit_name) %>%
     dplyr::summarise(var = sum(.data$var),
                      denominator = sum(.data$denominator),
                      orgnr = min(.data$orgnr))
-  message(paste("  ...rows after pre-aggregation:", dim(df)[1]))
+  message(paste("    rows after pre-aggregation:", dim(df)[1]))
   # DANGER end!
 
 
@@ -118,15 +131,16 @@ agg <- function(df, org, ind) {
                    .data$unit_level) %>%
     dplyr::ungroup()
 
+  # add data for indicators that is not aggregated
+  aggs <- rbind(aggs, df_noagg)
+
   # class values into defined levels
   aggs <- get_indicator_level(aggs, ind)
 
   # add/update dg and all depending indicators
   aggs <- agg_dg(aggs, ind)
 
-
   aggs
-
 }
 
 #' @rdname aggregate
@@ -190,14 +204,14 @@ agg_from_level <- function(df, org, ind, conf, from_level) {
   unit_levels <- all_unit_levels[from_level:length(all_unit_levels)]
   groups <- paste0(conf$aggregate$orgnr$prefix, unit_levels)
 
-  # data must be singel level only
+  # data must be single level only
   data_level <- unique(df$unit_level)
   stopifnot(length(data_level) == 1)
 
   # level as defined in data must correspond to requested from_level
   stopifnot(data_level == all_unit_levels[from_level])
 
-  # rename orgnr var in data corresponing to this level
+  # rename orgnr var in data corresponding to this level
   names(df)[names(df) == "orgnr"] <- groups[1]
 
   # join in flat org from this level and up

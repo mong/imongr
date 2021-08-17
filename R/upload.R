@@ -15,14 +15,17 @@
 #' @param skip character vector defining data frame variables to skip
 #' @param random Logical sample method
 #' @param mail_msg Character vector holding (part of) email body
+#' @param return_ind Logical whether indicators should be returned. FALSE by
+#' default
 #'
 #' @return whatever
 #' @importFrom utils read.csv URLencode
 #' @name upload
-#' @aliases check_report check_upload check_missing_registry check_missing_var
+#' @aliases check_report check_upload check_missing_registry check_mixing_ind
+#' check_missing_var
 #' check_invalid_var check_invalid_org check_invalid_context check_invalid_ind
 #' check_none_numeric_var check_duplicate_delivery csv_to_df mail_check_report
-#' sample_df
+#' sample_df indicator_is_fraction
 NULL
 
 
@@ -115,7 +118,20 @@ check_missing_registry <- function(registry, df, conf, pool) {
   list(fail = fail, report = report)
 }
 
+#' @rdname upload
+#' @export
+check_mixing_ind <- function(registry, df, conf, pool) {
 
+  # upload cannot contain a mix of fractions and other types of indicators
+  ind_is_fraction <- indicator_is_fraction(pool, df, conf, return_ind = TRUE)
+  if (all(ind_is_fraction$is_fraction) | all(!ind_is_fraction$is_fraction)) {
+    list(fail = FALSE, report = "")
+  } else {
+    report <- paste(ind_is_fraction$ind[!ind_is_fraction$is_fraction],
+                    collapse = ", ")
+    list(fail = TRUE, report = report)
+  }
+}
 
 #' @rdname upload
 #' @export
@@ -216,6 +232,11 @@ check_numeric_var <- function(registry, df, conf, pool) {
 #' @export
 check_natural_var <- function(registry, df, conf, pool) {
 
+  # dismiss check when indicators are not true fractions
+  if (!all(indicator_is_fraction(pool, df, conf))) {
+    return(list(fail = FALSE, report = ""))
+  }
+
   fail <- TRUE
   report <- ""
   if ("var" %in% names(df) && is.numeric(df$var)) {
@@ -231,6 +252,11 @@ check_natural_var <- function(registry, df, conf, pool) {
 #' @rdname upload
 #' @export
 check_overflow_var <- function(registry, df, conf, pool) {
+
+  # dismiss check when indicators are not true fractions
+  if (!all(indicator_is_fraction(pool, df, conf))) {
+    return(list(fail = FALSE, report = ""))
+  }
 
   fail <- TRUE
   report <- ""
@@ -364,4 +390,23 @@ sample_df <- function(df, skip = c(""), n, random = FALSE) {
       return(df[1:n, ])
     }
   }
+}
+
+
+#' @rdname upload
+#' @export
+indicator_is_fraction <- function(pool, df, conf, return_ind = FALSE) {
+
+  ind_id <- unique(df$ind_id)
+  ind <- imongr::get_table(pool, "ind")
+  ind <- ind %>%
+    dplyr::filter(.data$id %in% ind_id) %>%
+    dplyr::select(.data$id, .data$type)
+
+  if (!return_ind) {
+    ind$type %in% conf$var$fraction$type
+  } else {
+    data.frame(ind = ind$id, is_fraction = ind$type %in% conf$var$fraction$type)
+  }
+
 }

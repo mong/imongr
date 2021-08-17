@@ -143,7 +143,17 @@ insert_agg_data <- function(pool, df) {
   ind <- get_table(pool, "ind")
   all_orgnr <- get_all_orgnr(pool)
 
-  #make sure we have unit_names
+  # identify none-fraction indicators (no aggregation) and obtain unit
+  # name-number mapping needed for none-fraction data when added to the
+  # aggregate
+  conf <- get_config()
+  ind_noagg <- indicator_is_fraction(pool, df, conf, return_ind = TRUE)
+  ind_noagg <- ind_noagg$ind[!ind_noagg$is_fraction]
+  orgnr_name_map <- get_all_orgnr(pool, include_short_name = TRUE) %>%
+    dplyr::select(.data$orgnr, .data$short_name) %>%
+    dplyr::rename(unit_name = .data$short_name)
+
+  # make sure we have unit_levels
   if (!"unit_level" %in% names(df)) {
     df <- dplyr::left_join(df, all_orgnr, by = "orgnr")
   }
@@ -155,24 +165,24 @@ insert_agg_data <- function(pool, df) {
 
   reg <- unique(df$registry_id)
   for (i in seq_len(length(reg))) {
-    message(paste("Aggregating", get_registry_name(pool, reg[i])))
+    message(paste("Processing", get_registry_name(pool, reg[i])))
     dat <- dplyr::filter(df, .data$registry_id == reg[i]) %>%
       dplyr::select(!.data$registry_id)
     # if delivery is a subset of registry indicators AND dg is part of subset,
     # agg_data for all indicators of the current registry must be updated.
     if (!setequal(get_registry_indicators(pool, reg[i])$id,
                   unique(dat$ind_id))) {
-      message("...subset provided, fetching a compleete data set")
+      message("  subset of indicators provided, fetching a compleete data set")
       dat <- get_registry_data(pool, reg[i])
       if (!"unit_level" %in% names(dat)) {
         dat <- dplyr::left_join(dat, all_orgnr, by = "orgnr")
       }
     }
-    message("...aggregating")
-    dat <- agg(dat, org, ind)
-    message("...delete old agg data")
+    message("  aggregating")
+    dat <- agg(dat, org, ind, ind_noagg, orgnr_name_map)
+    message("  delete old agg data")
     delete_agg_data(pool, dat)
-    message("...inserting fresh agg data")
+    message("  inserting fresh agg data")
     insert_table(pool, "agg_data", dat)
   }
   message("\nUpdating time of delivery")

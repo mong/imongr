@@ -15,6 +15,7 @@ Data frame with made up values
   \item{level_direction}{}
   \item{short_description}{}
   \item{long_description}{}
+  \item{type}{}
   \item{registry_id}{}
 
 }

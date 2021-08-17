@@ -98,7 +98,7 @@ test_that("a (sub) sample df can be provided", {
   expect_equal(class(sample_df(df, n = 1, random = TRUE)), "data.frame")
 })
 
-# For the remianing tests we need a test database
+# For the remaining tests we need a test database
 ## first off with no data
 if (is.null(check_db(is_test_that = FALSE))) {
   pool <- make_pool()
@@ -126,6 +126,21 @@ if (is.null(check_db(is_test_that = FALSE))) {
 
 # test that depend on db
 conf <- get_config()
+
+df_mix <- rbind(df,
+                data.frame(context = "caregiver",
+                           year = 2018,
+                           orgnr = 974633574,
+                           ind_id = "norgast_dummy",
+                           var = 0,
+                           denominator = 1)
+)
+
+test_that("mixed indicator type check is working", {
+  check_db()
+  expect_true(check_mixing_ind(registry, df_mix, conf, pool)$fail)
+  expect_false(check_mixing_ind(registry, df, conf, pool)$fail)
+})
 
 test_that("(valid) context check is working", {
   check_db()
@@ -199,6 +214,8 @@ test_that("natural number check on var is working", {
   expect_equal(check_natural_var(registry, df[, !names(df) %in% "var"],
                                  conf, pool)$report,
                conf$upload$check_impossible)
+  # check dismissed when containing none-fraction indicator data
+  expect_false(check_natural_var(registry, df_mix, conf, pool)$fail)
 })
 
 test_that("check on var <= denominator is working", {
@@ -210,6 +227,8 @@ test_that("check on var <= denominator is working", {
   expect_equal(check_overflow_var(registry, df[, !names(df) %in% "var"],
                                  conf, pool)$report,
                conf$upload$check_impossible)
+  # check dismissed when containing none-fraction indicator data
+  expect_false(check_overflow_var(registry, df_mix, conf, pool)$fail)
 })
 
 test_that("natural number check on denominator is working", {
@@ -260,6 +279,13 @@ test_that("reports are provided even if registry is not defined", {
 test_that("pro forma check on missing registry returns a list", {
   check_db()
   expect_equal(class(check_missing_registry("", df, conf, pool)), "list")
+})
+
+test_that("true fractions can be detected", {
+  check_db()
+  expect_equal(class(indicator_is_fraction(pool, df, conf)), "logical")
+  expect_equal(class(indicator_is_fraction(pool, df, conf, return_ind = TRUE)),
+               "data.frame")
 })
 
 # clean up
