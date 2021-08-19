@@ -450,8 +450,8 @@ app_server <- function(input, output, session) {
     )
   })
   # Heartbeat every 5 seconds, to avoid app to die when user is inactive.
-  output$clock <- renderText({
-    invalidateLater(5000)
+  output$clock <- shiny::renderText({
+   shiny::invalidateLater(5000)
     Sys.time()
   })
 }
