@@ -37,6 +37,10 @@ app_ui <- function() {
         type = "text/css",
         paste0(".navbar-brand  a:hover, .navbar-brand  a:focus {",
                "text-decoration: underline;}")),
+      # Heartbeat every 5 seconds, to avoid app to die when user is inactive.
+      # Will be out of sight on the webpage.
+      shiny::tags$div(style = "position: absolute; top: -100px;",
+                      shiny::textOutput("clock"))
     ),
     shiny::navbarPage(
       title = shiny::div(app_title),

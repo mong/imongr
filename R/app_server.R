@@ -449,4 +449,9 @@ app_server <- function(input, output, session) {
       shiny::actionButton("clean_agg", "Rydd aggregerte data")
     )
   })
+  # Heartbeat every 5 seconds, to avoid app to die when user is inactive.
+  output$clock <- shiny::renderText({
+   shiny::invalidateLater(5000)
+    Sys.time()
+  })
 }
