@@ -82,7 +82,7 @@ national." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.22.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.23.0</span>
       </span>
     </div>
 
@@ -132,7 +132,7 @@ organization levels above hospital: health trust, regional health trust and
 national.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>agg</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>org</span>, <span class='va'>ind</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>agg</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>org</span>, <span class='va'>ind</span>, ind_noagg <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>orgnr_name_map</span><span class='op'>)</span>
 
 <span class='fu'>agg_dg</span><span class='op'>(</span><span class='va'>aggs</span>, <span class='va'>ind</span><span class='op'>)</span>
 
@@ -160,6 +160,16 @@ be obtained by <code><a href='db_get.html'>get_flat_org(pool)</a></code></p></td
       <th>ind</th>
       <td><p>Data frame holding the indicator db table providing all
 data on each indicator</p></td>
+    </tr>
+    <tr>
+      <th>ind_noagg</th>
+      <td><p>Character vector identifying indicator (ids) that are not to
+be aggregated (used as is). Default is <code><a href='https://rdrr.io/r/base/character.html'>character()</a></code></p></td>
+    </tr>
+    <tr>
+      <th>orgnr_name_map</th>
+      <td><p>Data frame with global mapping of organization id and
+name. Applied on data to be used as is (no aggregation).</p></td>
     </tr>
     <tr>
       <th>aggs</th>

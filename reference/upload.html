@@ -81,7 +81,7 @@ regarding consistency goes here" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.22.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.23.0</span>
       </span>
     </div>
 
@@ -138,6 +138,8 @@ regarding consistency goes here</p>
 
 <span class='fu'>check_missing_registry</span><span class='op'>(</span><span class='va'>registry</span>, <span class='va'>df</span>, <span class='va'>conf</span>, <span class='va'>pool</span><span class='op'>)</span>
 
+<span class='fu'>check_mixing_ind</span><span class='op'>(</span><span class='va'>registry</span>, <span class='va'>df</span>, <span class='va'>conf</span>, <span class='va'>pool</span><span class='op'>)</span>
+
 <span class='fu'>check_missing_var</span><span class='op'>(</span><span class='va'>registry</span>, <span class='va'>df</span>, <span class='va'>conf</span>, <span class='va'>pool</span><span class='op'>)</span>
 
 <span class='fu'>check_invalid_var</span><span class='op'>(</span><span class='va'>registry</span>, <span class='va'>df</span>, <span class='va'>conf</span>, <span class='va'>pool</span><span class='op'>)</span>
@@ -152,6 +154,8 @@ regarding consistency goes here</p>
 
 <span class='fu'>check_natural_var</span><span class='op'>(</span><span class='va'>registry</span>, <span class='va'>df</span>, <span class='va'>conf</span>, <span class='va'>pool</span><span class='op'>)</span>
 
+<span class='fu'>check_overflow_var</span><span class='op'>(</span><span class='va'>registry</span>, <span class='va'>df</span>, <span class='va'>conf</span>, <span class='va'>pool</span><span class='op'>)</span>
+
 <span class='fu'>check_numeric_denominator</span><span class='op'>(</span><span class='va'>registry</span>, <span class='va'>df</span>, <span class='va'>conf</span>, <span class='va'>pool</span><span class='op'>)</span>
 
 <span class='fu'>check_natural_denominator</span><span class='op'>(</span><span class='va'>registry</span>, <span class='va'>df</span>, <span class='va'>conf</span>, <span class='va'>pool</span><span class='op'>)</span>
@@ -162,7 +166,9 @@ regarding consistency goes here</p>
 
 <span class='fu'>csv_to_df</span><span class='op'>(</span><span class='va'>path</span>, sep <span class='op'>=</span> <span class='st'>","</span>, <span class='va'>dec</span>, encoding <span class='op'>=</span> <span class='st'>"UTF-8"</span><span class='op'>)</span>
 
-<span class='fu'>sample_df</span><span class='op'>(</span><span class='va'>df</span>, skip <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>""</span><span class='op'>)</span>, <span class='va'>n</span>, random <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+<span class='fu'>sample_df</span><span class='op'>(</span><span class='va'>df</span>, skip <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>""</span><span class='op'>)</span>, <span class='va'>n</span>, random <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+
+<span class='fu'>indicator_is_fraction</span><span class='op'>(</span><span class='va'>pool</span>, <span class='va'>df</span>, <span class='va'>conf</span>, return_ind <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -214,6 +220,11 @@ regarding consistency goes here</p>
     <tr>
       <th>random</th>
       <td><p>Logical sample method</p></td>
+    </tr>
+    <tr>
+      <th>return_ind</th>
+      <td><p>Logical whether indicators should be returned. FALSE by
+default</p></td>
     </tr>
     </table>
 
