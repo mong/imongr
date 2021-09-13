@@ -26,6 +26,8 @@ app_server <- function(input, output, session) {
       reguser_summary_text_ui(pool, conf, get_users(pool)),
     upload_reg = character(),
     download_reg = character(),
+    indicator_reg = character(),
+    indicator_data = data.frame(),
     pool = make_pool(),
     admin_url = paste0(adminer_url(), "/?",
                         "server=", db_host(), "&",
@@ -82,6 +84,7 @@ app_server <- function(input, output, session) {
     drain_pool(rv$pool)
     rv$upload_reg <- input$registry
     rv$download_reg <- input$download_registry
+    rv$indicator_reg <- input$indicator_registry
     rv$admin_url <- paste0(adminer_url(), "/?",
                            "server=", db_host(context = input$context), "&",
                            "username=", db_username(), "&",
@@ -315,6 +318,54 @@ app_server <- function(input, output, session) {
   output$ui_db_table <- shiny::renderUI(
     DT::dataTableOutput("db_table")
   )
+
+
+
+  # indicator
+  ## observers
+  shiny::observeEvent(input$indicator, {
+    rv$ind_data <- get_registry_ind(pool, input$indicator_registry) %>%
+      dplyr::filter(.data$id == input$indicator)
+  })
+
+  output$select_indicator_registry <- shiny::renderUI({
+    select_registry_ui(rv$pool, conf, input_id = "indicator_registry",
+                       context = input$context, current_reg = rv$indicator_reg)
+  })
+
+  output$select_indicator <- shiny::renderUI({
+    shiny::req(input$indicator_registry)
+    shiny::selectInput(
+      "indicator", "Velg indikator:",
+      choices = get_registry_indicators(pool, input$indicator_registry)
+    )
+  })
+
+  output$edit_ind_title <- shiny::renderUI({
+    shiny::req(input$indicator)
+    shiny::textAreaInput(
+      "ind_title", "Indikatortittel",
+      value = rv$ind_data$title
+    )
+  })
+
+  output$edit_ind_short <- shiny::renderUI({
+    shiny::req(input$indicator)
+    shiny::textAreaInput(
+    "ind_short", "Kort indikatorbeskrivelse",
+    value = rv$ind_data$short_description
+    )
+  })
+
+  output$edit_ind_long <- shiny::renderUI({
+    shiny::req(input$indicator)
+    shiny::textAreaInput(
+      "ind_long", "Lang indikatorbeskrivelse",
+      value = rv$ind_data$long_description
+    )
+  })
+
+
 
   # registry medfields
   shiny::observeEvent(input$update_medfield, {

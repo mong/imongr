@@ -193,8 +193,22 @@ app_ui <- function() {
                     title = conf$app_text$tooltip$indicator,
                     id = "indicator"),
         shiny::sidebarLayout(
-          shiny::sidebarPanel(),
-          shiny::mainPanel()
+          shiny::sidebarPanel(
+            shiny::uiOutput("select_indicator_registry"),
+            shiny::uiOutput("select_indicator")
+          ),
+          shiny::mainPanel(
+            shiny::uiOutput("edit_ind_title"),
+            shiny::actionButton("update_ind_title", "Oppdater tittel"),
+            shiny::hr(),
+            shiny::uiOutput("edit_ind_short"),
+            shiny::actionButton("update_ind_short",
+                                "Oppdater kort beskrivelse"),
+            shiny::hr(),
+            shiny::uiOutput("edit_ind_long"),
+            shiny::actionButton("update_ind_long",
+                                "Oppdater lang beskrivelse")
+          )
         )
       ),
       shiny::tabPanel(
