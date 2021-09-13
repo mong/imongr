@@ -319,5 +319,6 @@ WHERE
   rs <- DBI::dbSendQuery(con, query)
   DBI::dbBind(rs, params)
   DBI::dbClearResult(rs)
+  pool::poolReturn(con)
 
 }
