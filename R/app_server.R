@@ -50,6 +50,7 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "upload")
   shiny::hideTab("tabs", target = "download")
   shiny::hideTab("tabs", target = "medfield")
+  shiny::hideTab("tabs", target = "reguser")
   shiny::hideTab("tabs", target = "adminer")
   shiny::hideTab("tabs", target = "mine_field")
   if (valid_user && conf$role$provider %in% igrs) {
@@ -58,6 +59,7 @@ app_server <- function(input, output, session) {
   }
   if (valid_user && conf$role$manager %in% igrs) {
     shiny::showTab("tabs", target = "medfield")
+    shiny::showTab("tabs", target = "reguser")
     shiny::showTab("tabs", target = "adminer")
     shiny::showTab("tabs", target = "mine_field")
   }
