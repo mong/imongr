@@ -195,19 +195,13 @@ app_ui <- function() {
         shiny::sidebarLayout(
           shiny::sidebarPanel(
             shiny::uiOutput("select_indicator_registry"),
-            shiny::uiOutput("select_indicator")
+            shiny::uiOutput("select_indicator"),
+            shiny::actionButton("update_ind", "Oppdat\u00e9r alle tekster")
           ),
           shiny::mainPanel(
             shiny::uiOutput("edit_ind_title"),
-            shiny::actionButton("update_ind_title", "Oppdater tittel"),
-            shiny::hr(),
             shiny::uiOutput("edit_ind_short"),
-            shiny::actionButton("update_ind_short",
-                                "Oppdater kort beskrivelse"),
-            shiny::hr(),
-            shiny::uiOutput("edit_ind_long"),
-            shiny::actionButton("update_ind_long",
-                                "Oppdater lang beskrivelse")
+            shiny::uiOutput("edit_ind_long")
           )
         )
       ),

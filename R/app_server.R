@@ -328,6 +328,15 @@ app_server <- function(input, output, session) {
       dplyr::filter(.data$id == input$indicator)
   })
 
+  shiny::observeEvent(input$update_ind, {
+    rv$ind_data$title <- input$ind_title
+    rv$ind_data$short_description <- input$ind_short
+    rv$ind_data$long_description <- input$ind_long
+    update_ind_text(pool, rv$ind_data)
+    rv$ind_data <- get_registry_ind(pool, input$indicator_registry) %>%
+      dplyr::filter(.data$id == input$indicator)
+  })
+
   output$select_indicator_registry <- shiny::renderUI({
     select_registry_ui(rv$pool, conf, input_id = "indicator_registry",
                        context = input$context, current_reg = rv$indicator_reg)
@@ -352,7 +361,7 @@ app_server <- function(input, output, session) {
   output$edit_ind_short <- shiny::renderUI({
     shiny::req(input$indicator)
     shiny::textAreaInput(
-    "ind_short", "Kort indikatorbeskrivelse",
+      "ind_short", "Kort indikatorbeskrivelse",
     value = rv$ind_data$short_description
     )
   })

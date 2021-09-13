@@ -8,6 +8,7 @@
 #' delete_indicator_data delete_registry_data delete_agg_data insert_data
 #' insert_agg_data update_aggdata_delivery_time agg_all_data clean_agg_data
 #' create_imongr_user update_registry_medfield update_registry_user
+#' update_ind_text
 NULL
 
 
@@ -291,4 +292,22 @@ WHERE
 
   pool::dbWriteTable(pool, "user_registry", df, append = TRUE,
                      row.names = FALSE)
+}
+
+#' @rdname ops
+#' @export
+update_ind_text <- function(pool, df) {
+
+  query <- paste0("
+UPDATE
+  ind
+SET
+  title = '", df$title, "',
+  short_description = '", df$short_description, "',
+  long_description = '", df$long_description, "'
+WHERE
+  id = '", df$id, "';")
+
+  pool::dbExecute(pool, query)
+
 }
