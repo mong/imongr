@@ -188,6 +188,16 @@ app_ui <- function() {
         )
       ),
       shiny::tabPanel(
+        value = "indicator",
+        shiny::span("Indikator",
+                    title = conf$app_text$tooltip$indicator,
+                    id = "indicator"),
+        shiny::sidebarLayout(
+          shiny::sidebarPanel(),
+          shiny::mainPanel()
+        )
+      ),
+      shiny::tabPanel(
         value = "adminer",
         shiny::span("Adminer",
                     title = conf$app_text$tooltip$adminer,

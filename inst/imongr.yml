@@ -64,6 +64,8 @@ app_text:
       Angi fagområde(r) for registrene
     reguser: |-
       Angi bruker(e) for registrene
+    indicator: |-
+      Se og endre på indikatortekster
     adminer: |-
       Administrer data
 db:
