@@ -302,12 +302,22 @@ update_ind_text <- function(pool, df) {
 UPDATE
   ind
 SET
-  title = '", df$title, "',
-  short_description = '", df$short_description, "',
-  long_description = '", df$long_description, "'
+  title = ?,
+  short_description = ?,
+  long_description = ?
 WHERE
-  id = '", df$id, "';")
+  id = ?;")
 
-  pool::dbExecute(pool, query)
+  params <- list(
+    df$title,
+    df$short_description,
+    df$long_description,
+    df$id
+  )
+
+  con <- pool::poolCheckout(pool)
+  rs <- DBI::dbSendQuery(con, query)
+  DBI::dbBind(rs, params)
+  DBI::dbClearResult(rs)
 
 }
