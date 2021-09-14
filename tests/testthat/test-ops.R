@@ -172,6 +172,19 @@ test_that("a new user can be created", {
     stringsAsFactors = FALSE)))
 })
 
+test_that("indicator texts can be updated", {
+  check_db()
+  expect_silent(
+    update_ind_text(
+      pool,
+      data.frame(title = "Dummy for NoRGast v2",
+                 short_description = "Dummy for NoRGast v2",
+                 long_description = "Dummy for NoRGast v2",
+                 id = "norgast_dummy")
+      )
+  )
+})
+
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
