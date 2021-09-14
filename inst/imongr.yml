@@ -299,9 +299,7 @@ upload:
     denominator: >
       et positivt heltall større enn 0 som angir antall hendelser for
       tilsvarende verdi i <i>var</i>. For enkelthendelser skal verdien være 1
-      og for et aggregat av hendelser skal verdien være større enn 1.<br>
-      ALTERNATIV: hvis <i>var</i> er angitt som en ferdigberegnet verdi skal
-      <i>denominator</i> alltid settes lik 1
+      og for et aggregat av hendelser skal verdien være større enn 1
     ind_id: >
       unik id som må samsvare med definerte kvalitetsindikatorer for gjeldende
       register (se under)
