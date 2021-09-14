@@ -16,6 +16,7 @@ app_server <- function(input, output, session) {
   igrs <- get_user_groups()
   conf <- get_config()
   pool <- make_pool()
+  oversize_message <- "<i style='color:red;'>Teksten er for lang!</i><br><br>"
   rv <- shiny::reactiveValues(
     inv_data = 0,
     medfield_data = get_table(pool, "medfield"),
@@ -28,6 +29,9 @@ app_server <- function(input, output, session) {
     download_reg = character(),
     indicator_reg = character(),
     indicator_data = data.frame(),
+    title_oversize = FALSE,
+    short_oversize = FALSE,
+    long_oversize = FALSE,
     pool = make_pool(),
     admin_url = paste0(adminer_url(), "/?",
                         "server=", db_host(), "&",
@@ -328,6 +332,30 @@ app_server <- function(input, output, session) {
       dplyr::filter(.data$id == input$indicator)
   })
 
+  shiny::observeEvent(input$ind_title, {
+    if (nchar(input$ind_title) > 255) {
+      rv$title_oversize <- TRUE
+    } else {
+      rv$title_oversize <- FALSE
+    }
+  })
+
+  shiny::observeEvent(input$ind_short, {
+    if (nchar(input$ind_short) > 1023) {
+      rv$short_oversize <- TRUE
+    } else {
+      rv$short_oversize <- FALSE
+    }
+  })
+
+  shiny::observeEvent(input$ind_long, {
+    if (nchar(input$ind_long) > 2047) {
+      rv$long_oversize <- TRUE
+    } else {
+      rv$long_oversize <- FALSE
+    }
+  })
+
   shiny::observeEvent(input$update_ind, {
     rv$ind_data$title <- input$ind_title
     rv$ind_data$short_description <- input$ind_short
@@ -353,25 +381,57 @@ app_server <- function(input, output, session) {
   output$edit_ind_title <- shiny::renderUI({
     shiny::req(input$indicator)
     shiny::textAreaInput(
-      "ind_title", "Indikatortittel",
+      "ind_title", "Indikatortittel (maks 255 tegn)",
       value = rv$ind_data$title
     )
+  })
+
+  output$title_oversize <- shiny::renderUI({
+    if (rv$title_oversize) {
+      shiny::HTML(oversize_message)
+    } else {
+      NULL
+    }
   })
 
   output$edit_ind_short <- shiny::renderUI({
     shiny::req(input$indicator)
     shiny::textAreaInput(
-      "ind_short", "Kort indikatorbeskrivelse",
+      "ind_short", "Kort indikatorbeskrivelse (maks 1023 tegn)",
     value = rv$ind_data$short_description
     )
+  })
+
+  output$short_oversize <- shiny::renderUI({
+    if (rv$short_oversize) {
+      shiny::HTML(oversize_message)
+    } else {
+      NULL
+    }
   })
 
   output$edit_ind_long <- shiny::renderUI({
     shiny::req(input$indicator)
     shiny::textAreaInput(
-      "ind_long", "Lang indikatorbeskrivelse",
+      "ind_long", "Lang indikatorbeskrivelse (maks 2047 tegn)",
       value = rv$ind_data$long_description
     )
+  })
+
+  output$long_oversize <- shiny::renderUI({
+    if (rv$long_oversize) {
+      shiny::HTML(oversize_message)
+    } else {
+      NULL
+    }
+  })
+
+  output$update_indicator <- shiny::renderUI({
+    if (any(c(rv$title_oversize, rv$short_oversize, rv$long_oversize))) {
+      NULL
+    } else {
+      shiny::actionButton("update_ind", "Oppdat\u00e9r tekster")
+    }
   })
 
 
