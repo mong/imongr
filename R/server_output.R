@@ -81,8 +81,6 @@ select_registry_ui <- function(pool, conf, input_id, context,
 }
 
 
-
-
 #' @rdname server_output
 #' @export
 submit_ui <- function(conf, pool, upload_file, registry, df, context) {

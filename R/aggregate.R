@@ -70,7 +70,8 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
   df <- df %>%
     dplyr::filter(!.data$ind_id %in% ind_noagg)
   message(paste("  removed", dim(df_noagg)[1], "rows for indicators that",
-                "should not be aggregated"))
+                "should not be aggregated while leaving", dim(df)[1],
+                "rows for aggregation."))
 
   unit_levels <- unique(df$unit_level)
 

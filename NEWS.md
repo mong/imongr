@@ -1,3 +1,9 @@
+# imongr 0.24.0
+
+* Added editing of existing indicators in GUI ()
+* Added agg_data as part of downloadable tables...
+* Fixed bug in processing pre-calculated values with large denominator... ()
+
 # imongr 0.23.0
 
 * Upgraded base R version 4.0.3 -> 4.1.0 

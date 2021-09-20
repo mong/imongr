@@ -16,6 +16,7 @@
 \alias{create_imongr_user}
 \alias{update_registry_medfield}
 \alias{update_registry_user}
+\alias{update_ind_text}
 \title{Functions for data operations in imongr}
 \usage{
 delivery_exist_in_db(pool, df)
@@ -43,6 +44,8 @@ create_imongr_user(pool, df)
 update_registry_medfield(pool, df)
 
 update_registry_user(pool, df)
+
+update_ind_text(pool, df)
 }
 \arguments{
 \item{pool}{Database connection pool object}

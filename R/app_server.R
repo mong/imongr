@@ -16,6 +16,7 @@ app_server <- function(input, output, session) {
   igrs <- get_user_groups()
   conf <- get_config()
   pool <- make_pool()
+  oversize_message <- "<i style='color:red;'>Teksten er for lang!</i><br><br>"
   rv <- shiny::reactiveValues(
     inv_data = 0,
     medfield_data = get_table(pool, "medfield"),
@@ -26,6 +27,11 @@ app_server <- function(input, output, session) {
       reguser_summary_text_ui(pool, conf, get_users(pool)),
     upload_reg = character(),
     download_reg = character(),
+    indicator_reg = character(),
+    indicator_data = data.frame(),
+    title_oversize = FALSE,
+    short_oversize = FALSE,
+    long_oversize = FALSE,
     pool = make_pool(),
     admin_url = paste0(adminer_url(), "/?",
                         "server=", db_host(), "&",
@@ -50,6 +56,7 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "upload")
   shiny::hideTab("tabs", target = "download")
   shiny::hideTab("tabs", target = "medfield")
+  shiny::hideTab("tabs", target = "reguser")
   shiny::hideTab("tabs", target = "adminer")
   shiny::hideTab("tabs", target = "mine_field")
   if (valid_user && conf$role$provider %in% igrs) {
@@ -58,6 +65,7 @@ app_server <- function(input, output, session) {
   }
   if (valid_user && conf$role$manager %in% igrs) {
     shiny::showTab("tabs", target = "medfield")
+    shiny::showTab("tabs", target = "reguser")
     shiny::showTab("tabs", target = "adminer")
     shiny::showTab("tabs", target = "mine_field")
   }
@@ -80,6 +88,7 @@ app_server <- function(input, output, session) {
     drain_pool(rv$pool)
     rv$upload_reg <- input$registry
     rv$download_reg <- input$download_registry
+    rv$indicator_reg <- input$indicator_registry
     rv$admin_url <- paste0(adminer_url(), "/?",
                            "server=", db_host(context = input$context), "&",
                            "username=", db_username(), "&",
@@ -313,6 +322,119 @@ app_server <- function(input, output, session) {
   output$ui_db_table <- shiny::renderUI(
     DT::dataTableOutput("db_table")
   )
+
+
+
+  # indicator
+  ## observers
+  shiny::observeEvent(input$indicator, {
+    rv$ind_data <- get_registry_ind(pool, input$indicator_registry) %>%
+      dplyr::filter(.data$id == input$indicator)
+  })
+
+  shiny::observeEvent(input$ind_title, {
+    if (nchar(input$ind_title) > 255) {
+      rv$title_oversize <- TRUE
+    } else {
+      rv$title_oversize <- FALSE
+    }
+  })
+
+  shiny::observeEvent(input$ind_short, {
+    if (nchar(input$ind_short) > 1023) {
+      rv$short_oversize <- TRUE
+    } else {
+      rv$short_oversize <- FALSE
+    }
+  })
+
+  shiny::observeEvent(input$ind_long, {
+    if (nchar(input$ind_long) > 2047) {
+      rv$long_oversize <- TRUE
+    } else {
+      rv$long_oversize <- FALSE
+    }
+  })
+
+  shiny::observeEvent(input$update_ind, {
+    rv$ind_data$title <- input$ind_title
+    rv$ind_data$short_description <- input$ind_short
+    rv$ind_data$long_description <- input$ind_long
+    update_ind_text(pool, rv$ind_data)
+    rv$ind_data <- get_registry_ind(pool, input$indicator_registry) %>%
+      dplyr::filter(.data$id == input$indicator)
+  })
+
+  output$select_indicator_registry <- shiny::renderUI({
+    select_registry_ui(rv$pool, conf, input_id = "indicator_registry",
+                       context = input$context, current_reg = rv$indicator_reg)
+  })
+
+  output$select_indicator <- shiny::renderUI({
+    shiny::req(input$indicator_registry)
+    shiny::selectInput(
+      "indicator", "Velg indikator:",
+      choices = get_registry_indicators(pool, input$indicator_registry)
+    )
+  })
+
+  output$edit_ind_title <- shiny::renderUI({
+    shiny::req(input$indicator)
+    shiny::textAreaInput(
+      "ind_title", "Indikatortittel (maks 255 tegn)",
+      value = rv$ind_data$title, width = "90%", rows = 2
+    )
+  })
+
+  output$title_oversize <- shiny::renderUI({
+    if (rv$title_oversize) {
+      shiny::HTML(oversize_message)
+    } else {
+      NULL
+    }
+  })
+
+  output$edit_ind_short <- shiny::renderUI({
+    shiny::req(input$indicator)
+    shiny::textAreaInput(
+      "ind_short", "Kort indikatorbeskrivelse (maks 1023 tegn)",
+      value = rv$ind_data$short_description, width = "90%", rows = 8
+    )
+  })
+
+  output$short_oversize <- shiny::renderUI({
+    if (rv$short_oversize) {
+      shiny::HTML(oversize_message)
+    } else {
+      NULL
+    }
+  })
+
+  output$edit_ind_long <- shiny::renderUI({
+    shiny::req(input$indicator)
+    shiny::textAreaInput(
+      "ind_long", "Lang indikatorbeskrivelse (maks 2047 tegn)",
+      value = rv$ind_data$long_description, width = "90%", rows = 16
+    )
+  })
+
+  output$long_oversize <- shiny::renderUI({
+    if (rv$long_oversize) {
+      shiny::HTML(oversize_message)
+    } else {
+      NULL
+    }
+  })
+
+  output$update_indicator <- shiny::renderUI({
+    if (any(c(rv$title_oversize, rv$short_oversize, rv$long_oversize))) {
+      NULL
+    } else {
+      shiny::actionButton("update_ind", "Oppdat\u00e9r tekster")
+    }
+  })
+
+
 
   # registry medfields
   shiny::observeEvent(input$update_medfield, {

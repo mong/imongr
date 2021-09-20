@@ -8,6 +8,7 @@
 #' delete_indicator_data delete_registry_data delete_agg_data insert_data
 #' insert_agg_data update_aggdata_delivery_time agg_all_data clean_agg_data
 #' create_imongr_user update_registry_medfield update_registry_user
+#' update_ind_text
 NULL
 
 
@@ -142,16 +143,13 @@ insert_agg_data <- function(pool, df) {
   org <- get_flat_org(pool)
   ind <- get_table(pool, "ind")
   all_orgnr <- get_all_orgnr(pool)
-
-  # identify none-fraction indicators (no aggregation) and obtain unit
-  # name-number mapping needed for none-fraction data when added to the
-  # aggregate
   conf <- get_config()
-  ind_noagg <- indicator_is_fraction(pool, df, conf, return_ind = TRUE)
-  ind_noagg <- ind_noagg$ind[!ind_noagg$is_fraction]
+  ## obtain unit name-number mapping needed for none-fraction data when added to
+  ## the aggregate
   orgnr_name_map <- get_all_orgnr(pool, include_short_name = TRUE) %>%
     dplyr::select(.data$orgnr, .data$short_name) %>%
     dplyr::rename(unit_name = .data$short_name)
+
 
   # make sure we have unit_levels
   if (!"unit_level" %in% names(df)) {
@@ -178,6 +176,10 @@ insert_agg_data <- function(pool, df) {
         dat <- dplyr::left_join(dat, all_orgnr, by = "orgnr")
       }
     }
+    # identify none-fraction indicators (no aggregation)
+    ind_noagg <- indicator_is_fraction(pool, dat, conf, return_ind = TRUE)
+    ind_noagg <- ind_noagg$ind[!ind_noagg$is_fraction]
+
     message("  aggregating")
     dat <- agg(dat, org, ind, ind_noagg, orgnr_name_map)
     message("  delete old agg data")
@@ -291,4 +293,33 @@ WHERE
 
   pool::dbWriteTable(pool, "user_registry", df, append = TRUE,
                      row.names = FALSE)
+}
+
+#' @rdname ops
+#' @export
+update_ind_text <- function(pool, df) {
+
+  query <- paste0("
+UPDATE
+  ind
+SET
+  title = ?,
+  short_description = ?,
+  long_description = ?
+WHERE
+  id = ?;")
+
+  params <- list(
+    df$title,
+    df$short_description,
+    df$long_description,
+    df$id
+  )
+
+  con <- pool::poolCheckout(pool)
+  rs <- DBI::dbSendQuery(con, query)
+  DBI::dbBind(rs, params)
+  DBI::dbClearResult(rs)
+  pool::poolReturn(con)
+
 }
