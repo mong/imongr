@@ -382,7 +382,7 @@ app_server <- function(input, output, session) {
     shiny::req(input$indicator)
     shiny::textAreaInput(
       "ind_title", "Indikatortittel (maks 255 tegn)",
-      value = rv$ind_data$title
+      value = rv$ind_data$title, width = "90%", rows = 2
     )
   })
 
@@ -398,7 +398,7 @@ app_server <- function(input, output, session) {
     shiny::req(input$indicator)
     shiny::textAreaInput(
       "ind_short", "Kort indikatorbeskrivelse (maks 1023 tegn)",
-    value = rv$ind_data$short_description
+      value = rv$ind_data$short_description, width = "90%", rows = 8
     )
   })
 
@@ -414,7 +414,7 @@ app_server <- function(input, output, session) {
     shiny::req(input$indicator)
     shiny::textAreaInput(
       "ind_long", "Lang indikatorbeskrivelse (maks 2047 tegn)",
-      value = rv$ind_data$long_description
+      value = rv$ind_data$long_description, width = "90%", rows = 16
     )
   })
 
