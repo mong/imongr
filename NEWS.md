@@ -1,8 +1,7 @@
 # imongr 0.24.0
 
-* Added editing of existing indicators in GUI ()
-* Added agg_data as part of downloadable tables...
-* Fixed bug in processing pre-calculated values with large denominator... ()
+* Added editing of existing indicators in GUI ([#143](https://github.com/mong/imongr/pull/143))
+* Fixed bug in processing pre-calculated values with large denominator ([#141](https://github.com/mong/imongr/issues/141), [#144](https://github.com/mong/imongr/issues/144))
 
 # imongr 0.23.0
 
