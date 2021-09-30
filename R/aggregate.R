@@ -71,69 +71,74 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
     dplyr::filter(!.data$ind_id %in% ind_noagg)
   message(paste("  removed", dim(df_noagg)[1], "rows for indicators that",
                 "should not be aggregated while leaving", dim(df)[1],
-                "rows for aggregation."))
+                "rows for aggregation"))
 
-  unit_levels <- unique(df$unit_level)
+  if (dim(df)[1] > 0) {
+    unit_levels <- unique(df$unit_level)
 
-  # aggregate each level
-  aggs <- data.frame()
-  for (i in seq_len(length(unit_levels))) {
-    agg <- agg_from_level(df[df$unit_level == unit_levels[i], ], org, ind,
-                          conf,
-                          conf$aggregate$unit_level[[unit_levels[i]]]$level)
-    aggs <- rbind(aggs, agg)
-  }
+    # aggregate each level
+    aggs <- data.frame()
+    for (i in seq_len(length(unit_levels))) {
+      agg <- agg_from_level(df[df$unit_level == unit_levels[i], ], org, ind,
+                            conf,
+                            conf$aggregate$unit_level[[unit_levels[i]]]$level)
+      aggs <- rbind(aggs, agg)
+    }
 
-  # sum over levels (i.e. organizations)
-  aggs <- aggs %>%
-    dplyr::group_by(.data$year, .data$ind_id, .data$orgnr, .data$context) %>%
-    dplyr::summarise(var = sum(.data$var),
-                     denominator = sum(.data$denominator),
-                     unit_level = unique(.data$unit_level),
-                     unit_name = unique(.data$unit_name)) %>%
-    dplyr::ungroup() %>%
-    as.data.frame()
+    # sum over levels (i.e. organizations)
+    aggs <- aggs %>%
+      dplyr::group_by(.data$year, .data$ind_id, .data$orgnr, .data$context) %>%
+      dplyr::summarise(var = sum(.data$var),
+                       denominator = sum(.data$denominator),
+                       unit_level = unique(.data$unit_level),
+                       unit_name = unique(.data$unit_name)) %>%
+      dplyr::ungroup() %>%
+      as.data.frame()
 
-  # find diffs between levels (if any, to be placed in undefined orgs)
-  diff <- agg_residual(aggs, conf)
+    # find diffs between levels (if any, to be placed in undefined orgs)
+    diff <- agg_residual(aggs, conf)
 
-  # place residuals in undefined orgs (diffs < 0 will be added to above level)
-  if (dim(diff)[1] > 0) {
-    udef <- agg_udef(diff, conf)
+    # place residuals in undefined orgs (diffs < 0 will be added to above level)
+    if (dim(diff)[1] > 0) {
+      udef <- agg_udef(diff, conf)
+    } else {
+      udef <- aggs[FALSE, ]
+    }
+
+    # add undefined, if any
+    aggs <- rbind(aggs, udef)
+
+    # DANGER! As of the Sep 15 2020 project meeting, pre-aggregate on short_name
+    # DANGER! A less risky way of proper handling of 'groups' should be applied
+    # DANGER! at a later stage
+    message("  pre-aggregating by short name")
+    message(paste("    rows before pre-aggregation:", dim(df)[1]))
+    aggs <- aggs %>%
+      dplyr::group_by(.data$context, .data$year, .data$ind_id, .data$unit_level,
+                      .data$unit_name) %>%
+      dplyr::summarise(var = sum(.data$var),
+                       denominator = sum(.data$denominator),
+                       orgnr = min(.data$orgnr))
+    message(paste("    rows after pre-aggregation:", dim(df)[1]))
+    # DANGER end!
+
+
+    # make parts
+    aggs$var <- aggs$var / aggs$denominator
+
+    aggs <- aggs %>%
+      dplyr::arrange(.data$context,
+                     .data$ind_id,
+                     .data$year,
+                     .data$unit_level) %>%
+      dplyr::ungroup()
+
+    # add data for indicators that is not aggregated
+    aggs <- rbind(aggs, df_noagg)
   } else {
-    udef <- aggs[FALSE, ]
+    message("  got nothing to aggregate")
+    aggs <- df_noagg
   }
-
-  # add undefined, if any
-  aggs <- rbind(aggs, udef)
-
-  # DANGER! As of the Sep 15 2020 project meeting, pre-aggregate on short_name
-  # DANGER! A less risky way of proper handling of 'groups' should be applied
-  # DANGER! at a later stage
-  message("  pre-aggregating by short name")
-  message(paste("    rows before pre-aggregation:", dim(df)[1]))
-  aggs <- aggs %>%
-    dplyr::group_by(.data$context, .data$year, .data$ind_id, .data$unit_level,
-                    .data$unit_name) %>%
-    dplyr::summarise(var = sum(.data$var),
-                     denominator = sum(.data$denominator),
-                     orgnr = min(.data$orgnr))
-  message(paste("    rows after pre-aggregation:", dim(df)[1]))
-  # DANGER end!
-
-
-  # make parts
-  aggs$var <- aggs$var / aggs$denominator
-
-  aggs <- aggs %>%
-    dplyr::arrange(.data$context,
-                   .data$ind_id,
-                   .data$year,
-                   .data$unit_level) %>%
-    dplyr::ungroup()
-
-  # add data for indicators that is not aggregated
-  aggs <- rbind(aggs, df_noagg)
 
   # class values into defined levels
   aggs <- get_indicator_level(aggs, ind)

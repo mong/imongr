@@ -1,3 +1,7 @@
+# imongr 0.24.1
+
+* Fixed agg error when there are only pre-aggregated values in data set ([#146](https://github.com/mong/imongr/pull/146))
+
 # imongr 0.24.0
 
 * Added editing of existing indicators in GUI ([#143](https://github.com/mong/imongr/pull/143))
