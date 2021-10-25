@@ -9,7 +9,7 @@
 [![Doc](https://img.shields.io/badge/Doc--grey.svg)](https://mong.github.io/imongr/)
 <!-- badges: end -->
 
-Primarily a tool to update data used by the [qmongr](https://github.com/mong/qmongr/) application.
+Primarily a tool to update data used by the [qmongjs](https://github.com/mong/qmongjs/) application.
 
 ## Install
 
@@ -21,7 +21,7 @@ remotes::install_github("mong/imongr")
 
 ## Development
 
-See [mong documentation](https://mong.github.io/mong/#/utvikling)
+See [mong documentation](https://mong.github.io/#/utvikling)
 
 ## Ethics
 Please note that the 'imongr' project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
