@@ -51,17 +51,27 @@ app_ui <- function() {
         value = "profile",
         shiny::span("Profil",
                     title = conf$app_text$tooltip$profile),
-        shiny::sidebarLayout(
-          shiny::sidebarPanel(
-            shiny::uiOutput("select_context")
-          ),
-          shiny::mainPanel(
-            shiny::htmlOutput("profile"),
-            shiny::checkboxInput("deliver_history",
-                                 conf$profile$delivery$status)
-          )
+        # shiny::sidebarLayout(
+        #   shiny::sidebarPanel(
+        #     shiny::uiOutput("select_context")
+        #   ),
+        #   shiny::mainPanel(
+        #     shiny::htmlOutput("profile"),
+        #     shiny::checkboxInput("deliver_history",
+        #                          conf$profile$delivery$status)
+        #   )
+        # ),
+        shiny::htmlOutput("profile"),
+        shiny::checkboxInput(
+          "upload_history",
+          conf$profile$delivery$status$upload
         ),
-        shiny::uiOutput("ui_deliveries_table")
+        shiny::uiOutput("ui_upload_table"),
+        shiny::checkboxInput(
+          "publish_history",
+          conf$profile$delivery$status$publish
+        ),
+        shiny::uiOutput("ui_publish_table")
       ),
 
       shiny::tabPanel(

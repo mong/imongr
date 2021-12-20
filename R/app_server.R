@@ -16,6 +16,7 @@ app_server <- function(input, output, session) {
   igrs <- get_user_groups()
   conf <- get_config()
   pool <- make_pool()
+  pool_verify <- make_pool(context = "verify")
   oversize_message <- "<i style='color:red;'>Teksten er for lang!</i><br><br>"
   rv <- shiny::reactiveValues(
     inv_data = 0,
@@ -121,9 +122,9 @@ app_server <- function(input, output, session) {
     profile_ui(conf, rv$pool, valid_user, iusr, igrs)
   })
 
-  output$deliveries_table <- DT::renderDataTable(
-    if (input$deliver_history) {
-      DT::datatable(get_user_deliveries(rv$pool), rownames = FALSE,
+  output$upload_table <- DT::renderDataTable(
+    if (input$upload_history) {
+      DT::datatable(get_user_deliveries(pool_verify), rownames = FALSE,
                     options = list(dom = "tp", pageLength = 10,
                       language = list(
                         paginate = list(previous = "Forrige",
@@ -133,8 +134,24 @@ app_server <- function(input, output, session) {
     }
   )
 
-  output$ui_deliveries_table <- shiny::renderUI(
-    DT::dataTableOutput("deliveries_table")
+  output$publish_table <- DT::renderDataTable(
+    if (input$publish_history) {
+      DT::datatable(get_user_deliveries(pool), rownames = FALSE,
+                    options = list(dom = "tp", pageLength = 10,
+                                   language = list(
+                                     paginate = list(previous = "Forrige",
+                                                     `next` = "Neste"))))
+    } else {
+      NULL
+    }
+  )
+
+  output$ui_upload_table <- shiny::renderUI(
+    DT::dataTableOutput("upload_table")
+  )
+
+  output$ui_publish_table <- shiny::renderUI(
+    DT::dataTableOutput("publish_table")
   )
 
   # last

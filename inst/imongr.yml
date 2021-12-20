@@ -182,8 +182,11 @@ profile:
   userinfo: >
     Følgende er registrert om deg:
   delivery:
-    status: >
-      Vis tidligere dataleveranser:
+    status:
+      upload: >
+        Vis tidligere opplastinger av data:
+      publish: >
+        Vis tidligere publiseringer av data:
     none: >
       Det finnes ingen registrerte dataleveranser fra deg.
   howto: >
