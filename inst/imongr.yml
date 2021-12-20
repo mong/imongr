@@ -269,7 +269,7 @@ upload:
       rekkefølgen på kolonnene kan være tilfeldig. Under følger en forklaring
       på innholdet i kolonnene.
     sample: >
-      Her vises en utsnitt av datasett du har lastet opp. Juster parametrene i
+      Her vises en utsnitt av data i filen som er valgt. Juster parametrene i
       menyen på venstresiden slik at eventuelle spesialtegn representeres
       riktig og tallene fremstår slik de skal. <b>Merk at når du sender nye data
       så vil alle gamle data for tilsvarende indikatorer og kontekst gitt i

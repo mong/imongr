@@ -162,8 +162,8 @@ app_server <- function(input, output, session) {
     }
   })
   shiny::observeEvent(input$submit, {
-    insert_data(rv$pool, df())
-    insert_agg_data(rv$pool, df())
+    insert_data(pool_verify, df())
+    insert_agg_data(pool_verify, df())
     rv$inv_data <- rv$inv_data + 1
     shinyalert::shinyalert(conf$upload$reciept$title, conf$upload$reciept$body,
                            type = "success", showConfirmButton = FALSE,
@@ -191,8 +191,8 @@ app_server <- function(input, output, session) {
 
   ## ui sidebar panel
   output$select_registry <- shiny::renderUI({
-    select_registry_ui(rv$pool, conf, input_id = "registry",
-                       context = input$context, current_reg = rv$upload_reg)
+    select_registry_ui(pool_verify, conf, input_id = "registry",
+                       context = "verify", current_reg = rv$upload_reg)
   })
 
   output$upload_file <- shiny::renderUI({
@@ -215,8 +215,8 @@ app_server <- function(input, output, session) {
 
   output$submit <- shiny::renderUI({
     rv$inv_data
-    submit_ui(conf, rv$pool, input$upload_file, input$registry, df(),
-              input$context)
+    submit_ui(conf, pool_verify, input$upload_file, input$registry, df(),
+              "verify")
   })
 
   output$spinner <- shiny::renderText({
@@ -228,7 +228,7 @@ app_server <- function(input, output, session) {
   ## ui main panel
   output$error_report <- shiny::renderText({
     rv$inv_data
-    error_report_ui(rv$pool, df(), input$upload_file, input$registry)
+    error_report_ui(pool_verify, df(), input$upload_file, input$registry)
   })
 
   output$upload_sample_text <- shiny::renderText({
@@ -236,7 +236,7 @@ app_server <- function(input, output, session) {
     if (input$registry == "") {
       NULL
     } else {
-      upload_sample_text_ui(rv$pool, conf, input$upload_file, input$registry,
+      upload_sample_text_ui(pool_verify, conf, input$upload_file, input$registry,
                             indicators = unique(df()$ind_id))
     }
   })
@@ -255,19 +255,19 @@ app_server <- function(input, output, session) {
 
   output$valid_ind <- shiny::renderText({
     paste0("<h4>", conf$upload$doc$valid_ind, " <i>",
-          get_registry_name(rv$pool, shiny::req(input$registry),
+          get_registry_name(pool_verify, shiny::req(input$registry),
                             full_name = TRUE),
           "</i>:</h4>")
   })
 
   output$valid_ind_tab <- shiny::renderTable(
-    get_registry_indicators(rv$pool, shiny::req(input$registry)),
+    get_registry_indicators(pool_verify, shiny::req(input$registry)),
     rownames = TRUE,
     colnames = FALSE
   )
 
   output$sample_data <- shiny::renderTable(
-    get_table(rv$pool, "data",
+    get_table(pool_verify, "data",
       sample = 0.00001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
   )
 
