@@ -274,23 +274,36 @@ app_server <- function(input, output, session) {
 
 
   # loss
+  pool_download <- shiny::reactive({
+    if (is.null(input$download_context)) {
+      pool_verify
+    } else {
+      if(input$download_context == "verify") {
+        pool_verify
+      } else {
+        pool
+      }
+    }
+  })
+
   db_table <- shiny::reactive({
     if (input$download_registry == "") {
       data.frame()
     } else {
       if (input$tab_set == "data") {
-        get_registry_data(rv$pool, input$download_registry)
+        get_registry_data(pool_download(), input$download_registry)
       } else if (input$tab_set == "ind") {
-        get_registry_ind(rv$pool, input$download_registry)
+        get_registry_ind(pool_download(), input$download_registry)
       } else {
-        get_table(rv$pool, input$tab_set)
+        get_table(pool_download(), input$tab_set)
       }
     }
   })
 
   output$select_download_registry <- shiny::renderUI({
-    select_registry_ui(rv$pool, conf, input_id = "download_registry",
-                       context = input$context, current_reg = rv$download_reg)
+    select_registry_ui(pool_download(), conf, input_id = "download_registry",
+                       context = input$download_context,
+                       show_context = FALSE)
   })
 
   output$select_db_table <- shiny::renderUI({

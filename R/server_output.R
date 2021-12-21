@@ -5,6 +5,8 @@
 #' @param input_id Character string with shiny ui id
 #' @param context Character string with user selected (db) context
 #' @param current_reg Character string defining previously selected registry
+#' @param show_context Logical stating if context is to be shown in GUI. TRUE by
+#' default.
 #' @param valid_user Logical valid user
 #' @param iusr Character string username
 #' @param igrs Character string comma separated user groups
@@ -47,7 +49,7 @@ profile_ui <- function(conf, pool, valid_user, iusr, igrs) {
 #' @rdname server_output
 #' @export
 select_registry_ui <- function(pool, conf, input_id, context,
-                               current_reg = character()) {
+                               current_reg = character(), show_context = TRUE) {
 
   if (conf$role$manager %in% get_user_groups()) {
     regs <- get_table(pool, "registry") %>%
@@ -68,14 +70,20 @@ select_registry_ui <- function(pool, conf, input_id, context,
       reg <- current_reg
     }
   }
-  shiny::tagList(
-    shiny::HTML(
+
+  contex_ui <- NULL
+  if (show_context) {
+    contex_ui <- shiny::HTML(
       paste0("<h3 style='color:",
              switch(context,
                     prod = "green;'>Produksjon</h3>",
                     verify = "orange;'>Dataverifisering</h3>",
                     qa = "red;'>QA</h3>"))
-    ),
+    )
+  }
+
+  shiny::tagList(
+    contex_ui,
     shiny::selectInput(input_id, label, regs, selected = reg)
   )
 }

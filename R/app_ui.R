@@ -140,6 +140,14 @@ app_ui <- function() {
         shiny::sidebarLayout(
           shiny::sidebarPanel(
             width = 3,
+            shiny::selectInput(
+              "download_context",
+              "Velg datakilde for nedlasting:",
+              list(
+                `Verifisering` = "verify",
+                `Produksjon` = "prod"
+              )
+            ),
             shiny::uiOutput("select_download_registry"),
             shiny::uiOutput("select_db_table"),
             shiny::selectInput("file_format",

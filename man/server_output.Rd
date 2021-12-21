@@ -15,7 +15,14 @@
 \usage{
 profile_ui(conf, pool, valid_user, iusr, igrs)
 
-select_registry_ui(pool, conf, input_id, context, current_reg = character())
+select_registry_ui(
+  pool,
+  conf,
+  input_id,
+  context,
+  current_reg = character(),
+  show_context = TRUE
+)
 
 submit_ui(conf, pool, upload_file, registry, df, context)
 
@@ -47,6 +54,9 @@ reguser_summary_text_ui(pool, conf, df)
 \item{context}{Character string with user selected (db) context}
 
 \item{current_reg}{Character string defining previously selected registry}
+
+\item{show_context}{Logical stating if context is to be shown in GUI. TRUE by
+default.}
 
 \item{upload_file}{Character string with file to upload}
 
