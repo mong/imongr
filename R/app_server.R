@@ -20,6 +20,7 @@ app_server <- function(input, output, session) {
   oversize_message <- "<i style='color:red;'>Teksten er for lang!</i><br><br>"
   rv <- shiny::reactiveValues(
     inv_data = 0,
+    inv_publish = 0,
     medfield_data = get_table(pool, "medfield"),
     medfield_summary = medfield_summary_text_ui(pool, conf,
                                                 get_table(pool, "medfield")),
@@ -27,6 +28,7 @@ app_server <- function(input, output, session) {
     user_summary =
       reguser_summary_text_ui(pool, conf, get_users(pool)),
     upload_reg = character(),
+    publish_reg = character(),
     download_reg = character(),
     indicator_reg = character(),
     indicator_data = data.frame(),
@@ -264,6 +266,68 @@ app_server <- function(input, output, session) {
   )
 
 
+  # publish
+  ## observers
+  shiny::observeEvent(input$publish_registry, {
+    if (!is.null(input$publish_registry)) {
+      rv$inv_publish <- rv$inv_publish + 1
+    }
+  })
+  shiny::observeEvent(input$publish, {
+    update_ind_text(pool, publish_ind())
+    insert_data(pool, publish_data())
+    insert_agg_data(pool, publish_data())
+    rv$inv_publish <- rv$inv_publish + 1
+    shinyalert::shinyalert(conf$publish$reciept$title, conf$publish$reciept$body,
+                           type = "success", showConfirmButton = FALSE,
+                           timer = 7000)
+  })
+  ## reactives
+  publish_data <- shiny::reactive({
+    if (is.null(input$publish_registry)) {
+      data.frame()
+    } else {
+      get_registry_data(pool_verify, input$publish_registry)
+    }
+  })
+  publish_ind <- shiny::reactive({
+    if (is.null(input$publish_registry)) {
+      data.frame()
+    } else {
+      get_registry_ind(pool_verify, input$publish_registry)
+    }
+  })
+
+  ## ui sidebar panel
+  output$select_publish_registry <- shiny::renderUI({
+    select_registry_ui(pool_verify, conf, input_id = "publish_registry",
+                       context = "verify", show_context = TRUE)
+  })
+  output$publish <- shiny::renderUI({
+    rv$inv_publish
+    if (!is.null(input$publish_registry) &&
+        !(conf$upload$fail %in% input$publish_registry) &&
+        all(!check_upload(input$publish_registry, publish_data(), pool)$fail)) {
+      shiny::tagList(
+        shiny::actionButton("publish", "Publiser", shiny::icon("paper-plane")),
+        shiny::p(paste(conf$upload$doc$submit$warning,
+                       get_registry_name(pool, input$publish_registry)))
+      )
+    } else {
+      NULL
+    }
+  })
+
+  ## ui main panel
+  output$error_report_publish <- shiny::renderText({
+    rv$inv_publish
+    error_report_ui(
+      pool = pool,
+      df = publish_data(),
+      upload_file = "none",
+      registry = input$publish_registry
+    )
+  })
 
   # loss
   pool_download <- shiny::reactive({

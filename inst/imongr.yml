@@ -59,6 +59,8 @@ app_text:
       Informasjon om din bruker
     upload: |-
       Last opp nye data til sykehusviseren
+    publish: |-
+      Publiser registerindikatorer
     download: |-
       Se på og last ned data fra Sykehusviseren
     settings: |-
@@ -205,6 +207,10 @@ profile:
   logout:
     text: Logg ut
     url: https://imongr.skde.org/logout
+publish:
+  reciept:
+    title: Nei, bær me i fjæra!
+    body: Dine data er nå publisert
 upload:
   file:
     vars:
