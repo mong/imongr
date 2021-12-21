@@ -57,6 +57,7 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "upload")
   shiny::hideTab("tabs", target = "download")
   shiny::hideTab("tabs", target = "indicator")
+  shiny::hideTab("tabs", target = "settings")
   shiny::hideTab("tabs", target = "medfield")
   shiny::hideTab("tabs", target = "reguser")
   shiny::hideTab("tabs", target = "adminer")
@@ -67,6 +68,7 @@ app_server <- function(input, output, session) {
     shiny::showTab("tabs", target = "indicator")
   }
   if (valid_user && conf$role$manager %in% igrs) {
+    shiny::showTab("tabs", target = "settings")
     shiny::showTab("tabs", target = "medfield")
     shiny::showTab("tabs", target = "reguser")
     shiny::showTab("tabs", target = "adminer")
@@ -348,7 +350,7 @@ app_server <- function(input, output, session) {
   # indicator
   ## observers
   shiny::observeEvent(input$indicator, {
-    rv$ind_data <- get_registry_ind(pool, input$indicator_registry) %>%
+    rv$ind_data <- get_registry_ind(pool_verify, input$indicator_registry) %>%
       dplyr::filter(.data$id == input$indicator)
   })
 
@@ -380,21 +382,22 @@ app_server <- function(input, output, session) {
     rv$ind_data$title <- input$ind_title
     rv$ind_data$short_description <- input$ind_short
     rv$ind_data$long_description <- input$ind_long
-    update_ind_text(pool, rv$ind_data)
-    rv$ind_data <- get_registry_ind(pool, input$indicator_registry) %>%
+    update_ind_text(pool_verify, rv$ind_data)
+    rv$ind_data <- get_registry_ind(pool_verify, input$indicator_registry) %>%
       dplyr::filter(.data$id == input$indicator)
   })
 
   output$select_indicator_registry <- shiny::renderUI({
-    select_registry_ui(rv$pool, conf, input_id = "indicator_registry",
-                       context = input$context, current_reg = rv$indicator_reg)
+    select_registry_ui(pool_verify, conf, input_id = "indicator_registry",
+                       context = "verify", current_reg = rv$indicator_reg,
+                       show_context = TRUE)
   })
 
   output$select_indicator <- shiny::renderUI({
     shiny::req(input$indicator_registry)
     shiny::selectInput(
       "indicator", "Velg indikator:",
-      choices = get_registry_indicators(pool, input$indicator_registry)
+      choices = get_registry_indicators(pool_verify, input$indicator_registry)
     )
   })
 
