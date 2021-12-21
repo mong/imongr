@@ -125,6 +125,28 @@ app_ui <- function() {
       ),
 
       shiny::tabPanel(
+        value = "publish",
+        shiny::span(
+          "Publiser indikatorer", title = conf$app_text$tooltip$publish
+        ),
+        shiny::sidebarLayout(
+          shiny::sidebarPanel(
+            shiny::uiOutput("select_publish_registry"),
+            # shinycssloaders::withSpinner(
+            #   shiny::textOutput("spinner"),
+            #   color = "#18bc9c",
+            #   color.background = "#ffffff",
+            #   type = 7,
+            #   proxy.height = 80),
+            shiny::uiOutput("publish")
+          ),
+          shiny::mainPanel(
+            shiny::htmlOutput("error_report_publish")
+          )
+        )
+      ),
+
+      shiny::tabPanel(
         value = "download",
         shiny::span("Last ned data", title = conf$app_text$tooltip$download),
         shiny::sidebarLayout(
