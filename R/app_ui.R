@@ -192,6 +192,21 @@ app_ui <- function() {
       shiny::navbarMenu(
         "Administrative verktøy",
         shiny::tabPanel(
+          value = "settings",
+          shiny::span("Innstillinger",
+                      title = conf$app_text$tooltip$settings,
+                      id = "settings"),
+          shiny::sidebarLayout(
+            shiny::sidebarPanel(
+              width = 3,
+              shiny::uiOutput("select_context")
+            ),
+            shiny::mainPanel(
+
+            )
+          )
+        ),
+        shiny::tabPanel(
           value = "medfield",
           shiny::span("Fagomr\u00e5der",
                       title = conf$app_text$tooltip$medfield,

@@ -53,6 +53,7 @@ app_text:
     - Mottatt
     - Akkurat
     - Livet er herlig!
+    - Cheerio miss Sophie!
   tooltip:
     profile: |-
       Informasjon om din bruker
@@ -60,6 +61,8 @@ app_text:
       Last opp nye data til sykehusviseren
     download: |-
       Se på og last ned data fra Sykehusviseren
+    settings: |-
+      Angi felles innstillinger for alle verktøy
     medfield: |-
       Angi fagområde(r) for registrene
     reguser: |-
