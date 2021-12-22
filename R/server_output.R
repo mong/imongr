@@ -77,7 +77,7 @@ select_registry_ui <- function(pool, conf, input_id, context,
       paste0("<h3 style='color:",
              switch(context,
                     prod = "green;'>Produksjon</h3>",
-                    verify = "orange;'>Dataverifisering</h3>",
+                    verify = "orange;'>Kvalitetskontroll</h3>",
                     qa = "red;'>QA</h3>"))
     )
   }

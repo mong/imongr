@@ -335,6 +335,8 @@ app_server <- function(input, output, session) {
       registry = input$publish_registry
     )
   })
+  output$publish_verify_doc <- shiny::renderText(conf$publish$doc$verify)
+  output$publish_main_doc <- shiny::renderText(conf$publish$doc$main)
 
   # loss
   pool_download <- shiny::reactive({
@@ -668,7 +670,7 @@ app_server <- function(input, output, session) {
         paste0("<h3 style='color:",
                switch(rv$context,
                       prod = "green;'>Produksjon</h3>",
-                      verify = "orange;'>Dataverifisering</h3>",
+                      verify = "orange;'>Kvalitetskontroll</h3>",
                       qa = "red;'>QA</h3>"))
       ),
       shiny::p("Tr\u00e5 forsiktig!"),

@@ -141,7 +141,12 @@ app_ui <- function() {
             shiny::uiOutput("publish")
           ),
           shiny::mainPanel(
-            shiny::htmlOutput("error_report_publish")
+            shiny::htmlOutput("error_report_publish"),
+            shiny::titlePanel("Publiser data"),
+            shiny::h3("Kvalitetskontroll"),
+            shiny::htmlOutput("publish_verify_doc"),
+            shiny::h3("Veiledning"),
+            shiny::htmlOutput("publish_main_doc")
           )
         )
       ),
@@ -156,8 +161,8 @@ app_ui <- function() {
               "download_context",
               "Velg datakilde for nedlasting:",
               list(
-                `Verifisering` = "verify",
-                `Produksjon` = "prod"
+                `Kvalitetskontroll` = "verify",
+                `Publiserte data` = "prod"
               )
             ),
             shiny::uiOutput("select_download_registry"),

@@ -195,9 +195,16 @@ profile:
     none: >
       Det finnes ingen registrerte dataleveranser fra deg.
   howto: >
-    For å laste opp data velg fanen "Last opp data" og følg instruksjonene der.
+    For å laste opp indikatordata for kvalitetskontroll velg
+    fanen "Last opp data" og følg instruksjonene der. Under "Indikator"-fanen
+    kan man i prosessen med kvalitetskontroll også endre på
+    indikatorbeskrivelsene. Når kvalitetskontrollen er gjennomført og godkjent
+    kan indikatordata og indikatorbeskrivelser publiseres registervis under
+    fanen "Publiser indikatorer". Under fanen "Last ned data" kan du hente ulike
+    datasett og du velger selv om disse skal hentes fra data som ligger til
+    kvalitetskontroll eller data som allerede er publisert.
     Når du er ferdig kan du logge ut ved å bruke lenken oppe i høyre hjørne. Om
-    du plages kan du alltids ta kontakt med
+    du har spørsmål eller plages kan du alltids ta kontakt med
     <a href="https://helse-nord.no/skde">SKDE</a> på telefon +47 77 75 58 00
     eller <a href="mailto:mong@skde.no">e-post</a>. Om du ser eller
     mistenker feil og mangler i denne programvaren setter vi stor pris på om du
@@ -211,6 +218,28 @@ publish:
   reciept:
     title: Nei, bær me i fjæra!
     body: Dine data er nå publisert
+  doc:
+    verify: >
+      Siden for kvalitetskontroll av valgt register finner du her: [url]
+    main: >
+      Når kvalitetskontrollen er gjennomført og resultatet godkjent av
+      registeret er det klart for publisering av data. I menyen til venstre velg
+      det registert som indikatordata og indikatorbeskrivelser skal publiseres i
+      fra. Det vil da bli gjort en maskinell kontroll av om data er riktig
+      formatert og om produksjonsløsningen er klar for å ta imot disse.
+      Eventuelle feil vil bli angitt med
+      <span style='color:red;'>rød tekst</span> på toppen av denne siden og
+      må rettes opp før det er mulig å publisere. Når alt er ok indikeres dette
+      <span style='color:green;'>i grønt</span> ved teksten "Datasettet er klart
+      til å sendes inn" på toppen av denne siden og publisering kan da skje ved
+      å trykke på knappen "Publiser". Alle indikatordata og
+      indikatorbeskrivelser vil da kopieres fra kvalitetskontrollen og over til
+      produksjonsløsningen der de vil være offentlig tilgjengelig for alle. I
+      den grad dette høres skummelt ut (hjælp, har jeg gjort alt rett?) så kan
+      det være godt å vite at prosessen med kvalitetskontroll og publisering
+      fint kan gjentas så ofte som man selv ønsker. Ved publisering vil alle
+      indikatordata og indikatorbeskrivelser som fra før er publisert for valgt
+      register erstattes av de data som kopieres fra kvalitetskontrollen.
 upload:
   file:
     vars:
@@ -271,7 +300,8 @@ upload:
     testen kunne ikke gjennomføres, se eventuelt andre feilmeldinger
   doc:
     main: >
-      Dette er et verktøy for å hjelpe med å legge til data i riktig format.
+      Dette er et verktøy for å legge ut indikatordata for kvalitetskontroll i
+      riktig format.
       Nederst er det vist et eksempel på hvordan filen i de fleste tilfeller
       skal se ut. Din fil skal være i csv-format med de samme kolonnenavnene
       som i eksempelet. Det skilles mellom små og store bokstaver men
