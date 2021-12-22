@@ -19,6 +19,7 @@ app_server <- function(input, output, session) {
   pool_verify <- make_pool(context = "verify")
   oversize_message <- "<i style='color:red;'>Teksten er for lang!</i><br><br>"
   rv <- shiny::reactiveValues(
+    context = "verify",
     inv_data = 0,
     inv_publish = 0,
     medfield_data = get_table(pool, "medfield"),
@@ -37,7 +38,7 @@ app_server <- function(input, output, session) {
     long_oversize = FALSE,
     pool = make_pool(),
     admin_url = paste0(adminer_url(), "/?",
-                        "server=", db_host(), "&",
+                        "server=", db_host(context = "verify"), "&",
                         "username=", db_username(), "&",
                         "db=", db_name())
   )
@@ -92,15 +93,16 @@ app_server <- function(input, output, session) {
   )
 
   shiny::observeEvent(input$context, {
+    rv$context <- input$context
     drain_pool(rv$pool)
     rv$upload_reg <- input$registry
     rv$download_reg <- input$download_registry
     rv$indicator_reg <- input$indicator_registry
     rv$admin_url <- paste0(adminer_url(), "/?",
-                           "server=", db_host(context = input$context), "&",
+                           "server=", db_host(context = rv$context), "&",
                            "username=", db_username(), "&",
                            "db=", db_name())
-    rv$pool <- make_pool(context = input$context)
+    rv$pool <- make_pool(context = rv$context)
     rv$medfield_data <- get_table(rv$pool, "medfield")
     rv$medfield_summary <-
       medfield_summary_text_ui(rv$pool, conf, get_table(rv$pool, "medfield"))
@@ -555,7 +557,7 @@ app_server <- function(input, output, session) {
 
   output$select_medfield_registry <- shiny::renderUI({
     select_registry_ui(rv$pool, conf, input_id = "medfield_registry",
-                       context = input$context)
+                       context = rv$context)
   })
   output$select_registry_medfield <- shiny::renderUI({
     shiny::req(input$medfield_registry)
@@ -601,7 +603,7 @@ app_server <- function(input, output, session) {
 
   output$select_user_registry <- shiny::renderUI({
     select_registry_ui(rv$pool, conf, input_id = "user_registry",
-                       context = input$context)
+                       context = rv$context)
   })
   output$select_registry_user <- shiny::renderUI({
     shiny::req(input$user_registry)
@@ -664,7 +666,7 @@ app_server <- function(input, output, session) {
     shiny::tagList(
       shiny::HTML(
         paste0("<h3 style='color:",
-               switch(input$context,
+               switch(rv$context,
                       prod = "green;'>Produksjon</h3>",
                       verify = "orange;'>Dataverifisering</h3>",
                       qa = "red;'>QA</h3>"))
