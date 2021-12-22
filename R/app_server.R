@@ -317,6 +317,10 @@ app_server <- function(input, output, session) {
       NULL
     }
   })
+  output$publishing <- shiny::renderText({
+    input$publish
+    paste("")
+  })
 
   ## ui main panel
   output$error_report_publish <- shiny::renderText({

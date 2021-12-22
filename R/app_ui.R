@@ -132,12 +132,12 @@ app_ui <- function() {
         shiny::sidebarLayout(
           shiny::sidebarPanel(
             shiny::uiOutput("select_publish_registry"),
-            # shinycssloaders::withSpinner(
-            #   shiny::textOutput("spinner"),
-            #   color = "#18bc9c",
-            #   color.background = "#ffffff",
-            #   type = 7,
-            #   proxy.height = 80),
+            shinycssloaders::withSpinner(
+              shiny::textOutput("publishing"),
+              color = "#18bc9c",
+              color.background = "#ffffff",
+              type = 7,
+              proxy.height = 80),
             shiny::uiOutput("publish")
           ),
           shiny::mainPanel(
