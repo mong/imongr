@@ -207,7 +207,7 @@ app_ui <- function() {
       ),
 
       shiny::navbarMenu(
-        "Administrative verktøy",
+        "Administrative verkt\u00f8y",
         shiny::tabPanel(
           value = "settings",
           shiny::span("Innstillinger",
