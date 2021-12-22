@@ -324,6 +324,7 @@ app_server <- function(input, output, session) {
 
   ## ui main panel
   output$error_report_publish <- shiny::renderText({
+    shiny::req(input$publish_registry)
     rv$inv_publish
     error_report_ui(
       pool = pool,
