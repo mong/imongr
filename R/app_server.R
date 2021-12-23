@@ -300,8 +300,9 @@ app_server <- function(input, output, session) {
 
   ## ui sidebar panel
   output$select_publish_registry <- shiny::renderUI({
-    select_registry_ui(pool_verify, conf, input_id = "publish_registry",
-                       context = "verify", show_context = TRUE)
+    select_registry_ui(pool, conf, input_id = "publish_registry",
+                       context = "verify", show_context = TRUE,
+                       pool0 = pool_verify)
   })
   output$publish_liability <- shiny::renderUI({
     shiny::checkboxInput(

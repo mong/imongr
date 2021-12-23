@@ -2,6 +2,7 @@
 % Please edit documentation in R/server_output.R
 \name{server_output}
 \alias{server_output}
+\alias{profile_ui}
 \alias{select_registry_ui}
 \alias{submit_ui}
 \alias{error_report_ui}
@@ -10,7 +11,6 @@
 \alias{var_doc_ui}
 \alias{medfield_summary_text_ui}
 \alias{reguser_summary_text_ui}
-\alias{profile_ui}
 \title{Functions that provide server output}
 \usage{
 profile_ui(conf, pool, valid_user, iusr, igrs)
@@ -21,7 +21,8 @@ select_registry_ui(
   input_id,
   context,
   current_reg = character(),
-  show_context = TRUE
+  show_context = TRUE,
+  pool0 = NULL
 )
 
 submit_ui(conf, pool, upload_file, registry, df, context)
@@ -41,7 +42,7 @@ reguser_summary_text_ui(pool, conf, df)
 \arguments{
 \item{conf}{List of configuration}
 
-\item{pool}{Data base pool object}
+\item{pool}{Database pool object}
 
 \item{valid_user}{Logical valid user}
 
@@ -57,6 +58,9 @@ reguser_summary_text_ui(pool, conf, df)
 
 \item{show_context}{Logical stating if context is to be shown in GUI. TRUE by
 default.}
+
+\item{pool0}{Alternative database pool object to be used when an intersect of
+values are to be returned.}
 
 \item{upload_file}{Character string with file to upload}
 
