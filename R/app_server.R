@@ -302,11 +302,21 @@ app_server <- function(input, output, session) {
     select_registry_ui(pool_verify, conf, input_id = "publish_registry",
                        context = "verify", show_context = TRUE)
   })
+  output$publish_liability <- shiny::renderUI({
+    shiny::checkboxInput(
+      "liability",
+      paste(
+        get_registry_name(pool_verify, input$publish_registry, TRUE),
+        conf$publish$liability
+      )
+    )
+  })
   output$publish <- shiny::renderUI({
     rv$inv_publish
     if (!is.null(input$publish_registry) &&
         !(conf$upload$fail %in% input$publish_registry) &&
-        all(!check_upload(input$publish_registry, publish_data(), pool)$fail)) {
+        all(!check_upload(input$publish_registry, publish_data(), pool)$fail) &&
+        input$liability) {
       shiny::tagList(
         shiny::actionButton("publish", "Publiser", shiny::icon("paper-plane")),
         shiny::p(paste(conf$upload$doc$submit$warning,
@@ -339,7 +349,11 @@ app_server <- function(input, output, session) {
                         full_name = FALSE),
       "/sykehus'>her.</a>"
     )
-    paste(conf$publish$doc$verify, verify_hypertext)
+    paste(
+      get_registry_name(pool_verify, shiny::req(input$publish_registry), TRUE),
+      conf$publish$doc$verify,
+      verify_hypertext
+    )
   })
   output$publish_main_doc <- shiny::renderText(conf$publish$doc$main)
 

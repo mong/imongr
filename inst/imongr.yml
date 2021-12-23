@@ -215,12 +215,16 @@ profile:
     text: Logg ut
     url: https://imongr.skde.org/logout
 publish:
+  liability: >
+    står ansvarlig for kvalitetsindikatorer med tilhørende beskrivelser når
+    disse nå legges åpent ut. Det bekreftes herved at jeg er gitt fullmakt til å
+    gjennomføre denne publiseringen og at registeret har erkjent sitt ansvar.
   reciept:
     title: Kanon!
     body: Dine data er nå publisert
   doc:
     verify: >
-      Valgt register har en egen nettside som kan benyttes til gjennomgang og
+      har en egen nettside som kan benyttes til gjennomgang og
       kvalitetskontroll av opplastede data før publisering. Denne nettsiden
       finner du
     main: >
@@ -233,7 +237,12 @@ publish:
       <span style='color:red;'>rød tekst</span> på toppen av denne siden og
       må rettes opp før det er mulig å publisere. Når alt er ok indikeres dette
       <span style='color:green;'>i grønt</span> ved teksten "Datasettet er klart
-      til å sendes inn" på toppen av denne siden og publisering kan da skje ved
+      til å sendes inn" på toppen av denne siden.<br>
+      <br>
+      Registeret har ansvaret for egne resultater som publiseres. En bekreftelse
+      på at registeret er klar over ansvaret samt at du har fullmakt til å
+      gjennomføre publiseringen på vegne av registeret gis ved å krysse for
+      dette i menyen til venstre. Når det er gjort kan publisering skje ved
       å trykke på knappen "Publiser". Alle indikatordata og
       indikatorbeskrivelser vil da kopieres fra kvalitetskontrollen og over til
       produksjonsløsningen der de vil være offentlig tilgjengelig for alle. I
