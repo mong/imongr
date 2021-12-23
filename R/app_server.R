@@ -332,7 +332,15 @@ app_server <- function(input, output, session) {
       registry = input$publish_registry
     )
   })
-  output$publish_verify_doc <- shiny::renderText(conf$publish$doc$verify)
+  output$publish_verify_doc <- shiny::renderText({
+    verify_hypertext <- paste0(
+      "<a href='https://verify.skde.no/kvalitetsregistre/",
+      get_registry_name(pool_verify, shiny::req(input$publish_registry),
+                        full_name = FALSE),
+      "/sykehus'>her.</a>"
+    )
+    paste(conf$publish$doc$verify, verify_hypertext)
+  })
   output$publish_main_doc <- shiny::renderText(conf$publish$doc$main)
 
   # loss

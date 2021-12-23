@@ -216,11 +216,13 @@ profile:
     url: https://imongr.skde.org/logout
 publish:
   reciept:
-    title: Nei, bær me i fjæra!
+    title: Kanon!
     body: Dine data er nå publisert
   doc:
     verify: >
-      Siden for kvalitetskontroll av valgt register finner du her: [url]
+      Valgt register har en egen nettside som kan benyttes til gjennomgang og
+      kvalitetskontroll av opplastede data før publisering. Denne nettsiden
+      finner du
     main: >
       Når kvalitetskontrollen er gjennomført og resultatet godkjent av
       registeret er det klart for publisering av data. I menyen til venstre velg
@@ -300,8 +302,7 @@ upload:
     testen kunne ikke gjennomføres, se eventuelt andre feilmeldinger
   doc:
     main: >
-      Dette er et verktøy for å legge ut indikatordata for kvalitetskontroll i
-      riktig format.
+      Dette er et verktøy for å legge ut indikatordata for kvalitetskontroll.
       Nederst er det vist et eksempel på hvordan filen i de fleste tilfeller
       skal se ut. Din fil skal være i csv-format med de samme kolonnenavnene
       som i eksempelet. Det skilles mellom små og store bokstaver men
