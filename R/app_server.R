@@ -36,7 +36,7 @@ app_server <- function(input, output, session) {
     title_oversize = FALSE,
     short_oversize = FALSE,
     long_oversize = FALSE,
-    pool = make_pool(),
+    pool = make_pool(context = "verify"),
     admin_url = paste0(adminer_url(), "/?",
                         "server=", db_host(context = "verify"), "&",
                         "username=", db_username(), "&",
@@ -556,7 +556,7 @@ app_server <- function(input, output, session) {
     if (valid_user) {
       shiny::selectInput("context", "Velg milj\u00f8:",
                          choices = list(Produksjon = "prod",
-                                        Dataverifisering = "verify",
+                                        Kvalitetskontroll = "verify",
                                         QA = "qa"),
                          selected = "verify")
     } else {
