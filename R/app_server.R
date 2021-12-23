@@ -60,6 +60,7 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "upload")
   shiny::hideTab("tabs", target = "download")
   shiny::hideTab("tabs", target = "indicator")
+  shiny::hideTab("tabs", target = "Administrative verkt\u00f8y")
   shiny::hideTab("tabs", target = "settings")
   shiny::hideTab("tabs", target = "medfield")
   shiny::hideTab("tabs", target = "reguser")
@@ -71,11 +72,7 @@ app_server <- function(input, output, session) {
     shiny::showTab("tabs", target = "indicator")
   }
   if (valid_user && conf$role$manager %in% igrs) {
-    shiny::showTab("tabs", target = "settings")
-    shiny::showTab("tabs", target = "medfield")
-    shiny::showTab("tabs", target = "reguser")
-    shiny::showTab("tabs", target = "adminer")
-    shiny::showTab("tabs", target = "mine_field")
+    shiny::showTab("tabs", target = "Administrative verkt\u00f8y")
   }
 
   # app widget
