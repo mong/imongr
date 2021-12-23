@@ -229,8 +229,8 @@ app_server <- function(input, output, session) {
     if (input$registry == "") {
       NULL
     } else {
-      upload_sample_text_ui(pool_verify, conf, input$upload_file, input$registry,
-                            indicators = unique(df()$ind_id))
+      upload_sample_text_ui(pool_verify, conf, input$upload_file,
+                            input$registry, indicators = unique(df()$ind_id))
     }
   })
 
@@ -277,9 +277,10 @@ app_server <- function(input, output, session) {
     insert_data(pool, publish_data())
     insert_agg_data(pool, publish_data())
     rv$inv_publish <- rv$inv_publish + 1
-    shinyalert::shinyalert(conf$publish$reciept$title, conf$publish$reciept$body,
-                           type = "success", showConfirmButton = FALSE,
-                           timer = 7000)
+    shinyalert::shinyalert(
+      conf$publish$reciept$title, conf$publish$reciept$body, type = "success",
+      showConfirmButton = FALSE, timer = 7000
+    )
   })
   ## reactives
   publish_data <- shiny::reactive({
