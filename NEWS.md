@@ -1,3 +1,8 @@
+# imongr 0.25.0
+* New features: upload of files only to verify instance and new publish to production instance
+* All manager tools organized under same navbar menu
+* App texts updated and improved based on the above changes
+
 # imongr 0.24.1
 
 * Fixed agg error when there are only pre-aggregated values in data set ([#146](https://github.com/mong/imongr/pull/146))

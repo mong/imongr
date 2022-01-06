@@ -1,10 +1,14 @@
 #' Functions that provide server output
 #'
-#' @param pool Data base pool object
+#' @param pool Database pool object
+#' @param pool0 Alternative database pool object to be used when an intersect of
+#' values are to be returned.
 #' @param conf List of configuration
 #' @param input_id Character string with shiny ui id
 #' @param context Character string with user selected (db) context
 #' @param current_reg Character string defining previously selected registry
+#' @param show_context Logical stating if context is to be shown in GUI. TRUE by
+#' default.
 #' @param valid_user Logical valid user
 #' @param iusr Character string username
 #' @param igrs Character string comma separated user groups
@@ -17,8 +21,9 @@
 #'
 #' @return shiny ui objects to be provided by the shiny server function
 #' @name server_output
-#' @aliases select_registry_ui submit_ui error_report_ui upload_sample_text_ui
-#' upload_sample_ui var_doc_ui medfield_summary_text_ui reguser_summary_text_ui
+#' @aliases profile_ui select_registry_ui submit_ui error_report_ui
+#' upload_sample_text_ui upload_sample_ui var_doc_ui medfield_summary_text_ui
+#' reguser_summary_text_ui
 NULL
 
 
@@ -47,14 +52,27 @@ profile_ui <- function(conf, pool, valid_user, iusr, igrs) {
 #' @rdname server_output
 #' @export
 select_registry_ui <- function(pool, conf, input_id, context,
-                               current_reg = character()) {
+                               current_reg = character(), show_context = TRUE,
+                               pool0 = NULL) {
 
   if (conf$role$manager %in% get_user_groups()) {
     regs <- get_table(pool, "registry") %>%
       dplyr::transmute(.data$name, .data$id) %>%
       tibble::deframe()
+    if (!is.null(pool0)) {
+      regs0 <- get_table(pool0, "registry") %>%
+        dplyr::transmute(.data$name, .data$id) %>%
+        tibble::deframe()
+    }
   } else {
     regs <- get_user_registry_select(pool)
+    if (!is.null(pool0)) {
+      regs0 <- get_user_registry_select(pool0)
+    }
+  }
+
+  if (!is.null(pool0)) {
+    regs <- c(regs, regs0)[intersect(names(regs), names(regs0))]
   }
 
   label <- conf$app_text$select$registry$ok
@@ -68,18 +86,23 @@ select_registry_ui <- function(pool, conf, input_id, context,
       reg <- current_reg
     }
   }
-  shiny::tagList(
-    shiny::HTML(
+
+  contex_ui <- NULL
+  if (show_context) {
+    contex_ui <- shiny::HTML(
       paste0("<h3 style='color:",
              switch(context,
                     prod = "green;'>Produksjon</h3>",
-                    verify = "orange;'>Dataverifisering</h3>",
+                    verify = "orange;'>Kvalitetskontroll</h3>",
                     qa = "red;'>QA</h3>"))
-    ),
+    )
+  }
+
+  shiny::tagList(
+    contex_ui,
     shiny::selectInput(input_id, label, regs, selected = reg)
   )
 }
-
 
 #' @rdname server_output
 #' @export

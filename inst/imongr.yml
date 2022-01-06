@@ -53,13 +53,18 @@ app_text:
     - Mottatt
     - Akkurat
     - Livet er herlig!
+    - Cheerio miss Sophie!
   tooltip:
     profile: |-
       Informasjon om din bruker
     upload: |-
       Last opp nye data til sykehusviseren
+    publish: |-
+      Publiser registerindikatorer
     download: |-
       Se på og last ned data fra Sykehusviseren
+    settings: |-
+      Angi felles innstillinger for alle verktøy
     medfield: |-
       Angi fagområde(r) for registrene
     reguser: |-
@@ -182,14 +187,24 @@ profile:
   userinfo: >
     Følgende er registrert om deg:
   delivery:
-    status: >
-      Vis tidligere dataleveranser:
+    status:
+      upload: >
+        Vis tidligere opplastinger av data:
+      publish: >
+        Vis tidligere publiseringer av data:
     none: >
       Det finnes ingen registrerte dataleveranser fra deg.
   howto: >
-    For å laste opp data velg fanen "Last opp data" og følg instruksjonene der.
+    For å laste opp indikatordata for kvalitetskontroll velg
+    fanen "Last opp data" og følg instruksjonene der. Under "Indikator"-fanen
+    kan man i prosessen med kvalitetskontroll også endre på
+    indikatorbeskrivelsene. Når kvalitetskontrollen er gjennomført og godkjent
+    kan indikatordata og indikatorbeskrivelser publiseres registervis under
+    fanen "Publiser indikatorer". Under fanen "Last ned data" kan du hente ulike
+    datasett og du velger selv om disse skal hentes fra data som ligger til
+    kvalitetskontroll eller data som allerede er publisert.
     Når du er ferdig kan du logge ut ved å bruke lenken oppe i høyre hjørne. Om
-    du plages kan du alltids ta kontakt med
+    du har spørsmål eller plages kan du alltids ta kontakt med
     <a href="https://helse-nord.no/skde">SKDE</a> på telefon +47 77 75 58 00
     eller <a href="mailto:mong@skde.no">e-post</a>. Om du ser eller
     mistenker feil og mangler i denne programvaren setter vi stor pris på om du
@@ -199,6 +214,43 @@ profile:
   logout:
     text: Logg ut
     url: https://imongr.skde.org/logout
+publish:
+  liability: >
+    står ansvarlig for kvalitetsindikatorer med tilhørende beskrivelser når
+    disse nå legges åpent ut. Det bekreftes herved at jeg er gitt fullmakt til å
+    gjennomføre denne publiseringen og at registeret har erkjent sitt ansvar.
+  reciept:
+    title: Kanon!
+    body: Dine data er nå publisert
+  doc:
+    verify: >
+      har en egen nettside som kan benyttes til gjennomgang og
+      kvalitetskontroll av opplastede data før publisering. Denne nettsiden
+      finner du
+    main: >
+      Når kvalitetskontrollen er gjennomført og resultatet godkjent av
+      registeret er det klart for publisering av data. I menyen til venstre velg
+      det registert som indikatordata og indikatorbeskrivelser skal publiseres i
+      fra. Det vil da bli gjort en maskinell kontroll av om data er riktig
+      formatert og om produksjonsløsningen er klar for å ta imot disse.
+      Eventuelle feil vil bli angitt med
+      <span style='color:red;'>rød tekst</span> på toppen av denne siden og
+      må rettes opp før det er mulig å publisere. Når alt er ok indikeres dette
+      <span style='color:green;'>i grønt</span> ved teksten "Datasettet er klart
+      til å sendes inn" på toppen av denne siden.<br>
+      <br>
+      Registeret har ansvaret for egne resultater som publiseres. En bekreftelse
+      på at registeret er klar over ansvaret samt at du har fullmakt til å
+      gjennomføre publiseringen på vegne av registeret gis ved å krysse for
+      dette i menyen til venstre. Når det er gjort kan publisering skje ved
+      å trykke på knappen "Publiser". Alle indikatordata og
+      indikatorbeskrivelser vil da kopieres fra kvalitetskontrollen og over til
+      produksjonsløsningen der de vil være offentlig tilgjengelig for alle. I
+      den grad dette høres skummelt ut (hjælp, har jeg gjort alt rett?) så kan
+      det være godt å vite at prosessen med kvalitetskontroll og publisering
+      fint kan gjentas så ofte som man selv ønsker. Ved publisering vil alle
+      indikatordata og indikatorbeskrivelser som fra før er publisert for valgt
+      register erstattes av de data som kopieres fra kvalitetskontrollen.
 upload:
   file:
     vars:
@@ -259,14 +311,14 @@ upload:
     testen kunne ikke gjennomføres, se eventuelt andre feilmeldinger
   doc:
     main: >
-      Dette er et verktøy for å hjelpe med å legge til data i riktig format.
+      Dette er et verktøy for å legge ut indikatordata for kvalitetskontroll.
       Nederst er det vist et eksempel på hvordan filen i de fleste tilfeller
       skal se ut. Din fil skal være i csv-format med de samme kolonnenavnene
       som i eksempelet. Det skilles mellom små og store bokstaver men
       rekkefølgen på kolonnene kan være tilfeldig. Under følger en forklaring
       på innholdet i kolonnene.
     sample: >
-      Her vises en utsnitt av datasett du har lastet opp. Juster parametrene i
+      Her vises en utsnitt av data i filen som er valgt. Juster parametrene i
       menyen på venstresiden slik at eventuelle spesialtegn representeres
       riktig og tallene fremstår slik de skal. <b>Merk at når du sender nye data
       så vil alle gamle data for tilsvarende indikatorer og kontekst gitt i
