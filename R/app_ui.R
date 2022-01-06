@@ -51,17 +51,17 @@ app_ui <- function() {
         value = "profile",
         shiny::span("Profil",
                     title = conf$app_text$tooltip$profile),
-        shiny::sidebarLayout(
-          shiny::sidebarPanel(
-            shiny::uiOutput("select_context")
-          ),
-          shiny::mainPanel(
-            shiny::htmlOutput("profile"),
-            shiny::checkboxInput("deliver_history",
-                                 conf$profile$delivery$status)
-          )
+        shiny::htmlOutput("profile"),
+        shiny::checkboxInput(
+          "upload_history",
+          conf$profile$delivery$status$upload
         ),
-        shiny::uiOutput("ui_deliveries_table")
+        shiny::uiOutput("ui_upload_table"),
+        shiny::checkboxInput(
+          "publish_history",
+          conf$profile$delivery$status$publish
+        ),
+        shiny::uiOutput("ui_publish_table")
       ),
 
       shiny::tabPanel(
@@ -125,11 +125,47 @@ app_ui <- function() {
       ),
 
       shiny::tabPanel(
+        value = "publish",
+        shiny::span(
+          "Publiser indikatorer", title = conf$app_text$tooltip$publish
+        ),
+        shiny::sidebarLayout(
+          shiny::sidebarPanel(
+            shiny::uiOutput("select_publish_registry"),
+            shiny::uiOutput("publish_liability"),
+            shinycssloaders::withSpinner(
+              shiny::textOutput("publishing"),
+              color = "#18bc9c",
+              color.background = "#ffffff",
+              type = 7,
+              proxy.height = 80),
+            shiny::uiOutput("publish")
+          ),
+          shiny::mainPanel(
+            shiny::htmlOutput("error_report_publish"),
+            shiny::titlePanel("Publiser data"),
+            shiny::h3("Kvalitetskontroll"),
+            shiny::htmlOutput("publish_verify_doc"),
+            shiny::h3("Veiledning"),
+            shiny::htmlOutput("publish_main_doc")
+          )
+        )
+      ),
+
+      shiny::tabPanel(
         value = "download",
         shiny::span("Last ned data", title = conf$app_text$tooltip$download),
         shiny::sidebarLayout(
           shiny::sidebarPanel(
             width = 3,
+            shiny::selectInput(
+              "download_context",
+              "Velg datakilde for nedlasting:",
+              list(
+                `Kvalitetskontroll` = "verify",
+                `Publiserte data` = "prod"
+              )
+            ),
             shiny::uiOutput("select_download_registry"),
             shiny::uiOutput("select_db_table"),
             shiny::selectInput("file_format",
@@ -146,44 +182,6 @@ app_ui <- function() {
           ),
           shiny::mainPanel(
             shiny::uiOutput("ui_db_table")
-          )
-        )
-      ),
-      shiny::tabPanel(
-        value = "medfield",
-        shiny::span("Fagomr\u00e5der",
-                    title = conf$app_text$tooltip$medfield,
-                    id = "medfield"),
-        shiny::sidebarLayout(
-          shiny::sidebarPanel(
-            width = 3,
-            shiny::uiOutput("select_medfield_registry"),
-            shiny::uiOutput("select_registry_medfield"),
-            shiny::actionButton("update_medfield", label = "Oppdat\u00e9r",
-                                icon = shiny::icon("paper-plane"))
-          ),
-          shiny::mainPanel(
-            shiny::uiOutput("registry_medfield_header"),
-            shiny::uiOutput("registry_medfield_summary")
-          )
-        )
-      ),
-      shiny::tabPanel(
-        value = "reguser",
-        shiny::span("Brukere",
-                    title = conf$app_text$tooltip$reguser,
-                    id = "reguser"),
-        shiny::sidebarLayout(
-          shiny::sidebarPanel(
-            width = 3,
-            shiny::uiOutput("select_user_registry"),
-            shiny::uiOutput("select_registry_user"),
-            shiny::actionButton("update_reguser", label = "Oppdat\u00e9r",
-                                icon = shiny::icon("paper-plane"))
-          ),
-          shiny::mainPanel(
-            shiny::uiOutput("registry_user_header"),
-            shiny::uiOutput("registry_user_summary")
           )
         )
       ),
@@ -208,25 +206,82 @@ app_ui <- function() {
           )
         )
       ),
-      shiny::tabPanel(
-        value = "adminer",
-        shiny::span("Adminer",
-                    title = conf$app_text$tooltip$adminer,
-                    id = "adminer"),
-        shiny::mainPanel(width = 12, shiny::htmlOutput("admin_frame"))
-      ),
-      shiny::tabPanel(
-        value = "mine_field",
-        shiny::span("Minefelt!", title = conf$app_text$tooltip$mine_field),
-        shiny::sidebarLayout(
-          shiny::sidebarPanel(
-            shiny::uiOutput("mine_field_uc")
-          ),
-          shiny::mainPanel(
-            shiny::p(shiny::em("System message:")),
-            shiny::verbatimTextOutput("sysMessage"),
-            shiny::p(shiny::em("Function message:")),
-            shiny::verbatimTextOutput("funMessage")
+
+      shiny::navbarMenu(
+        "Administrative verkt\u00f8y",
+        shiny::tabPanel(
+          value = "settings",
+          shiny::span("Innstillinger",
+                      title = conf$app_text$tooltip$settings,
+                      id = "settings"),
+          shiny::sidebarLayout(
+            shiny::sidebarPanel(
+              width = 3,
+              shiny::uiOutput("select_context")
+            ),
+            shiny::mainPanel(
+
+            )
+          )
+        ),
+        shiny::tabPanel(
+          value = "medfield",
+          shiny::span("Fagomr\u00e5der",
+                      title = conf$app_text$tooltip$medfield,
+                      id = "medfield"),
+          shiny::sidebarLayout(
+            shiny::sidebarPanel(
+              width = 3,
+              shiny::uiOutput("select_medfield_registry"),
+              shiny::uiOutput("select_registry_medfield"),
+              shiny::actionButton("update_medfield", label = "Oppdat\u00e9r",
+                                  icon = shiny::icon("paper-plane"))
+            ),
+            shiny::mainPanel(
+              shiny::uiOutput("registry_medfield_header"),
+              shiny::uiOutput("registry_medfield_summary")
+            )
+          )
+        ),
+        shiny::tabPanel(
+          value = "reguser",
+          shiny::span("Brukere",
+                      title = conf$app_text$tooltip$reguser,
+                      id = "reguser"),
+          shiny::sidebarLayout(
+            shiny::sidebarPanel(
+              width = 3,
+              shiny::uiOutput("select_user_registry"),
+              shiny::uiOutput("select_registry_user"),
+              shiny::actionButton("update_reguser", label = "Oppdat\u00e9r",
+                                  icon = shiny::icon("paper-plane"))
+            ),
+            shiny::mainPanel(
+              shiny::uiOutput("registry_user_header"),
+              shiny::uiOutput("registry_user_summary")
+            )
+          )
+        ),
+        shiny::tabPanel(
+          value = "adminer",
+          shiny::span("Adminer",
+                      title = conf$app_text$tooltip$adminer,
+                      id = "adminer"),
+          shiny::mainPanel(width = 12, shiny::htmlOutput("admin_frame"))
+        ),
+        shiny::tabPanel(
+          value = "mine_field",
+          shiny::span("Minefelt!", title = conf$app_text$tooltip$mine_field),
+          shiny::sidebarLayout(
+            shiny::sidebarPanel(
+              shiny::uiOutput("mine_field_uc")
+            ),
+            shiny::mainPanel(
+              shiny::p(shiny::em("System message:")),
+              shiny::verbatimTextOutput("sysMessage"),
+              shiny::p(shiny::em("Function message:")),
+              shiny::verbatimTextOutput("funMessage")
+            )
           )
         )
       ),

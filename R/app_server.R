@@ -16,9 +16,12 @@ app_server <- function(input, output, session) {
   igrs <- get_user_groups()
   conf <- get_config()
   pool <- make_pool()
+  pool_verify <- make_pool(context = "verify")
   oversize_message <- "<i style='color:red;'>Teksten er for lang!</i><br><br>"
   rv <- shiny::reactiveValues(
+    context = "verify",
     inv_data = 0,
+    inv_publish = 0,
     medfield_data = get_table(pool, "medfield"),
     medfield_summary = medfield_summary_text_ui(pool, conf,
                                                 get_table(pool, "medfield")),
@@ -26,15 +29,16 @@ app_server <- function(input, output, session) {
     user_summary =
       reguser_summary_text_ui(pool, conf, get_users(pool)),
     upload_reg = character(),
+    publish_reg = character(),
     download_reg = character(),
     indicator_reg = character(),
     indicator_data = data.frame(),
     title_oversize = FALSE,
     short_oversize = FALSE,
     long_oversize = FALSE,
-    pool = make_pool(),
+    pool = make_pool(context = "verify"),
     admin_url = paste0(adminer_url(), "/?",
-                        "server=", db_host(), "&",
+                        "server=", db_host(context = "verify"), "&",
                         "username=", db_username(), "&",
                         "db=", db_name())
   )
@@ -55,6 +59,9 @@ app_server <- function(input, output, session) {
   # show/hide tabs by user profile
   shiny::hideTab("tabs", target = "upload")
   shiny::hideTab("tabs", target = "download")
+  shiny::hideTab("tabs", target = "indicator")
+  shiny::hideTab("tabs", target = "Administrative verkt\u00f8y")
+  shiny::hideTab("tabs", target = "settings")
   shiny::hideTab("tabs", target = "medfield")
   shiny::hideTab("tabs", target = "reguser")
   shiny::hideTab("tabs", target = "adminer")
@@ -62,12 +69,10 @@ app_server <- function(input, output, session) {
   if (valid_user && conf$role$provider %in% igrs) {
     shiny::showTab("tabs", target = "upload")
     shiny::showTab("tabs", target = "download")
+    shiny::showTab("tabs", target = "indicator")
   }
   if (valid_user && conf$role$manager %in% igrs) {
-    shiny::showTab("tabs", target = "medfield")
-    shiny::showTab("tabs", target = "reguser")
-    shiny::showTab("tabs", target = "adminer")
-    shiny::showTab("tabs", target = "mine_field")
+    shiny::showTab("tabs", target = "Administrative verkt\u00f8y")
   }
 
   # app widget
@@ -85,15 +90,16 @@ app_server <- function(input, output, session) {
   )
 
   shiny::observeEvent(input$context, {
+    rv$context <- input$context
     drain_pool(rv$pool)
     rv$upload_reg <- input$registry
     rv$download_reg <- input$download_registry
     rv$indicator_reg <- input$indicator_registry
     rv$admin_url <- paste0(adminer_url(), "/?",
-                           "server=", db_host(context = input$context), "&",
+                           "server=", db_host(context = rv$context), "&",
                            "username=", db_username(), "&",
                            "db=", db_name())
-    rv$pool <- make_pool(context = input$context)
+    rv$pool <- make_pool(context = rv$context)
     rv$medfield_data <- get_table(rv$pool, "medfield")
     rv$medfield_summary <-
       medfield_summary_text_ui(rv$pool, conf, get_table(rv$pool, "medfield"))
@@ -103,27 +109,15 @@ app_server <- function(input, output, session) {
     rv$inv_data <- rv$inv_data + 1
   })
 
-  # Common context selector?
-  output$select_context <- shiny::renderUI({
-    if (valid_user) {
-    shiny::selectInput("context", "Velg milj\u00f8:",
-                       choices = list(Produksjon = "prod",
-                                      Dataverifisering = "verify",
-                                      QA = "qa"),
-                       selected = "verify")
-    } else {
-      NULL
-    }
-  })
 
   # profil
   output$profile <- shiny::renderText({
     profile_ui(conf, rv$pool, valid_user, iusr, igrs)
   })
 
-  output$deliveries_table <- DT::renderDataTable(
-    if (input$deliver_history) {
-      DT::datatable(get_user_deliveries(rv$pool), rownames = FALSE,
+  output$upload_table <- DT::renderDataTable(
+    if (input$upload_history) {
+      DT::datatable(get_user_deliveries(pool_verify), rownames = FALSE,
                     options = list(dom = "tp", pageLength = 10,
                       language = list(
                         paginate = list(previous = "Forrige",
@@ -133,8 +127,24 @@ app_server <- function(input, output, session) {
     }
   )
 
-  output$ui_deliveries_table <- shiny::renderUI(
-    DT::dataTableOutput("deliveries_table")
+  output$publish_table <- DT::renderDataTable(
+    if (input$publish_history) {
+      DT::datatable(get_user_deliveries(pool), rownames = FALSE,
+                    options = list(dom = "tp", pageLength = 10,
+                                   language = list(
+                                     paginate = list(previous = "Forrige",
+                                                     `next` = "Neste"))))
+    } else {
+      NULL
+    }
+  )
+
+  output$ui_upload_table <- shiny::renderUI(
+    DT::dataTableOutput("upload_table")
+  )
+
+  output$ui_publish_table <- shiny::renderUI(
+    DT::dataTableOutput("publish_table")
   )
 
   # last
@@ -145,8 +155,8 @@ app_server <- function(input, output, session) {
     }
   })
   shiny::observeEvent(input$submit, {
-    insert_data(rv$pool, df())
-    insert_agg_data(rv$pool, df())
+    insert_data(pool_verify, df())
+    insert_agg_data(pool_verify, df())
     rv$inv_data <- rv$inv_data + 1
     shinyalert::shinyalert(conf$upload$reciept$title, conf$upload$reciept$body,
                            type = "success", showConfirmButton = FALSE,
@@ -174,8 +184,8 @@ app_server <- function(input, output, session) {
 
   ## ui sidebar panel
   output$select_registry <- shiny::renderUI({
-    select_registry_ui(rv$pool, conf, input_id = "registry",
-                       context = input$context, current_reg = rv$upload_reg)
+    select_registry_ui(pool_verify, conf, input_id = "registry",
+                       context = "verify", current_reg = rv$upload_reg)
   })
 
   output$upload_file <- shiny::renderUI({
@@ -198,8 +208,8 @@ app_server <- function(input, output, session) {
 
   output$submit <- shiny::renderUI({
     rv$inv_data
-    submit_ui(conf, rv$pool, input$upload_file, input$registry, df(),
-              input$context)
+    submit_ui(conf, pool_verify, input$upload_file, input$registry, df(),
+              "verify")
   })
 
   output$spinner <- shiny::renderText({
@@ -211,7 +221,7 @@ app_server <- function(input, output, session) {
   ## ui main panel
   output$error_report <- shiny::renderText({
     rv$inv_data
-    error_report_ui(rv$pool, df(), input$upload_file, input$registry)
+    error_report_ui(pool_verify, df(), input$upload_file, input$registry)
   })
 
   output$upload_sample_text <- shiny::renderText({
@@ -219,8 +229,8 @@ app_server <- function(input, output, session) {
     if (input$registry == "") {
       NULL
     } else {
-      upload_sample_text_ui(rv$pool, conf, input$upload_file, input$registry,
-                            indicators = unique(df()$ind_id))
+      upload_sample_text_ui(pool_verify, conf, input$upload_file,
+                            input$registry, indicators = unique(df()$ind_id))
     }
   })
 
@@ -238,42 +248,148 @@ app_server <- function(input, output, session) {
 
   output$valid_ind <- shiny::renderText({
     paste0("<h4>", conf$upload$doc$valid_ind, " <i>",
-          get_registry_name(rv$pool, shiny::req(input$registry),
+          get_registry_name(pool_verify, shiny::req(input$registry),
                             full_name = TRUE),
           "</i>:</h4>")
   })
 
   output$valid_ind_tab <- shiny::renderTable(
-    get_registry_indicators(rv$pool, shiny::req(input$registry)),
+    get_registry_indicators(pool_verify, shiny::req(input$registry)),
     rownames = TRUE,
     colnames = FALSE
   )
 
   output$sample_data <- shiny::renderTable(
-    get_table(rv$pool, "data",
+    get_table(pool_verify, "data",
       sample = 0.00001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
   )
 
 
+  # publish
+  ## observers
+  shiny::observeEvent(input$publish_registry, {
+    if (!is.null(input$publish_registry)) {
+      rv$inv_publish <- rv$inv_publish + 1
+    }
+  })
+  shiny::observeEvent(input$publish, {
+    update_ind_text(pool, publish_ind())
+    insert_data(pool, publish_data())
+    insert_agg_data(pool, publish_data())
+    rv$inv_publish <- rv$inv_publish + 1
+    shinyalert::shinyalert(
+      conf$publish$reciept$title, conf$publish$reciept$body, type = "success",
+      showConfirmButton = FALSE, timer = 7000
+    )
+  })
+  ## reactives
+  publish_data <- shiny::reactive({
+    if (is.null(input$publish_registry)) {
+      data.frame()
+    } else {
+      get_registry_data(pool_verify, input$publish_registry)
+    }
+  })
+  publish_ind <- shiny::reactive({
+    if (is.null(input$publish_registry)) {
+      data.frame()
+    } else {
+      get_registry_ind(pool_verify, input$publish_registry)
+    }
+  })
+
+  ## ui sidebar panel
+  output$select_publish_registry <- shiny::renderUI({
+    select_registry_ui(pool, conf, input_id = "publish_registry",
+                       context = "verify", show_context = TRUE,
+                       pool0 = pool_verify)
+  })
+  output$publish_liability <- shiny::renderUI({
+    shiny::checkboxInput(
+      "liability",
+      paste(
+        get_registry_name(pool_verify, input$publish_registry, TRUE),
+        conf$publish$liability
+      )
+    )
+  })
+  output$publish <- shiny::renderUI({
+    rv$inv_publish
+    if (!is.null(input$publish_registry) &&
+        !(conf$upload$fail %in% input$publish_registry) &&
+        all(!check_upload(input$publish_registry, publish_data(), pool)$fail) &&
+        input$liability) {
+      shiny::tagList(
+        shiny::actionButton("publish", "Publiser", shiny::icon("paper-plane")),
+        shiny::p(paste(conf$upload$doc$submit$warning,
+                       get_registry_name(pool, input$publish_registry)))
+      )
+    } else {
+      NULL
+    }
+  })
+  output$publishing <- shiny::renderText({
+    input$publish
+    paste("")
+  })
+
+  ## ui main panel
+  output$error_report_publish <- shiny::renderText({
+    shiny::req(input$publish_registry)
+    rv$inv_publish
+    error_report_ui(
+      pool = pool,
+      df = publish_data(),
+      upload_file = "none",
+      registry = input$publish_registry
+    )
+  })
+  output$publish_verify_doc <- shiny::renderText({
+    verify_hypertext <- paste0(
+      "<a href='https://verify.skde.no/kvalitetsregistre/",
+      get_registry_name(pool_verify, shiny::req(input$publish_registry),
+                        full_name = FALSE),
+      "/sykehus'>her.</a>"
+    )
+    paste(
+      get_registry_name(pool_verify, shiny::req(input$publish_registry), TRUE),
+      conf$publish$doc$verify,
+      verify_hypertext
+    )
+  })
+  output$publish_main_doc <- shiny::renderText(conf$publish$doc$main)
 
   # loss
+  pool_download <- shiny::reactive({
+    if (is.null(input$download_context)) {
+      pool_verify
+    } else {
+      if(input$download_context == "verify") {
+        pool_verify
+      } else {
+        pool
+      }
+    }
+  })
+
   db_table <- shiny::reactive({
     if (input$download_registry == "") {
       data.frame()
     } else {
       if (input$tab_set == "data") {
-        get_registry_data(rv$pool, input$download_registry)
+        get_registry_data(pool_download(), input$download_registry)
       } else if (input$tab_set == "ind") {
-        get_registry_ind(rv$pool, input$download_registry)
+        get_registry_ind(pool_download(), input$download_registry)
       } else {
-        get_table(rv$pool, input$tab_set)
+        get_table(pool_download(), input$tab_set)
       }
     }
   })
 
   output$select_download_registry <- shiny::renderUI({
-    select_registry_ui(rv$pool, conf, input_id = "download_registry",
-                       context = input$context, current_reg = rv$download_reg)
+    select_registry_ui(pool_download(), conf, input_id = "download_registry",
+                       context = input$download_context,
+                       show_context = FALSE)
   })
 
   output$select_db_table <- shiny::renderUI({
@@ -328,7 +444,7 @@ app_server <- function(input, output, session) {
   # indicator
   ## observers
   shiny::observeEvent(input$indicator, {
-    rv$ind_data <- get_registry_ind(pool, input$indicator_registry) %>%
+    rv$ind_data <- get_registry_ind(pool_verify, input$indicator_registry) %>%
       dplyr::filter(.data$id == input$indicator)
   })
 
@@ -360,21 +476,22 @@ app_server <- function(input, output, session) {
     rv$ind_data$title <- input$ind_title
     rv$ind_data$short_description <- input$ind_short
     rv$ind_data$long_description <- input$ind_long
-    update_ind_text(pool, rv$ind_data)
-    rv$ind_data <- get_registry_ind(pool, input$indicator_registry) %>%
+    update_ind_text(pool_verify, rv$ind_data)
+    rv$ind_data <- get_registry_ind(pool_verify, input$indicator_registry) %>%
       dplyr::filter(.data$id == input$indicator)
   })
 
   output$select_indicator_registry <- shiny::renderUI({
-    select_registry_ui(rv$pool, conf, input_id = "indicator_registry",
-                       context = input$context, current_reg = rv$indicator_reg)
+    select_registry_ui(pool_verify, conf, input_id = "indicator_registry",
+                       context = "verify", current_reg = rv$indicator_reg,
+                       show_context = TRUE)
   })
 
   output$select_indicator <- shiny::renderUI({
     shiny::req(input$indicator_registry)
     shiny::selectInput(
       "indicator", "Velg indikator:",
-      choices = get_registry_indicators(pool, input$indicator_registry)
+      choices = get_registry_indicators(pool_verify, input$indicator_registry)
     )
   })
 
@@ -435,6 +552,19 @@ app_server <- function(input, output, session) {
   })
 
 
+  # manager settings
+  output$select_context <- shiny::renderUI({
+    if (valid_user) {
+      shiny::selectInput("context", "Velg milj\u00f8:",
+                         choices = list(Produksjon = "prod",
+                                        Kvalitetskontroll = "verify",
+                                        QA = "qa"),
+                         selected = "verify")
+    } else {
+      NULL
+    }
+  })
+
 
   # registry medfields
   shiny::observeEvent(input$update_medfield, {
@@ -450,7 +580,7 @@ app_server <- function(input, output, session) {
 
   output$select_medfield_registry <- shiny::renderUI({
     select_registry_ui(rv$pool, conf, input_id = "medfield_registry",
-                       context = input$context)
+                       context = rv$context)
   })
   output$select_registry_medfield <- shiny::renderUI({
     shiny::req(input$medfield_registry)
@@ -496,7 +626,7 @@ app_server <- function(input, output, session) {
 
   output$select_user_registry <- shiny::renderUI({
     select_registry_ui(rv$pool, conf, input_id = "user_registry",
-                       context = input$context)
+                       context = rv$context)
   })
   output$select_registry_user <- shiny::renderUI({
     shiny::req(input$user_registry)
@@ -559,9 +689,9 @@ app_server <- function(input, output, session) {
     shiny::tagList(
       shiny::HTML(
         paste0("<h3 style='color:",
-               switch(input$context,
+               switch(rv$context,
                       prod = "green;'>Produksjon</h3>",
-                      verify = "orange;'>Dataverifisering</h3>",
+                      verify = "orange;'>Kvalitetskontroll</h3>",
                       qa = "red;'>QA</h3>"))
       ),
       shiny::p("Tr\u00e5 forsiktig!"),

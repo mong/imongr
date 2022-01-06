@@ -93,6 +93,9 @@ test_that("select list of registries is provided (if any)", {
     select_registry_ui(pool, conf, "test", "qa")))
   expect_true("shiny.tag.list" %in% class(
     select_registry_ui(pool, conf, "test", "prod", "reg")))
+  # test when intersecting registries
+  expect_true("shiny.tag.list" %in% class(
+    select_registry_ui(pool, conf, "test", "prod", "reg", pool0 = pool)))
   # test when no deliveries
   Sys.setenv(SHINYPROXY_USERNAME = "nobody@nowhere.com")
   expect_true("shiny.tag.list" %in% class(
@@ -101,6 +104,8 @@ test_that("select list of registries is provided (if any)", {
   Sys.setenv(SHINYPROXY_USERGROUPS = "PROVIDER,MANAGER")
   expect_true("shiny.tag.list" %in% class(
     select_registry_ui(pool, conf, "test", "prod")))
+  expect_true("shiny.tag.list" %in% class(
+    select_registry_ui(pool, conf, "test", "prod", "reg", pool0 = pool)))
   # reset
   Sys.setenv(SHINYPROXY_USERNAME = "mongr")
   Sys.setenv(SHINYPROXY_USERGROUPS = "G1,G2")
