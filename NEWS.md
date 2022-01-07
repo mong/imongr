@@ -1,3 +1,8 @@
+# imongr 0.26.0
+* Accepted terms text kept (in db) on each publish
+* Added hyperlink to full description of terms
+* Added more information on how we use and store user data
+
 # imongr 0.25.0
 * New features: upload of files only to verify instance and new publish to production instance
 * All manager tools organized under same navbar menu
