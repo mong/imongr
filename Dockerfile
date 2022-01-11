@@ -1,4 +1,4 @@
-FROM hnskde/imongr-base-r:1.3.0
+FROM hnskde/imongr-base-r:1.4.0
 
 LABEL maintainer "Are Edvardsen <are.edvardsen@helse-nord.no>"
 LABEL no.mongr.cd.enable="true"
