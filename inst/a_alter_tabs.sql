@@ -27,10 +27,10 @@ ADD CONSTRAINT inconsistent_level_values
 
 ALTER TABLE
   registry
-ADD COLUMN IF NOT EXISTS
+ADD COLUMN 
   description VARCHAR(2047)
 AFTER full_name,
-ADD COLUMN IF NOT EXISTS
+ADD COLUMN 
   url VARCHAR(1023)
 AFTER full_name;
 
