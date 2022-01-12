@@ -110,6 +110,7 @@ db:
       insert:
       - latest
       - md5_checksum
+      - terms_version
       - user_id
     user:
       insert:

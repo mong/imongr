@@ -130,6 +130,7 @@ CREATE TABLE IF NOT EXISTS delivery (
   latest BOOLEAN NOT NULL,
   time TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
   md5_checksum CHAR(32) NOT NULL,
+  terms_version VARCHAR(127) DEFAULT NULL,
   user_id SMALLINT UNSIGNED NOT NULL,
   CONSTRAINT `fk_delivery_user`
     FOREIGN KEY (user_id) REFERENCES user (id)
