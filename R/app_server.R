@@ -267,6 +267,17 @@ app_server <- function(input, output, session) {
 
   # publish
   ## observers
+  shiny::observeEvent(input$view_terms, {
+    f <- rmarkdown::render(input = system.file("terms.Rmd", package = "imongr"),
+                           output_format = "html_fragment",
+                           output_file = tempfile())
+    shinyalert::shinyalert(
+      text = shiny::HTML(readLines(f)),
+      html = TRUE,
+      confirmButtonText = no_opt_out_ok(),
+      size = "l"
+    )
+  })
   shiny::observeEvent(input$publish_registry, {
     if (!is.null(input$publish_registry)) {
       rv$inv_publish <- rv$inv_publish + 1
@@ -309,10 +320,11 @@ app_server <- function(input, output, session) {
   output$publish_liability <- shiny::renderUI({
     shiny::checkboxInput(
       "liability",
-      paste(
+      shiny::HTML(paste(
         get_registry_name(pool_verify, input$publish_registry, TRUE),
-        conf$publish$liability
-      )
+        conf$publish$liability,
+        as.character(shiny::actionLink("view_terms", "vilkårene."))
+      ))
     )
   })
   output$publish <- shiny::renderUI({
