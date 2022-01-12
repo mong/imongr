@@ -274,7 +274,9 @@ app_server <- function(input, output, session) {
   })
   shiny::observeEvent(input$publish, {
     update_ind_text(pool, publish_ind())
-    insert_data(pool, publish_data())
+    insert_data(
+      pool, publish_data(), terms_version = version_info(newline = "")
+    )
     insert_agg_data(pool, publish_data())
     rv$inv_publish <- rv$inv_publish + 1
     shinyalert::shinyalert(
