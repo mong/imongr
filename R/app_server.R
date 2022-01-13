@@ -271,12 +271,13 @@ app_server <- function(input, output, session) {
     f <- rmarkdown::render(input = system.file("terms.Rmd", package = "imongr"),
                            output_format = "html_fragment",
                            output_file = tempfile())
-    shinyalert::shinyalert(
-      text = shiny::HTML(readLines(f)),
-      html = TRUE,
-      confirmButtonText = no_opt_out_ok(),
-      size = "l"
-    )
+    shiny::showModal(shiny::modalDialog(
+      shiny::HTML(readLines(f)),
+      footer = shiny::tagList(
+        shiny::actionButton("downloadTerms", "Last ned vilkår"),
+        shiny::modalButton(no_opt_out_ok())
+      )
+    ))
   })
   shiny::observeEvent(input$publish_registry, {
     if (!is.null(input$publish_registry)) {
