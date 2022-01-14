@@ -274,8 +274,8 @@ app_server <- function(input, output, session) {
     shiny::showModal(shiny::modalDialog(
       shiny::HTML(readLines(f)),
       footer = shiny::tagList(
-        shiny::actionButton("downloadTerms", "Last ned vilkår"),
-        shiny::modalButton(no_opt_out_ok())
+        shiny::downloadButton("downloadTerms", "Last ned vilkår"),
+        shiny::modalButton("Lukk")
       )
     ))
   })
@@ -328,6 +328,18 @@ app_server <- function(input, output, session) {
       ))
     )
   })
+  output$downloadTerms <- shiny::downloadHandler(
+    filename = basename(
+      tempfile(pattern = "VilkaarPubliseringSKDE", fileext = ".pdf")
+    ),
+    content = function(file) {
+      fn <- rmarkdown::render(
+        input = system.file("terms.Rmd", package = "imongr"),
+        output_format = "pdf_document"
+      )
+      file.rename(fn, file)
+    }
+  )
   output$publish <- shiny::renderUI({
     rv$inv_publish
     if (!is.null(input$publish_registry) &&
