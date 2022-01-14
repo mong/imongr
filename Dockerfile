@@ -13,7 +13,7 @@ COPY *.tar.gz .
 RUN R CMD INSTALL --clean ./*.tar.gz
 
 ## tinytex pre-setup
-RUN R -e "rmarkdown::render(input = system.file('terms.Rmd', package = 'imongr'), output_format = 'pdf_document'"
+RUN R -e "rmarkdown::render(input = system.file('terms.Rmd', package = 'imongr'), output_format = 'pdf_document')"
 
 ## clean up
 RUN rm ./*.tar.gz
