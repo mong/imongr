@@ -1,6 +1,6 @@
 Package: imongr
 Title: I Handle the Data for qmongr 
-Version: 0.25.0
+Version: 0.26.0
 Authors@R: c(
     person(given = "Are",
            family = "Edvardsen",
@@ -28,13 +28,14 @@ Imports:
     readr,
     rlang,
     RMariaDB,
+    rmarkdown,
     shiny (>= 1.5.0),
     shinyalert,
     shinycssloaders,
     shinyjs,
     tibble,
     yaml
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     testthat (>= 2.1.0),
     covr,
