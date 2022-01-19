@@ -158,6 +158,8 @@
 #'   \item{latest}{Numeric definig if the delivery is the latest (1) or not(0)}
 #'   \item{md5_checksum}{String A hash of the delivered data set used for
 #'   integrity checking}
+#'   \item{terms_version}{Character string providing version stamp of the terms
+#'   accepted when data are published}
 #'   \item{user_id}{Numeric id referencing the user that made the delivery}
 #'   }
 "delivery"

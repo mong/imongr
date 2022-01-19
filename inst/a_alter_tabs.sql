@@ -27,12 +27,19 @@ ADD CONSTRAINT inconsistent_level_values
 
 ALTER TABLE
   registry
-ADD COLUMN 
+ADD COLUMN
   description VARCHAR(2047)
 AFTER full_name,
-ADD COLUMN 
+ADD COLUMN
   url VARCHAR(1023)
 AFTER full_name;
+
+ALTER TABLE
+  delivery
+ADD COLUMN IF NOT EXISTS
+  `terms_version` VARCHAR(127) DEFAULT NULL
+AFTER
+  `md5_checksum`;
 
 CREATE INDEX IF NOT EXISTS index_data_context ON data (context);
 

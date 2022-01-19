@@ -1,0 +1,69 @@
+---
+title: '`r paste0("Vilkår for å publisere resultater fra nasjonale medisinske kvalitetsregistre på SKDEs nettsider (versjon: ", imongr::version_info(newline = ""), ")")`'
+author: "Senter for Klinisk Dokumentasjon og Evaluering (SKDE)"
+date: '`r format(Sys.time(), "%d. %B, %Y")`'
+header-includes:
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+classoption:
+  - twocolumn
+papersize: a4
+linestretch: 1
+fontsize: 10pt
+links-as-notes: true
+---
+
+## 1. Formål
+Formålet med dette dokumentet er å regulere vilkår for å publisere resultater fra nasjonale medisinske kvalitetsregistre på Senter for klinisk dokumentasjon og evaluering (SKDE) sine nettsider.
+
+Den som på vegne av dataansvarlig for nasjonale medisinske kvalitetsregistre leverer data til publisering, er heretter Bruker. 
+
+## 2. Forutsetninger
+Publisering av resultater på SKDE sine nettsider forutsetter aksept av vilkårene i dette dokumentet og de betingelser for bruk som følger av SKDEs nettsider.
+
+Det skal kun legges inn og publiseres anonyme opplysninger. Anonyme opplysninger er opplysninger som ikke kan knyttes til en identifisert eller identifiserbar fysisk person, eller personopplysninger som er blitt anonymisert på en slik måte at den registrerte ikke lenger kan identifiseres^[EUs personvernforordning, fortalepunkt 26].
+
+## 3. Forpliktelser og ansvar
+__SKDE skal__:
+
+* Drifte og forvalte løsningen for publisering slik at data ikke endres.
+
+* Sørge for at løsningen for publisering er tilstrekkelig robust til å stå imot utilsiktede hendelser eller ulovlige eller skadelige handlinger.
+
+* Videreutvikle og forbedre tjenesten.
+
+* Ta imot og behandle tilbakemeldinger.
+
+* Bistå Bruker ved behov. 
+
+SKDE vil så langt som mulig holde tjenesten tilgjengelig 24 timer i døgnet, 7 dager i uken.
+
+__Bruker skal__:
+
+* Sørge for at opplysninger som publiseres er anonyme.
+
+* Sørge for at opplysninger som publiseres er korrekte og oppdaterte.
+
+* Bidra til å forbedre tjenesten, herunder melde om feil og mangler så snart som mulig.
+
+
+## 4. Brukernavn, passord og sikkerhet
+Bruker vil måtte opprette brukerkonto, og er selv ansvarlig for sin brukerkonto. Bruker forplikter seg til enhver tid å informere SKDE om uautorisert bruk av brukerkontoen, eller andre aktiviteter som utgjør en sikkerhetsmessig risiko.
+
+SKDE er ikke er ansvarlig for tap av data som følger av at tjenesten skulle bli avbrutt eller på andre måter ødelagt.
+
+## 5. Kommunikasjon og endringer
+Alle beskjeder til eller fra SKDE skal foregå skriftlig; via e-post eller SKDEs nettsider.
+
+## 6. Betaling
+Bruk av tjenesten innebærer ingen økonomiske forpliktelser mellom partene.
+
+## 7. Varighet og opphør
+Vilkårene gjelder så lenge resultater publiseres på SKDEs nettsider.
+
+SKDE forbeholder seg retten til å avslutte eller endre tjenesten dersom videre drift ikke er forsvarlig.
+
+SKDE kan ikke holdes ansvarlig for eventuelle tap som Bruker måtte ha med bakgrunn i at tjenesten ikke er tilgjengelig.
+
+## 8. Tvist og tvisteløsning
+Eventuell tvist søkes løst gjennom forhandlinger.

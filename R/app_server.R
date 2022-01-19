@@ -267,6 +267,18 @@ app_server <- function(input, output, session) {
 
   # publish
   ## observers
+  shiny::observeEvent(input$view_terms, {
+    f <- rmarkdown::render(input = system.file("terms.Rmd", package = "imongr"),
+                           output_format = "html_fragment",
+                           output_file = tempfile())
+    shiny::showModal(shiny::modalDialog(
+      shiny::HTML(readLines(f)),
+      footer = shiny::tagList(
+        shiny::downloadButton("downloadTerms", "Last ned vilkår"),
+        shiny::modalButton("Lukk")
+      )
+    ))
+  })
   shiny::observeEvent(input$publish_registry, {
     if (!is.null(input$publish_registry)) {
       rv$inv_publish <- rv$inv_publish + 1
@@ -274,7 +286,9 @@ app_server <- function(input, output, session) {
   })
   shiny::observeEvent(input$publish, {
     update_ind_text(pool, publish_ind())
-    insert_data(pool, publish_data())
+    insert_data(
+      pool, publish_data(), terms_version = version_info(newline = "")
+    )
     insert_agg_data(pool, publish_data())
     rv$inv_publish <- rv$inv_publish + 1
     shinyalert::shinyalert(
@@ -307,12 +321,25 @@ app_server <- function(input, output, session) {
   output$publish_liability <- shiny::renderUI({
     shiny::checkboxInput(
       "liability",
-      paste(
+      shiny::HTML(paste(
         get_registry_name(pool_verify, input$publish_registry, TRUE),
-        conf$publish$liability
-      )
+        conf$publish$liability,
+        as.character(shiny::actionLink("view_terms", "vilkårene."))
+      ))
     )
   })
+  output$downloadTerms <- shiny::downloadHandler(
+    filename = basename(
+      tempfile(pattern = "VilkaarPubliseringSKDE", fileext = ".pdf")
+    ),
+    content = function(file) {
+      fn <- rmarkdown::render(
+        input = system.file("terms.Rmd", package = "imongr"),
+        output_format = "pdf_document"
+      )
+      file.rename(fn, file)
+    }
+  )
   output$publish <- shiny::renderUI({
     rv$inv_publish
     if (!is.null(input$publish_registry) &&

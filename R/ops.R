@@ -2,6 +2,9 @@
 #'
 #' @param pool Database connection pool object
 #' @param df Data frame of relevant data
+#' @param terms_version Character string providing version stamp of of the terms
+#' accepted when data are published. Default value is NA that will normally
+#' apply for all uploads prior to publishing.
 #' @return Relevant values from the current environment and database
 #' @name ops
 #' @aliases delivery_exist_in_db duplicate_delivery retire_user_deliveries
@@ -115,10 +118,11 @@ WHERE
 
 #' @rdname ops
 #' @export
-insert_data <- function(pool, df) {
+insert_data <- function(pool, df, terms_version = NA) {
 
   delivery <- data.frame(latest = 1,
                          md5_checksum = md5_checksum(df),
+                         terms_version = terms_version,
                          user_id = get_user_id(pool))
 
   delete_indicator_data(pool, df)
