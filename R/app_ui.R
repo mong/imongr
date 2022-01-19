@@ -285,8 +285,7 @@ app_ui <- function() {
           )
         )
       ),
-      navbar_widget(),
-      shinyalert::useShinyalert()
+      navbar_widget()
     )
   )
 }
