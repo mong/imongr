@@ -1,3 +1,7 @@
+# imongr 0.26.1
+* Reconfigured logout uri
+* Fixed wrong date language in terms pdf by [system locale settings in base docker image](https://github.com/mong/imongr-base-r/pull/7) 
+
 # imongr 0.26.0
 * Accepted terms text kept (in db) on each publish
 * Added hyperlink to full description of terms
