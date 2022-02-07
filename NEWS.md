@@ -1,3 +1,7 @@
+# imongr 0.26.2
+* New logout url, hopefully working along shinyproxy and aws cognito oddities
+* Profile data now from prod db, only
+
 # imongr 0.26.1
 * Reconfigured logout uri
 * Fixed wrong date language in terms pdf by [system locale settings in base docker image](https://github.com/mong/imongr-base-r/pull/7) 
