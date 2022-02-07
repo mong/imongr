@@ -112,7 +112,7 @@ app_server <- function(input, output, session) {
 
   # profil
   output$profile <- shiny::renderText({
-    profile_ui(conf, rv$pool, valid_user, iusr, igrs)
+    profile_ui(conf, pool, valid_user, iusr, igrs)
   })
 
   output$upload_table <- DT::renderDataTable(

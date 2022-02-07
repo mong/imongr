@@ -214,7 +214,7 @@ profile:
     <a href="https://github.com/mong/imongr/issues">vår feilmeldingstjeneste</a>.
   logout:
     text: Logg ut
-    url: https://imongr.skde.org/logout-success
+    url: https://imongr.skde.no/logout
 publish:
   liability: >
     står ansvarlig for kvalitetsindikatorer med tilhørende beskrivelser når
