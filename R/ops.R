@@ -2,6 +2,10 @@
 #'
 #' @param pool Database connection pool object
 #' @param df Data frame of relevant data
+#' @param update Character string of format YYYY-MM-DD providing date until data
+#' are regarded as updated. Default value is NA.
+#' @param affirm Character string of format YYYY-MM-DD providing date until data
+#' are regarded as final. Default value is NA.
 #' @param terms_version Character string providing version stamp of of the terms
 #' accepted when data are published. Default value is NA that will normally
 #' apply for all uploads prior to publishing.
@@ -118,10 +122,13 @@ WHERE
 
 #' @rdname ops
 #' @export
-insert_data <- function(pool, df, terms_version = NA) {
+insert_data <- function(pool, df, update = NA, affirm = NA,
+                        terms_version = NA) {
 
   delivery <- data.frame(latest = 1,
                          md5_checksum = md5_checksum(df),
+                         latest_update = update,
+                         latest_affirm = affirm,
                          terms_version = terms_version,
                          user_id = get_user_id(pool))
 
