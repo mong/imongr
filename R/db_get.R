@@ -30,9 +30,9 @@
 #' @aliases get_indicator get_user_data get_user_id get_user_registries
 #' get_user_registry_select get_user_latest_delivery_id get_registry_data
 #' get_indicators_registryget_registry_ind get_registry_name get_org_name
-#' get_flat_org get_all_orgnr get_user get_users get_registry_indicators
-#' get_registry_medfield get_medfield_registry get_registry_user
-#' get_user_registry get_aggdata_delivery_time
+#' get_flat_org get_all_orgnr get_user get_users get_registry_latest_delivery
+#' get_registry_indicators get_registry_medfield get_medfield_registry
+#' get_registry_user get_user_registry get_aggdata_delivery_time
 NULL
 
 
@@ -453,6 +453,27 @@ FROM
   pool::dbGetQuery(pool, query)
 }
 
+
+#' @rdname db_get
+#' @export
+get_registry_latest_delivery <- function(pool, registry) {
+
+  query <- paste0("
+SELECT
+  d.*
+FROM
+  user_registry ur
+LEFT JOIN delivery d ON
+  ur.user_id = d.user_id
+WHERE
+  d.latest = 1 AND
+  ur.registry_id = ", registry, "
+ORDER BY
+  d.time DESC;"
+  )
+
+  pool::dbGetQuery(pool, query)[1, ]
+}
 
 #' @rdname db_get
 #' @export

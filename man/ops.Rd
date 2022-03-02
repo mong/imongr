@@ -29,7 +29,7 @@ delete_indicator_data(pool, df)
 
 delete_agg_data(pool, df)
 
-insert_data(pool, df, terms_version = NA)
+insert_data(pool, df, update = NA, affirm = NA, terms_version = NA)
 
 insert_agg_data(pool, df)
 
@@ -51,6 +51,12 @@ update_ind_text(pool, df)
 \item{pool}{Database connection pool object}
 
 \item{df}{Data frame of relevant data}
+
+\item{update}{Character string of format YYYY-MM-DD providing date until data
+are regarded as updated. Default value is NA.}
+
+\item{affirm}{Character string of format YYYY-MM-DD providing date until data
+are regarded as final. Default value is NA.}
 
 \item{terms_version}{Character string providing version stamp of of the terms
 accepted when data are published. Default value is NA that will normally
