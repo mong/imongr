@@ -17,6 +17,17 @@ ADD COLUMN IF NOT EXISTS
 AFTER `dg`;
 
 ALTER TABLE
+  `agg_data`
+ADD COLUMN IF NOT EXISTS
+  `delivery_latest_affirm` DATE DEFAULT NULL
+AFTER
+  `delivery_time`,
+ADD COLUMN IF NOT EXISTS
+  `delivery_latest_update` DATE DEFAULT NULL
+AFTER
+  `delivery_time`;
+
+ALTER TABLE
   ind
 ADD CONSTRAINT inconsistent_level_values
     CHECK (case
@@ -40,6 +51,17 @@ ADD COLUMN IF NOT EXISTS
   `terms_version` VARCHAR(127) DEFAULT NULL
 AFTER
   `md5_checksum`;
+
+ALTER TABLE
+  delivery
+ADD COLUMN IF NOT EXISTS
+  `latest_affirm` DATE DEFAULT NULL
+AFTER
+  `time`,
+ADD COLUMN IF NOT EXISTS
+  `latest_update` DATE DEFAULT NULL
+AFTER
+  `time`;
 
 CREATE INDEX IF NOT EXISTS index_data_context ON data (context);
 

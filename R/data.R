@@ -156,6 +156,8 @@
 #' @format Data frame with made up values
 #' \describe{
 #'   \item{latest}{Numeric definig if the delivery is the latest (1) or not(0)}
+#'   \item{latest_update}{Date (YYYY-MM-DD) defining data latest update}
+#'   \item{latest_affirm}{Date (YYYY-MM-DD) up until data are regarded as final}
 #'   \item{md5_checksum}{String A hash of the delivered data set used for
 #'   integrity checking}
 #'   \item{terms_version}{Character string providing version stamp of the terms
