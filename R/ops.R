@@ -198,8 +198,8 @@ insert_agg_data <- function(pool, df) {
     message("  inserting fresh agg data")
     insert_table(pool, "agg_data", dat)
   }
-  message("\nUpdating time of delivery")
-  update_aggdata_delivery_time(pool)
+  message("\nUpdating delivery timings")
+  update_aggdata_delivery(pool)
   message("Done!")
 }
 
