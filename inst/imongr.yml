@@ -282,8 +282,6 @@ upload:
   check:
     missing_registry: |-
       Ukjent register (kontakt SKDE):
-    mixing_ind: |-
-      Blanding av ekte andeler med annen type indikator(er):
     missing_var: |-
       Manglende variabler:
     invalid_var: |-
