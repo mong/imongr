@@ -103,7 +103,7 @@ app_ui <- function() {
                              weekstart = 1,
                              language = "no"),
             shiny::dateInput("latest_affirm",
-                             "Merk alle indikatorer som foreløpig etter:",
+                             "Merk alle indikatorer som forel\u00f8pig etter:",
                              value = Sys.Date(),
                              weekstart = 1,
                              language = "no"),

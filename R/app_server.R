@@ -279,7 +279,7 @@ app_server <- function(input, output, session) {
     shiny::showModal(shiny::modalDialog(
       shiny::HTML(readLines(f)),
       footer = shiny::tagList(
-        shiny::downloadButton("downloadTerms", "Last ned vilkår"),
+        shiny::downloadButton("downloadTerms", "Last ned vilk\u00e5r"),
         shiny::modalButton("Lukk")
       )
     ))
@@ -340,7 +340,7 @@ app_server <- function(input, output, session) {
       shiny::HTML(paste(
         get_registry_name(pool_verify, input$publish_registry, TRUE),
         conf$publish$liability,
-        as.character(shiny::actionLink("view_terms", "vilkårene."))
+        as.character(shiny::actionLink("view_terms", "vilk\u00e5rene."))
       ))
     )
   })
