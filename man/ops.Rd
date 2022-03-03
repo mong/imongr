@@ -10,6 +10,7 @@
 \alias{delete_agg_data}
 \alias{insert_data}
 \alias{insert_agg_data}
+\alias{update_aggdata_delivery}
 \alias{update_aggdata_delivery_time}
 \alias{agg_all_data}
 \alias{clean_agg_data}
@@ -32,6 +33,8 @@ delete_agg_data(pool, df)
 insert_data(pool, df, update = NA, affirm = NA, terms_version = NA)
 
 insert_agg_data(pool, df)
+
+update_aggdata_delivery(pool)
 
 update_aggdata_delivery_time(pool)
 

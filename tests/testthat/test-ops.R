@@ -161,6 +161,11 @@ test_that("agg_data delivery_time can be updated without errors", {
   expect_invisible(update_aggdata_delivery_time(pool))
 })
 
+test_that("agg_data delivery timings can be updated without errors", {
+  check_db()
+  expect_invisible(update_aggdata_delivery(pool))
+})
+
 test_that("a new user can be created", {
   check_db()
   expect_true(create_imongr_user(pool, data.frame(

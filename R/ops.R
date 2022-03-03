@@ -13,9 +13,9 @@
 #' @name ops
 #' @aliases delivery_exist_in_db duplicate_delivery retire_user_deliveries
 #' delete_indicator_data delete_registry_data delete_agg_data insert_data
-#' insert_agg_data update_aggdata_delivery_time agg_all_data clean_agg_data
-#' create_imongr_user update_registry_medfield update_registry_user
-#' update_ind_text
+#' insert_agg_data update_aggdata_delivery update_aggdata_delivery_time
+#' agg_all_data clean_agg_data create_imongr_user update_registry_medfield
+#' update_registry_user update_ind_text
 NULL
 
 
@@ -205,7 +205,36 @@ insert_agg_data <- function(pool, df) {
 
 #' @rdname ops
 #' @export
+update_aggdata_delivery <- function(pool) {
+
+  delivery <- get_aggdata_delivery(pool)
+
+  pool::dbWriteTable(pool, name = "temp_agg_data", value = delivery,
+                     temporary = TRUE)
+
+  query <- paste0("
+UPDATE
+  agg_data a, temp_agg_data t
+SET
+  a.delivery_time = t.delivery_time,
+  a.delivery_latest_update = t.delivery_latest_update,
+  a.delivery_latest_affirm = t.delivery_latest_affirm
+WHERE
+  a.id = t.id;"
+  )
+
+  pool::dbExecute(pool, query)
+  pool::dbRemoveTable(pool, name = "temp_agg_data", temporary = TRUE)
+}
+
+
+#' @rdname ops
+#' @export
 update_aggdata_delivery_time <- function(pool) {
+  lifecycle::deprecate_warn(
+    "0.27.0", "imongr::update_aggdata_delivery_time()",
+    "imongr::update_aggdata_delivery()"
+  )
 
   delivery_time <- get_aggdata_delivery_time(pool)
 
