@@ -632,6 +632,10 @@ FROM
 #' @rdname db_get
 #' @export
 get_aggdata_delivery_time <- function(pool) {
+  lifecycle::deprecate_warn(
+    "0.27.0", "imongr::get_aggdata_delivery_time()",
+    "imongr::get_aggdata_delivery()"
+  )
 
   # get current delivery ids in data
   query <- paste0("
