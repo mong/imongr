@@ -16,11 +16,13 @@
 \alias{get_all_orgnr}
 \alias{get_user}
 \alias{get_users}
+\alias{get_registry_latest_delivery}
 \alias{get_registry_indicators}
 \alias{get_registry_medfield}
 \alias{get_medfield_registry}
 \alias{get_registry_user}
 \alias{get_user_registry}
+\alias{get_aggdata_delivery}
 \alias{get_aggdata_delivery_time}
 \alias{get_all_user_data}
 \alias{get_user_deliveries}
@@ -62,6 +64,8 @@ get_user(pool, sample = NA)
 
 get_users(pool, valid = TRUE)
 
+get_registry_latest_delivery(pool, registry)
+
 get_registry_indicators(pool, registry)
 
 get_registry_medfield(pool, registry)
@@ -71,6 +75,8 @@ get_medfield_registry(pool, medfield)
 get_registry_user(pool, registry)
 
 get_user_registry(pool, user)
+
+get_aggdata_delivery(pool)
 
 get_aggdata_delivery_time(pool)
 }

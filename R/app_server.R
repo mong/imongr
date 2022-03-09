@@ -155,7 +155,12 @@ app_server <- function(input, output, session) {
     }
   })
   shiny::observeEvent(input$submit, {
-    insert_data(pool_verify, df())
+    insert_data(
+      pool = pool_verify,
+      df = df(),
+      update = input$latest_update,
+      affirm = input$latest_affirm
+    )
     insert_agg_data(pool_verify, df())
     rv$inv_data <- rv$inv_data + 1
     shinyalert::shinyalert(conf$upload$reciept$title, conf$upload$reciept$body,
@@ -274,7 +279,7 @@ app_server <- function(input, output, session) {
     shiny::showModal(shiny::modalDialog(
       shiny::HTML(readLines(f)),
       footer = shiny::tagList(
-        shiny::downloadButton("downloadTerms", "Last ned vilkår"),
+        shiny::downloadButton("downloadTerms", "Last ned vilk\u00e5r"),
         shiny::modalButton("Lukk")
       )
     ))
@@ -287,7 +292,11 @@ app_server <- function(input, output, session) {
   shiny::observeEvent(input$publish, {
     update_ind_text(pool, publish_ind())
     insert_data(
-      pool, publish_data(), terms_version = version_info(newline = "")
+      pool = pool,
+      df = publish_data(),
+      update = publish_delivery()$latest_update,
+      affirm = publish_delivery()$latest_affirm,
+      terms_version = version_info(newline = "")
     )
     insert_agg_data(pool, publish_data())
     rv$inv_publish <- rv$inv_publish + 1
@@ -311,6 +320,13 @@ app_server <- function(input, output, session) {
       get_registry_ind(pool_verify, input$publish_registry)
     }
   })
+  publish_delivery <- shiny::reactive({
+    if (is.null(input$publish_registry)) {
+      data.frame()
+    } else {
+      get_registry_latest_delivery(pool_verify, input$publish_registry)
+    }
+  })
 
   ## ui sidebar panel
   output$select_publish_registry <- shiny::renderUI({
@@ -324,7 +340,7 @@ app_server <- function(input, output, session) {
       shiny::HTML(paste(
         get_registry_name(pool_verify, input$publish_registry, TRUE),
         conf$publish$liability,
-        as.character(shiny::actionLink("view_terms", "vilkårene."))
+        as.character(shiny::actionLink("view_terms", "vilk\u00e5rene."))
       ))
     )
   })

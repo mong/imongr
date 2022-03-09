@@ -277,6 +277,18 @@ test_that("aggdata delivery times can be provided", {
   )
 })
 
+test_that("aggdata delivery timings can be provided", {
+  check_db()
+  aggdata_delivery <- get_aggdata_delivery(pool)
+  expect_equal(class(aggdata_delivery), "data.frame")
+  expect_true(class(aggdata_delivery$id) %in% c("integer"))
+  expect_true(
+    class(aggdata_delivery$delivery_time)[1] %in% c("POSIXct", "POSIXt")
+  )
+  expect_equal(class(aggdata_delivery$delivery_latest_update[1]), "Date")
+  expect_equal(class(aggdata_delivery$delivery_latest_affirm[1]), "Date")
+})
+
 test_that("get_table wrapper function do work", {
   check_db()
   expect_equal(class(get_table(pool, "user")), "data.frame")

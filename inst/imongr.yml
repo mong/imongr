@@ -109,6 +109,8 @@ db:
     delivery:
       insert:
       - latest
+      - latest_update
+      - latest_affirm
       - md5_checksum
       - terms_version
       - user_id
@@ -280,8 +282,6 @@ upload:
   check:
     missing_registry: |-
       Ukjent register (kontakt SKDE):
-    mixing_ind: |-
-      Blanding av ekte andeler med annen type indikator(er):
     missing_var: |-
       Manglende variabler:
     invalid_var: |-
@@ -321,7 +321,11 @@ upload:
     sample: >
       Her vises en utsnitt av data i filen som er valgt. Juster parametrene i
       menyen på venstresiden slik at eventuelle spesialtegn representeres
-      riktig og tallene fremstår slik de skal. <b>Merk at når du sender nye data
+      riktig og tallene fremstår slik de skal. Alle indikatorer i registert
+      ansees som oppdaterte per dato for opplasting. Ved behov kan denne datoen
+      endres i menyen til venstre. Her er det også mulig å angi en dato fra når
+      registerets indikatorer skal betraktes som foreløpige. Denne datoen er på
+      forhånd satt til dato for opplasting. <b>Merk at når du sender nye data
       så vil alle gamle data for tilsvarende indikatorer og kontekst gitt i
       datasettet overskrives/slettes</b>. Følgende indikatorer (med markering
       for de som finnes i csv-fila) er gyldige for

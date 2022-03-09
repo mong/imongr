@@ -1,3 +1,7 @@
+# imongr 0.27.0
+* On data upload for verification both an update and affirm date that apply for all indicator data within the selected registry can be manually provided ([#175](https://github.com/mong/imongr/pull/175)). The update date is to be understood as the latest update of indicator data while affirm is to provide a date which after indicator data must be regarded as tentative.
+* As a result of the above some functions were deprecated and replaced by new ones and guide texts updated
+
 # imongr 0.26.2
 * New logout url, hopefully working along shinyproxy and aws cognito oddities
 * Profile data now from prod db, only

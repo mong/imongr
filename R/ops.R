@@ -2,6 +2,10 @@
 #'
 #' @param pool Database connection pool object
 #' @param df Data frame of relevant data
+#' @param update Character string of format YYYY-MM-DD providing date until data
+#' are regarded as updated. Default value is NA.
+#' @param affirm Character string of format YYYY-MM-DD providing date until data
+#' are regarded as final. Default value is NA.
 #' @param terms_version Character string providing version stamp of of the terms
 #' accepted when data are published. Default value is NA that will normally
 #' apply for all uploads prior to publishing.
@@ -9,9 +13,9 @@
 #' @name ops
 #' @aliases delivery_exist_in_db duplicate_delivery retire_user_deliveries
 #' delete_indicator_data delete_registry_data delete_agg_data insert_data
-#' insert_agg_data update_aggdata_delivery_time agg_all_data clean_agg_data
-#' create_imongr_user update_registry_medfield update_registry_user
-#' update_ind_text
+#' insert_agg_data update_aggdata_delivery update_aggdata_delivery_time
+#' agg_all_data clean_agg_data create_imongr_user update_registry_medfield
+#' update_registry_user update_ind_text
 NULL
 
 
@@ -118,10 +122,13 @@ WHERE
 
 #' @rdname ops
 #' @export
-insert_data <- function(pool, df, terms_version = NA) {
+insert_data <- function(pool, df, update = NA, affirm = NA,
+                        terms_version = NA) {
 
   delivery <- data.frame(latest = 1,
                          md5_checksum = md5_checksum(df),
+                         latest_update = update,
+                         latest_affirm = affirm,
                          terms_version = terms_version,
                          user_id = get_user_id(pool))
 
@@ -191,14 +198,43 @@ insert_agg_data <- function(pool, df) {
     message("  inserting fresh agg data")
     insert_table(pool, "agg_data", dat)
   }
-  message("\nUpdating time of delivery")
-  update_aggdata_delivery_time(pool)
+  message("\nUpdating delivery timings")
+  update_aggdata_delivery(pool)
   message("Done!")
 }
 
 #' @rdname ops
 #' @export
+update_aggdata_delivery <- function(pool) {
+
+  delivery <- get_aggdata_delivery(pool)
+
+  pool::dbWriteTable(pool, name = "temp_agg_data", value = delivery,
+                     temporary = TRUE)
+
+  query <- paste0("
+UPDATE
+  agg_data a, temp_agg_data t
+SET
+  a.delivery_time = t.delivery_time,
+  a.delivery_latest_update = t.delivery_latest_update,
+  a.delivery_latest_affirm = t.delivery_latest_affirm
+WHERE
+  a.id = t.id;"
+  )
+
+  pool::dbExecute(pool, query)
+  pool::dbRemoveTable(pool, name = "temp_agg_data", temporary = TRUE)
+}
+
+
+#' @rdname ops
+#' @export
 update_aggdata_delivery_time <- function(pool) {
+  lifecycle::deprecate_warn(
+    "0.27.0", "imongr::update_aggdata_delivery_time()",
+    "imongr::update_aggdata_delivery()"
+  )
 
   delivery_time <- get_aggdata_delivery_time(pool)
 
