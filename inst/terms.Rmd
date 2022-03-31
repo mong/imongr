@@ -14,9 +14,9 @@ links-as-notes: true
 ---
 
 ## 1. Formål
-Formålet med dette dokumentet er å regulere vilkår for å publisere resultater fra nasjonale medisinske kvalitetsregistre på Senter for klinisk dokumentasjon og evaluering (SKDE) sine nettsider.
+Formålet med dette dokumentet er å regulere vilkår for å publisere anonyme opplysninger fra nasjonale medisinske kvalitetsregistre på Senter for klinisk dokumentasjon og evaluering (SKDE) sine nettsider.
 
-Den som på vegne av dataansvarlig for nasjonale medisinske kvalitetsregistre leverer data til publisering, er heretter Bruker. 
+Dataansvarlig for medisinske kvalitetsregistre står ansvarlig for kvalitetsindikatorer med tilhørende beskrivelser når disse publiseres. Den som på vegne av dataansvarlig for nasjonale medisinske kvalitetsregistre leverer data til publisering, er heretter Bruker.  
 
 ## 2. Forutsetninger
 Publisering av resultater på SKDE sine nettsider forutsetter aksept av vilkårene i dette dokumentet og de betingelser for bruk som følger av SKDEs nettsider.
@@ -64,6 +64,3 @@ Vilkårene gjelder så lenge resultater publiseres på SKDEs nettsider.
 SKDE forbeholder seg retten til å avslutte eller endre tjenesten dersom videre drift ikke er forsvarlig.
 
 SKDE kan ikke holdes ansvarlig for eventuelle tap som Bruker måtte ha med bakgrunn i at tjenesten ikke er tilgjengelig.
-
-## 8. Tvist og tvisteløsning
-Eventuell tvist søkes løst gjennom forhandlinger.
