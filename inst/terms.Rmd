@@ -1,7 +1,7 @@
 ---
-title: '`r paste0("Vilkår for å publisere resultater fra nasjonale medisinske kvalitetsregistre på SKDEs nettsider (versjon: ", imongr::version_info(newline = ""), ")")`'
+title: '`r paste0("Vilkår for å publisere resultater fra nasjonale medisinske kvalitetsregistre på SKDEs nettsider")`'
 author: "Senter for Klinisk Dokumentasjon og Evaluering (SKDE)"
-date: '`r format(Sys.time(), "%d. %B, %Y")`'
+date: '`r imongr::version_info(newline = "")`'
 header-includes:
   \usepackage[utf8]{inputenc}
   \usepackage[T1]{fontenc}
