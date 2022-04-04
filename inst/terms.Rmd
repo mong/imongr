@@ -30,7 +30,7 @@ Publisering av resultater på SKDE sine nettsider forutsetter aksept av vilkåre
 Det skal kun legges inn og publiseres anonyme opplysninger. Anonyme opplysninger er opplysninger som ikke kan knyttes til en identifisert eller identifiserbar fysisk person, eller personopplysninger som er blitt anonymisert på en slik måte at den registrerte ikke lenger kan identifiseres^[EUs personvernforordning, fortalepunkt 26].
 
 ## 3. Forpliktelser og ansvar
-__SKDE skal__:
+### SKDE skal:
 
 * Drifte og forvalte løsningen for publisering slik at data ikke endres.
 
@@ -44,7 +44,7 @@ __SKDE skal__:
 
 SKDE vil så langt som mulig holde tjenesten tilgjengelig 24 timer i døgnet, 7 dager i uken.
 
-__Bruker skal__:
+### Bruker skal:
 
 * Sørge for at opplysninger som publiseres er anonyme.
 
