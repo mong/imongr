@@ -351,7 +351,8 @@ app_server <- function(input, output, session) {
     content = function(file) {
       fn <- rmarkdown::render(
         input = system.file("terms.Rmd", package = "imongr"),
-        output_format = "pdf_document"
+        output_format = "pdf_document",
+        params = list(output = "pdf")
       )
       file.rename(fn, file)
     }
