@@ -15,8 +15,8 @@ fontsize: 10pt
 links-as-notes: true
 ---
 
-```{r printlayout, results = "asis", eval = (params$output == "pdf")}
-cat("\n\n\\hyphenation{kvalitets-registre}\n\n")
+```{r printlayout, results = "asis", echo = FALSE, eval = (params$output == "pdf")}
+cat("\n\n\\hyphenation{kvalitets-registre opplys-ninger identi-fiserbar hend-elser hand-linger}\n\n")
 ```
 
 ## 1. Formål
