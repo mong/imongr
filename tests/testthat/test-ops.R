@@ -156,9 +156,9 @@ test_that("agg data can be cleaned", {
   expect_message(clean_agg_data(pool))
 })
 
-test_that("agg_data delivery_time can be updated without errors", {
+test_that("make sure function is defunct", {
   check_db()
-  expect_invisible(update_aggdata_delivery_time(pool))
+  expect_error(update_aggdata_delivery_time(pool))
 })
 
 test_that("agg_data delivery timings can be updated without errors", {

@@ -231,7 +231,7 @@ WHERE
 #' @rdname ops
 #' @export
 update_aggdata_delivery_time <- function(pool) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     "0.27.0", "imongr::update_aggdata_delivery_time()",
     "imongr::update_aggdata_delivery()"
   )
