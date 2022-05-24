@@ -4,7 +4,7 @@
 \alias{misc}
 \alias{natural}
 \alias{md5_checksum}
-\alias{navbar_widget}
+\alias{user_widget}
 \alias{version_info}
 \alias{no_opt_out_ok}
 \alias{insert_sample_data}
@@ -15,7 +15,7 @@ natural(vals, tolerance = .Machine$double.eps^0.5)
 
 md5_checksum(df)
 
-navbar_widget()
+user_widget()
 
 version_info(newline = "<br>")
 

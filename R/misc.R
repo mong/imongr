@@ -12,7 +12,7 @@
 #' @param prompt Logical to prompt for user input. Default is TRUE
 #' @return Invisible
 #' @name misc
-#' @aliases natural md5_checksum navbar_widget version_info no_opt_out_ok
+#' @aliases natural md5_checksum user_widget version_info no_opt_out_ok
 #' insert_sample_data delete_all_data
 NULL
 
@@ -46,31 +46,27 @@ md5_checksum <- function(df) {
 
 #' @rdname misc
 #' @export
-navbar_widget <- function() {
+user_widget <- function() {
 
   conf <- get_config()
 
-  app_info <- shiny::tags$a(
-    id = "app_info",
-    href = "#",
-    class = "action-button",
-    "Info")
-
-  logout <- shiny::tags$a(
-    id = "logout",
-    href = conf$profile$logout$url,
-    conf$profile$logout$text)
-
-  txt_widget <-
-    paste0("var header = $('.navbar> .container-fluid');\n",
-           "header.append('<div class=\"navbar-brand\" style=\"float:right; ",
-           "vertical-align:baseline ;font-size:70%\">",
-           app_info, "<br>",
-           get_user_name(), "<br>",
-           logout,
-           "</div>');\n")
-
-  shiny::tags$script(shiny::HTML(txt_widget))
+  bslib::nav_menu(
+    get_user_name(), align = "right",
+    bslib::nav_item(
+      shiny::tags$a(
+        shiny::icon("info-circle"),
+        id = "app_info",
+        href = "#",
+        class = "action-button",
+        "Informasjon",
+      ),
+      shiny::tags$a(
+        shiny::icon("sign-out-alt"),
+        conf$profile$logout$text,
+        href = conf$profile$logout$url
+      )
+    )
+  )
 }
 
 

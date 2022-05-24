@@ -1,6 +1,6 @@
-#' Client (ui) for the imonger app
+#' Client (ui) for the imongr app
 #'
-#' @return An imonger shiny app ui object
+#' @return An imongr shiny app ui object
 #' @export
 
 app_ui <- function() {
@@ -12,37 +12,26 @@ app_ui <- function() {
   shiny::tagList(
     shinyjs::useShinyjs(),
     shiny::tags$head(
-      shiny::tags$style(
-        type = "text/css",
-        paste0("body {",
-               "font-family: Arial, Helvetica, sans-serif;",
-               "color: #3b3b3b;}")),
-      shiny::tags$style(
-        type = "text/css",
-        paste0(".navbar-default { background-color: #f2f2f2;}")),
-      shiny::tags$style(
-        type = "text/css",
-        paste0(".navbar-default .navbar-brand {",
-               "color: #1b1b1b;line-height: 1;}")),
-      shiny::tags$style(
-        type = "text/css",
-        paste0(".navbar-default .navbar-nav > li > a {",
-               "color: #1b1b1b;}")),
-      shiny::tags$style(
-        type = "text/css",
-        paste0(".navbar-default .navbar-nav > .active > a:focus {",
-               "color: #000000;",
-               "background-color: #ffffff;}")),
-      shiny::tags$style(
-        type = "text/css",
-        paste0(".navbar-brand  a:hover, .navbar-brand  a:focus {",
-               "text-decoration: underline;}")),
       # Heartbeat every 5 seconds, to avoid app to die when user is inactive.
       # Will be out of sight on the webpage.
       shiny::tags$div(style = "position: absolute; top: -100px;",
                       shiny::textOutput("clock"))
     ),
     shiny::navbarPage(
+      theme = bslib::bs_theme(
+        version = 4,
+        bg = "#FFFFFF",
+        fg = "#1E1E1E",
+        primary = "#007bff",
+        secondary = "#D5D3D3",
+        base_font = bslib::font_collection("Arial", "Helvetica",
+                                           "sans-serif"),
+        heading_font = bslib::font_collection("Arial",
+                                              "Helvetica", "sans-serif"),
+        font_scale = 0.95,
+        spacer = "0.5rem",
+        `enable-shadows` = TRUE
+      ),
       title = shiny::div(app_title),
       windowTitle = app_title,
       id = "tabs",
@@ -295,7 +284,8 @@ app_ui <- function() {
           )
         )
       ),
-      navbar_widget()
+      bslib::nav_spacer(),
+      user_widget()
     )
   )
 }
