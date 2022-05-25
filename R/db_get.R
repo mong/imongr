@@ -251,30 +251,17 @@ WHERE
 #' @export
 get_registry_ind <- function(pool, registry) {
 
+  conf <- get_config()
+
   query <- paste0("
-SELECT
-  id,
-  dg_id,
-  include,
-  title,
-  name,
-  type,
-  measure_unit,
-  min_denominator,
-  min_value,
-  max_value,
-  level_green,
-  level_yellow,
-  level_direction,
-  short_description,
-  long_description
+SELECT\n  ",
+  paste(conf$db$tab$ind$insert, collapse = ",\n  "), "
 FROM
   ind
 WHERE
   registry_id=", registry, ";")
 
   pool::dbGetQuery(pool, query)
-
 }
 
 
