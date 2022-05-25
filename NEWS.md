@@ -1,3 +1,8 @@
+# imongr 0.28.0
+* Change of styles to ease future bootstrap transitions by use of _bslib_ ([#191](https://github.com/mong/imongr/pull/191))
+* New field _sformat_ added to the indicator table to allow frontend formatting ([#192](https://github.com/mong/imongr/pull/192))
+* Deprecated function _update_aggdata_delivery_time()_ set to defunct
+
 # imongr 0.27.0
 * On data upload for verification both an update and affirm date that apply for all indicator data within the selected registry can be manually provided ([#175](https://github.com/mong/imongr/pull/175)). The update date is to be understood as the latest update of indicator data while affirm is to provide a date which after indicator data must be regarded as tentative.
 * As a result of the above some functions were deprecated and replaced by new ones and guide texts updated

@@ -129,6 +129,7 @@ db:
       - title
       - name
       - type
+      - sformat
       - min_denominator
       - level_green
       - level_yellow

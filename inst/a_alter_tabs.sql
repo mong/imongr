@@ -37,6 +37,12 @@ ADD CONSTRAINT inconsistent_level_values
     )
 
 ALTER TABLE
+  `ind`
+ADD COLUMN IF NOT EXISTS
+  `sformat` VARCHAR(31) DEFAULT ',.0%'
+AFTER `type`;
+
+ALTER TABLE
   registry
 ADD COLUMN
   description VARCHAR(2047)

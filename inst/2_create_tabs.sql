@@ -78,6 +78,7 @@ CREATE TABLE IF NOT EXISTS ind (
   title VARCHAR(255),
   name VARCHAR(255),
   `type` VARCHAR(127) DEFAULT NULL,
+  `sformat` VARCHAR(31) DEFAULT ',.0%',
   measure_unit VARCHAR(127) DEFAULT NULL,
   min_denominator TINYINT UNSIGNED DEFAULT NULL,
   min_value DOUBLE(7,3) DEFAULT NULL,

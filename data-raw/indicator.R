@@ -8,7 +8,9 @@ indicator <- qmongrdata::IndBeskr
 
 # add registry ids
 indicator$registry_id <-
-  dplyr::left_join(indicator, imongr::registry, by = c("registry_name" = "name"))$id.y
+  dplyr::left_join(
+    indicator, imongr::registry, by = c("registry_name" = "name")
+  )$id.y
 
 # select whatever vars to bring
 indicator <- indicator %>%
@@ -30,8 +32,9 @@ ind <- data.frame(id = indicator$id,
                   registry_id = indicator$registry_id,
                   stringsAsFactors = FALSE)
 
-# until present in data, add new field 'include'
+# until present in data, add new field 'include' and 'sformat'
 ind <- cbind(ind, include = TRUE)
+ind <- cbind(ind, sformat = ",.0%")
 
 # stunt for min_denominator
 ind <- cbind(ind, min_denominator = NA)
@@ -50,6 +53,7 @@ dummy_norgast <- data.frame(id = "norgast_dummy",
                             short_description = "Dummy for NoRGast",
                             long_description = "Dummy for NoRGast",
                             type = "verdi",
+                            sformat = ",.0%",
                             registry_id = 10,
                             include = TRUE,
                             min_denominator = NA,
@@ -67,6 +71,7 @@ dg_norgast <- data.frame(id = "norgast_dg",
                          short_description = "Dekningsgrad for NoRGast",
                          long_description = "Dekningsgrad for NoRGast",
                          type = "dg",
+                         sformat = ",.0%",
                          registry_id = 10,
                          include = TRUE,
                          min_denominator = NA,
