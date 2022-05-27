@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.27.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.28.1</span>
       </span>
     </div>
 
@@ -47,6 +47,15 @@
       <small>Source: <a href="https://github.com/mong/imongr/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.28.1" id="imongr-0281">imongr 0.28.1<a class="anchor" aria-label="anchor" href="#imongr-0281"></a></h2>
+<ul><li>Fixed missing fields in download of the ind table. Returned fields now based on config and for future changes in fields the corresponding function does not have to altered as long as config is kept up to date (<a href="https://github.com/mong/imongr/pull/193" class="external-link">#193</a>).</li></ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.28.0" id="imongr-0280">imongr 0.28.0<a class="anchor" aria-label="anchor" href="#imongr-0280"></a></h2>
+<ul><li>Change of styles to ease future bootstrap transitions by use of <em>bslib</em> (<a href="https://github.com/mong/imongr/pull/191" class="external-link">#191</a>)</li>
+<li>New field <em>sformat</em> added to the indicator table to allow frontend formatting (<a href="https://github.com/mong/imongr/pull/192" class="external-link">#192</a>)</li>
+<li>Deprecated function <em>update_aggdata_delivery_time()</em> set to defunct</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.27.0" id="imongr-0270">imongr 0.27.0<a class="anchor" aria-label="anchor" href="#imongr-0270"></a></h2>
 <ul><li>On data upload for verification both an update and affirm date that apply for all indicator data within the selected registry can be manually provided (<a href="https://github.com/mong/imongr/pull/175" class="external-link">#175</a>). The update date is to be understood as the latest update of indicator data while affirm is to provide a date which after indicator data must be regarded as tentative.</li>
@@ -79,8 +88,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.24.1" id="imongr-0241">imongr 0.24.1<a class="anchor" aria-label="anchor" href="#imongr-0241"></a></h2>
-<ul><li>Fixed agg error when there are only pre-aggregated values in data set (<a href="https://github.com/mong/imongr/pull/146" class="external-link">#146</a>)</li>
-</ul></div>
+<ul><li>Fixed agg error when there are only pre-aggregated values in data set (<a href="https://github.com/mong/imongr/pull/146" class="external-link">#146</a>)</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.24.0" id="imongr-0240">imongr 0.24.0<a class="anchor" aria-label="anchor" href="#imongr-0240"></a></h2>
 <ul><li>Added editing of existing indicators in GUI (<a href="https://github.com/mong/imongr/pull/143" class="external-link">#143</a>)</li>
@@ -110,12 +118,10 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.21.0" id="imongr-0210">imongr 0.21.0<a class="anchor" aria-label="anchor" href="#imongr-0210"></a></h2>
-<ul><li>Added new field delivery_time to agg_data table for easier access to last data update in qmongr(js) (<a href="https://github.com/mong/imongr/pull/121" class="external-link">#121</a>)</li>
-</ul></div>
+<ul><li>Added new field delivery_time to agg_data table for easier access to last data update in qmongr(js) (<a href="https://github.com/mong/imongr/pull/121" class="external-link">#121</a>)</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.20.1" id="imongr-0201">imongr 0.20.1<a class="anchor" aria-label="anchor" href="#imongr-0201"></a></h2>
-<ul><li>Fixed bug deleting all indicators regardless of context (<a href="https://github.com/mong/imongr/pull/118" class="external-link">#118</a>)</li>
-</ul></div>
+<ul><li>Fixed bug deleting all indicators regardless of context (<a href="https://github.com/mong/imongr/pull/118" class="external-link">#118</a>)</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.20.0" id="imongr-0200">imongr 0.20.0<a class="anchor" aria-label="anchor" href="#imongr-0200"></a></h2>
 <ul><li>Added new checks for natural numbers and zero denominator (<a href="https://github.com/mong/imongr/pull/114" class="external-link">#114</a>)</li>
@@ -124,28 +130,22 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.19.1" id="imongr-0191">imongr 0.19.1<a class="anchor" aria-label="anchor" href="#imongr-0191"></a></h2>
-<ul><li>Adjustments of logo, favicon and app title (<a href="https://github.com/mong/imongr/pull/113" class="external-link">#113</a>)</li>
-</ul></div>
+<ul><li>Adjustments of logo, favicon and app title (<a href="https://github.com/mong/imongr/pull/113" class="external-link">#113</a>)</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.19.0" id="imongr-0190">imongr 0.19.0<a class="anchor" aria-label="anchor" href="#imongr-0190"></a></h2>
-<ul><li>GUI management of user-registry associations (<a href="https://github.com/mong/imongr/pull/112" class="external-link">#112</a>)</li>
-</ul></div>
+<ul><li>GUI management of user-registry associations (<a href="https://github.com/mong/imongr/pull/112" class="external-link">#112</a>)</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.18.0" id="imongr-0180">imongr 0.18.0<a class="anchor" aria-label="anchor" href="#imongr-0180"></a></h2>
-<ul><li>Added user controlled multiple data backends (<a href="https://github.com/mong/imongr/pull/110" class="external-link">#110</a>)</li>
-</ul></div>
+<ul><li>Added user controlled multiple data backends (<a href="https://github.com/mong/imongr/pull/110" class="external-link">#110</a>)</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.17.0" id="imongr-0170">imongr 0.17.0<a class="anchor" aria-label="anchor" href="#imongr-0170"></a></h2>
-<ul><li>Added new variable ‘context’ to data (<a href="https://github.com/mong/imongr/pull/100" class="external-link">#100</a>)</li>
-</ul></div>
+<ul><li>Added new variable ‘context’ to data (<a href="https://github.com/mong/imongr/pull/100" class="external-link">#100</a>)</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.16.2" id="imongr-0162">imongr 0.16.2<a class="anchor" aria-label="anchor" href="#imongr-0162"></a></h2>
-<ul><li>Include all registries in GUI for managing registry and medical field relations (<a href="https://github.com/mong/imongr/pull/105" class="external-link">PR </a><a href="https://github.com/mong/imongr/issues/105" class="external-link">#105</a>)</li>
-</ul></div>
+<ul><li>Include all registries in GUI for managing registry and medical field relations (<a href="https://github.com/mong/imongr/pull/105" class="external-link">PR </a><a href="https://github.com/mong/imongr/issues/105" class="external-link">#105</a>)</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.16.1" id="imongr-0161">imongr 0.16.1<a class="anchor" aria-label="anchor" href="#imongr-0161"></a></h2>
-<ul><li>Changed logout url according to new (but temporary) domain imongr.skde.org (<a href="https://github.com/mong/imongr/issues/106" class="external-link">#106</a>)</li>
-</ul></div>
+<ul><li>Changed logout url according to new (but temporary) domain imongr.skde.org (<a href="https://github.com/mong/imongr/issues/106" class="external-link">#106</a>)</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.16.0" id="imongr-0160">imongr 0.16.0<a class="anchor" aria-label="anchor" href="#imongr-0160"></a></h2>
 <ul><li>Extended data model to cover registry medical fields (topics) <a href="https://github.com/mong/imongr/issues/101" class="external-link">#101</a></li>
@@ -154,24 +154,19 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.15.1" id="imongr-0151">imongr 0.15.1<a class="anchor" aria-label="anchor" href="#imongr-0151"></a></h2>
 <ul><li>Updated <code>DESCRIPTION</code> with release version, updated <code>NEWS.md</code>, and removed <code>.travis.yml</code>
-</li>
-</ul></div>
+</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.15.0" id="imongr-0150">imongr 0.15.0<a class="anchor" aria-label="anchor" href="#imongr-0150"></a></h2>
-<ul><li>Use Github actions instead of Travis and Appveyor</li>
-</ul></div>
+<ul><li>Use Github actions instead of Travis and Appveyor</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.14.1" id="imongr-0141">imongr 0.14.1<a class="anchor" aria-label="anchor" href="#imongr-0141"></a></h2>
-<ul><li>Revert <a href="https://github.com/mong/imongr/commit/144ac9" class="external-link uri">https://github.com/mong/imongr/commit/144ac9</a> introduced in release <code>0.13.0</code> (aggregating before putting raw data in db)</li>
-</ul></div>
+<ul><li>Revert <a href="https://github.com/mong/imongr/commit/144ac9" class="external-link uri">https://github.com/mong/imongr/commit/144ac9</a> introduced in release <code>0.13.0</code> (aggregating before putting raw data in db)</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.14.0" id="imongr-0140">imongr 0.14.0<a class="anchor" aria-label="anchor" href="#imongr-0140"></a></h2>
-<ul><li>add (missing) endpoints for ‘green’ when aggregating levels</li>
-</ul></div>
+<ul><li>add (missing) endpoints for ‘green’ when aggregating levels</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.13.0" id="imongr-0130">imongr 0.13.0<a class="anchor" aria-label="anchor" href="#imongr-0130"></a></h2>
-<ul><li>provide new field ‘min_denominator’ from ind table</li>
-</ul></div>
+<ul><li>provide new field ‘min_denominator’ from ind table</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.12.0" id="imongr-0120">imongr 0.12.0<a class="anchor" aria-label="anchor" href="#imongr-0120"></a></h2>
 <ul><li>consolidated functions, also removing some</li>
@@ -213,8 +208,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.1" id="imongr-071">imongr 0.7.1<a class="anchor" aria-label="anchor" href="#imongr-071"></a></h2>
-<ul><li>fixed missing check on valid user</li>
-</ul></div>
+<ul><li>fixed missing check on valid user</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.0" id="imongr-070">imongr 0.7.0<a class="anchor" aria-label="anchor" href="#imongr-070"></a></h2>
 <ul><li>minor remodelling of db</li>
@@ -222,8 +216,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.0" id="imongr-060">imongr 0.6.0<a class="anchor" aria-label="anchor" href="#imongr-060"></a></h2>
-<ul><li>first take on generic aggregation, with bugs and still missing median handling</li>
-</ul></div>
+<ul><li>first take on generic aggregation, with bugs and still missing median handling</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.0" id="imongr-050">imongr 0.5.0<a class="anchor" aria-label="anchor" href="#imongr-050"></a></h2>
 <ul><li>redesign of data model</li>
@@ -232,12 +225,10 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.4.2" id="imongr-042">imongr 0.4.2<a class="anchor" aria-label="anchor" href="#imongr-042"></a></h2>
-<ul><li>shiny package from CRAN (and not latest from github)</li>
-</ul></div>
+<ul><li>shiny package from CRAN (and not latest from github)</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.4.1" id="imongr-041">imongr 0.4.1<a class="anchor" aria-label="anchor" href="#imongr-041"></a></h2>
-<ul><li>fix bug in data aggregation</li>
-</ul></div>
+<ul><li>fix bug in data aggregation</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.4.0" id="imongr-040">imongr 0.4.0<a class="anchor" aria-label="anchor" href="#imongr-040"></a></h2>
 <ul><li>aggregate data on upload</li>
@@ -264,8 +255,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0" id="imongr-010">imongr 0.1.0<a class="anchor" aria-label="anchor" href="#imongr-010"></a></h2>
-<ul><li>First proper release of imongr</li>
-</ul></div>
+<ul><li>First proper release of imongr</li></ul></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -280,7 +270,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>
