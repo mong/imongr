@@ -267,6 +267,7 @@ test_that("users registries can be updated", {
   expect_invisible(update_registry_user(pool, df))
 })
 
+## keep until deprecated function is removed (and then delete this block)
 test_that("aggdata delivery times can be provided", {
   check_db()
   aggdata_delivery_time <- get_aggdata_delivery_time(pool)
