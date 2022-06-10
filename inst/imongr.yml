@@ -176,7 +176,7 @@ db:
       - full_name
       - short_name
 role:
-  none: NONE
+  none: ""
   provider: PROVIDER
   manager: MANAGER
 profile:
