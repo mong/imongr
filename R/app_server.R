@@ -47,7 +47,7 @@ app_server <- function(input, output, session) {
   known_user <- nrow(get_all_user_data(pool)) > 0
   valid_user <- nrow(get_user_data(pool)) > 0
 
-  # if unknown, add user as pendig in default db
+  # if unknown, add user as pending in default db
   if (!known_user) {
     insert_table(
       pool, "user",
@@ -58,6 +58,7 @@ app_server <- function(input, output, session) {
 
   # show/hide tabs by user profile
   shiny::hideTab("tabs", target = "upload")
+  shiny::hideTab("tabs", target = "publish")
   shiny::hideTab("tabs", target = "download")
   shiny::hideTab("tabs", target = "indicator")
   shiny::hideTab("tabs", target = "Administrative verkt\u00f8y")
