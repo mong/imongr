@@ -16,7 +16,7 @@ test_that("env is provided for user", {
 
 test_that("env is provided for groups", {
   Sys.setenv(SHINYPROXY_USERGROUPS = "")
-  expect_error(get_user_groups())
+  expect_equal(get_user_groups(), "")
   Sys.setenv(SHINYPROXY_USERGROUPS = "GROUP1,GROUP2")
   expect_equal(get_user_groups(), c("GROUP1", "GROUP2"))
 })

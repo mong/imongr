@@ -47,17 +47,23 @@ app_server <- function(input, output, session) {
   known_user <- nrow(get_all_user_data(pool)) > 0
   valid_user <- nrow(get_user_data(pool)) > 0
 
-  # if unknown, add user as pendig in default db
+  # if unknown, add user as pending in default db
   if (!known_user) {
     insert_table(
       pool, "user",
       data.frame(
-        user_name = iusr, name = "", phone = "", email = "", valid = 0)
-      )
+        user_name = iusr, name = "", phone = "", email = iusr, valid = 0)
+    )
+    insert_table(
+      pool_verify, "user",
+      data.frame(
+        user_name = iusr, name = "", phone = "", email = iusr, valid = 0)
+    )
   }
 
   # show/hide tabs by user profile
   shiny::hideTab("tabs", target = "upload")
+  shiny::hideTab("tabs", target = "publish")
   shiny::hideTab("tabs", target = "download")
   shiny::hideTab("tabs", target = "indicator")
   shiny::hideTab("tabs", target = "Administrative verkt\u00f8y")
@@ -68,6 +74,7 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "mine_field")
   if (valid_user && conf$role$provider %in% igrs) {
     shiny::showTab("tabs", target = "upload")
+    shiny::showTab("tabs", target = "publish")
     shiny::showTab("tabs", target = "download")
     shiny::showTab("tabs", target = "indicator")
   }

@@ -27,7 +27,7 @@ get_user_groups <- function() {
 
   user_groups <- Sys.getenv("SHINYPROXY_USERGROUPS")
   if (user_groups == "") {
-    stop("No groups defined")
+    return("")
   }
 
   strsplit(user_groups, split = ",")[[1]]
