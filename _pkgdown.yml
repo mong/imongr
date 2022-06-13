@@ -117,7 +117,7 @@ reference:
       Miscellaneous functions
     contents:
     - md5_checksum
-    - navbar_widget
+    - user_widget
     - version_info
     - no_opt_out_ok
     - insert_sample_data
