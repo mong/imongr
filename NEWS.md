@@ -1,6 +1,8 @@
+# imongr 0.28.2
+* Fixed some issues on first time registration of users ([#195](https://github.com/mong/imongr/pull/195)).
+
 # imongr 0.28.1
 * Fixed missing fields in download of the ind table. Returned fields now based on config and for future changes in fields the corresponding function does not have to altered as long as config is kept up to date ([#193](https://github.com/mong/imongr/pull/193)).
-* Fixed some issues on first time registration of users ([#195](https://github.com/mong/imongr/pull/195)).
 
 # imongr 0.28.0
 * Change of styles to ease future bootstrap transitions by use of _bslib_ ([#191](https://github.com/mong/imongr/pull/191))
