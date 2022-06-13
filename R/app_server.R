@@ -52,8 +52,13 @@ app_server <- function(input, output, session) {
     insert_table(
       pool, "user",
       data.frame(
-        user_name = iusr, name = "", phone = "", email = "", valid = 0)
-      )
+        user_name = iusr, name = "", phone = "", email = iusr, valid = 0)
+    )
+    insert_table(
+      pool_verify, "user",
+      data.frame(
+        user_name = iusr, name = "", phone = "", email = iusr, valid = 0)
+    )
   }
 
   # show/hide tabs by user profile
@@ -69,6 +74,7 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "mine_field")
   if (valid_user && conf$role$provider %in% igrs) {
     shiny::showTab("tabs", target = "upload")
+    shiny::showTab("tabs", target = "publish")
     shiny::showTab("tabs", target = "download")
     shiny::showTab("tabs", target = "indicator")
   }
