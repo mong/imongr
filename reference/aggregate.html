@@ -19,7 +19,7 @@ national."><meta property="og:image" content="/logo.png"><!-- mathjax --><script
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.28.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.28.2</span>
       </span>
     </div>
 
@@ -74,32 +74,53 @@ national.</p>
     <h2>Arguments</h2>
     <dl><dt>df</dt>
 <dd><p>Data frame</p></dd>
+
+
 <dt>org</dt>
 <dd><p>Data frame holding the flat org table with all levels needed. May
 be obtained by <code>get_flat_org(pool)</code></p></dd>
+
+
 <dt>ind</dt>
 <dd><p>Data frame holding the indicator db table providing all
 data on each indicator</p></dd>
+
+
 <dt>ind_noagg</dt>
 <dd><p>Character vector identifying indicator (ids) that are not to
 be aggregated (used as is). Default is <code><a href="https://rdrr.io/r/base/character.html" class="external-link">character()</a></code></p></dd>
+
+
 <dt>orgnr_name_map</dt>
 <dd><p>Data frame with global mapping of organization id and
 name. Applied on data to be used as is (no aggregation).</p></dd>
+
+
 <dt>aggs</dt>
 <dd><p>Data frame of (pre) aggregated data</p></dd>
+
+
 <dt>conf</dt>
 <dd><p>List of configuration</p></dd>
+
+
 <dt>from_level</dt>
 <dd><p>Integer specifying from what level to aggregate from</p></dd>
+
+
 <dt>diff</dt>
 <dd><p>Data frame with diff data</p></dd>
+
+
 <dt>gdf</dt>
 <dd><p>Data frame of grouped data</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Data frame in raw, grouped or aggregated form</p>
+    
+
+<p>Data frame in raw, grouped or aggregated form</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -158,7 +179,7 @@ the latter denotes a data frame that has been grouped (by
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>
