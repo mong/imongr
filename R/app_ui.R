@@ -167,11 +167,11 @@ app_ui <- function() {
             ),
             shiny::uiOutput("select_download_registry"),
             shiny::uiOutput("select_db_table"),
-            shiny::selectInput("file_format",
-                               "Filformat:",
-                               c("excel-csv",
-                                 "excel-csv (nordisk)",
-                                 "rds")),
+            shiny::selectInput(
+              "file_format",
+              "Filformat:",
+              c("csv", "csv (nordisk)", "rds")
+            ),
             shiny::downloadButton("download_db_table", "Hent fra server")
           ),
           shiny::mainPanel(

@@ -458,8 +458,8 @@ app_server <- function(input, output, session) {
     },
     content = function(file) {
       switch(input$file_format,
-              `excel-csv` = readr::write_excel_csv(db_table(), file),
-              `excel-csv (nordisk)` = readr::write_excel_csv2(db_table(), file),
+              `csv` = readr::write_excel_csv(db_table(), file),
+              `csv (nordisk)` = readr::write_excel_csv2(db_table(), file),
               `rds` = readr::write_rds(db_table(), file)
       )
     }
