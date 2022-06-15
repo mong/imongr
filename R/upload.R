@@ -124,7 +124,7 @@ check_mixing_ind <- function(registry, df, conf, pool) {
 
   # upload cannot contain a mix of fractions and other types of indicators
   ind_is_fraction <- indicator_is_fraction(pool, df, conf, return_ind = TRUE)
-  if (all(ind_is_fraction$is_fraction) | all(!ind_is_fraction$is_fraction)) {
+  if (all(ind_is_fraction$is_fraction) || all(!ind_is_fraction$is_fraction)) {
     list(fail = FALSE, report = "")
   } else {
     report <- paste(ind_is_fraction$ind[!ind_is_fraction$is_fraction],
