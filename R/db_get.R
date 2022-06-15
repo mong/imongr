@@ -269,7 +269,7 @@ WHERE
 #' @export
 get_registry_name <- function(pool, registry, full_name = FALSE) {
 
-  if (missing(registry) | paste(registry, collapse = "") == "") {
+  if (missing(registry) || paste(registry, collapse = "") == "") {
     return(character())
   }
 

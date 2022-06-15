@@ -491,7 +491,7 @@ get_indicator_level <- function(gdf, ind) {
     yd <- round_digits(yellow)
     if (round(value, digits = gd) >= green) {
       level <- "H"
-    } else if (round(value, digits = gd) < green &
+    } else if (round(value, digits = gd) < green &&
                round(value, digits = yd) >= yellow) {
       level <- "M"
     } else {
@@ -505,7 +505,7 @@ get_indicator_level <- function(gdf, ind) {
     yd <- round_digits(yellow)
     if (round(value, digits = gd) <= green) {
       level <- "H"
-    } else if (round(value, digits = gd) > green &
+    } else if (round(value, digits = gd) > green &&
                round(value, digits = yd) <= yellow) {
       level <- "M"
     } else {
@@ -521,7 +521,7 @@ get_indicator_level <- function(gdf, ind) {
       ind <- ind %>%
         dplyr::filter(.data[["id"]] == data_row[["ind_id"]])
       if (!is.na(ind[["level_direction"]])) {
-        if (!is.na(ind[["level_green"]]) &
+        if (!is.na(ind[["level_green"]]) &&
             !is.na(ind[["level_yellow"]])) {
           if (ind[["level_direction"]] == 1) {
             level <- high(
@@ -544,7 +544,7 @@ get_indicator_level <- function(gdf, ind) {
           )
           level <- list(level = "undefined", level_direction = level_direction)
         }
-      } else{
+      } else {
         level <- list(level = "undefined", level_direction = NA)
       }
       gdf$level[x] <<- level$level

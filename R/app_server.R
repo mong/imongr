@@ -415,7 +415,7 @@ app_server <- function(input, output, session) {
     if (is.null(input$download_context)) {
       pool_verify
     } else {
-      if(input$download_context == "verify") {
+      if (input$download_context == "verify") {
         pool_verify
       } else {
         pool
