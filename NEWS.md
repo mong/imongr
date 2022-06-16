@@ -1,5 +1,6 @@
 # imongr 0.28.3
 * Fixed encoding related issue when downloading data ([#197](https://github.com/mong/imongr/pull/197)).
+* Fixed minor issues (typos and default date in GUI)
 
 # imongr 0.28.2
 * Fixed some issues on first time registration of users ([#195](https://github.com/mong/imongr/pull/195)).
