@@ -93,7 +93,7 @@ app_ui <- function() {
                              language = "no"),
             shiny::dateInput("latest_affirm",
                              "Merk alle indikatorer som forel\u00f8pig etter:",
-                             value = Sys.Date(),
+                             value = paste0(format(Sys.Date(), "%Y"), "-01-01"),
                              weekstart = 1,
                              language = "no"),
             shinycssloaders::withSpinner(
