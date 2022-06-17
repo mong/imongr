@@ -2,7 +2,6 @@
 % Please edit documentation in R/ops.R
 \name{ops}
 \alias{ops}
-\alias{delivery_exist_in_db}
 \alias{duplicate_delivery}
 \alias{retire_user_deliveries}
 \alias{delete_indicator_data}
@@ -20,9 +19,7 @@
 \alias{update_ind_text}
 \title{Functions for data operations in imongr}
 \usage{
-delivery_exist_in_db(pool, df)
-
-duplicate_delivery(pool, df)
+duplicate_delivery(pool, df, registry)
 
 retire_user_deliveries(pool)
 

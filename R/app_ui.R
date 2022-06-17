@@ -93,7 +93,7 @@ app_ui <- function() {
                              language = "no"),
             shiny::dateInput("latest_affirm",
                              "Merk alle indikatorer som forel\u00f8pig etter:",
-                             value = Sys.Date(),
+                             value = paste0(format(Sys.Date(), "%Y"), "-01-01"),
                              weekstart = 1,
                              language = "no"),
             shinycssloaders::withSpinner(
@@ -167,16 +167,15 @@ app_ui <- function() {
             ),
             shiny::uiOutput("select_download_registry"),
             shiny::uiOutput("select_db_table"),
-            shiny::selectInput("file_format",
-                               "Filformat:",
-                               c("csv", "csv (nordisk)",
-                                 "excel-csv",
-                                 "excel-csv (nordisk)",
-                                 "rds")),
-            shiny::radioButtons("loss_enc",
-                                "Tegnsetting",
-                                choices = c("LATIN1", "UTF-8"),
-                                selected = "UTF-8"),
+            shiny::tags$div(
+              title = paste("csv (nordisk): semikolon-delt csv med komma som",
+                            "desimalskilletegn"),
+              shiny::selectInput(
+                "file_format",
+                "Filformat:",
+                c("csv", "csv (nordisk)", "rds")
+              )
+            ),
             shiny::downloadButton("download_db_table", "Hent fra server")
           ),
           shiny::mainPanel(

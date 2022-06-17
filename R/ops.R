@@ -11,7 +11,7 @@
 #' apply for all uploads prior to publishing.
 #' @return Relevant values from the current environment and database
 #' @name ops
-#' @aliases delivery_exist_in_db duplicate_delivery retire_user_deliveries
+#' @aliases duplicate_delivery retire_user_deliveries
 #' delete_indicator_data delete_registry_data delete_agg_data insert_data
 #' insert_agg_data update_aggdata_delivery update_aggdata_delivery_time
 #' agg_all_data clean_agg_data create_imongr_user update_registry_medfield
@@ -21,26 +21,7 @@ NULL
 
 #' @rdname ops
 #' @export
-delivery_exist_in_db <- function(pool, df) {
-
-  query <- "
-SELECT
-  md5_checksum
-FROM
-  delivery;"
-
-  dat <- pool::dbGetQuery(pool, query)
-
-  if (md5_checksum(df) %in% dat$md5_checksum) {
-    return(TRUE)
-  } else {
-    return(FALSE)
-  }
-}
-
-#' @rdname ops
-#' @export
-duplicate_delivery <- function(pool, df) {
+duplicate_delivery <- function(pool, df, registry) {
 
   query <- "
 SELECT
@@ -52,7 +33,9 @@ WHERE
 
   dat <- pool::dbGetQuery(pool, query)
 
-  if (md5_checksum(df) %in% dat$md5_checksum) {
+  ind <- get_registry_ind(pool, registry)
+
+  if (md5_checksum(df, ind) %in% dat$md5_checksum) {
     return(TRUE)
   } else {
     return(FALSE)
@@ -125,8 +108,11 @@ WHERE
 insert_data <- function(pool, df, update = NA, affirm = NA,
                         terms_version = NA) {
 
+  ind <- get_table(pool, table = "ind") %>%
+    dplyr::filter(.data$id %in% unique(df$ind_id))
+
   delivery <- data.frame(latest = 1,
-                         md5_checksum = md5_checksum(df),
+                         md5_checksum = md5_checksum(df, ind),
                          latest_update = update,
                          latest_affirm = affirm,
                          terms_version = terms_version,

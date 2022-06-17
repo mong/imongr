@@ -351,7 +351,7 @@ upload:
       eller 1) men kan også benyttes til å angi aggregert verdi for et gitt
       antall hendelser. Totalt antall hendelser gis i <i>denominator</i>
       (se under).<br>ALTERNATIV: <i>var</i> kan også representere en
-      ferdigbergnet verdi for gradert måloppnåelse med
+      ferdigberegnet verdi for gradert måloppnåelse med
       inntil 3 desimalers nøyaktighet. I fremstilling vil verdien bare kunne gis
       for organisasjonen den eksplisitt er angitt for
     denominator: >

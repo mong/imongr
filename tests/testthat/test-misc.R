@@ -35,8 +35,13 @@ test_that("check on natural numbers can be performed", {
 })
 
 test_that("a consistent md5 checksum of a data frame can be provided", {
-  expect_equal(md5_checksum(data.frame(name = "imongr")),
-               "ed91fb7bafe2bd55f90522e1104a13f1")
+  expect_equal(
+    md5_checksum(
+      df = data.frame(name = "imongr"),
+      ind = data.frame(ind = "indicate")
+    ),
+    "f788a20fc4c125063183bf9273d7c6eb"
+  )
 })
 
 # For the remianing tests we need a test database

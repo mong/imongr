@@ -415,7 +415,7 @@ app_server <- function(input, output, session) {
     if (is.null(input$download_context)) {
       pool_verify
     } else {
-      if(input$download_context == "verify") {
+      if (input$download_context == "verify") {
         pool_verify
       } else {
         pool
@@ -450,8 +450,7 @@ app_server <- function(input, output, session) {
 
   output$download_db_table <- shiny::downloadHandler(
     filename = function() {
-      if (input$file_format %in% c("csv", "csv (nordisk)", "excel-csv",
-                                   "excel-csv (nordisk)")) {
+      if (input$file_format %in% c("excel-csv", "excel-csv (nordisk)")) {
         basename(tempfile(fileext = ".csv"))
       } else {
         basename(tempfile(fileext = ".rds"))
@@ -459,14 +458,8 @@ app_server <- function(input, output, session) {
     },
     content = function(file) {
       switch(input$file_format,
-              `csv` = utils::write.csv(db_table(), file,
-                                       fileEncoding = input$loss_enc,
-                                       row.names = FALSE),
-              `csv (nordisk)` = utils::write.csv2(db_table(), file,
-                                                 fileEncoding = input$loss_enc,
-                                                 row.names = FALSE),
-              `excel-csv` = readr::write_excel_csv(db_table(), file),
-              `excel-csv (nordisk)` = readr::write_excel_csv2(db_table(), file),
+              `csv` = readr::write_excel_csv(db_table(), file),
+              `csv (nordisk)` = readr::write_excel_csv2(db_table(), file),
               `rds` = readr::write_rds(db_table(), file)
       )
     }
