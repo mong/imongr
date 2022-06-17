@@ -11,34 +11,13 @@
 #' apply for all uploads prior to publishing.
 #' @return Relevant values from the current environment and database
 #' @name ops
-#' @aliases delivery_exist_in_db duplicate_delivery retire_user_deliveries
+#' @aliases duplicate_delivery retire_user_deliveries
 #' delete_indicator_data delete_registry_data delete_agg_data insert_data
 #' insert_agg_data update_aggdata_delivery update_aggdata_delivery_time
 #' agg_all_data clean_agg_data create_imongr_user update_registry_medfield
 #' update_registry_user update_ind_text
 NULL
 
-
-#' @rdname ops
-#' @export
-delivery_exist_in_db <- function(pool, df, registry) {
-
-  query <- "
-SELECT
-  md5_checksum
-FROM
-  delivery;"
-
-  dat <- pool::dbGetQuery(pool, query)
-
-  ind <- get_registry_ind(pool, registry)
-
-  if (md5_checksum(df, ind) %in% dat$md5_checksum) {
-    return(TRUE)
-  } else {
-    return(FALSE)
-  }
-}
 
 #' @rdname ops
 #' @export
