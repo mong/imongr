@@ -59,7 +59,6 @@ reference:
     desc: >
       Speciffic data operations
     contents:
-    - delivery_exist_in_db
     - duplicate_delivery
     - retire_user_deliveries
     - delete_indicator_data
