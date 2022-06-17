@@ -167,10 +167,14 @@ app_ui <- function() {
             ),
             shiny::uiOutput("select_download_registry"),
             shiny::uiOutput("select_db_table"),
-            shiny::selectInput(
-              "file_format",
-              "Filformat:",
-              c("csv", "csv (nordisk)", "rds")
+            shiny::tags$div(
+              title = paste("csv (nordisk): semikolon-delt csv med komma som",
+                            "desimalskilletegn"),
+              shiny::selectInput(
+                "file_format",
+                "Filformat:",
+                c("csv", "csv (nordisk)", "rds")
+              )
             ),
             shiny::downloadButton("download_db_table", "Hent fra server")
           ),
