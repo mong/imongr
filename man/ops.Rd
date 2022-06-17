@@ -20,9 +20,9 @@
 \alias{update_ind_text}
 \title{Functions for data operations in imongr}
 \usage{
-delivery_exist_in_db(pool, df)
+delivery_exist_in_db(pool, df, registry)
 
-duplicate_delivery(pool, df)
+duplicate_delivery(pool, df, registry)
 
 retire_user_deliveries(pool)
 

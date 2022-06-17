@@ -108,10 +108,10 @@ test_that("all users data can be provided", {
 })
 
 conf <- get_config()
-test_that("no (real) delivery has been made yet", {
-  check_db()
-  expect_false(delivery_exist_in_db(pool, df = imongr::data[1:100, ]))
-})
+# test_that("no (real) delivery has been made yet", {
+#   check_db()
+#   expect_false(delivery_exist_in_db(pool, df = imongr::data[1:100, ]))
+# })
 
 ### data frame for re-use next two tests
 df <- imongr::data[1:100, ]

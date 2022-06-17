@@ -1,10 +1,11 @@
 #' Tools and whatever
 #'
 #' @param vals A numeric vector
-#' @param tolerance A (small) positiv floating point number used to evaluate if
-#' a numeric can be regarded as a whole number. Default depends on the running
-#' environment and set to \code{.Machine$double.eps^0.5}
+#' @param tolerance A (small) positive floating point number used to evaluate if
+#'   a numeric can be regarded as a whole number. Default depends on the running
+#'   environment and set to \code{.Machine$double.eps^0.5}
 #' @param df A data frame
+#' @param ind A data frame holding indicator data.
 #' @param include_data_table Logical defining if the data table is to be
 #' populated by data too. By default TRUE
 #' @param newline String element defining line break for formatting. Default is
@@ -32,14 +33,24 @@ natural <- function(vals, tolerance = .Machine$double.eps^0.5) {
 
 #' @rdname misc
 #' @export
-md5_checksum <- function(df) {
+md5_checksum <- function(df, ind) {
 
-  fn <- tempfile()
-  utils::write.csv(df, file = fn)
-  fc <- file(fn, "r")
-  t <- readLines(fc)
+  f1 <- tempfile()
+  f2 <- tempfile()
+  utils::write.csv(df, file = f1)
+  utils::write.csv(ind, file = f2)
+
+  fc <- file(f1, "r")
+  t1 <- readLines(fc)
   close(fc)
-  digest::digest(paste0(t, collapse = ""), algo = "md5", serialize = FALSE)
+
+  fc <- file(f2, "r")
+  t2 <- readLines(fc)
+  close(fc)
+
+  t <- paste0(paste0(t1, collapse = ""), paste0(t2, collapse = ""))
+
+  digest::digest(t, algo = "md5", serialize = FALSE)
 
 }
 

@@ -13,7 +13,7 @@
 \usage{
 natural(vals, tolerance = .Machine$double.eps^0.5)
 
-md5_checksum(df)
+md5_checksum(df, ind)
 
 user_widget()
 
@@ -28,11 +28,13 @@ delete_all_data(prompt = TRUE)
 \arguments{
 \item{vals}{A numeric vector}
 
-\item{tolerance}{A (small) positiv floating point number used to evaluate if
+\item{tolerance}{A (small) positive floating point number used to evaluate if
 a numeric can be regarded as a whole number. Default depends on the running
 environment and set to \code{.Machine$double.eps^0.5}}
 
 \item{df}{A data frame}
+
+\item{ind}{A data frame holding indicator data.}
 
 \item{newline}{String element defining line break for formatting. Default is
 \code{<br>}}
