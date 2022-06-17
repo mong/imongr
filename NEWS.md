@@ -1,6 +1,7 @@
 # imongr 0.28.3
 * Fixed encoding related issue when downloading data ([#197](https://github.com/mong/imongr/pull/197)).
-* Fixed minor issues (typos and default date in GUI)
+* Fixed minor issues (typos and GUI texts and default values)
+* Fixed problem with update of indicator title and descriptions (without updating data) by including relevant indicator data when checking for possible duplicate upload
 
 # imongr 0.28.2
 * Fixed some issues on first time registration of users ([#195](https://github.com/mong/imongr/pull/195)).
