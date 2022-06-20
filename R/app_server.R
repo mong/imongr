@@ -450,7 +450,7 @@ app_server <- function(input, output, session) {
 
   output$download_db_table <- shiny::downloadHandler(
     filename = function() {
-      if (input$file_format %in% c("excel-csv", "excel-csv (nordisk)")) {
+      if (input$file_format %in% c("csv", "csv (nordisk)")) {
         basename(tempfile(fileext = ".csv"))
       } else {
         basename(tempfile(fileext = ".rds"))
