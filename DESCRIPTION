@@ -29,7 +29,7 @@ Imports:
     pool,
     readr,
     rlang,
-    RMariaDB (==1.2.1),
+    RMariaDB (!=1.2.2),
     rmarkdown,
     shiny (>= 1.5.0),
     shinyalert,
