@@ -87,7 +87,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          remotes::install_deps(dependencies = TRUE, type="binary")
+          if [[ ${{ runner.os }} == Windows ]]; then
+            remotes::install_deps(dependencies = TRUE, type = "binary")
+          else
+            remotes::install_deps(dependencies = TRUE)
+          fi
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 
