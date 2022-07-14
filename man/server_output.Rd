@@ -27,7 +27,7 @@ select_registry_ui(
 
 submit_ui(conf, pool, upload_file, registry, df, context)
 
-error_report_ui(pool, df, upload_file, registry)
+error_report_ui(pool, df, ind, upload_file, registry)
 
 upload_sample_text_ui(pool, conf, upload_file, registry, indicators)
 
@@ -66,7 +66,9 @@ values are to be returned.}
 
 \item{registry}{Character string defining registry}
 
-\item{df}{Data frame}
+\item{df}{Data frame containing indicator data}
+
+\item{ind}{Data frame containing indicators}
 
 \item{indicators}{Character vector of indicators}
 

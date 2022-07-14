@@ -2,17 +2,18 @@
 #'
 #' @param pool Database pool object
 #' @param pool0 Alternative database pool object to be used when an intersect of
-#' values are to be returned.
+#'   values are to be returned.
 #' @param conf List of configuration
 #' @param input_id Character string with shiny ui id
 #' @param context Character string with user selected (db) context
 #' @param current_reg Character string defining previously selected registry
 #' @param show_context Logical stating if context is to be shown in GUI. TRUE by
-#' default.
+#'   default.
 #' @param valid_user Logical valid user
 #' @param iusr Character string username
 #' @param igrs Character string comma separated user groups
-#' @param df Data frame
+#' @param df Data frame containing indicator data
+#' @param ind Data frame containing indicators
 #' @param upload_file Character string with file to upload
 #' @param registry Character string defining registry
 #' @param indicators Character vector of indicators
@@ -22,8 +23,8 @@
 #' @return shiny ui objects to be provided by the shiny server function
 #' @name server_output
 #' @aliases profile_ui select_registry_ui submit_ui error_report_ui
-#' upload_sample_text_ui upload_sample_ui var_doc_ui medfield_summary_text_ui
-#' reguser_summary_text_ui
+#'   upload_sample_text_ui upload_sample_ui var_doc_ui medfield_summary_text_ui
+#'   reguser_summary_text_ui
 NULL
 
 
@@ -111,9 +112,13 @@ submit_ui <- function(conf, pool, upload_file, registry, df, context) {
   if (!is.null(upload_file) && !"denominator" %in% names(df)) {
     df <- cbind(df, denominator = 1L)
   }
+
   if (!is.null(upload_file) &&
       !(conf$upload$fail %in% registry) &&
-      all(!check_upload(registry, df, pool)$fail)) {
+      all(!check_upload(registry, df, ind, pool)$fail)) {
+
+    ind <- get_registry_ind(pool, registry)
+
     shiny::tagList(
     shiny::actionButton("submit",
                         paste("Send til",
@@ -133,14 +138,15 @@ submit_ui <- function(conf, pool, upload_file, registry, df, context) {
 
 #' @rdname server_output
 #' @export
-error_report_ui <- function(pool, df, upload_file, registry) {
-  if (is.null(upload_file)) {
+error_report_ui <- function(pool, df, ind, upload_file, registry) {
+
+  if (is.null(upload_file) || is.null(registry)) {
     NULL
   } else {
     if (!"denominator" %in% names(df)) {
       df <- cbind(df, denominator = NA)
     }
-    check_report(registry, df, pool)
+    check_report(registry, df, ind, pool)
   }
 }
 
@@ -152,7 +158,7 @@ upload_sample_text_ui <- function(pool, conf, upload_file, registry,
   if (is.null(upload_file)) {
     NULL
   } else {
-    # prep indicatior printing
+    # prep indicator printing
     all_indicators <- get_registry_indicators(pool, registry)$id
     i <- all_indicators %in% indicators
     start_tag <- rep("<i>", length(all_indicators))

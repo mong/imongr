@@ -25,7 +25,7 @@ check_db <- function(is_test_that = TRUE) {
   }
 }
 
-# For the remianing tests we need a test database
+# For the remaining tests we need a test database
 ## first off with no data
 if (is.null(check_db(is_test_that = FALSE))) {
   pool <- make_pool()
@@ -66,6 +66,11 @@ df <- data.frame(context = "caregiver",
                  ind_id = "norgast_andel_avdoede_bykspytt_tolv",
                  var = 0,
                  denominator = 1)
+
+# get indicators for norgast (id = 10), but only if we have a db
+if (is.null(check_db(is_test_that = FALSE))) {
+  ind <- get_registry_ind(pool, 10)
+}
 
 # we need a user and groups defined
 Sys.setenv(SHINYPROXY_USERNAME = "mongr")
@@ -136,10 +141,10 @@ test_that("submit ui is provided", {
 
 test_that("error report is provided", {
   check_db()
-  expect_null(error_report_ui(pool, df, NULL, "norgast"))
+  expect_null(error_report_ui(pool, df, ind, NULL, "norgast"))
   expect_equal(class(
-    error_report_ui(pool, df[, !names(df) %in% c("nevner", "Register")], TRUE,
-                    10)),
+    error_report_ui(pool, df[, !names(df) %in% c("nevner", "Register")], ind,
+                    TRUE, 10)),
     "character"
   )
 })

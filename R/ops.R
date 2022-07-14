@@ -2,20 +2,21 @@
 #'
 #' @param pool Database connection pool object
 #' @param df Data frame of relevant data
+#' @param registry Integer registry id
 #' @param update Character string of format YYYY-MM-DD providing date until data
-#' are regarded as updated. Default value is NA.
+#'   are regarded as updated. Default value is NA.
 #' @param affirm Character string of format YYYY-MM-DD providing date until data
 #' are regarded as final. Default value is NA.
 #' @param terms_version Character string providing version stamp of of the terms
-#' accepted when data are published. Default value is NA that will normally
-#' apply for all uploads prior to publishing.
+#'   accepted when data are published. Default value is NA that will normally
+#'   apply for all uploads prior to publishing.
 #' @return Relevant values from the current environment and database
 #' @name ops
 #' @aliases duplicate_delivery retire_user_deliveries
-#' delete_indicator_data delete_registry_data delete_agg_data insert_data
-#' insert_agg_data update_aggdata_delivery update_aggdata_delivery_time
-#' agg_all_data clean_agg_data create_imongr_user update_registry_medfield
-#' update_registry_user update_ind_text
+#'   delete_indicator_data delete_registry_data delete_agg_data insert_data
+#'   insert_agg_data update_aggdata_delivery update_aggdata_delivery_time
+#'   agg_all_data clean_agg_data create_imongr_user update_registry_medfield
+#'   update_registry_user update_ind_text
 NULL
 
 

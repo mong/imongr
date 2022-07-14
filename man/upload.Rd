@@ -25,39 +25,39 @@
 \alias{check_zero_denominator}
 \title{Upload data to imongr}
 \usage{
-check_report(registry, df, pool)
+check_report(registry, df, ind, pool)
 
 mail_check_report(pool, registry, mail_msg)
 
-check_upload(registry, df, pool)
+check_upload(registry, df, ind, pool)
 
-check_missing_registry(registry, df, conf, pool)
+check_missing_registry(registry, df, ind, conf, pool)
 
-check_mixing_ind(registry, df, conf, pool)
+check_mixing_ind(registry, df, ind, conf, pool)
 
-check_missing_var(registry, df, conf, pool)
+check_missing_var(registry, df, ind, conf, pool)
 
-check_invalid_var(registry, df, conf, pool)
+check_invalid_var(registry, df, ind, conf, pool)
 
-check_invalid_context(registry, df, conf, pool)
+check_invalid_context(registry, df, ind, conf, pool)
 
-check_invalid_org(registry, df, conf, pool)
+check_invalid_org(registry, df, ind, conf, pool)
 
-check_invalid_ind(registry, df, conf, pool)
+check_invalid_ind(registry, df, ind, conf, pool)
 
-check_numeric_var(registry, df, conf, pool)
+check_numeric_var(registry, df, ind, conf, pool)
 
-check_natural_var(registry, df, conf, pool)
+check_natural_var(registry, df, ind, conf, pool)
 
-check_overflow_var(registry, df, conf, pool)
+check_overflow_var(registry, df, ind, conf, pool)
 
-check_numeric_denominator(registry, df, conf, pool)
+check_numeric_denominator(registry, df, ind, conf, pool)
 
-check_natural_denominator(registry, df, conf, pool)
+check_natural_denominator(registry, df, ind, conf, pool)
 
-check_zero_denominator(registry, df, conf, pool)
+check_zero_denominator(registry, df, ind, conf, pool)
 
-check_duplicate_delivery(registry, df, conf, pool)
+check_duplicate_delivery(registry, df, ind, conf, pool)
 
 csv_to_df(path, sep = ",", dec, encoding = "UTF-8")
 
@@ -68,7 +68,9 @@ indicator_is_fraction(pool, df, conf, return_ind = FALSE)
 \arguments{
 \item{registry}{Integer registry id}
 
-\item{df}{Data frame}
+\item{df}{Data frame holding indicator data}
+
+\item{ind}{Data frame with indicators}
 
 \item{pool}{Data base pool object}
 

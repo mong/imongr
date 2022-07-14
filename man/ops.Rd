@@ -52,6 +52,8 @@ update_ind_text(pool, df)
 
 \item{df}{Data frame of relevant data}
 
+\item{registry}{Integer registry id}
+
 \item{update}{Character string of format YYYY-MM-DD providing date until data
 are regarded as updated. Default value is NA.}
 
