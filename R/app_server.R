@@ -227,7 +227,7 @@ app_server <- function(input, output, session) {
 
   output$submit <- shiny::renderUI({
     rv$inv_data
-    submit_ui(conf, pool_verify, input$upload_file, input$registry, df(),
+    submit_ui(conf, pool_verify, input$upload_file, input$registry, df(), ind(),
               "verify")
   })
 
@@ -375,8 +375,15 @@ app_server <- function(input, output, session) {
     rv$inv_publish
     if (!is.null(input$publish_registry) &&
         !(conf$upload$fail %in% input$publish_registry) &&
-        all(!check_upload(input$publish_registry, publish_data(), pool)$fail) &&
-        input$liability) {
+        input$liability &&
+        all(
+          !check_upload(
+            input$publish_registry,
+            publish_data(),
+            publish_ind(),
+            pool)$fail
+        )
+    ) {
       shiny::tagList(
         shiny::actionButton("publish", "Publiser", shiny::icon("paper-plane")),
         shiny::p(paste(conf$upload$doc$submit$warning,
@@ -398,6 +405,7 @@ app_server <- function(input, output, session) {
     error_report_ui(
       pool = pool,
       df = publish_data(),
+      ind = publish_ind(),
       upload_file = "none",
       registry = input$publish_registry
     )

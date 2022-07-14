@@ -331,7 +331,7 @@ check_zero_denominator <- function(registry, df, ind, conf, pool) {
 #' @export
 check_duplicate_delivery <- function(registry, df, ind, conf, pool) {
 
-  fail <- duplicate_delivery(pool, df, registry)
+  fail <- duplicate_delivery(pool, df, ind, registry)
   report <- ""
   list(fail = fail, report = report)
 }

@@ -121,19 +121,19 @@ test_that("submit ui is provided", {
   expect_null(submit_ui(conf, pool, NULL, 10, df, "prod"))
   expect_equal(class(
     submit_ui(conf, pool, TRUE, 10,
-              df[, !names(df) %in% c("denominator", "registry_id")],
+              df[, !names(df) %in% c("denominator", "registry_id")], ind,
               "prod"))[1],
     "shiny.tag.list"
   )
   expect_equal(class(
     submit_ui(conf, pool, TRUE, 10,
-              df[, !names(df) %in% c("denominator", "registry_id")],
+              df[, !names(df) %in% c("denominator", "registry_id")], ind,
               "verify"))[1],
     "shiny.tag.list"
   )
   expect_equal(class(
     submit_ui(conf, pool, TRUE, 10,
-              df[, !names(df) %in% c("denominator", "registry_id")],
+              df[, !names(df) %in% c("denominator", "registry_id")], ind,
               "qa"))[1],
     "shiny.tag.list"
   )

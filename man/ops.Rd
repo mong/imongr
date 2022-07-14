@@ -19,7 +19,7 @@
 \alias{update_ind_text}
 \title{Functions for data operations in imongr}
 \usage{
-duplicate_delivery(pool, df, registry)
+duplicate_delivery(pool, df, ind, registry)
 
 retire_user_deliveries(pool)
 

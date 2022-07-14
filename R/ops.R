@@ -22,7 +22,7 @@ NULL
 
 #' @rdname ops
 #' @export
-duplicate_delivery <- function(pool, df, registry) {
+duplicate_delivery <- function(pool, df, ind, registry) {
 
   query <- "
 SELECT
@@ -34,7 +34,7 @@ WHERE
 
   dat <- pool::dbGetQuery(pool, query)
 
-  ind <- get_registry_ind(pool, registry)
+  #ind <- get_registry_ind(pool, registry)
 
   if (md5_checksum(df, ind) %in% dat$md5_checksum) {
     return(TRUE)

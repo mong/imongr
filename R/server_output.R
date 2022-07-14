@@ -107,7 +107,7 @@ select_registry_ui <- function(pool, conf, input_id, context,
 
 #' @rdname server_output
 #' @export
-submit_ui <- function(conf, pool, upload_file, registry, df, context) {
+submit_ui <- function(conf, pool, upload_file, registry, df, ind, context) {
 
   if (!is.null(upload_file) && !"denominator" %in% names(df)) {
     df <- cbind(df, denominator = 1L)
@@ -116,8 +116,6 @@ submit_ui <- function(conf, pool, upload_file, registry, df, context) {
   if (!is.null(upload_file) &&
       !(conf$upload$fail %in% registry) &&
       all(!check_upload(registry, df, ind, pool)$fail)) {
-
-    ind <- get_registry_ind(pool, registry)
 
     shiny::tagList(
     shiny::actionButton("submit",
