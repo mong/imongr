@@ -26,6 +26,7 @@
 #'   check_missing_var check_invalid_var check_invalid_org check_invalid_context
 #'   check_invalid_ind check_none_numeric_var check_duplicate_delivery
 #'   csv_to_df mail_check_report sample_df indicator_is_fraction
+#'   filter_fraction_indicator
 NULL
 
 
@@ -239,8 +240,9 @@ check_numeric_var <- function(registry, df, ind, conf, pool) {
 #' @export
 check_natural_var <- function(registry, df, ind, conf, pool) {
 
-  # dismiss check when indicators are not true fractions
-  if (!all(indicator_is_fraction(pool, df, conf))) {
+  # check only on indicator data that are true fractions
+  df <- filter_fraction_indicator(pool, df, conf)
+  if (dim(df)[1] < 1) {
     return(list(fail = FALSE, report = ""))
   }
 
@@ -260,8 +262,9 @@ check_natural_var <- function(registry, df, ind, conf, pool) {
 #' @export
 check_overflow_var <- function(registry, df, ind, conf, pool) {
 
-  # dismiss check when indicators are not true fractions
-  if (!all(indicator_is_fraction(pool, df, conf))) {
+  # check only on indicator data that are true fractions
+  df <- filter_fraction_indicator(pool, df, conf)
+  if (dim(df)[1] < 1) {
     return(list(fail = FALSE, report = ""))
   }
 
@@ -416,4 +419,16 @@ indicator_is_fraction <- function(pool, df, conf, return_ind = FALSE) {
     data.frame(ind = ind$id, is_fraction = ind$type %in% conf$var$fraction$type)
   }
 
+}
+
+#' @rdname upload
+#' @export
+filter_fraction_indicator <- function(pool, df, conf) {
+
+  frac <- indicator_is_fraction(pool, df, conf, return_ind = TRUE)
+
+  df %>%
+    dplyr::left_join(frac, by = c("ind_id" = "ind")) %>%
+    dplyr::filter(.data$is_fraction) %>%
+    dplyr::select(-c("is_fraction"))
 }

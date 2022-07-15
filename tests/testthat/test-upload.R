@@ -252,7 +252,7 @@ test_that("check on var <= denominator is working", {
     check_overflow_var(
       registry, df[, !names(df) %in% "var"], ind, conf, pool
     )$report, conf$upload$check_impossible)
-  # check dismissed when containing none-fraction indicator data
+  # filters when data contains none-fraction indicators
   expect_false(check_overflow_var(registry, df_mix, ind, conf, pool)$fail)
 })
 
@@ -317,6 +317,14 @@ test_that("true fractions can be detected", {
       indicator_is_fraction(pool, df, conf, return_ind = TRUE)
     ),
     "data.frame")
+})
+
+test_that("true fractions can be filtered from mixing data", {
+  check_db()
+  expect_identical(
+    filter_fraction_indicator(pool, df_mix, conf),
+    df
+  )
 })
 
 # clean up

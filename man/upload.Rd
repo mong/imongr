@@ -17,6 +17,7 @@
 \alias{mail_check_report}
 \alias{sample_df}
 \alias{indicator_is_fraction}
+\alias{filter_fraction_indicator}
 \alias{check_numeric_var}
 \alias{check_natural_var}
 \alias{check_overflow_var}
@@ -64,6 +65,8 @@ csv_to_df(path, sep = ",", dec, encoding = "UTF-8")
 sample_df(df, skip = c(""), n, random = FALSE)
 
 indicator_is_fraction(pool, df, conf, return_ind = FALSE)
+
+filter_fraction_indicator(pool, df, conf)
 }
 \arguments{
 \item{registry}{Integer registry id}
