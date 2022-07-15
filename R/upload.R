@@ -240,15 +240,17 @@ check_numeric_var <- function(registry, df, ind, conf, pool) {
 #' @export
 check_natural_var <- function(registry, df, ind, conf, pool) {
 
-  # check only on indicator data that are true fractions
-  df <- filter_fraction_indicator(pool, df, conf)
-  if (dim(df)[1] < 1) {
-    return(list(fail = FALSE, report = ""))
-  }
-
   fail <- TRUE
   report <- ""
-  if ("var" %in% names(df) && is.numeric(df$var)) {
+
+  if ("var" %in% names(df) && is.numeric(df$var) && "ind_id" %in% names(df)) {
+
+    # check only on indicator data that are true fractions
+    df <- filter_fraction_indicator(pool, df, conf)
+    if (dim(df)[1] < 1) {
+      return(list(fail = FALSE, report = ""))
+    }
+
     if (all(natural(df$var))) {
       fail <- FALSE
     }
@@ -262,16 +264,18 @@ check_natural_var <- function(registry, df, ind, conf, pool) {
 #' @export
 check_overflow_var <- function(registry, df, ind, conf, pool) {
 
-  # check only on indicator data that are true fractions
-  df <- filter_fraction_indicator(pool, df, conf)
-  if (dim(df)[1] < 1) {
-    return(list(fail = FALSE, report = ""))
-  }
-
   fail <- TRUE
   report <- ""
   if ("var" %in% names(df) && is.numeric(df$var) &&
-      "denominator" %in% names(df) && is.numeric(df$denominator)) {
+      "denominator" %in% names(df) && is.numeric(df$denominator) &&
+      "ind_id" %in% names(df)) {
+
+    # check only on indicator data that are true fractions
+    df <- filter_fraction_indicator(pool, df, conf)
+    if (dim(df)[1] < 1) {
+      return(list(fail = FALSE, report = ""))
+    }
+
     if (all(df$var <= df$denominator)) {
       fail <- FALSE
     }

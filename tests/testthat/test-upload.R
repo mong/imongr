@@ -240,6 +240,19 @@ test_that("natural number check on var is working", {
   )
   # check dismissed when containing none-fraction indicator data
   expect_false(check_natural_var(registry, df_mix, ind, conf, pool)$fail)
+  # checks ok when no data left after filtering
+  expect_false(check_natural_var(
+    registry,
+    data.frame(context = "caregiver",
+               year = 2018,
+               orgnr = 974633574,
+               ind_id = "norgast_dummy",
+               var = 0,
+               denominator = 1),
+    ind,
+    conf,
+    pool
+  )$fail)
 })
 
 test_that("check on var <= denominator is working", {
@@ -254,6 +267,19 @@ test_that("check on var <= denominator is working", {
     )$report, conf$upload$check_impossible)
   # filters when data contains none-fraction indicators
   expect_false(check_overflow_var(registry, df_mix, ind, conf, pool)$fail)
+  # checks ok when no data left after filtering
+  expect_false(check_overflow_var(
+    registry,
+    data.frame(context = "caregiver",
+               year = 2018,
+               orgnr = 974633574,
+               ind_id = "norgast_dummy",
+               var = 0,
+               denominator = 1),
+    ind,
+    conf,
+    pool
+  )$fail)
 })
 
 test_that("natural number check on denominator is working", {
