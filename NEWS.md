@@ -1,3 +1,7 @@
+# imongr 0.28.4
+* Duplicate check incorporate indicator table data (to be extended in next feature version)
+* Relaxed natural number checks, now only applied to data that are true fraction indicators
+
 # imongr 0.28.3
 * Fixed encoding related issue when downloading data ([#197](https://github.com/mong/imongr/pull/197)).
 * Fixed minor issues (typos and GUI texts and default values)
