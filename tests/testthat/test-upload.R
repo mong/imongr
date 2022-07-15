@@ -3,7 +3,7 @@ create_config()
 conf <- get_config()
 registry <- 10 # may be norgast
 
-l <- check_missing_var(registry, data.frame(), conf, pool)
+l <- check_missing_var(registry, data.frame(), data.frame(), conf, pool)
 test_that("all vars are missing om empty data frame", {
   expect_equal(l$report, conf$upload$file$vars)
 })
@@ -11,7 +11,9 @@ test_that("check reports failed status", {
   expect_true(l$fail)
 })
 
-l <- check_invalid_var(registry, data.frame(offBounce = 0), conf, pool)
+l <- check_invalid_var(
+  registry, data.frame(offBounce = 0), data.frame(), conf, pool
+)
 test_that("invalid var is reported and that check status is failed", {
   expect_equal(l$report, "offBounce")
   expect_true(l$fail)
@@ -19,7 +21,7 @@ test_that("invalid var is reported and that check status is failed", {
 
 df <- imongr::data[, names(imongr::data) %in% conf$upload$file$vars]
 df <- cbind(df, orgnr = rep(1, dim(df)[1]))
-l <- check_missing_var(registry, df, conf, pool)
+l <- check_missing_var(registry, df, data.frame(), conf, pool)
 test_that("an empty report and ok status is provided from a valid data set", {
   expect_false(l$fail)
   expect_equal(l$report, character())
@@ -64,7 +66,11 @@ df <- data.frame(context = "caregiver",
                  denominator = 1)
 
 test_that("valid vars pass the check", {
-  expect_true(length(check_invalid_var(registry, df, conf, pool)$report) == 0)
+  expect_true(
+    length(
+      check_invalid_var(registry, df, data.frame(), conf, pool)$report
+    ) == 0
+  )
 })
 
 test_that("an upload csv can be converted to a data frame", {
@@ -136,156 +142,215 @@ df_mix <- rbind(df,
                            denominator = 1)
 )
 
+# get indicators for norgast (id = 10), but only if we have a db
+if (is.null(check_db(is_test_that = FALSE))) {
+  ind <- get_registry_ind(pool, 10)
+}
+
 test_that("mixed indicator type check is working", {
   check_db()
-  expect_true(check_mixing_ind(registry, df_mix, conf, pool)$fail)
-  expect_false(check_mixing_ind(registry, df, conf, pool)$fail)
+  expect_true(check_mixing_ind(registry, df_mix, ind, conf, pool)$fail)
+  expect_false(check_mixing_ind(registry, df, ind, conf, pool)$fail)
 })
 
 test_that("(valid) context check is working", {
   check_db()
-  expect_false(check_invalid_context(registry, df, conf, pool)$fail)
-  expect_equal(check_invalid_context(registry, df[, !names(df) %in% "context"],
-                                 conf, pool)$report, conf$upload$check_empty)
+  expect_false(check_invalid_context(registry, df, ind, conf, pool)$fail)
+  expect_equal(
+    check_invalid_context(
+      registry, df[, !names(df) %in% "context"], ind, conf, pool)$report,
+    conf$upload$check_empty)
   # set an invalid context
   df$context <- "careprovider"
-  expect_true(check_invalid_context(registry, df, conf, pool)$fail)
+  expect_true(check_invalid_context(registry, df, ind, conf, pool)$fail)
   expect_true(
-    length(check_invalid_context(registry, df, conf, pool)$report) > 0
+    length(check_invalid_context(registry, df, ind, conf, pool)$report) > 0
   )
   df$context <- "caregiver"
 })
 
 test_that("org id checks is working", {
   check_db()
-  expect_false(check_invalid_org(registry, df, conf, pool)$fail)
-  expect_equal(check_invalid_org(registry, df[, !names(df) %in% "orgnr"],
+  expect_false(check_invalid_org(registry, df, ind, conf, pool)$fail)
+  expect_equal(check_invalid_org(registry, df[, !names(df) %in% "orgnr"], ind,
                                  conf, pool)$report, conf$upload$check_empty)
-  # set an org id that (assumably) does not exist
+  # set an org id that (assumable) does not exist
   df$orgnr <- -1
-  expect_true(check_invalid_org(registry, df, conf, pool)$fail)
-  expect_true(length(check_invalid_org(registry, df, conf, pool)$report) > 0)
+  expect_true(check_invalid_org(registry, df, ind, conf, pool)$fail)
+  expect_true(
+    length(check_invalid_org(registry, df, ind, conf, pool)$report) > 0
+  )
   df$orgnr <- 974633574
 })
 
 test_that("indicator id check is working", {
   check_db()
-  expect_false(check_invalid_ind(registry, df, conf, pool)$fail)
-  expect_equal(check_invalid_ind(registry, df[, !names(df) %in% "ind_id"],
-                                 conf, pool)$report, conf$upload$check_empty)
+  expect_false(check_invalid_ind(registry, df, ind, conf, pool)$fail)
+  expect_equal(
+    check_invalid_ind(
+      registry, df[, !names(df) %in% "ind_id"], ind, conf, pool
+    )$report, conf$upload$check_empty
+  )
   # set an indicator id that does not exist
   df$ind_id <- "nothing"
-  expect_true(length(check_invalid_ind(registry, df, conf, pool)$report) > 0)
+  expect_true(
+    length(check_invalid_ind(registry, df, ind, conf, pool)$report) > 0
+  )
   df$ind_id <- "norgast_andel_avdoede_bykspytt_tolv"
 })
 
 test_that("numeric check on var is working", {
   check_db()
-  expect_false(check_numeric_var(registry, df, conf, pool)$fail)
+  expect_false(check_numeric_var(registry, df, ind, conf, pool)$fail)
   expect_equal(
-    check_numeric_var(registry, df[, !names(df) %in% "var"],
-                           conf, pool)$report, conf$upload$check_empty
+    check_numeric_var(
+      registry, df[, !names(df) %in% "var"], ind, conf, pool
+    )$report, conf$upload$check_empty
   )
   df$var <- as.character(df$var)
-  expect_true(check_numeric_var(registry, df, conf, pool)$fail)
+  expect_true(check_numeric_var(registry, df, ind, conf, pool)$fail)
   df$var <- as.numeric(df$var)
 })
 
 test_that("numeric check on denominator is working", {
   check_db()
-  expect_false(check_numeric_denominator(registry, df, conf, pool)$fail)
+  expect_false(check_numeric_denominator(registry, df, ind, conf, pool)$fail)
   expect_equal(
-    check_numeric_denominator(registry, df[, !names(df) %in% "denominator"],
-                      conf, pool)$report, conf$upload$check_empty
+    check_numeric_denominator(
+      registry, df[, !names(df) %in% "denominator"], ind, conf, pool
+    )$report, conf$upload$check_empty
   )
   df$denominator <- as.character(df$denominator)
-  expect_true(check_numeric_denominator(registry, df, conf, pool)$fail)
+  expect_true(check_numeric_denominator(registry, df, ind, conf, pool)$fail)
   df$denominator <- as.numeric(df$denominator)
 })
 
 test_that("natural number check on var is working", {
   check_db()
-  expect_false(check_natural_var(registry, df, conf, pool)$fail)
+  expect_false(check_natural_var(registry, df, ind, conf, pool)$fail)
   df$var <- df$var + .1
-  expect_true(check_natural_var(registry, df, conf, pool)$fail)
+  expect_true(check_natural_var(registry, df, ind, conf, pool)$fail)
   df$var <- df$var - 1000000.1
-  expect_true(check_natural_var(registry, df, conf, pool)$fail)
+  expect_true(check_natural_var(registry, df, ind, conf, pool)$fail)
   df$var <- df$var + 1000000
-  expect_equal(check_natural_var(registry, df[, !names(df) %in% "var"],
-                                 conf, pool)$report,
-               conf$upload$check_impossible)
+  expect_equal(
+    check_natural_var(
+      registry, df[, !names(df) %in% "var"], ind, conf, pool
+    )$report, conf$upload$check_impossible
+  )
   # check dismissed when containing none-fraction indicator data
-  expect_false(check_natural_var(registry, df_mix, conf, pool)$fail)
+  expect_false(check_natural_var(registry, df_mix, ind, conf, pool)$fail)
+  # checks ok when no data left after filtering
+  expect_false(check_natural_var(
+    registry,
+    data.frame(context = "caregiver",
+               year = 2018,
+               orgnr = 974633574,
+               ind_id = "norgast_dummy",
+               var = 0,
+               denominator = 1),
+    ind,
+    conf,
+    pool
+  )$fail)
 })
 
 test_that("check on var <= denominator is working", {
   check_db()
-  expect_false(check_overflow_var(registry, df, conf, pool)$fail)
+  expect_false(check_overflow_var(registry, df, ind, conf, pool)$fail)
   df$var <- 2
   df$denominator <- 1
-  expect_true(check_overflow_var(registry, df, conf, pool)$fail)
-  expect_equal(check_overflow_var(registry, df[, !names(df) %in% "var"],
-                                 conf, pool)$report,
-               conf$upload$check_impossible)
-  # check dismissed when containing none-fraction indicator data
-  expect_false(check_overflow_var(registry, df_mix, conf, pool)$fail)
+  expect_true(check_overflow_var(registry, df, ind, conf, pool)$fail)
+  expect_equal(
+    check_overflow_var(
+      registry, df[, !names(df) %in% "var"], ind, conf, pool
+    )$report, conf$upload$check_impossible)
+  # filters when data contains none-fraction indicators
+  expect_false(check_overflow_var(registry, df_mix, ind, conf, pool)$fail)
+  # checks ok when no data left after filtering
+  expect_false(check_overflow_var(
+    registry,
+    data.frame(context = "caregiver",
+               year = 2018,
+               orgnr = 974633574,
+               ind_id = "norgast_dummy",
+               var = 0,
+               denominator = 1),
+    ind,
+    conf,
+    pool
+  )$fail)
 })
 
 test_that("natural number check on denominator is working", {
   check_db()
-  expect_false(check_natural_denominator(registry, df, conf, pool)$fail)
+  expect_false(check_natural_denominator(registry, df, ind, conf, pool)$fail)
   df$denominator <- df$denominator + .1
-  expect_true(check_natural_denominator(registry, df, conf, pool)$fail)
+  expect_true(check_natural_denominator(registry, df, ind, conf, pool)$fail)
   df$denominator <- df$denominator - 1000000.1
-  expect_true(check_natural_denominator(registry, df, conf, pool)$fail)
+  expect_true(check_natural_denominator(registry, df, ind, conf, pool)$fail)
   df$denominator <- df$denominator + 1000000
-  expect_equal(check_natural_denominator(registry,
-                                         df[, !names(df) %in% "denominator"],
-                                         conf, pool)$report,
-               conf$upload$check_impossible)
+  expect_equal(
+    check_natural_denominator(
+      registry, df[, !names(df) %in% "denominator"], ind, conf, pool
+    )$report, conf$upload$check_impossible)
 })
 
 test_that("zero check on denominator is working", {
   check_db()
-  expect_false(check_zero_denominator(registry, df, conf, pool)$fail)
+  expect_false(check_zero_denominator(registry, df, ind, conf, pool)$fail)
   orig_denominator <- df$denominator
   df$denominator <- 0
-  expect_true(check_zero_denominator(registry, df, conf, pool)$fail)
+  expect_true(check_zero_denominator(registry, df, ind, conf, pool)$fail)
   df$denominator <- orig_denominator
-  expect_equal(check_zero_denominator(registry,
-                                      df[, !names(df) %in% "denominator"],
-                                      conf, pool)$report,
-               conf$upload$check_impossible)
+  expect_equal(
+    check_zero_denominator(
+      registry, df[, !names(df) %in% "denominator"], ind, conf, pool
+    )$report, conf$upload$check_impossible)
 })
 
 test_that("duplicate delivery check is present (tested elsewhere)", {
   check_db()
-  expect_false(check_duplicate_delivery(registry, df, conf, pool)$fail)
+  expect_false(check_duplicate_delivery(registry, df, ind, conf, pool)$fail)
 })
 
 test_that("check report (wrapper) function is working", {
   check_db()
-  expect_equal(class(check_report(registry, df, pool)), "character")
-  expect_equal(class(check_report(registry, df[, !names(df) %in% "orgnr"],
-                                  pool)),
-               "character")
+  expect_equal(class(check_report(registry, df, ind, pool)), "character")
+  expect_equal(
+    class(
+      check_report(registry, df[, !names(df) %in% "orgnr"], ind, pool)
+    ),
+    "character"
+  )
 })
 
 test_that("reports are provided even if registry is not defined", {
   check_db()
-  expect_equal(class(check_report("", df, pool)), "character")
+  expect_equal(class(check_report("", df, ind, pool)), "character")
 })
 
 test_that("pro forma check on missing registry returns a list", {
   check_db()
-  expect_equal(class(check_missing_registry("", df, conf, pool)), "list")
+  expect_equal(class(check_missing_registry("", df, ind, conf, pool)), "list")
 })
 
 test_that("true fractions can be detected", {
   check_db()
   expect_equal(class(indicator_is_fraction(pool, df, conf)), "logical")
-  expect_equal(class(indicator_is_fraction(pool, df, conf, return_ind = TRUE)),
-               "data.frame")
+  expect_equal(
+    class(
+      indicator_is_fraction(pool, df, conf, return_ind = TRUE)
+    ),
+    "data.frame")
+})
+
+test_that("true fractions can be filtered from mixing data", {
+  check_db()
+  expect_identical(
+    filter_fraction_indicator(pool, df_mix, conf),
+    df
+  )
 })
 
 # clean up

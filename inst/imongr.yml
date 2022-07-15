@@ -270,7 +270,7 @@ upload:
       - resident
   reciept:
     title: Fantastisk!
-    body: Dine data er nå lastet inn
+    body: Dine data er nå lastet inn og klare for kvalitetskontroll
   fail: Kontakt SKDE!
   ok: Datasettet er klart til å sendes inn
   data_var_ind:

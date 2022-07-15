@@ -5,7 +5,8 @@
 #'
 #' @param pool Data base pool object
 #' @param conf List of configuration
-#' @param df Data frame
+#' @param df Data frame holding indicator data
+#' @param ind Data frame with indicators
 #' @param registry Integer registry id
 #' @param path Character path to a file
 #' @param sep Character filed sep
@@ -16,25 +17,25 @@
 #' @param random Logical sample method
 #' @param mail_msg Character vector holding (part of) email body
 #' @param return_ind Logical whether indicators should be returned. FALSE by
-#' default
+#'   default
 #'
 #' @return whatever
 #' @importFrom utils read.csv URLencode
 #' @name upload
 #' @aliases check_report check_upload check_missing_registry check_mixing_ind
-#' check_missing_var
-#' check_invalid_var check_invalid_org check_invalid_context check_invalid_ind
-#' check_none_numeric_var check_duplicate_delivery csv_to_df mail_check_report
-#' sample_df indicator_is_fraction
+#'   check_missing_var check_invalid_var check_invalid_org check_invalid_context
+#'   check_invalid_ind check_none_numeric_var check_duplicate_delivery
+#'   csv_to_df mail_check_report sample_df indicator_is_fraction
+#'   filter_fraction_indicator
 NULL
 
 
 #' @rdname upload
 #' @export
-check_report <- function(registry, df, pool) {
+check_report <- function(registry, df, ind, pool) {
 
   conf <- get_config()
-  r <- check_upload(registry, df, pool)
+  r <- check_upload(registry, df, ind, pool)
 
   if (all(!r$fail)) {
     msg <- paste("<font color=\"#00B300\">", conf$upload$ok)
@@ -78,7 +79,7 @@ mail_check_report <- function(pool, registry, mail_msg) {
 
 #' @rdname upload
 #' @export
-check_upload <- function(registry, df, pool) {
+check_upload <- function(registry, df, ind, pool) {
 
   unit <- character()
   fail <- logical()
@@ -94,9 +95,16 @@ check_upload <- function(registry, df, pool) {
   } else {
     for (i in seq_len(length(conf$upload$check))) {
       unit[i] <- names(conf$upload$check)[i]
-      r <- do.call(paste0("check_", unit[i]),
-                   args = list(registry = registry, df = df, conf = conf,
-                               pool = pool))
+      r <- do.call(
+        paste0("check_", unit[i]),
+        args = list(
+          registry = registry,
+          df = df,
+          ind = ind,
+          conf = conf,
+          pool = pool
+        )
+      )
       fail[i] <- r$fail
       report[i] <- paste(paste0("'", r$report, "'"), collapse = ", ")
     }
@@ -106,7 +114,7 @@ check_upload <- function(registry, df, pool) {
 
 #' @rdname upload
 #' @export
-check_missing_registry <- function(registry, df, conf, pool) {
+check_missing_registry <- function(registry, df, ind, conf, pool) {
 
   # pro forma, will never fail but present to maintain consistent config
   fail <- FALSE
@@ -120,7 +128,7 @@ check_missing_registry <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_mixing_ind <- function(registry, df, conf, pool) {
+check_mixing_ind <- function(registry, df, ind, conf, pool) {
 
   # upload cannot contain a mix of fractions and other types of indicators
   ind_is_fraction <- indicator_is_fraction(pool, df, conf, return_ind = TRUE)
@@ -135,7 +143,7 @@ check_mixing_ind <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_missing_var <- function(registry, df, conf, pool) {
+check_missing_var <- function(registry, df, ind, conf, pool) {
 
   fail <- TRUE
   report <- setdiff(conf$upload$file$vars, names(df))
@@ -147,7 +155,7 @@ check_missing_var <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_invalid_var <- function(registry, df, conf, pool) {
+check_invalid_var <- function(registry, df, ind, conf, pool) {
 
   fail <- TRUE
   report <- setdiff(names(df), conf$upload$file$vars)
@@ -160,7 +168,7 @@ check_invalid_var <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_invalid_context <- function(registry, df, conf, pool) {
+check_invalid_context <- function(registry, df, ind, conf, pool) {
 
   fail <- TRUE
   if ("context" %in% names(df)) {
@@ -177,7 +185,7 @@ check_invalid_context <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_invalid_org <- function(registry, df, conf, pool) {
+check_invalid_org <- function(registry, df, ind, conf, pool) {
 
   fail <- TRUE
   if ("orgnr" %in% names(df)) {
@@ -194,7 +202,7 @@ check_invalid_org <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_invalid_ind <- function(registry, df, conf, pool) {
+check_invalid_ind <- function(registry, df, ind, conf, pool) {
 
   fail <- TRUE
 
@@ -213,7 +221,7 @@ check_invalid_ind <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_numeric_var <- function(registry, df, conf, pool) {
+check_numeric_var <- function(registry, df, ind, conf, pool) {
 
   fail <- TRUE
   report <- ""
@@ -230,16 +238,19 @@ check_numeric_var <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_natural_var <- function(registry, df, conf, pool) {
-
-  # dismiss check when indicators are not true fractions
-  if (!all(indicator_is_fraction(pool, df, conf))) {
-    return(list(fail = FALSE, report = ""))
-  }
+check_natural_var <- function(registry, df, ind, conf, pool) {
 
   fail <- TRUE
   report <- ""
-  if ("var" %in% names(df) && is.numeric(df$var)) {
+
+  if ("var" %in% names(df) && is.numeric(df$var) && "ind_id" %in% names(df)) {
+
+    # check only on indicator data that are true fractions
+    df <- filter_fraction_indicator(pool, df, conf)
+    if (dim(df)[1] < 1) {
+      return(list(fail = FALSE, report = ""))
+    }
+
     if (all(natural(df$var))) {
       fail <- FALSE
     }
@@ -251,17 +262,20 @@ check_natural_var <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_overflow_var <- function(registry, df, conf, pool) {
-
-  # dismiss check when indicators are not true fractions
-  if (!all(indicator_is_fraction(pool, df, conf))) {
-    return(list(fail = FALSE, report = ""))
-  }
+check_overflow_var <- function(registry, df, ind, conf, pool) {
 
   fail <- TRUE
   report <- ""
   if ("var" %in% names(df) && is.numeric(df$var) &&
-      "denominator" %in% names(df) && is.numeric(df$denominator)) {
+      "denominator" %in% names(df) && is.numeric(df$denominator) &&
+      "ind_id" %in% names(df)) {
+
+    # check only on indicator data that are true fractions
+    df <- filter_fraction_indicator(pool, df, conf)
+    if (dim(df)[1] < 1) {
+      return(list(fail = FALSE, report = ""))
+    }
+
     if (all(df$var <= df$denominator)) {
       fail <- FALSE
     }
@@ -273,7 +287,7 @@ check_overflow_var <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_numeric_denominator <- function(registry, df, conf, pool) {
+check_numeric_denominator <- function(registry, df, ind, conf, pool) {
 
   fail <- TRUE
   report <- ""
@@ -290,7 +304,7 @@ check_numeric_denominator <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_natural_denominator <- function(registry, df, conf, pool) {
+check_natural_denominator <- function(registry, df, ind, conf, pool) {
 
   fail <- TRUE
   report <- ""
@@ -306,7 +320,7 @@ check_natural_denominator <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_zero_denominator <- function(registry, df, conf, pool) {
+check_zero_denominator <- function(registry, df, ind, conf, pool) {
 
   fail <- TRUE
   report <- ""
@@ -322,9 +336,9 @@ check_zero_denominator <- function(registry, df, conf, pool) {
 
 #' @rdname upload
 #' @export
-check_duplicate_delivery <- function(registry, df, conf, pool) {
+check_duplicate_delivery <- function(registry, df, ind, conf, pool) {
 
-  fail <- duplicate_delivery(pool, df, registry)
+  fail <- duplicate_delivery(pool, df, ind, registry)
   report <- ""
   list(fail = fail, report = report)
 }
@@ -409,4 +423,16 @@ indicator_is_fraction <- function(pool, df, conf, return_ind = FALSE) {
     data.frame(ind = ind$id, is_fraction = ind$type %in% conf$var$fraction$type)
   }
 
+}
+
+#' @rdname upload
+#' @export
+filter_fraction_indicator <- function(pool, df, conf) {
+
+  frac <- indicator_is_fraction(pool, df, conf, return_ind = TRUE)
+
+  df %>%
+    dplyr::left_join(frac, by = c("ind_id" = "ind")) %>%
+    dplyr::filter(.data$is_fraction) %>%
+    dplyr::select(-c("is_fraction"))
 }

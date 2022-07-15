@@ -19,7 +19,7 @@
 \alias{update_ind_text}
 \title{Functions for data operations in imongr}
 \usage{
-duplicate_delivery(pool, df, registry)
+duplicate_delivery(pool, df, ind, registry)
 
 retire_user_deliveries(pool)
 
@@ -51,6 +51,8 @@ update_ind_text(pool, df)
 \item{pool}{Database connection pool object}
 
 \item{df}{Data frame of relevant data}
+
+\item{registry}{Integer registry id}
 
 \item{update}{Character string of format YYYY-MM-DD providing date until data
 are regarded as updated. Default value is NA.}
