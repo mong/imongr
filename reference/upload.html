@@ -18,7 +18,7 @@ regarding consistency goes here"><meta property="og:image" content="/logo.png"><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.28.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.28.4</span>
       </span>
     </div>
 
@@ -55,45 +55,47 @@ regarding consistency goes here</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">check_report</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">mail_check_report</span><span class="op">(</span><span class="va">pool</span>, <span class="va">registry</span>, <span class="va">mail_msg</span><span class="op">)</span>
-
-<span class="fu">check_upload</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_missing_registry</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_mixing_ind</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_missing_var</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_invalid_var</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_invalid_context</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_invalid_org</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_invalid_ind</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_numeric_var</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_natural_var</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_overflow_var</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_numeric_denominator</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_natural_denominator</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_zero_denominator</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">check_duplicate_delivery</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span>
-
-<span class="fu">csv_to_df</span><span class="op">(</span><span class="va">path</span>, sep <span class="op">=</span> <span class="st">","</span>, <span class="va">dec</span>, encoding <span class="op">=</span> <span class="st">"UTF-8"</span><span class="op">)</span>
-
-<span class="fu">sample_df</span><span class="op">(</span><span class="va">df</span>, skip <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span><span class="op">)</span>, <span class="va">n</span>, random <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu">indicator_is_fraction</span><span class="op">(</span><span class="va">pool</span>, <span class="va">df</span>, <span class="va">conf</span>, return_ind <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">check_report</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">mail_check_report</span><span class="op">(</span><span class="va">pool</span>, <span class="va">registry</span>, <span class="va">mail_msg</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_upload</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_missing_registry</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_mixing_ind</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_missing_var</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_invalid_var</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_invalid_context</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_invalid_org</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_invalid_ind</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_numeric_var</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_natural_var</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_overflow_var</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_numeric_denominator</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_natural_denominator</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_zero_denominator</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_duplicate_delivery</span><span class="op">(</span><span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">conf</span>, <span class="va">pool</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">csv_to_df</span><span class="op">(</span><span class="va">path</span>, sep <span class="op">=</span> <span class="st">","</span>, <span class="va">dec</span>, encoding <span class="op">=</span> <span class="st">"UTF-8"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sample_df</span><span class="op">(</span><span class="va">df</span>, skip <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span><span class="op">)</span>, <span class="va">n</span>, random <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">indicator_is_fraction</span><span class="op">(</span><span class="va">pool</span>, <span class="va">df</span>, <span class="va">conf</span>, return_ind <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">filter_fraction_indicator</span><span class="op">(</span><span class="va">pool</span>, <span class="va">df</span>, <span class="va">conf</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -103,7 +105,11 @@ regarding consistency goes here</p>
 
 
 <dt>df</dt>
-<dd><p>Data frame</p></dd>
+<dd><p>Data frame holding indicator data</p></dd>
+
+
+<dt>ind</dt>
+<dd><p>Data frame with indicators</p></dd>
 
 
 <dt>pool</dt>
@@ -170,7 +176,7 @@ default</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

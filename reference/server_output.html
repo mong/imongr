@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.28.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.28.4</span>
       </span>
     </div>
 
@@ -53,31 +53,31 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">profile_ui</span><span class="op">(</span><span class="va">conf</span>, <span class="va">pool</span>, <span class="va">valid_user</span>, <span class="va">iusr</span>, <span class="va">igrs</span><span class="op">)</span>
-
-<span class="fu">select_registry_ui</span><span class="op">(</span>
-  <span class="va">pool</span>,
-  <span class="va">conf</span>,
-  <span class="va">input_id</span>,
-  <span class="va">context</span>,
-  current_reg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,
-  show_context <span class="op">=</span> <span class="cn">TRUE</span>,
-  pool0 <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span>
-
-<span class="fu">submit_ui</span><span class="op">(</span><span class="va">conf</span>, <span class="va">pool</span>, <span class="va">upload_file</span>, <span class="va">registry</span>, <span class="va">df</span>, <span class="va">context</span><span class="op">)</span>
-
-<span class="fu">error_report_ui</span><span class="op">(</span><span class="va">pool</span>, <span class="va">df</span>, <span class="va">upload_file</span>, <span class="va">registry</span><span class="op">)</span>
-
-<span class="fu">upload_sample_text_ui</span><span class="op">(</span><span class="va">pool</span>, <span class="va">conf</span>, <span class="va">upload_file</span>, <span class="va">registry</span>, <span class="va">indicators</span><span class="op">)</span>
-
-<span class="fu">upload_sample_ui</span><span class="op">(</span><span class="va">df</span>, <span class="va">upload_file</span>, <span class="va">registry</span>, <span class="va">sample_size</span>, <span class="va">sample_type</span><span class="op">)</span>
-
-<span class="fu">var_doc_ui</span><span class="op">(</span><span class="va">conf</span><span class="op">)</span>
-
-<span class="fu">medfield_summary_text_ui</span><span class="op">(</span><span class="va">pool</span>, <span class="va">conf</span>, <span class="va">df</span><span class="op">)</span>
-
-<span class="fu">reguser_summary_text_ui</span><span class="op">(</span><span class="va">pool</span>, <span class="va">conf</span>, <span class="va">df</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">profile_ui</span><span class="op">(</span><span class="va">conf</span>, <span class="va">pool</span>, <span class="va">valid_user</span>, <span class="va">iusr</span>, <span class="va">igrs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">select_registry_ui</span><span class="op">(</span></span>
+<span>  <span class="va">pool</span>,</span>
+<span>  <span class="va">conf</span>,</span>
+<span>  <span class="va">input_id</span>,</span>
+<span>  <span class="va">context</span>,</span>
+<span>  current_reg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  show_context <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  pool0 <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">submit_ui</span><span class="op">(</span><span class="va">conf</span>, <span class="va">pool</span>, <span class="va">upload_file</span>, <span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">context</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">error_report_ui</span><span class="op">(</span><span class="va">pool</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">upload_file</span>, <span class="va">registry</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">upload_sample_text_ui</span><span class="op">(</span><span class="va">pool</span>, <span class="va">conf</span>, <span class="va">upload_file</span>, <span class="va">registry</span>, <span class="va">indicators</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">upload_sample_ui</span><span class="op">(</span><span class="va">df</span>, <span class="va">upload_file</span>, <span class="va">registry</span>, <span class="va">sample_size</span>, <span class="va">sample_type</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">var_doc_ui</span><span class="op">(</span><span class="va">conf</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">medfield_summary_text_ui</span><span class="op">(</span><span class="va">pool</span>, <span class="va">conf</span>, <span class="va">df</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">reguser_summary_text_ui</span><span class="op">(</span><span class="va">pool</span>, <span class="va">conf</span>, <span class="va">df</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -133,7 +133,11 @@ values are to be returned.</p></dd>
 
 
 <dt>df</dt>
-<dd><p>Data frame</p></dd>
+<dd><p>Data frame containing indicator data</p></dd>
+
+
+<dt>ind</dt>
+<dd><p>Data frame containing indicators</p></dd>
 
 
 <dt>indicators</dt>
@@ -167,7 +171,7 @@ values are to be returned.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
