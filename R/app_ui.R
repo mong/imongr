@@ -188,21 +188,7 @@ app_ui <- function() {
         shiny::span("Indikator",
                     title = conf$app_text$tooltip$indicator,
                     id = "indicator"),
-        shiny::sidebarLayout(
-          shiny::sidebarPanel(
-            shiny::uiOutput("select_indicator_registry"),
-            shiny::uiOutput("select_indicator"),
-            shiny::uiOutput("update_indicator")
-          ),
-          shiny::mainPanel(
-            shiny::uiOutput("edit_ind_title"),
-            shiny::uiOutput("title_oversize"),
-            shiny::uiOutput("edit_ind_short"),
-            shiny::uiOutput("short_oversize"),
-            shiny::uiOutput("edit_ind_long"),
-            shiny::uiOutput("long_oversize")
-          )
-        )
+        indicator_input("ind")
       ),
 
       shiny::navbarMenu(
