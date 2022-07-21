@@ -20,7 +20,14 @@ indicator_input <- function(id) {
       shiny::sidebarPanel(
         shiny::uiOutput(ns("select_indicator_registry")),
         shiny::uiOutput(ns("select_indicator")),
-        shiny::uiOutput(ns("update_indicator"))
+        shiny::hr(),
+        shiny::uiOutput(ns("set_include")),
+        shiny::uiOutput(ns("set_level_direction")),
+        shiny::uiOutput(ns("set_level_green")),
+        shiny::uiOutput(ns("set_level_yellow")),
+        shiny::uiOutput(ns("set_min_denominator")),
+        shiny::uiOutput(ns("set_type")),
+        shiny::uiOutput(ns("update_indicator_val"))
       ),
       shiny::mainPanel(
         shiny::uiOutput(ns("edit_ind_title")),
@@ -28,7 +35,8 @@ indicator_input <- function(id) {
         shiny::uiOutput(ns("edit_ind_short")),
         shiny::uiOutput(ns("short_oversize")),
         shiny::uiOutput(ns("edit_ind_long")),
-        shiny::uiOutput(ns("long_oversize"))
+        shiny::uiOutput(ns("long_oversize")),
+        shiny::uiOutput(ns("update_indicator_txt"))
       )
     )
   )
@@ -47,14 +55,30 @@ indicator_server <- function(id, pool) {
 
     rv <- shiny::reactiveValues(
       indicator_reg = character(),
+      level_logi = "st\u00f8rre eller lik:",
+      type = c("andel"),
       title_oversize = FALSE,
       short_oversize = FALSE,
       long_oversize = FALSE
     )
 
+    oversize_message <- "<i style='color:red;'>Teksten er for lang!</i><br><br>"
+
+    shiny::observeEvent(input$level_direction, {
+      if (input$level_direction) {
+        rv$level_logi <- "st\u00f8rre eller lik:"
+      } else {
+        rv$level_logi <- "mindre eller lik:"
+      }
+    })
+    shiny::observeEvent(input$min_denominator, {
+      rv$val_change <- TRUE
+    })
+
     shiny::observeEvent(input$indicator, {
       rv$ind_data <- get_registry_ind(pool, input$indicator_registry) %>%
         dplyr::filter(.data$id == input$indicator)
+      rv$val_change <- FALSE
     })
 
     shiny::observeEvent(input$ind_title, {
@@ -81,7 +105,7 @@ indicator_server <- function(id, pool) {
       }
     })
 
-    shiny::observeEvent(input$update_ind, {
+    shiny::observeEvent(input$update_txt, {
       rv$ind_data$title <- input$ind_title
       rv$ind_data$short_description <- input$ind_short
       rv$ind_data$long_description <- input$ind_long
@@ -93,7 +117,7 @@ indicator_server <- function(id, pool) {
     output$select_indicator_registry <- shiny::renderUI({
       select_registry_ui(pool, conf, input_id = ns("indicator_registry"),
                          context = "verify", current_reg = rv$indicator_reg,
-                         show_context = TRUE)
+                         show_context = FALSE)
     })
 
     output$select_indicator <- shiny::renderUI({
@@ -102,6 +126,75 @@ indicator_server <- function(id, pool) {
         ns("indicator"), "Velg indikator:",
         choices = get_registry_indicators(pool, input$indicator_registry)
       )
+    })
+
+    output$set_include <- shiny::renderUI({
+      shiny::req(input$indicator)
+      shiny::checkboxInput(
+        ns("include"), "Vis i Sykehusviseren",
+        value = as.logical(rv$ind_data$include)
+      )
+    })
+
+    output$set_level_direction <- shiny::renderUI({
+      shiny::req(input$indicator)
+      shiny::checkboxInput(
+        ns("level_direction"),
+        "H\u00f8y verdi gir h\u00f8y m\u00e5loppn\u00e5else",
+        value = as.logical(rv$ind_data$level_direction)
+      )
+    })
+
+    output$set_level_green <- shiny::renderUI({
+      shiny::req(input$indicator)
+      shiny::numericInput(
+        ns("level_green"),
+        paste("H\u00f8y m\u00e5loppn\u00e5else", rv$level_logi),
+        value = rv$ind_data$level_green,
+        min = 0,
+        max = 1
+      )
+    })
+
+    output$set_level_yellow <- shiny::renderUI({
+      shiny::req(input$indicator)
+      shiny::numericInput(
+        ns("level_yellow"),
+        paste("Middels m\u00e5loppn\u00e5else", rv$level_logi),
+        value = rv$ind_data$level_yellow,
+        min = 0,
+        max = 1
+      )
+    })
+
+    output$set_min_denominator <- shiny::renderUI({
+      shiny::req(input$indicator)
+      shiny::numericInput(
+        ns("min_denominator"), "Minste antall observasjoner:",
+        value = rv$ind_data$min_denominator, min = 0
+      )
+    })
+
+    output$set_type <- shiny::renderUI({
+      shiny::req(input$indicator)
+      shiny::selectInput(
+        ns("type"), "Indikatortype:", choices = unique(rv$ind_data$type)
+      )
+    })
+
+    output$update_indicator_val <- shiny::renderUI({
+      shiny::req(
+        input$min_denominator
+      )
+      if (identical(input$min_denominator, rv$ind_data$min_denominator) &&
+          input$include == as.logical(rv$ind_data$include) &&
+          input$level_direction == as.logical(rv$ind_data$level_direction) &&
+          identical(input$level_green, rv$ind_data$level_green) &&
+          identical(input$level_yellow, rv$ind_data$level_yellow)) {
+        NULL
+      } else {
+        shiny::actionButton(ns("update_val"), "Oppdat\u00e9r verdier")
+      }
     })
 
     output$edit_ind_title <- shiny::renderUI({
@@ -152,11 +245,11 @@ indicator_server <- function(id, pool) {
       }
     })
 
-    output$update_indicator <- shiny::renderUI({
+    output$update_indicator_txt <- shiny::renderUI({
       if (any(c(rv$title_oversize, rv$short_oversize, rv$long_oversize))) {
         NULL
       } else {
-        shiny::actionButton(ns("update_ind"), "Oppdat\u00e9r tekster")
+        shiny::actionButton(ns("update_txt"), "Oppdat\u00e9r tekster")
       }
     })
 
