@@ -79,6 +79,20 @@ indicator_server <- function(id, pool) {
         dplyr::filter(.data$id == input$indicator)
     })
 
+    shiny::observeEvent(input$update_val, {
+      rv$ind_data$include <- input$include
+      rv$ind_data$level_direction <- input$level_direction
+      rv$ind_data$level_green <- input$level_green
+      rv$ind_data$level_yellow <- input$level_yellow
+      rv$ind_data$min_denominator <- input$min_denominator
+      rv$ind_data$type <- input$type
+      update_ind_val(pool, rv$ind_data)
+      rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
+      rv$type <- rv$ind_data$type
+      rv$ind_data <- rv$ind_data %>%
+        dplyr::filter(.data$id == input$indicator)
+    })
+
     shiny::observeEvent(input$ind_title, {
       if (nchar(input$ind_title) > 255) {
         rv$title_oversize <- TRUE
@@ -214,14 +228,21 @@ indicator_server <- function(id, pool) {
     })
 
     output$update_indicator_val <- shiny::renderUI({
-      shiny::req(
-        input$min_denominator
-      )
-      if (identical(input$min_denominator, rv$ind_data$min_denominator) &&
-          input$include == as.logical(rv$ind_data$include) &&
-          input$level_direction == as.logical(rv$ind_data$level_direction) &&
-          identical(input$level_green, rv$ind_data$level_green) &&
-          identical(input$level_yellow, rv$ind_data$level_yellow) &&
+      shiny::req(input$indicator)
+      if (identical(input$include, as.logical(rv$ind_data$include)) &&
+          identical(
+            input$level_direction, as.logical(rv$ind_data$level_direction)
+          ) &&
+          identical(
+            as.numeric(input$level_green), as.numeric(rv$ind_data$level_green)
+          ) &&
+          identical(
+            as.numeric(input$level_yellow), as.numeric(rv$ind_data$level_yellow)
+          ) &&
+          identical(
+            as.numeric(input$min_denominator),
+            as.numeric(rv$ind_data$min_denominator)
+          ) &&
           identical(input$type, rv$ind_data$type)) {
         NULL
       } else {

@@ -16,7 +16,7 @@
 #'   delete_indicator_data delete_registry_data delete_agg_data insert_data
 #'   insert_agg_data update_aggdata_delivery update_aggdata_delivery_time
 #'   agg_all_data clean_agg_data create_imongr_user update_registry_medfield
-#'   update_registry_user update_ind_text
+#'   update_registry_user update_ind_text update_ind_val
 NULL
 
 
@@ -340,6 +340,41 @@ WHERE
     df$title,
     df$short_description,
     df$long_description,
+    df$id
+  )
+
+  con <- pool::poolCheckout(pool)
+  rs <- DBI::dbSendQuery(con, query)
+  DBI::dbBind(rs, params)
+  DBI::dbClearResult(rs)
+  pool::poolReturn(con)
+
+}
+
+#' @rdname ops
+#' @export
+update_ind_val <- function(pool, df) {
+
+  query <- paste0("
+UPDATE
+  ind
+SET
+  include = ?,
+  level_direction = ?,
+  level_green = ?,
+  level_yellow = ?,
+  min_denominator = ?,
+  type = ?
+WHERE
+  id = ?;")
+
+  params <- list(
+    df$include,
+    df$level_direction,
+    df$level_green,
+    df$level_yellow,
+    df$min_denominator,
+    df$type,
     df$id
   )
 
