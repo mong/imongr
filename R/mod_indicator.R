@@ -30,7 +30,7 @@ indicator_input <- function(id) {
         shiny::uiOutput(ns("set_type")),
         shiny::uiOutput(ns("update_indicator_val")),
         shiny::hr(),
-        shiny::verbatimTextOutput(ns("agg_progress"))
+        shiny::verbatimTextOutput(ns("message"))
       ),
       shiny::mainPanel(
         shiny::uiOutput(ns("edit_ind_title")),
@@ -59,6 +59,9 @@ indicator_server <- function(id, pool) {
     rv <- shiny::reactiveValues(
       indicator_reg = character(),
       level_logi = "st\u00f8rre eller lik:",
+      level_green_min = 0,
+      level_green_max = 1,
+      level_consistent = TRUE,
       type = c("andel"),
       title_oversize = FALSE,
       short_oversize = FALSE,
@@ -67,11 +70,36 @@ indicator_server <- function(id, pool) {
 
     oversize_message <- "<i style='color:red;'>Teksten er for lang!</i><br><br>"
 
-    shiny::observeEvent(input$level_direction, {
-      if (input$level_direction) {
-        rv$level_logi <- "st\u00f8rre eller lik:"
+    level_consistent <- shiny::reactive({
+      if (!is.na(input$level_green) && !is.na(input$level_yellow)) {
+        if (input$level_direction) {
+          if (input$level_green >= input$level_yellow) {
+            shinyjs::html("message", "")
+            return(TRUE)
+          } else {
+            shinyjs::html("message", "")
+            shinyjs::html(
+              "message",
+              "Verdier for m\u00e5loppn\u00e5else er ikke konsistente!"
+            )
+            return(FALSE)
+          }
+        } else {
+          if (input$level_yellow >= input$level_green) {
+            shinyjs::html("message", "")
+            return(TRUE)
+          } else {
+            shinyjs::html("message", "")
+            shinyjs::html(
+              "message",
+              "Verdier for m\u00e5loppn\u00e5else er ikke konsistente!"
+            )
+            return(FALSE)
+          }
+        }
       } else {
-        rv$level_logi <- "mindre eller lik:"
+        shinyjs::html("message", "")
+        return(TRUE)
       }
     })
 
@@ -80,6 +108,26 @@ indicator_server <- function(id, pool) {
       rv$type <- rv$ind_data$type
       rv$ind_data <- rv$ind_data %>%
         dplyr::filter(.data$id == input$indicator)
+      if (rv$ind_data$level_direction == 1) {
+        rv$level_green_min <- rv$ind_data$level_yellow
+        rv$level_green_max <- 1
+        rv$level_yellow_min <- 0
+        rv$level_yellow_max <- rv$ind_data$level_yellow
+      } else {
+        rv$level_green_min <- 0
+        rv$level_green_max <- rv$ind_data$level_yellow
+        rv$level_yellow_min <- rv$ind_data$level_yellow
+        rv$level_yellow_max <- 1
+      }
+    })
+
+    shiny::observeEvent(input$level_direction, {
+      if (input$level_direction) {
+        rv$level_logi <- "st\u00f8rre eller lik:"
+      } else {
+        rv$level_logi <- "mindre eller lik:"
+      }
+      rv$level_consistent <- level_consistent()
     })
 
     shiny::observeEvent(input$update_val, {
@@ -92,11 +140,11 @@ indicator_server <- function(id, pool) {
       update_ind_val(pool, rv$ind_data)
       df <- get_registry_data(pool, input$indicator_registry)
       withCallingHandlers({
-        shinyjs::html("agg_progress", "")
+        shinyjs::html("message", "")
         insert_agg_data(pool, df)
       },
       message = function(m) {
-        shinyjs::html(id = "agg_progress", html = m$message, add = TRUE)
+        shinyjs::html(id = "message", html = m$message, add = TRUE)
       })
       rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
       rv$type <- rv$ind_data$type
@@ -185,8 +233,8 @@ indicator_server <- function(id, pool) {
           ns("level_green"),
           paste("H\u00f8y m\u00e5loppn\u00e5else", rv$level_logi),
           value = rv$ind_data$level_green,
-          min = 0,
-          max = 1,
+          min = rv$level_green_min,
+          max = rv$level_green_max,
           step = 0.1
         )
       )
@@ -200,8 +248,8 @@ indicator_server <- function(id, pool) {
           ns("level_yellow"),
           paste("Middels m\u00e5loppn\u00e5else", rv$level_logi),
           value = rv$ind_data$level_yellow,
-          min = 0,
-          max = 1,
+          min = rv$level_yellow_min,
+          max = rv$level_yellow_max,
           step = 0.1
         )
       )
@@ -257,7 +305,11 @@ indicator_server <- function(id, pool) {
           identical(input$type, rv$ind_data$type)) {
         NULL
       } else {
-        shiny::actionButton(ns("update_val"), "Oppdat\u00e9r verdier")
+        if (level_consistent()) {
+          shiny::actionButton(ns("update_val"), "Oppdat\u00e9r verdier")
+        } else {
+          NULL
+        }
       }
     })
 
