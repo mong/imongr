@@ -71,14 +71,12 @@ indicator_server <- function(id, pool) {
         rv$level_logi <- "mindre eller lik:"
       }
     })
-    shiny::observeEvent(input$min_denominator, {
-      rv$val_change <- TRUE
-    })
 
     shiny::observeEvent(input$indicator, {
-      rv$ind_data <- get_registry_ind(pool, input$indicator_registry) %>%
+      rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
+      rv$type <- rv$ind_data$type
+      rv$ind_data <- rv$ind_data %>%
         dplyr::filter(.data$id == input$indicator)
-      rv$val_change <- FALSE
     })
 
     shiny::observeEvent(input$ind_title, {
@@ -209,7 +207,8 @@ indicator_server <- function(id, pool) {
           "kategoriene."
         ),
         shiny::selectInput(
-          ns("type"), "Indikatortype:", choices = unique(rv$ind_data$type)
+          ns("type"), "Indikatortype:",
+          choices = unique(rv$type), selected = rv$ind_data$type
         )
       )
     })
@@ -222,7 +221,8 @@ indicator_server <- function(id, pool) {
           input$include == as.logical(rv$ind_data$include) &&
           input$level_direction == as.logical(rv$ind_data$level_direction) &&
           identical(input$level_green, rv$ind_data$level_green) &&
-          identical(input$level_yellow, rv$ind_data$level_yellow)) {
+          identical(input$level_yellow, rv$ind_data$level_yellow) &&
+          identical(input$type, rv$ind_data$type)) {
         NULL
       } else {
         shiny::actionButton(ns("update_val"), "Oppdat\u00e9r verdier")
