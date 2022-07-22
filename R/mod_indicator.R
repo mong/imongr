@@ -16,6 +16,7 @@ indicator_input <- function(id) {
   ns <- shiny::NS(id)
 
   shiny::tagList(
+    shinyjs::useShinyjs(),
     shiny::sidebarLayout(
       shiny::sidebarPanel(
         shiny::uiOutput(ns("select_indicator_registry")),
@@ -27,7 +28,9 @@ indicator_input <- function(id) {
         shiny::uiOutput(ns("set_level_yellow")),
         shiny::uiOutput(ns("set_min_denominator")),
         shiny::uiOutput(ns("set_type")),
-        shiny::uiOutput(ns("update_indicator_val"))
+        shiny::uiOutput(ns("update_indicator_val")),
+        shiny::hr(),
+        shiny::verbatimTextOutput(ns("agg_progress"))
       ),
       shiny::mainPanel(
         shiny::uiOutput(ns("edit_ind_title")),
@@ -87,6 +90,14 @@ indicator_server <- function(id, pool) {
       rv$ind_data$min_denominator <- input$min_denominator
       rv$ind_data$type <- input$type
       update_ind_val(pool, rv$ind_data)
+      df <- get_registry_data(pool, input$indicator_registry)
+      withCallingHandlers({
+        shinyjs::html("agg_progress", "")
+        insert_agg_data(pool, df)
+      },
+      message = function(m) {
+        shinyjs::html(id = "agg_progress", html = m$message, add = TRUE)
+      })
       rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
       rv$type <- rv$ind_data$type
       rv$ind_data <- rv$ind_data %>%
