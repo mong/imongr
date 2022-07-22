@@ -130,55 +130,87 @@ indicator_server <- function(id, pool) {
 
     output$set_include <- shiny::renderUI({
       shiny::req(input$indicator)
-      shiny::checkboxInput(
-        ns("include"), "Vis i Sykehusviseren",
-        value = as.logical(rv$ind_data$include)
+      shiny::tags$div(
+        title = "Angi om indikatoren skal vises frem eller ikke",
+        shiny::checkboxInput(
+          ns("include"), "Vis i Sykehusviseren",
+          value = as.logical(rv$ind_data$include)
+        )
       )
     })
 
     output$set_level_direction <- shiny::renderUI({
       shiny::req(input$indicator)
-      shiny::checkboxInput(
-        ns("level_direction"),
-        "H\u00f8y verdi gir h\u00f8y m\u00e5loppn\u00e5else",
-        value = as.logical(rv$ind_data$level_direction)
+      shiny::tags$div(
+        title = paste(
+          "Ta vekk haken hvis synkende indikatorverdier gir \u00f8kt",
+          "m\u00e5loppn\u00e5else"
+        ),
+        shiny::checkboxInput(
+          ns("level_direction"),
+          "H\u00f8y verdi gir h\u00f8y m\u00e5loppn\u00e5else",
+          value = as.logical(rv$ind_data$level_direction)
+        )
       )
     })
 
     output$set_level_green <- shiny::renderUI({
       shiny::req(input$indicator)
-      shiny::numericInput(
-        ns("level_green"),
-        paste("H\u00f8y m\u00e5loppn\u00e5else", rv$level_logi),
-        value = rv$ind_data$level_green,
-        min = 0,
-        max = 1
+      shiny::tags$div(
+        title = "Grenseverdi for beste m\u00e5loppn\u00e5else",
+        shiny::numericInput(
+          ns("level_green"),
+          paste("H\u00f8y m\u00e5loppn\u00e5else", rv$level_logi),
+          value = rv$ind_data$level_green,
+          min = 0,
+          max = 1,
+          step = 0.1
+        )
       )
     })
 
     output$set_level_yellow <- shiny::renderUI({
       shiny::req(input$indicator)
-      shiny::numericInput(
-        ns("level_yellow"),
-        paste("Middels m\u00e5loppn\u00e5else", rv$level_logi),
-        value = rv$ind_data$level_yellow,
-        min = 0,
-        max = 1
+      shiny::tags$div(
+        title = "Grenseverdi for middels m\u00e5loppn\u00e5else",
+        shiny::numericInput(
+          ns("level_yellow"),
+          paste("Middels m\u00e5loppn\u00e5else", rv$level_logi),
+          value = rv$ind_data$level_yellow,
+          min = 0,
+          max = 1,
+          step = 0.1
+        )
       )
     })
 
     output$set_min_denominator <- shiny::renderUI({
       shiny::req(input$indicator)
-      shiny::numericInput(
-        ns("min_denominator"), "Minste antall observasjoner:",
-        value = rv$ind_data$min_denominator, min = 0
+      shiny::tags$div(
+        title = paste("Minste antall observasjoner (N) som kreves for at",
+                      "indikatoren presenteres"),
+        shiny::numericInput(
+          ns("min_denominator"), "Minste antall observasjoner:",
+          value = rv$ind_data$min_denominator, min = 0
+        )
       )
     })
 
     output$set_type <- shiny::renderUI({
       shiny::req(input$indicator)
-      shiny::selectInput(
-        ns("type"), "Indikatortype:", choices = unique(rv$ind_data$type)
+      shiny::tags$div(
+        title = paste(
+          "Normalt sett vil grad av m\u00e5loppn\u00e5else gis som antall",
+          "hendelser som har oppn\u00e5dd m\u00e5let (var) delt p\u00e5",
+          "totalt antall hendelser (denominator) og da skal indikatortype",
+          "settes til 'andel' eller 'dg_andel'. Alternativt kan grad av",
+          "m\u00e5loppn\u00e5else beregnes f\u00f8r opplasting til",
+          "Sykehusviseren og da skal indikatortype settes til en av de andre",
+          "kategoriene."
+        ),
+        shiny::selectInput(
+          ns("type"), "Indikatortype:", choices = unique(rv$ind_data$type)
+        )
       )
     })
 
