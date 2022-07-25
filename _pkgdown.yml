@@ -70,6 +70,8 @@ reference:
     - create_imongr_user
     - update_registry_medfield
     - update_registry_user
+    - update_ind_text
+    - update_ind_val
 
   - title: Aggregation
     desc: >
@@ -136,11 +138,12 @@ reference:
 
   - title: App
     desc: >
-      Application server, user interface and start-up
+      Application server, user interface, modules and start-up
     contents:
     - run_app
     - app_server
     - app_ui
+    - mod_indicator
 
   - title: Data
     desc: >
