@@ -287,7 +287,12 @@ indicator_server <- function(id, pool) {
     })
 
     output$update_indicator_val <- shiny::renderUI({
-      shiny::req(input$indicator)
+      shiny::req(
+        input$indicator,
+        input$level_direction,
+        input$level_green,
+        input$level_yellow
+      )
       if (identical(input$include, as.logical(rv$ind_data$include)) &&
           identical(
             input$level_direction, as.logical(rv$ind_data$level_direction)
