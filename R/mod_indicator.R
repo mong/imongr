@@ -52,7 +52,7 @@ indicator_server <- function(id, pool) {
 
   shiny::moduleServer(id, function(input, output, session) {
 
-    ns <- shiny::NS(id)
+    ns <- session$ns
 
     conf <- get_config()
 
@@ -69,6 +69,20 @@ indicator_server <- function(id, pool) {
     )
 
     oversize_message <- "<i style='color:red;'>Teksten er for lang!</i><br><br>"
+
+    level_limits <- shiny::reactive({
+      if (rv$ind_data$level_direction == 1) {
+        rv$level_green_min <- rv$ind_data$level_yellow
+        rv$level_green_max <- 1
+        rv$level_yellow_min <- 0
+        rv$level_yellow_max <- rv$ind_data$level_yellow
+      } else {
+        rv$level_green_min <- 0
+        rv$level_green_max <- rv$ind_data$level_yellow
+        rv$level_yellow_min <- rv$ind_data$level_yellow
+        rv$level_yellow_max <- 1
+      }
+    })
 
     level_consistent <- shiny::reactive({
       if (!is.na(input$level_green) && !is.na(input$level_yellow)) {
@@ -108,17 +122,7 @@ indicator_server <- function(id, pool) {
       rv$type <- rv$ind_data$type
       rv$ind_data <- rv$ind_data %>%
         dplyr::filter(.data$id == input$indicator)
-      if (rv$ind_data$level_direction == 1) {
-        rv$level_green_min <- rv$ind_data$level_yellow
-        rv$level_green_max <- 1
-        rv$level_yellow_min <- 0
-        rv$level_yellow_max <- rv$ind_data$level_yellow
-      } else {
-        rv$level_green_min <- 0
-        rv$level_green_max <- rv$ind_data$level_yellow
-        rv$level_yellow_min <- rv$ind_data$level_yellow
-        rv$level_yellow_max <- 1
-      }
+      level_limits()
     })
 
     shiny::observeEvent(input$level_direction, {
@@ -127,7 +131,7 @@ indicator_server <- function(id, pool) {
       } else {
         rv$level_logi <- "mindre eller lik:"
       }
-      rv$level_consistent <- level_consistent()
+      level_consistent()
     })
 
     shiny::observeEvent(input$update_val, {
@@ -287,33 +291,36 @@ indicator_server <- function(id, pool) {
     })
 
     output$update_indicator_val <- shiny::renderUI({
-      shiny::req(
-        input$indicator,
-        input$level_direction,
-        input$level_green,
-        input$level_yellow
-      )
-      if (identical(input$include, as.logical(rv$ind_data$include)) &&
-          identical(
-            input$level_direction, as.logical(rv$ind_data$level_direction)
-          ) &&
-          identical(
-            as.numeric(input$level_green), as.numeric(rv$ind_data$level_green)
-          ) &&
-          identical(
-            as.numeric(input$level_yellow), as.numeric(rv$ind_data$level_yellow)
-          ) &&
-          identical(
-            as.numeric(input$min_denominator),
-            as.numeric(rv$ind_data$min_denominator)
-          ) &&
-          identical(input$type, rv$ind_data$type)) {
+      if (any(c(
+        is.null(input$indicator),
+        is.null(input$include),
+        is.null(input$level_direction)
+        )
+      )) {
         NULL
       } else {
-        if (level_consistent()) {
-          shiny::actionButton(ns("update_val"), "Oppdat\u00e9r verdier")
+        if (identical(input$include, as.logical(rv$ind_data$include)) &&
+            identical(
+              input$level_direction, as.logical(rv$ind_data$level_direction)
+            ) &&
+            identical(
+              as.numeric(input$level_green), as.numeric(rv$ind_data$level_green)
+            ) &&
+            identical(
+              as.numeric(input$level_yellow), as.numeric(rv$ind_data$level_yellow)
+            ) &&
+            identical(
+              as.numeric(input$min_denominator),
+              as.numeric(rv$ind_data$min_denominator)
+            ) &&
+            identical(input$type, rv$ind_data$type)) {
+          return(NULL)
         } else {
-          NULL
+          if (level_consistent()) {
+            return(shiny::actionButton(ns("update_val"), "Oppdat\u00e9r verdier"))
+          } else {
+            return(NULL)
+          }
         }
       }
     })
