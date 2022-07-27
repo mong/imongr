@@ -18,13 +18,13 @@ NULL
 
   # pick relevant vars and if possible, aggregate
   reg <- reg %>%
-    dplyr::select(id, name)
+    dplyr::select(.data$id, .data$name)
   data <- data %>%
-    dplyr::select(delivery_id, year, ind_id)
+    dplyr::select(.data$delivery_id, .data$year, .data$ind_id)
   ind <- ind %>%
-    dplyr::select(id, registry_id)
+    dplyr::select(.data$id, .data$registry_id)
   delivery <- delivery %>%
-    dplyr::select(id, time)
+    dplyr::select(.data$id, .data$time)
 
   # join sets
   data %>%
@@ -39,28 +39,28 @@ NULL
 registry_status_report <- function(pool, pool_verify) {
 
   rdf <- .registry_status_data(pool) %>%
-    dplyr::select(name, year, time) %>%
-    dplyr::group_by(name) %>%
+    dplyr::select(.data$name, .data$year, .data$time) %>%
+    dplyr::group_by(.data$name) %>%
     dplyr::summarise(
-      min_year = min(year),
-      max_year = max(year),
-      last_publish = max(time)
+      min_year = min(.data$year),
+      max_year = max(.data$year),
+      last_publish = max(.data$time)
     ) %>%
-    dplyr::mutate(years = max_year - min_year + 1)
+    dplyr::mutate(years = .data$max_year - .data$min_year + 1)
 
   vrdf <- .registry_status_data(pool_verify) %>%
-    dplyr::select(name, time) %>%
-    dplyr::group_by(name) %>%
-    dplyr::summarise(last_upload = max(time))
+    dplyr::select(.data$name, .data$time) %>%
+    dplyr::group_by(.data$name) %>%
+    dplyr::summarise(last_upload = max(.data$time))
 
   dplyr::left_join(rdf, vrdf, by = "name") %>%
     dplyr::transmute(
-      Register = name,
-      `Fra og med` = min_year,
-      `Til og med` = max_year,
-      `Antall år` = years,
-      `Sist publisert` = as.Date(last_publish),
-      `Sist lastet opp` = as.Date(last_upload)
+      Register = .data$name,
+      `Fra og med` = .data$min_year,
+      `Til og med` = .data$max_year,
+      `Antall år` = .data$years,
+      `Sist publisert` = as.Date(.data$last_publish),
+      `Sist lastet opp` = as.Date(.data$last_upload)
 
     )
 
