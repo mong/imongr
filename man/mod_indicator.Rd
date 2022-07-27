@@ -2,12 +2,12 @@
 % Please edit documentation in R/mod_indicator.R
 \name{mod_indicator}
 \alias{mod_indicator}
-\alias{indicator_input}
+\alias{indicator_ui}
 \alias{indicator_server}
 \alias{indicator_app}
 \title{Shiny module providing GUI and server logic for the indicator tab}
 \usage{
-indicator_input(id)
+indicator_ui(id)
 
 indicator_server(id, pool)
 

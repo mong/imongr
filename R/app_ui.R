@@ -188,7 +188,7 @@ app_ui <- function() {
         shiny::span("Indikator",
                     title = conf$app_text$tooltip$indicator,
                     id = "indicator"),
-        indicator_input("ind")
+        indicator_ui("ind")
       ),
 
       shiny::navbarMenu(

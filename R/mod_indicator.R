@@ -6,12 +6,12 @@
 #' @return Shiny objects for the imongr app
 #'
 #' @name mod_indicator
-#' @aliases indicator_input indicator_server indicator_app
+#' @aliases indicator_ui indicator_server indicator_app
 NULL
 
 #' @rdname mod_indicator
 #' @export
-indicator_input <- function(id) {
+indicator_ui <- function(id) {
 
   ns <- shiny::NS(id)
 
@@ -389,7 +389,7 @@ indicator_server <- function(id, pool) {
 indicator_app <- function(pool) {
 
   ui <- shiny::fluidPage(
-    indicator_input("ind")
+    indicator_ui("ind")
   )
 
   server <- function(input, output, sessjon) {

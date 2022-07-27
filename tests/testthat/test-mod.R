@@ -68,7 +68,7 @@ test_that("indicator module provides a shiny app object", {
 
 test_that("indicator module ui returns returns a shiny tag list object", {
   check_db()
-  expect_true("shiny.tag.list" %in% class(indicator_input("id")))
+  expect_true("shiny.tag.list" %in% class(indicator_ui("id")))
 })
 
 test_that("indicator module server provides sensible output", {
