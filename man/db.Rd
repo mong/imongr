@@ -6,6 +6,7 @@
 \alias{drain_pool}
 \alias{insert_table}
 \alias{get_table}
+\alias{get_table_raw}
 \title{Low level database functions for imongr}
 \usage{
 make_pool(context = "prod")
@@ -15,6 +16,8 @@ drain_pool(pool)
 insert_table(pool, table, df)
 
 get_table(pool, table, sample = NA)
+
+get_table_raw(pool, table, sample = NA)
 }
 \arguments{
 \item{context}{Character string defining the environment context. Must be
