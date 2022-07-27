@@ -1,3 +1,6 @@
+# imongr 0.28.4.9000
+* Added a report with brief summary of status for all registries ([#209](https://github.com/mong/imongr/pull/209))
+
 # imongr 0.28.4
 * Duplicate check incorporate indicator table data (to be extended in next feature version)
 * Relaxed natural number checks, now only applied to data that are true fraction indicators

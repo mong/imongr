@@ -24,7 +24,7 @@
 #' @param df data frame containing data to be inserted into a database
 #' @return Database pool object, data frame or status message
 #' @name db
-#' @aliases make_pool drain_pool insert_table get_table
+#' @aliases make_pool drain_pool insert_table get_table get_table_raw
 NULL
 
 #' @rdname db
@@ -92,6 +92,26 @@ get_table <- function(pool, table, sample = NA) {
   query <- paste0("
 SELECT
   ", paste0(conf$db$tab[[table]]$insert, collapse = ",\n  "), "
+FROM
+  ", table)
+
+  if (!is.na(sample) && sample > 0 && sample < 1) {
+    query <- paste(query, "\nWHERE\n  RAND() <", sample)
+  }
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db
+#' @export
+get_table_raw <- function(pool, table, sample = NA) {
+
+  # make sure we deal in proper encoding
+  pool::dbExecute(pool, "SET NAMES utf8")
+
+  query <- paste0("
+SELECT
+  *
 FROM
   ", table)
 
