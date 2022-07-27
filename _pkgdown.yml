@@ -164,3 +164,13 @@ reference:
     - user_registry
     - medfield
     - registry_medfield
+
+  - title: To be added
+    desc: >
+      New items yet to be structured...
+    contents:
+    - report
+    - mod_report
+    - get_table_raw
+    - registry_status_report
+

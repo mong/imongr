@@ -1,6 +1,6 @@
 Package: imongr
 Title: I Handle the Data for qmongr 
-Version: 0.28.4
+Version: 0.28.4.9000
 Authors@R: c(
     person(given = "Are",
            family = "Edvardsen",

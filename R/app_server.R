@@ -72,6 +72,7 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "reguser")
   shiny::hideTab("tabs", target = "adminer")
   shiny::hideTab("tabs", target = "mine_field")
+  shiny::hideTab("tabs", target = "report")
   if (valid_user && conf$role$provider %in% igrs) {
     shiny::showTab("tabs", target = "upload")
     shiny::showTab("tabs", target = "publish")
@@ -653,6 +654,10 @@ app_server <- function(input, output, session) {
       shiny::actionButton("clean_agg", "Rydd aggregerte data")
     )
   })
+
+  # Report(s)
+  report_server("report", pool, pool_verify)
+
   # Heartbeat every 5 seconds, to avoid app to die when user is inactive.
   output$clock <- shiny::renderText({
    shiny::invalidateLater(5000)

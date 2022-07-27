@@ -267,6 +267,11 @@ app_ui <- function() {
               shiny::verbatimTextOutput("funMessage")
             )
           )
+        ),
+        shiny::tabPanel(
+          value = "report",
+          shiny::span("Rapport"),
+          report_ui("report")
         )
       ),
       bslib::nav_spacer(),
