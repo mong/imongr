@@ -44,9 +44,9 @@ registry_status_report <- function(pool, pool_verify) {
     dplyr::summarise(
       min_year = min(.data$year),
       max_year = max(.data$year),
-      last_publish = max(.data$time)
-    ) %>%
-    dplyr::mutate(years = .data$max_year - .data$min_year + 1)
+      last_publish = max(.data$time),
+      unique_years = length(unique(.data$year))
+    )
 
   vrdf <- .registry_status_data(pool_verify) %>%
     dplyr::select(.data$name, .data$time) %>%
@@ -58,7 +58,7 @@ registry_status_report <- function(pool, pool_verify) {
       Register = .data$name,
       `Fra og med` = .data$min_year,
       `Til og med` = .data$max_year,
-      `Antall år` = .data$years,
+      `Unike år` = .data$unique_years,
       `Sist publisert` = as.Date(.data$last_publish),
       `Sist lastet opp` = as.Date(.data$last_upload)
 
