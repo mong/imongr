@@ -59,7 +59,45 @@ if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool, query)
 }
 
-### TEST
+# Testing
+
+## report
+
+test_that("report module provides a shiny app object", {
+  check_db()
+  expect_equal(class(report_app()), "shiny.appobj")
+})
+
+test_that("report module ui returns returns a shiny tag list object", {
+  check_db()
+  expect_true("shiny.tag.list" %in% class(report_ui("id")))
+})
+
+test_that("report module server provides sensible output", {
+  check_db()
+  shiny::testServer(
+    report_server, args = list(pool = pool, pool_verify = pool), {
+
+      # when unknown report an empty data frame should be returned
+      session$setInputs(
+        report = "",
+        file_format = "csv"
+      )
+      expect_true("data.frame" %in% class(df()))
+      expect_equal(dim(df()), c(0, 0))
+
+      session$setInputs(
+        report = "Registerstatus",
+        file_format = "csv"
+      )
+      expect_true("data.frame" %in% class(df()))
+      expect_true(dim(df())[1] > 0)
+    }
+  )
+})
+
+
+## indicator
 
 test_that("indicator module provides a shiny app object", {
   check_db()
@@ -196,10 +234,7 @@ test_that("indicator module has output...", {
         indicator_registry = 10,
         indicator = "norgast_saarruptur"
       )
-      #print(class(output$set_include))
       expect_false(is.null(output))
-
-      # if altering a value, we should get a new update button
     }
   )
 })
