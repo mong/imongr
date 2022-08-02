@@ -40,17 +40,7 @@ app_ui <- function() {
         value = "profile",
         shiny::span("Profil",
                     title = conf$app_text$tooltip$profile),
-        shiny::htmlOutput("profile"),
-        shiny::checkboxInput(
-          "upload_history",
-          conf$profile$delivery$status$upload
-        ),
-        shiny::uiOutput("ui_upload_table"),
-        shiny::checkboxInput(
-          "publish_history",
-          conf$profile$delivery$status$publish
-        ),
-        shiny::uiOutput("ui_publish_table")
+        profile_ui("profile")
       ),
 
       shiny::tabPanel(

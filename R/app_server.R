@@ -118,42 +118,8 @@ app_server <- function(input, output, session) {
   })
 
 
-  # profil
-  output$profile <- shiny::renderText({
-    profile_ui(conf, pool, valid_user, iusr, igrs)
-  })
-
-  output$upload_table <- DT::renderDataTable(
-    if (input$upload_history) {
-      DT::datatable(get_user_deliveries(pool_verify), rownames = FALSE,
-                    options = list(dom = "tp", pageLength = 10,
-                      language = list(
-                        paginate = list(previous = "Forrige",
-                                        `next` = "Neste"))))
-    } else {
-      NULL
-    }
-  )
-
-  output$publish_table <- DT::renderDataTable(
-    if (input$publish_history) {
-      DT::datatable(get_user_deliveries(pool), rownames = FALSE,
-                    options = list(dom = "tp", pageLength = 10,
-                                   language = list(
-                                     paginate = list(previous = "Forrige",
-                                                     `next` = "Neste"))))
-    } else {
-      NULL
-    }
-  )
-
-  output$ui_upload_table <- shiny::renderUI(
-    DT::dataTableOutput("upload_table")
-  )
-
-  output$ui_publish_table <- shiny::renderUI(
-    DT::dataTableOutput("publish_table")
-  )
+  # profile
+  profile_server("profile", pool, pool_verify)
 
   # last
   ## observers
