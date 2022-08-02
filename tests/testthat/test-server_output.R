@@ -77,17 +77,6 @@ Sys.setenv(SHINYPROXY_USERNAME = "mongr")
 Sys.setenv(SHINYPROXY_USERGROUPS = "G1,G2")
 
 
-test_that("profile_ui provides a characer string", {
-  check_db()
-  expect_equal(class(
-    profile_ui(conf, pool, valid_user = FALSE, "TU", "TG")),
-               "character")
-  expect_equal(class(
-    profile_ui(conf, pool, valid_user = TRUE, "imongr", "PROVIDER")),
-    "character"
-  )
-})
-
 test_that("select list of registries is provided (if any)", {
   check_db()
   expect_true("shiny.tag.list" %in% class(

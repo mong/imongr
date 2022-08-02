@@ -61,6 +61,71 @@ if (is.null(check_db(is_test_that = FALSE))) {
 
 # Testing
 
+## profile
+
+test_that("profile module provides a shiny app object", {
+  check_db()
+  expect_equal(class(profile_app()), "shiny.appobj")
+})
+
+test_that("profile module ui returns returns a shiny tag list object", {
+  check_db()
+  expect_true("shiny.tag.list" %in% class(profile_ui("id")))
+})
+
+Sys.setenv(SHINYPROXY_USERNAME = "unknown")
+test_that("profile module server provides sensible output for not known user", {
+  check_db()
+  shiny::testServer(
+    profile_server, args = list(pool = pool, pool_verify = pool), {
+
+      # when unknown user, status should be reported accordingly
+      session$setInputs(upload_history = TRUE, publish_history = TRUE)
+      expect_equal(profile(), conf$profile$pending)
+      #expect_null(publish_history())
+    }
+  )
+})
+
+test_that("known user with no previous deliveries get relevant message", {
+  check_db()
+  shiny::testServer(
+    profile_server, args = list(pool = pool, pool_verify = pool), {
+      insert_table(
+        pool,
+        "user",
+        data.frame(
+          user_name = "unknown",
+          name = "",
+          phone = "",
+          email = "unknown@hell.no",
+          valid = 1
+        )
+      )
+      session$setInputs(upload_history = TRUE, publish_history = TRUE)
+      expect_true(grepl(conf$profile$delivery$none, profile(), fixed = TRUE))
+    })
+})
+
+Sys.setenv(SHINYPROXY_USERNAME = "mongr")
+Sys.setenv(SHINYPROXY_USERGROUPS = "PROVIDER,MANAGER")
+test_that("profile module server provides sensible output for known user", {
+  check_db()
+  shiny::testServer(
+    profile_server, args = list(pool = pool, pool_verify = pool), {
+
+      session$setInputs(upload_history = FALSE, publish_history = FALSE)
+      expect_null(upload_history())
+      expect_null(publish_history())
+
+      session$setInputs(upload_history = TRUE, publish_history = TRUE)
+      expect_true("htmlwidget" %in% class(upload_history()))
+      expect_true("htmlwidget" %in% class(publish_history()))
+    }
+  )
+})
+
+
 ## report
 
 test_that("report module provides a shiny app object", {

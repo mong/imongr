@@ -2,7 +2,6 @@
 % Please edit documentation in R/server_output.R
 \name{server_output}
 \alias{server_output}
-\alias{profile_ui}
 \alias{select_registry_ui}
 \alias{submit_ui}
 \alias{error_report_ui}
@@ -13,8 +12,6 @@
 \alias{reguser_summary_text_ui}
 \title{Functions that provide server output}
 \usage{
-profile_ui(conf, pool, valid_user, iusr, igrs)
-
 select_registry_ui(
   pool,
   conf,
@@ -40,15 +37,9 @@ medfield_summary_text_ui(pool, conf, df)
 reguser_summary_text_ui(pool, conf, df)
 }
 \arguments{
-\item{conf}{List of configuration}
-
 \item{pool}{Database pool object}
 
-\item{valid_user}{Logical valid user}
-
-\item{iusr}{Character string username}
-
-\item{igrs}{Character string comma separated user groups}
+\item{conf}{List of configuration}
 
 \item{input_id}{Character string with shiny ui id}
 
@@ -75,6 +66,12 @@ values are to be returned.}
 \item{sample_size}{Numeric sample size}
 
 \item{sample_type}{Character string of sampling type}
+
+\item{valid_user}{Logical valid user}
+
+\item{iusr}{Character string username}
+
+\item{igrs}{Character string comma separated user groups}
 }
 \value{
 shiny ui objects to be provided by the shiny server function

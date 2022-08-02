@@ -22,33 +22,11 @@
 #'
 #' @return shiny ui objects to be provided by the shiny server function
 #' @name server_output
-#' @aliases profile_ui select_registry_ui submit_ui error_report_ui
+#' @aliases select_registry_ui submit_ui error_report_ui
 #'   upload_sample_text_ui upload_sample_ui var_doc_ui medfield_summary_text_ui
 #'   reguser_summary_text_ui
 NULL
 
-
-#' @rdname server_output
-#' @export
-profile_ui <- function(conf, pool, valid_user, iusr, igrs) {
-  if (!valid_user || conf$role$none %in% igrs) {
-    conf$profile$pending
-  } else {
-    df <- get_user_data(pool)
-    if (df$id %in% get_table(pool, "delivery")$user_id) {
-      delivery_history <- ""
-    } else {
-      delivery_history <- conf$profile$delivery$none
-    }
-    paste(conf$profile$greeting, "<b>", iusr, "</b>", "<br>",
-          conf$profile$userinfo, "<br>",
-          "Navn:", df$name, "<br>",
-          "Telefon:", df$phone, "<br>",
-          "e-post:", df$email, "<br><br>",
-          conf$profile$howto, "<br><br>",
-          delivery_history)
-  }
-}
 
 #' @rdname server_output
 #' @export
