@@ -87,21 +87,22 @@ test_that("profile module server provides sensible output for not known user", {
   )
 })
 
+Sys.setenv(SHINYPROXY_USERNAME = "nobody@nowhere.com")
 test_that("known user with no previous deliveries get relevant message", {
   check_db()
   shiny::testServer(
     profile_server, args = list(pool = pool, pool_verify = pool), {
-      insert_table(
-        pool,
-        "user",
-        data.frame(
-          user_name = "unknown",
-          name = "",
-          phone = "",
-          email = "unknown@hell.no",
-          valid = 1
-        )
-      )
+      # insert_table(
+      #   pool,
+      #   "user",
+      #   data.frame(
+      #     user_name = "unknown",
+      #     name = "",
+      #     phone = "",
+      #     email = "unknown@hell.no",
+      #     valid = 1
+      #   )
+      # )
       session$setInputs(upload_history = TRUE, publish_history = TRUE)
       expect_true(grepl(conf$profile$delivery$none, profile(), fixed = TRUE))
     })
