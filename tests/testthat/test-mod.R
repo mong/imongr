@@ -82,12 +82,12 @@ test_that("profile module server provides sensible output for not known user", {
       # when unknown user, status should be reported accordingly
       session$setInputs(upload_history = TRUE, publish_history = TRUE)
       expect_equal(profile(), conf$profile$pending)
-      #expect_null(publish_history())
     }
   )
 })
 
 Sys.setenv(SHINYPROXY_USERNAME = "nobody@nowhere.com")
+Sys.setenv(SHINYPROXY_USERGROUPS = "PROVIDER,MANAGER")
 test_that("known user with no previous deliveries get relevant message", {
   check_db()
   shiny::testServer(
