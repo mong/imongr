@@ -17,7 +17,6 @@ app_server <- function(input, output, session) {
   conf <- get_config()
   pool <- make_pool()
   pool_verify <- make_pool(context = "verify")
-  oversize_message <- "<i style='color:red;'>Teksten er for lang!</i><br><br>"
   rv <- shiny::reactiveValues(
     context = "verify",
     inv_data = 0,
@@ -621,7 +620,7 @@ app_server <- function(input, output, session) {
     )
   })
 
-  # Report(s)
+  # reports
   report_server("report", pool, pool_verify)
 
   # Heartbeat every 5 seconds, to avoid app to die when user is inactive.

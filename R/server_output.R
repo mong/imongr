@@ -9,9 +9,6 @@
 #' @param current_reg Character string defining previously selected registry
 #' @param show_context Logical stating if context is to be shown in GUI. TRUE by
 #'   default.
-#' @param valid_user Logical valid user
-#' @param iusr Character string username
-#' @param igrs Character string comma separated user groups
 #' @param df Data frame containing indicator data
 #' @param ind Data frame containing indicators
 #' @param upload_file Character string with file to upload

@@ -89,7 +89,7 @@ profile_server <- function(id, pool, pool_verify) {
       })
 
       publish_history <- shiny::reactive({
-        if (input$publish_history){
+        if (input$publish_history) {
           DT::datatable(
             get_user_deliveries(pool),
             rownames = FALSE,

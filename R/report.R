@@ -58,7 +58,7 @@ registry_status_report <- function(pool, pool_verify) {
       Register = .data$name,
       `Fra og med` = .data$min_year,
       `Til og med` = .data$max_year,
-      `Unike år` = .data$unique_years,
+      `Unike aar` = .data$unique_years,
       `Sist publisert` = as.Date(.data$last_publish),
       `Sist lastet opp` = as.Date(.data$last_upload)
 

@@ -55,6 +55,8 @@ update_ind_val(pool, df)
 
 \item{df}{Data frame of relevant data}
 
+\item{ind}{Data frame of relevant indicator data}
+
 \item{registry}{Integer registry id}
 
 \item{update}{Character string of format YYYY-MM-DD providing date until data

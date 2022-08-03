@@ -66,12 +66,6 @@ values are to be returned.}
 \item{sample_size}{Numeric sample size}
 
 \item{sample_type}{Character string of sampling type}
-
-\item{valid_user}{Logical valid user}
-
-\item{iusr}{Character string username}
-
-\item{igrs}{Character string comma separated user groups}
 }
 \value{
 shiny ui objects to be provided by the shiny server function

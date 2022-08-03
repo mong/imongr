@@ -2,6 +2,7 @@
 #'
 #' @param pool Database connection pool object
 #' @param df Data frame of relevant data
+#' @param ind Data frame of relevant indicator data
 #' @param registry Integer registry id
 #' @param update Character string of format YYYY-MM-DD providing date until data
 #'   are regarded as updated. Default value is NA.
@@ -33,8 +34,6 @@ WHERE
   latest=1;"
 
   dat <- pool::dbGetQuery(pool, query)
-
-  #ind <- get_registry_ind(pool, registry)
 
   if (md5_checksum(df, ind) %in% dat$md5_checksum) {
     return(TRUE)
