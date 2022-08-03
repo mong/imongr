@@ -82,6 +82,15 @@ app_server <- function(input, output, session) {
     shiny::showTab("tabs", target = "Administrative verkt\u00f8y")
   }
 
+  # clean up when app ends
+  shiny::onStop(function() {
+    drain_pool(pool)
+    drain_pool(pool_verify)
+  })
+  shiny::observeEvent(session$isClosed() == TRUE, {
+    drain_pool(rv$pool)
+  })
+
   # app widget
   ## observers
   shiny::observeEvent(input$app_info,
