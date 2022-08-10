@@ -181,6 +181,24 @@ test_that("indicator texts can be updated", {
   )
 })
 
+test_that("indicator values can be updated", {
+  check_db()
+  expect_silent(
+    update_ind_val(
+      pool,
+      data.frame(
+        include = TRUE,
+        level_direction = 1,
+        level_green = 0.9,
+        level_yellow = 0.5,
+        min_denominator = 5,
+        type = "andel",
+        id = "norgast_dummy"
+      )
+    )
+  )
+})
+
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {

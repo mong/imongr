@@ -369,6 +369,15 @@ upload:
     submit:
       warning: >
         Merk: nye data vil overskrive alle eksisterende indikatorer for
+indicator:
+  types:
+  - andel
+  - beregnet_andel
+  - antall
+  - gjennomsnitt
+  - median
+  - dg_andel
+  - dg_beregnet_andel
 medfield:
   text:
     heading: >

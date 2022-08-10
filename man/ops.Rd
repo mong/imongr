@@ -17,6 +17,7 @@
 \alias{update_registry_medfield}
 \alias{update_registry_user}
 \alias{update_ind_text}
+\alias{update_ind_val}
 \title{Functions for data operations in imongr}
 \usage{
 duplicate_delivery(pool, df, ind, registry)
@@ -46,11 +47,15 @@ update_registry_medfield(pool, df)
 update_registry_user(pool, df)
 
 update_ind_text(pool, df)
+
+update_ind_val(pool, df)
 }
 \arguments{
 \item{pool}{Database connection pool object}
 
 \item{df}{Data frame of relevant data}
+
+\item{ind}{Data frame of relevant indicator data}
 
 \item{registry}{Integer registry id}
 
