@@ -62,7 +62,6 @@ indicator_server <- function(id, pool) {
       level_green_min = 0,
       level_green_max = 1,
       level_consistent = TRUE,
-      type = c("andel"),
       title_oversize = FALSE,
       short_oversize = FALSE,
       long_oversize = FALSE
@@ -119,7 +118,6 @@ indicator_server <- function(id, pool) {
 
     shiny::observeEvent(input$indicator, {
       rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
-      rv$type <- rv$ind_data$type
       rv$ind_data <- rv$ind_data %>%
         dplyr::filter(.data$id == input$indicator)
       level_limits()
@@ -151,7 +149,6 @@ indicator_server <- function(id, pool) {
         shinyjs::html(id = "message", html = m$message, add = TRUE)
       })
       rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
-      rv$type <- rv$ind_data$type
       rv$ind_data <- rv$ind_data %>%
         dplyr::filter(.data$id == input$indicator)
     })
@@ -285,7 +282,7 @@ indicator_server <- function(id, pool) {
         ),
         shiny::selectInput(
           ns("type"), "Indikatortype:",
-          choices = unique(rv$type), selected = rv$ind_data$type
+          choices = conf$indicator$types, selected = rv$ind_data$type
         )
       )
     })
