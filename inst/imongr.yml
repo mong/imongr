@@ -372,9 +372,12 @@ upload:
 indicator:
   types:
   - andel
+  - beregnet_andel
+  - antall
+  - gjennomsnitt
+  - median
   - dg_andel
-  - beregnet
-  - dg_beregnet
+  - dg_beregnet_andel
 medfield:
   text:
     heading: >
