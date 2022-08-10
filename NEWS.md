@@ -1,4 +1,5 @@
 # imongr 0.28.4.9000
+* Extended indicator editor ([#208](https://github.com/mong/imongr/pull/208))
 * Added a report with brief summary of status for all registries ([#209](https://github.com/mong/imongr/pull/209))
 
 # imongr 0.28.4
