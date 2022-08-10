@@ -292,7 +292,7 @@ indicator_server <- function(id, pool) {
         is.null(input$indicator),
         is.null(input$include),
         is.null(input$level_direction)
-        )
+      )
       )) {
         NULL
       } else {
@@ -304,7 +304,8 @@ indicator_server <- function(id, pool) {
               as.numeric(input$level_green), as.numeric(rv$ind_data$level_green)
             ) &&
             identical(
-              as.numeric(input$level_yellow), as.numeric(rv$ind_data$level_yellow)
+              as.numeric(input$level_yellow),
+              as.numeric(rv$ind_data$level_yellow)
             ) &&
             identical(
               as.numeric(input$min_denominator),
@@ -314,7 +315,9 @@ indicator_server <- function(id, pool) {
           return(NULL)
         } else {
           if (level_consistent()) {
-            return(shiny::actionButton(ns("update_val"), "Oppdat\u00e9r verdier"))
+            return(
+              shiny::actionButton(ns("update_val"), "Oppdat\u00e9r verdier")
+            )
           } else {
             return(NULL)
           }

@@ -30,11 +30,7 @@ app_server <- function(input, output, session) {
     upload_reg = character(),
     publish_reg = character(),
     download_reg = character(),
-    indicator_reg = character(),
     indicator_data = data.frame(),
-    title_oversize = FALSE,
-    short_oversize = FALSE,
-    long_oversize = FALSE,
     pool = make_pool(context = "verify"),
     admin_url = paste0(adminer_url(), "/?",
                         "server=", db_host(context = "verify"), "&",
@@ -110,7 +106,6 @@ app_server <- function(input, output, session) {
     drain_pool(rv$pool)
     rv$upload_reg <- input$registry
     rv$download_reg <- input$download_registry
-    rv$indicator_reg <- input$indicator_registry
     rv$admin_url <- paste0(adminer_url(), "/?",
                            "server=", db_host(context = rv$context), "&",
                            "username=", db_username(), "&",
