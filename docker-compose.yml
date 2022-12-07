@@ -12,6 +12,8 @@ services:
       MYSQL_PASSWORD: imongr
     volumes:
       - ./inst:/docker-entrypoint-initdb.d
+    ports:
+      - 3331:3306
 
   db-verify:
     image: mariadb
@@ -23,6 +25,8 @@ services:
       MYSQL_PASSWORD: imongr
     volumes:
       - ./inst:/docker-entrypoint-initdb.d
+    ports:
+      - 3332:3306
 
   db-qa:
     image: mariadb
@@ -34,6 +38,8 @@ services:
       MYSQL_PASSWORD: imongr
     volumes:
       - ./inst:/docker-entrypoint-initdb.d
+    ports:
+      - 3333:3306
 
 
   dev:
