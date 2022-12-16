@@ -45,7 +45,7 @@ services:
   dev:
     depends_on:
       - db
-    image: hnskde/mongr-dev:master
+    image: hnskde/mongr-dev
     restart: "no"
     volumes:
       - ~/.ssh:/home/rstudio/.ssh
