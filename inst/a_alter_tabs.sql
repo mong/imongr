@@ -29,12 +29,16 @@ AFTER
 
 ALTER TABLE
   ind
+DROP CONSTRAINT IF EXISTS inconsistent_level_values;
+
+ALTER TABLE
+  ind
 ADD CONSTRAINT inconsistent_level_values
     CHECK (case
       when (level_direction = 0 and level_green > level_yellow) then false
       when (level_direction = 1 and level_green < level_yellow) then false
       else true end
-    )
+    );
 
 ALTER TABLE
   `ind`
