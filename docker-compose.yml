@@ -52,18 +52,8 @@ services:
       - ~/.gitconfig:/home/rstudio/.gitconfig
     ports:
       - 8787:8787
-    dns:
-      - 8.8.8.8
     environment:
       PASSWORD: password
-      IMONGR_CONTEXT: DEV
-      IMONGR_DB_HOST: db
-      IMONGR_DB_HOST_VERIFY: db-verify
-      IMONGR_DB_HOST_QA: db-qa
-      IMONGR_DB_NAME: imongr
-      IMONGR_DB_USER: imongr
-      IMONGR_DB_PASS: imongr
-      IMONGR_ADMINER_URL: http://localhost:8888
 
   adminer:
     depends_on:
