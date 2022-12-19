@@ -98,7 +98,9 @@ publish_server <- function(id, pool, pool_verify) {
           )
       ) {
         shiny::tagList(
-          shiny::actionButton(ns("publish"), "Publiser", shiny::icon("paper-plane")),
+          shiny::actionButton(ns("publish"),
+                              "Publiser",
+                              shiny::icon("paper-plane")),
           shiny::p(paste(conf$upload$doc$submit$warning,
                          get_registry_name(pool, input$publish_registry)))
         )
@@ -141,7 +143,8 @@ publish_server <- function(id, pool, pool_verify) {
     })
 
     shiny::observeEvent(input$view_terms, {
-      f <- rmarkdown::render(input = system.file("terms.Rmd", package = "imongr"),
+      f <- rmarkdown::render(input = system.file("terms.Rmd",
+                                                 package = "imongr"),
                              output_format = "html_fragment",
                              output_file = tempfile())
       shiny::showModal(shiny::modalDialog(
@@ -193,7 +196,9 @@ publish_server <- function(id, pool, pool_verify) {
         "/sykehus'>her.</a>"
       )
       paste(
-        get_registry_name(pool_verify, shiny::req(input$publish_registry), TRUE),
+        get_registry_name(pool_verify,
+                          shiny::req(input$publish_registry),
+                          TRUE),
         conf$publish$doc$verify,
         verify_hypertext
       )
