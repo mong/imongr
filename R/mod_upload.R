@@ -108,7 +108,6 @@ upload_server <- function(id, pool_verify) {
     }
   })
   shiny::observeEvent(input$submit, {
-    print("Observe submit")
     insert_data(
       pool = pool_verify,
       df = df(),
