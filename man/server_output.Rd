@@ -22,7 +22,7 @@ select_registry_ui(
   pool0 = NULL
 )
 
-submit_ui(conf, pool, upload_file, registry, df, ind, context)
+submit_ui(id, conf, pool, upload_file, registry, df, ind, context)
 
 error_report_ui(pool, df, ind, upload_file, registry)
 
