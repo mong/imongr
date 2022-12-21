@@ -234,7 +234,7 @@ agg_from_level <- function(df, org, ind, conf, from_level) {
                             denominator = sum(.data$denominator))
     idf$unit_level <- rep(unit_levels[i], dim(idf)[1])
     this_org <- org %>%
-      dplyr::select(any_of(groups[i]), any_of(unit_levels[i])) %>%
+      dplyr::select(all_of(groups[i]), all_of(unit_levels[i])) %>%
       dplyr::distinct()
     idf <- dplyr::left_join(idf, this_org, by = groups[i])
     names(idf)[names(idf) == groups[i]] <- "orgnr"
