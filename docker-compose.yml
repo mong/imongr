@@ -50,6 +50,7 @@ services:
     volumes:
       - ~/.ssh:/home/rstudio/.ssh
       - ~/.gitconfig:/home/rstudio/.gitconfig
+      - .:/home/rstudio/imongr
     ports:
       - 8787:8787
     environment:
