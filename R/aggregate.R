@@ -65,8 +65,8 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
   # split by data that are not for aggregation (none-fraction indicators)
   df_noagg <- dplyr::filter(df, .data$ind_id %in% ind_noagg) %>%
     dplyr::left_join(orgnr_name_map, by = "orgnr") %>%
-    dplyr::select(.data$context, .data$year, .data$ind_id, .data$unit_level,
-                  .data$unit_name, .data$var, .data$denominator, .data$orgnr)
+    dplyr::select("context", "year", "ind_id", "unit_level",
+                  "unit_name", "var", "denominator", "orgnr")
   df <- df %>%
     dplyr::filter(!.data$ind_id %in% ind_noagg)
   message(paste("  removed", dim(df_noagg)[1], "rows for indicators that",
@@ -157,7 +157,7 @@ agg_dg <- function(aggs, ind) {
   aggs$dg <- NA
 
   # map data set ind ids to corresponding dg, new column named 'dg_id'
-  ind_id_dg_id <- dplyr::select(ind, .data$id, .data$dg_id)
+  ind_id_dg_id <- dplyr::select(ind, "id", "dg_id")
   aggs <- aggs %>%
     dplyr::left_join(ind_id_dg_id, by = c("ind_id" = "id"))
 
@@ -168,7 +168,7 @@ agg_dg <- function(aggs, ind) {
   dg_data <- dplyr::filter(aggs, .data$ind_id %in% dgs)
 
   # unique years represented by dgs in data, ascending order
-  years <- dplyr::select(dg_data, .data$year) %>%
+  years <- dplyr::select(dg_data, "year") %>%
     dplyr::distinct() %>%
     dplyr::arrange() %>%
     dplyr::pull()
@@ -180,18 +180,18 @@ agg_dg <- function(aggs, ind) {
   # dt: temporary dg_data for each iteration
   for (i in seq_len(length(years))) {
     at <- dplyr::filter(aggs, .data$year >= years[i]) %>%
-      dplyr::select(!.data$dg)
+      dplyr::select(-c("dg"))
     dt <- dplyr::filter(dg_data, .data$year == years[i]) %>%
-      dplyr::select(.data$ind_id, .data$orgnr, .data$var, .data$context) %>%
+      dplyr::select("ind_id", "orgnr", "var", "context") %>%
       dplyr::rename(dg_id = .data$ind_id, dg = .data$var)
     # join current year dg into data from current year and newer. Then, move on
     # with only those vars needed for updating aggs
     at <- at %>%
       dplyr::left_join(dt, by = c("dg_id", "orgnr", "context")) %>%
-      dplyr::select(.data$ind_id, .data$dg_id, .data$unit_level,
-                    .data$unit_name, .data$orgnr, .data$year,
-                    .data$denominator, .data$var, .data$level,
-                    .data$level_direction, .data$dg, .data$context)
+      dplyr::select("ind_id", "dg_id", "unit_level",
+                    "unit_name", "orgnr", "year",
+                    "denominator", "var", "level",
+                    "level_direction", "dg", "context")
 
     # update aggs from current year and newer with dg from current year
     aggs <- aggs %>%
@@ -199,7 +199,7 @@ agg_dg <- function(aggs, ind) {
       dplyr::bind_rows(at)
   }
 
-  aggs %>% dplyr::select(!.data$dg_id)
+  aggs %>% dplyr::select(-c("dg_id"))
 }
 
 #' @rdname aggregate
@@ -234,7 +234,7 @@ agg_from_level <- function(df, org, ind, conf, from_level) {
                             denominator = sum(.data$denominator))
     idf$unit_level <- rep(unit_levels[i], dim(idf)[1])
     this_org <- org %>%
-      dplyr::select(.data[[groups[i]]], .data[[unit_levels[i]]]) %>%
+      dplyr::select(dplyr::all_of(groups[i]), dplyr::all_of(unit_levels[i])) %>%
       dplyr::distinct()
     idf <- dplyr::left_join(idf, this_org, by = groups[i])
     names(idf)[names(idf) == groups[i]] <- "orgnr"

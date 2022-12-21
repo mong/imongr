@@ -18,13 +18,13 @@ NULL
 
   # pick relevant vars and if possible, aggregate
   reg <- reg %>%
-    dplyr::select(.data$id, .data$name)
+    dplyr::select("id", "name")
   data <- data %>%
-    dplyr::select(.data$delivery_id, .data$year, .data$ind_id)
+    dplyr::select("delivery_id", "year", "ind_id")
   ind <- ind %>%
-    dplyr::select(.data$id, .data$registry_id)
+    dplyr::select("id", "registry_id")
   delivery <- delivery %>%
-    dplyr::select(.data$id, .data$time)
+    dplyr::select("id", "time")
 
   # join sets
   data %>%
@@ -39,7 +39,7 @@ NULL
 registry_status_report <- function(pool, pool_verify) {
 
   rdf <- .registry_status_data(pool) %>%
-    dplyr::select(.data$name, .data$year, .data$time) %>%
+    dplyr::select("name", "year", "time") %>%
     dplyr::group_by(.data$name) %>%
     dplyr::summarise(
       min_year = min(.data$year),
@@ -49,7 +49,7 @@ registry_status_report <- function(pool, pool_verify) {
     )
 
   vrdf <- .registry_status_data(pool_verify) %>%
-    dplyr::select(.data$name, .data$time) %>%
+    dplyr::select("name", "time") %>%
     dplyr::group_by(.data$name) %>%
     dplyr::summarise(last_upload = max(.data$time))
 
