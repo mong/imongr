@@ -298,6 +298,19 @@ test_that("indicator module has output...", {
   )
 })
 
+test_that("upload module has output...", {
+  check_db()
+  shiny::testServer(
+    upload_server, args = list(pool = pool), {
+      session$setInputs(
+        indicator_registry = 10,
+        indicator = "norgast_saarruptur"
+      )
+      expect_false(is.null(output))
+    }
+  )
+})
+
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
