@@ -306,6 +306,7 @@ test_that("publish module has output...", {
         publish_registry = 10
       )
       # Get out norgast data from pool
+      expect_equal(nrow(publish_data()), 19773)
       expect_equal_to_reference(publish_ind(), "data/norgast_ind.rds")
       expect_equal_to_reference(publish_delivery(), "data/norgast_delivery.rds")
       session$setInputs(
