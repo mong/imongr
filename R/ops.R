@@ -145,7 +145,7 @@ insert_agg_data <- function(pool, df) {
   ## the aggregate
   orgnr_name_map <- get_all_orgnr(pool, include_short_name = TRUE) %>%
     dplyr::select("orgnr", "short_name") %>%
-    dplyr::rename(unit_name = short_name)
+    dplyr::rename(unit_name = .data$short_name)
 
 
   # make sure we have unit_levels
