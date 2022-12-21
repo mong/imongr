@@ -415,7 +415,7 @@ indicator_is_fraction <- function(pool, df, conf, return_ind = FALSE) {
   ind <- imongr::get_table(pool, "ind")
   ind <- ind %>%
     dplyr::filter(.data$id %in% ind_id) %>%
-    dplyr::select(.data$id, .data$type)
+    dplyr::select("id", "type")
 
   if (!return_ind) {
     ind$type %in% conf$var$fraction$type

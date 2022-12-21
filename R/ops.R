@@ -144,8 +144,8 @@ insert_agg_data <- function(pool, df) {
   ## obtain unit name-number mapping needed for none-fraction data when added to
   ## the aggregate
   orgnr_name_map <- get_all_orgnr(pool, include_short_name = TRUE) %>%
-    dplyr::select(.data$orgnr, .data$short_name) %>%
-    dplyr::rename(unit_name = .data$short_name)
+    dplyr::select("orgnr", "short_name") %>%
+    dplyr::rename(unit_name = short_name)
 
 
   # make sure we have unit_levels
@@ -154,7 +154,7 @@ insert_agg_data <- function(pool, df) {
   }
 
   # add registry_id to data
-  ind_reg <- dplyr::select(get_table(pool, "ind"), .data$id, .data$registry_id)
+  ind_reg <- dplyr::select(get_table(pool, "ind"), "id", "registry_id")
   df <- df %>%
     dplyr::left_join(ind_reg, by = c("ind_id" = "id"))
 
@@ -162,7 +162,7 @@ insert_agg_data <- function(pool, df) {
   for (i in seq_len(length(reg))) {
     message(paste("Processing", get_registry_name(pool, reg[i])))
     dat <- dplyr::filter(df, .data$registry_id == reg[i]) %>%
-      dplyr::select(!.data$registry_id)
+      dplyr::select(-c("registry_id"))
     # if delivery is a subset of registry indicators AND dg is part of subset,
     # agg_data for all indicators of the current registry must be updated.
     if (!setequal(get_registry_indicators(pool, reg[i])$id,
