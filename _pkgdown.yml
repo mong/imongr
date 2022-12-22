@@ -145,6 +145,7 @@ reference:
     - app_ui
     - mod_indicator
     - mod_publish
+    - mod_upload
 
   - title: Data
     desc: >
