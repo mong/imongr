@@ -118,27 +118,7 @@ app_ui <- function() {
         shiny::span(
           "Publiser indikatorer", title = conf$app_text$tooltip$publish
         ),
-        shiny::sidebarLayout(
-          shiny::sidebarPanel(
-            shiny::uiOutput("select_publish_registry"),
-            shiny::uiOutput("publish_liability"),
-            shinycssloaders::withSpinner(
-              shiny::textOutput("publishing"),
-              color = "#18bc9c",
-              color.background = "#ffffff",
-              type = 7,
-              proxy.height = 80),
-            shiny::uiOutput("publish")
-          ),
-          shiny::mainPanel(
-            shiny::htmlOutput("error_report_publish"),
-            shiny::titlePanel("Publiser data"),
-            shiny::h3("Kvalitetskontroll"),
-            shiny::htmlOutput("publish_verify_doc"),
-            shiny::h3("Veiledning"),
-            shiny::htmlOutput("publish_main_doc")
-          )
-        )
+        publish_ui("publ")
       ),
 
       shiny::tabPanel(
