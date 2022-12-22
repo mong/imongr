@@ -82,7 +82,8 @@ select_registry_ui <- function(pool, conf, input_id, context,
 
 #' @rdname server_output
 #' @export
-submit_ui <- function(input_id, conf, pool, upload_file, registry, df, ind, context) {
+submit_ui <- function(input_id, conf, pool, upload_file,
+                      registry, df, ind, context) {
 
   if (!is.null(upload_file) && !"denominator" %in% names(df)) {
     df <- cbind(df, denominator = 1L)
