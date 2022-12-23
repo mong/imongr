@@ -67,7 +67,7 @@ publish_server <- function(id, pool, pool_verify) {
         shiny::HTML(paste(
           get_registry_name(pool_verify, input$publish_registry, TRUE),
           conf$publish$liability,
-          as.character(shiny::actionLink("view_terms", "vilk\u00e5rene."))
+          as.character(shiny::actionLink(ns("view_terms"), "vilk\u00e5rene."))
         ))
       )
     })
@@ -151,7 +151,7 @@ publish_server <- function(id, pool, pool_verify) {
         shiny::HTML(readLines(f)),
         footer = shiny::tagList(
           shiny::downloadButton(ns("downloadTerms"), "Last ned vilk\u00e5r"),
-          shiny::modalButton(ns("Lukk"))
+          shiny::modalButton("Lukk")
         )
       ))
     })
@@ -218,7 +218,7 @@ publish_app <- function(pool, pool_verify) {
   )
 
   server <- function(input, output, sessjon) {
-    publish_server("ind", pool, pool_verify)
+    publish_server("publish", pool, pool_verify)
   }
 
   shiny::shinyApp(ui, server)
