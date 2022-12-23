@@ -61,34 +61,7 @@ app_ui <- function() {
       shiny::tabPanel(
         value = "download",
         shiny::span("Last ned data", title = conf$app_text$tooltip$download),
-        shiny::sidebarLayout(
-          shiny::sidebarPanel(
-            width = 3,
-            shiny::selectInput(
-              "download_context",
-              "Velg datakilde for nedlasting:",
-              list(
-                `Kvalitetskontroll` = "verify",
-                `Publiserte data` = "prod"
-              )
-            ),
-            shiny::uiOutput("select_download_registry"),
-            shiny::uiOutput("select_db_table"),
-            shiny::tags$div(
-              title = paste("csv (nordisk): semikolon-delt csv med komma som",
-                            "desimalskilletegn"),
-              shiny::selectInput(
-                "file_format",
-                "Filformat:",
-                c("csv", "csv (nordisk)", "rds")
-              )
-            ),
-            shiny::downloadButton("download_db_table", "Hent fra server")
-          ),
-          shiny::mainPanel(
-            shiny::uiOutput("ui_db_table")
-          )
-        )
+        download_ui("download")
       ),
       shiny::tabPanel(
         value = "indicator",

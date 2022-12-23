@@ -122,82 +122,11 @@ app_server <- function(input, output, session) {
   # last
   upload_server("upload", pool_verify)
 
-
+  # publish
   publish_server("publ", pool, pool_verify)
 
   # loss
-  pool_download <- shiny::reactive({
-    if (is.null(input$download_context)) {
-      pool_verify
-    } else {
-      if (input$download_context == "verify") {
-        pool_verify
-      } else {
-        pool
-      }
-    }
-  })
-
-  db_table <- shiny::reactive({
-    if (input$download_registry == "") {
-      data.frame()
-    } else {
-      if (input$tab_set == "data") {
-        get_registry_data(pool_download(), input$download_registry)
-      } else if (input$tab_set == "ind") {
-        get_registry_ind(pool_download(), input$download_registry)
-      } else {
-        get_table(pool_download(), input$tab_set)
-      }
-    }
-  })
-
-  output$select_download_registry <- shiny::renderUI({
-    select_registry_ui(pool_download(), conf, input_id = "download_registry",
-                       context = input$download_context,
-                       show_context = FALSE)
-  })
-
-  output$select_db_table <- shiny::renderUI({
-    shiny::selectInput("tab_set", "Velg tabell:", conf$download$tab,
-                       selected = conf$download$tab[1])
-  })
-
-  output$download_db_table <- shiny::downloadHandler(
-    filename = function() {
-      if (input$file_format %in% c("csv", "csv (nordisk)")) {
-        basename(tempfile(fileext = ".csv"))
-      } else {
-        basename(tempfile(fileext = ".rds"))
-      }
-    },
-    content = function(file) {
-      switch(input$file_format,
-              `csv` = readr::write_excel_csv(db_table(), file),
-              `csv (nordisk)` = readr::write_excel_csv2(db_table(), file),
-              `rds` = readr::write_rds(db_table(), file)
-      )
-    }
-  )
-
-  output$db_table <- DT::renderDataTable(
-    DT::datatable(db_table(), rownames = FALSE,
-      options = list(
-        dom = "lftp",
-        language = list(
-          lengthMenu = "Vis _MENU_ rader per side",
-          search = "S\u00f8k:",
-          info = "Rad _START_ til _END_ av totalt _TOTAL_",
-          paginate = list(previous = "Forrige", `next` = "Neste")
-        )
-      )
-    )
-  )
-
-  output$ui_db_table <- shiny::renderUI(
-    DT::dataTableOutput("db_table")
-  )
-
+  download_server("download", pool, pool_verify)
 
   # indicator
   indicator_server("ind", pool_verify)

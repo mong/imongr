@@ -146,6 +146,7 @@ reference:
     - mod_indicator
     - mod_publish
     - mod_upload
+    - mod_download
 
   - title: Data
     desc: >

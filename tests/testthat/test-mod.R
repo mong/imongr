@@ -96,8 +96,8 @@ test_that("known user with no previous deliveries get relevant message", {
       expect_true(
         grepl(
           conf$profile$delivery$none, profile(), fixed = TRUE, useBytes = TRUE
-          )
         )
+      )
     })
 })
 
@@ -339,6 +339,26 @@ test_that("upload module has output...", {
         enc = "Annet",
       )
       expect_equal(encoding(), "MS-ANSI")
+    }
+  )
+})
+
+test_that("download module has output...", {
+  check_db()
+  shiny::testServer(
+    download_server, args = list(pool = pool, pool_verify = pool), {
+      session$setInputs(
+        download_registry = 10,
+        tab_set = "ind",
+        download_context = "verify",
+        file_format = "rds"
+      )
+      expect_equal_to_reference(db_table(), "data/norgast_ind2.rds")
+      session$setInputs(
+        download_registry = 1,
+      )
+      print(db_table())
+#      expect_equal(db_table(), data.frame())
     }
   )
 })
