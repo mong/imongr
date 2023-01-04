@@ -353,12 +353,21 @@ test_that("download module has output...", {
         download_context = "verify",
         file_format = "rds"
       )
-      expect_equal_to_reference(db_table(), "data/norgast_ind2.rds")
+      expect_equal_to_reference(db_table(), "data/norgast_ind.rds")
+
       session$setInputs(
-        download_registry = 1,
+        tab_set = "data"
       )
-      print(db_table())
-#      expect_equal(db_table(), data.frame())
+      expect_equal(nrow(db_table()), 19773)
+      session$setInputs(
+        tab_set = "ind",
+        download_context = "prod"
+      )
+      expect_equal_to_reference(db_table(), "data/norgast_ind.rds")
+      session$setInputs(
+        download_registry = "qwerty"
+      )
+      expect_error(db_table())
     }
   )
 })
