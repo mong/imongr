@@ -368,6 +368,22 @@ test_that("download module has output...", {
         download_registry = "qwerty"
       )
       expect_error(db_table())
+      # Try with download_context = null
+      session$setInputs(
+        download_registry = 10,
+        download_context = NULL
+      )
+      expect_equal_to_reference(db_table(), "data/norgast_ind.rds")
+      # Try with empty registry id
+      session$setInputs(
+        download_registry = ""
+      )
+      expect_equal(db_table(), data.frame())
+      session$setInputs(
+        download_registry = 10,
+        tab_set = "hf"
+      )
+      expect_equal_to_reference(db_table(), "data/hf.rds")
     }
   )
 })
