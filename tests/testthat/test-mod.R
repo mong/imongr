@@ -298,6 +298,51 @@ test_that("indicator module has output...", {
   )
 })
 
+test_that("publish module has output...", {
+  check_db()
+  shiny::testServer(
+    publish_server, args = list(pool = pool, pool_verify = pool), {
+      session$setInputs(
+        publish_registry = 10
+      )
+      # Get out norgast data from pool
+      expect_equal(nrow(publish_data()), 19773)
+      expect_equal_to_reference(publish_ind(), "data/norgast_ind.rds")
+      expect_equal_to_reference(publish_delivery(), "data/norgast_delivery.rds")
+      session$setInputs(
+        publish_registry = 1
+      )
+      expect_equal(nrow(publish_data()), 0)
+    }
+  )
+})
+
+test_that("upload module has output...", {
+  check_db()
+  shiny::testServer(
+    upload_server, args = list(pool = pool), {
+      session$setInputs(
+        registry = 10,
+        sep = ";",
+        dec_sep = ",",
+        enc = "UTF-8",
+        other_encoding = "MS-ANSI",
+        sample_size = 20,
+        sample_type = TRUE,
+        latest_update = "2022-12-24",
+        latest_affirm = "2022-01-01"
+      )
+      expect_equal(encoding(), "UTF-8")
+      expect_equal_to_reference(ind(), "data/norgast_ind.rds")
+      expect_equal(df(), data.frame())
+      session$setInputs(
+        enc = "Annet",
+      )
+      expect_equal(encoding(), "MS-ANSI")
+    }
+  )
+})
+
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {

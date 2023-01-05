@@ -19,15 +19,12 @@ app_server <- function(input, output, session) {
   pool_verify <- make_pool(context = "verify")
   rv <- shiny::reactiveValues(
     context = "verify",
-    inv_data = 0,
-    inv_publish = 0,
     medfield_data = get_table(pool, "medfield"),
     medfield_summary = medfield_summary_text_ui(pool, conf,
                                                 get_table(pool, "medfield")),
     user_data = get_users(pool),
     user_summary =
       reguser_summary_text_ui(pool, conf, get_users(pool)),
-    upload_reg = character(),
     publish_reg = character(),
     download_reg = character(),
     indicator_data = data.frame(),
@@ -104,7 +101,6 @@ app_server <- function(input, output, session) {
   shiny::observeEvent(input$context, {
     rv$context <- input$context
     drain_pool(rv$pool)
-    rv$upload_reg <- input$registry
     rv$download_reg <- input$download_registry
     rv$admin_url <- paste0(adminer_url(), "/?",
                            "server=", db_host(context = rv$context), "&",
@@ -117,7 +113,6 @@ app_server <- function(input, output, session) {
     rv$user_data <- get_users(rv$pool)
     rv$user_summary <-
       reguser_summary_text_ui(rv$pool, conf, get_users(rv$pool))
-    rv$inv_data <- rv$inv_data + 1
   })
 
 
@@ -125,275 +120,10 @@ app_server <- function(input, output, session) {
   profile_server("profile", pool, pool_verify)
 
   # last
-  ## observers
-  shiny::observeEvent(input$registry, {
-    if (!is.null(input$upload_file)) {
-      rv$inv_data <- rv$inv_data + 1
-    }
-  })
-  shiny::observeEvent(input$submit, {
-    insert_data(
-      pool = pool_verify,
-      df = df(),
-      update = input$latest_update,
-      affirm = input$latest_affirm
-    )
-    insert_agg_data(pool_verify, df())
-    rv$inv_data <- rv$inv_data + 1
-    shinyalert::shinyalert(conf$upload$reciept$title, conf$upload$reciept$body,
-                           type = "success", showConfirmButton = FALSE,
-                           timer = 7000)
-  })
-
-  ## reactives
-  encoding <- shiny::reactive({
-    if (input$enc == "Annet") {
-      input$other_encoding
-    } else {
-      input$enc
-    }
-  })
-
-  df <- shiny::reactive({
-    if (is.null(input$upload_file)) {
-      data.frame()
-    } else {
-      csv_to_df(input$upload_file$datapath, input$sep, input$dec_sep,
-                encoding())
-    }
-  })
-
-  ind <- shiny::reactive({
-    if (is.null(input$registry)) {
-      data.frame()
-    } else {
-      get_registry_ind(pool_verify, input$registry)
-    }
-  })
-
-  ## ui sidebar panel
-  output$select_registry <- shiny::renderUI({
-    select_registry_ui(pool_verify, conf, input_id = "registry",
-                       context = "verify", current_reg = rv$upload_reg)
-  })
-
-  output$upload_file <- shiny::renderUI({
-    shiny::fileInput("upload_file", "Velg csv-fil:",
-                     buttonLabel = "Velg fil...",
-                     placeholder = "Ingen fil er valgt",
-                     multiple = FALSE,
-                     accept = c("text/csv",
-                                "text/comma-separated-values,text/plain",
-                                ".csv")
-    )
-  })
-
-  output$other_encoding <- shiny::renderUI({
-    if (input$enc == "Annet") {
-      shiny::selectInput(inputId = "other_encoding", label = "Spesifiser:",
-                         choices = iconvlist(), selected = "MS-ANSI")
-    }
-  })
-
-  output$submit <- shiny::renderUI({
-    rv$inv_data
-    submit_ui(conf, pool_verify, input$upload_file, input$registry, df(), ind(),
-              "verify")
-  })
-
-  output$spinner <- shiny::renderText({
-    input$submit
-    paste("")
-  })
+  upload_server("upload", pool_verify)
 
 
-  ## ui main panel
-  output$error_report <- shiny::renderText({
-    rv$inv_data
-    error_report_ui(pool_verify, df(), ind(), input$upload_file, input$registry)
-  })
-
-  output$upload_sample_text <- shiny::renderText({
-    shiny::req(input$registry)
-    if (input$registry == "") {
-      NULL
-    } else {
-      upload_sample_text_ui(pool_verify, conf, input$upload_file,
-                            input$registry, indicators = unique(df()$ind_id))
-    }
-  })
-
-  output$upload_sample <- shiny::renderTable({
-    rv$inv_data
-    upload_sample_ui(df(), input$upload_file, input$registry,
-                     input$sample_size, input$sample_type)
-  })
-
-  output$main_doc <- shiny::renderText(conf$upload$doc$main)
-
-  output$var_doc <- shiny::renderText({
-    var_doc_ui(conf)
-  })
-
-  output$valid_ind <- shiny::renderText({
-    paste0("<h4>", conf$upload$doc$valid_ind, " <i>",
-          get_registry_name(pool_verify, shiny::req(input$registry),
-                            full_name = TRUE),
-          "</i>:</h4>")
-  })
-
-  output$valid_ind_tab <- shiny::renderTable(
-    get_registry_indicators(pool_verify, shiny::req(input$registry)),
-    rownames = TRUE,
-    colnames = FALSE
-  )
-
-  output$sample_data <- shiny::renderTable(
-    get_table(pool_verify, "data",
-      sample = 0.00001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
-  )
-
-
-  # publish
-  ## observers
-  shiny::observeEvent(input$view_terms, {
-    f <- rmarkdown::render(input = system.file("terms.Rmd", package = "imongr"),
-                           output_format = "html_fragment",
-                           output_file = tempfile())
-    shiny::showModal(shiny::modalDialog(
-      shiny::HTML(readLines(f)),
-      footer = shiny::tagList(
-        shiny::downloadButton("downloadTerms", "Last ned vilk\u00e5r"),
-        shiny::modalButton("Lukk")
-      )
-    ))
-  })
-  shiny::observeEvent(input$publish_registry, {
-    if (!is.null(input$publish_registry)) {
-      rv$inv_publish <- rv$inv_publish + 1
-    }
-  })
-  shiny::observeEvent(input$publish, {
-    update_ind_text(pool, publish_ind())
-    insert_data(
-      pool = pool,
-      df = publish_data(),
-      update = publish_delivery()$latest_update,
-      affirm = publish_delivery()$latest_affirm,
-      terms_version = version_info(newline = "")
-    )
-    insert_agg_data(pool, publish_data())
-    rv$inv_publish <- rv$inv_publish + 1
-    shinyalert::shinyalert(
-      conf$publish$reciept$title, conf$publish$reciept$body, type = "success",
-      showConfirmButton = FALSE, timer = 7000
-    )
-  })
-  ## reactives
-  publish_data <- shiny::reactive({
-    if (is.null(input$publish_registry)) {
-      data.frame()
-    } else {
-      get_registry_data(pool_verify, input$publish_registry)
-    }
-  })
-  publish_ind <- shiny::reactive({
-    if (is.null(input$publish_registry)) {
-      data.frame()
-    } else {
-      get_registry_ind(pool_verify, input$publish_registry)
-    }
-  })
-  publish_delivery <- shiny::reactive({
-    if (is.null(input$publish_registry)) {
-      data.frame()
-    } else {
-      get_registry_latest_delivery(pool_verify, input$publish_registry)
-    }
-  })
-
-  ## ui sidebar panel
-  output$select_publish_registry <- shiny::renderUI({
-    select_registry_ui(pool, conf, input_id = "publish_registry",
-                       context = "verify", show_context = TRUE,
-                       pool0 = pool_verify)
-  })
-  output$publish_liability <- shiny::renderUI({
-    shiny::checkboxInput(
-      "liability",
-      shiny::HTML(paste(
-        get_registry_name(pool_verify, input$publish_registry, TRUE),
-        conf$publish$liability,
-        as.character(shiny::actionLink("view_terms", "vilk\u00e5rene."))
-      ))
-    )
-  })
-  output$downloadTerms <- shiny::downloadHandler(
-    filename = basename(
-      tempfile(pattern = "VilkaarPubliseringSKDE", fileext = ".pdf")
-    ),
-    content = function(file) {
-      fn <- rmarkdown::render(
-        input = system.file("terms.Rmd", package = "imongr"),
-        output_format = "pdf_document",
-        params = list(output = "pdf")
-      )
-      file.rename(fn, file)
-    }
-  )
-  output$publish <- shiny::renderUI({
-    rv$inv_publish
-    if (!is.null(input$publish_registry) &&
-        !(conf$upload$fail %in% input$publish_registry) &&
-        input$liability &&
-        all(
-          !check_upload(
-            input$publish_registry,
-            publish_data(),
-            publish_ind(),
-            pool)$fail
-        )
-    ) {
-      shiny::tagList(
-        shiny::actionButton("publish", "Publiser", shiny::icon("paper-plane")),
-        shiny::p(paste(conf$upload$doc$submit$warning,
-                       get_registry_name(pool, input$publish_registry)))
-      )
-    } else {
-      NULL
-    }
-  })
-  output$publishing <- shiny::renderText({
-    input$publish
-    paste("")
-  })
-
-  ## ui main panel
-  output$error_report_publish <- shiny::renderText({
-    shiny::req(input$publish_registry)
-    rv$inv_publish
-    error_report_ui(
-      pool = pool,
-      df = publish_data(),
-      ind = publish_ind(),
-      upload_file = "none",
-      registry = input$publish_registry
-    )
-  })
-  output$publish_verify_doc <- shiny::renderText({
-    verify_hypertext <- paste0(
-      "<a href='https://verify.skde.no/kvalitetsregistre/",
-      get_registry_name(pool_verify, shiny::req(input$publish_registry),
-                        full_name = FALSE),
-      "/sykehus'>her.</a>"
-    )
-    paste(
-      get_registry_name(pool_verify, shiny::req(input$publish_registry), TRUE),
-      conf$publish$doc$verify,
-      verify_hypertext
-    )
-  })
-  output$publish_main_doc <- shiny::renderText(conf$publish$doc$main)
+  publish_server("publ", pool, pool_verify)
 
   # loss
   pool_download <- shiny::reactive({
@@ -467,7 +197,6 @@ app_server <- function(input, output, session) {
   output$ui_db_table <- shiny::renderUI(
     DT::dataTableOutput("db_table")
   )
-
 
 
   # indicator
