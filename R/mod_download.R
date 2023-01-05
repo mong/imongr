@@ -2,6 +2,7 @@
 #'
 #' @param id Character string module namespace
 #' @param pool A database pool object
+#' @param pool_verify A database pool object
 #'
 #' @return Shiny objects for the imongr app
 #'
@@ -137,14 +138,14 @@ download_server <- function(id, pool, pool_verify) {
 
 #' @rdname mod_download
 #' @export
-download_app <- function(pool) {
+download_app <- function(pool, pool_verify) {
 
   ui <- shiny::fluidPage(
     download_ui("download")
   )
 
-  server <- function(input, output, sessjon) {
-    download_server("download", pool)
+  server <- function(input, output, session) {
+    download_server("download", pool, pool_verify)
   }
 
   shiny::shinyApp(ui, server)
