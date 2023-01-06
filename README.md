@@ -68,6 +68,17 @@ readRenviron("~/.Renviron") # get back to default env var
 ... # TBA
 ```
 
+### Build and run the Docker file locally
+
+**NOT COMPLETE YET**
+
+```bash
+R CMD build .
+docker build -t tmp .
+docker run --rm -ti tmp
+```
+
+Open [localhost:3838/](http://localhost:3838/)
 
 ## Ethics
 Please note that the 'imongr' project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
