@@ -32,10 +32,8 @@ upload_ui <- function(id) {
                             selected = ","),
         shiny::radioButtons(ns("enc"), "Tegnsetting",
                             choices = c("LATIN1",
-                                        "UTF-8",
-                                        "Annet"),
+                                        "UTF-8"),
                             selected = "UTF-8"),
-        shiny::uiOutput(outputId = ns("other_encoding")),
         shiny::numericInput(ns("sample_size"),
                             "Antall rader vist:",
                             20,
@@ -123,22 +121,12 @@ upload_server <- function(id, pool_verify) {
                              timer = 7000)
     })
 
-
-    ## reactives
-    encoding <- shiny::reactive({
-      if (input$enc == "Annet") {
-        input$other_encoding
-      } else {
-        input$enc
-      }
-    })
-
     df <- shiny::reactive({
       if (is.null(input$upload_file)) {
         data.frame()
       } else {
         csv_to_df(input$upload_file$datapath, input$sep, input$dec_sep,
-                  encoding())
+                  input$enc)
       }
     })
 
@@ -165,15 +153,6 @@ upload_server <- function(id, pool_verify) {
                                   "text/comma-separated-values,text/plain",
                                   ".csv")
       )
-    })
-
-    output$other_encoding <- shiny::renderUI({
-      if (input$enc == "Annet") {
-        shiny::selectInput(inputId = ns("other_encoding"),
-                           label = "Spesifiser:",
-                           choices = iconvlist(),
-                           selected = "MS-ANSI")
-      }
     })
 
     output$submit <- shiny::renderUI({
