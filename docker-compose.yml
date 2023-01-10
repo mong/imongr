@@ -67,7 +67,7 @@ services:
       IMONGR_DB_NAME: imongr
       IMONGR_DB_USER: imongr
       IMONGR_DB_PASS: imongr
-      IMONGR_ADMINER_URL: adminer
+      IMONGR_ADMINER_URL: http://localhost:8888
       SHINYPROXY_USERNAME: imongr@mongr.no
       SHINYPROXY_USERGROUPS: PROVIDER,MANAGER
 
