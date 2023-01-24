@@ -296,22 +296,23 @@ indicator_server <- function(id, pool) {
       )) {
         NULL
       } else {
-        if (identical(input$include, as.logical(rv$ind_data$include)) &&
-            identical(
-              input$level_direction, as.logical(rv$ind_data$level_direction)
-            ) &&
-            identical(
-              as.numeric(input$level_green), as.numeric(rv$ind_data$level_green)
-            ) &&
-            identical(
-              as.numeric(input$level_yellow),
-              as.numeric(rv$ind_data$level_yellow)
-            ) &&
-            identical(
-              as.numeric(input$min_denominator),
-              as.numeric(rv$ind_data$min_denominator)
-            ) &&
-            identical(input$type, rv$ind_data$type)) {
+        new_data <- c(!identical(input$include, as.logical(rv$ind_data$include)),
+                         !identical(
+                           input$level_direction, as.logical(rv$ind_data$level_direction)
+                         ),
+                         !identical(
+                           as.numeric(input$level_green), as.numeric(rv$ind_data$level_green)
+                         ),
+                         !identical(
+                           as.numeric(input$level_yellow),
+                           as.numeric(rv$ind_data$level_yellow)
+                         ),
+                         !identical(
+                           as.numeric(input$min_denominator),
+                           as.numeric(rv$ind_data$min_denominator)
+                         ),
+                         !identical(input$type, rv$ind_data$type))
+        if (!any(new_data)) {
           return(NULL)
         } else {
           if (level_consistent()) {
