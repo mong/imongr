@@ -460,97 +460,11 @@ agg_udef <- function(diff, conf) {
 #' @importFrom rlang .data
 #' @export
 get_indicator_level <- function(gdf, ind) {
+# Previously this function calculated levels on data
+# ("H", "M" or "L"). This is no longer done by imongr
+# but directly in the browser (mongts/apps/skde).
   gdf$level <- ""
   gdf$level_direction <- NA
-
-  round_digits <- function(level) {
-    # return 2 decimal places for levels equal 1 or greater under the assumption
-    # that integer percentages will always be used in presentations
-    if (level >= 1) {
-      return(2)
-    } else {
-      # NB! significant digits set based on the db field type of levels that is
-      # currently set to DOUBLE(7,3). If db spec changes the number of digits
-      # for signif() must be updated accordingly
-      decimals <- nchar(signif(abs(level), digits = 6)) - 2
-      # for levels with one decimal place force 2 under same as above assumption
-      # and also enforce 3 decimals for levels below 0.1. Hence, for the current
-      # db type DOUBLE(7,3) the fallback of the below logic is redundant and
-      # only kept in case of a future increase of allowed level decimals in db
-      if (decimals < 2) {
-        return(2)
-      } else if (level < 0.1) {
-        return(max(decimals, 3))
-      } else {
-        return(decimals)
-      }
-    }
-  }
-  high <- function(value, green, yellow) {
-    gd <- round_digits(green)
-    yd <- round_digits(yellow)
-    if (round(value, digits = gd) >= green) {
-      level <- "H"
-    } else if (round(value, digits = gd) < green &&
-               round(value, digits = yd) >= yellow) {
-      level <- "M"
-    } else {
-      level <- "L"
-    }
-    level_direction <- 1
-    return(list(level = level, level_direction = level_direction))
-  }
-  low <- function(value, green, yellow) {
-    gd <- round_digits(green)
-    yd <- round_digits(yellow)
-    if (round(value, digits = gd) <= green) {
-      level <- "H"
-    } else if (round(value, digits = gd) > green &&
-               round(value, digits = yd) <= yellow) {
-      level <- "M"
-    } else {
-      level <- "L"
-    }
-    level_direction <- 0
-    return(list(level = level, level_direction = level_direction))
-  }
-  lapply(
-    seq_len(nrow(gdf)),
-    function(x) {
-      data_row <- gdf[x, ]
-      ind <- ind %>%
-        dplyr::filter(.data[["id"]] == data_row[["ind_id"]])
-      if (!is.na(ind[["level_direction"]])) {
-        if (!is.na(ind[["level_green"]]) &&
-            !is.na(ind[["level_yellow"]])) {
-          if (ind[["level_direction"]] == 1) {
-            level <- high(
-              value = data_row[["var"]],
-              green = ind[["level_green"]],
-              yellow = ind[["level_yellow"]]
-            )
-          } else if (ind[["level_direction"]] == 0) {
-            level <- low(
-              value = data_row[["var"]],
-              green = ind[["level_green"]],
-              yellow =  ind[["level_yellow"]]
-            )
-          }
-        } else {
-          level_direction <- switch(
-            paste(ind[["level_direction"]]),
-            "1" =  1,
-            "0" =  0
-          )
-          level <- list(level = "undefined", level_direction = level_direction)
-        }
-      } else {
-        level <- list(level = "undefined", level_direction = NA)
-      }
-      gdf$level[x] <<- level$level
-      gdf$level_direction[x] <<- level$level_direction
-    }
-  )
 
   gdf
 }
