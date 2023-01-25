@@ -92,7 +92,7 @@ indicator_server <- function(id, pool) {
             shinyjs::html("message", "")
             shinyjs::html(
               "message",
-              "Verdier for m\u00e5loppn\u00e5else er ikke konsistente!"
+              "<div style='color:red;'>Verdier for m\u00e5loppn\u00e5else er ikke konsistente!</div>"
             )
             return(FALSE)
           }
@@ -104,7 +104,7 @@ indicator_server <- function(id, pool) {
             shinyjs::html("message", "")
             shinyjs::html(
               "message",
-              "Verdier for m\u00e5loppn\u00e5else er ikke konsistente!"
+              "<div style='color:red;'>Verdier for m\u00e5loppn\u00e5else er ikke konsistente!</div>"
             )
             return(FALSE)
           }
