@@ -28,7 +28,8 @@ indicator_ui <- function(id) {
         shiny::uiOutput(ns("set_level_yellow")),
         shiny::uiOutput(ns("set_min_denominator")),
         shiny::uiOutput(ns("set_type")),
-        shiny::uiOutput(ns("update_indicator_val"))
+        shiny::uiOutput(ns("update_indicator_val")),
+        shiny::uiOutput(ns("message"))
       ),
       shiny::mainPanel(
         shiny::uiOutput(ns("edit_ind_title")),
