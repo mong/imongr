@@ -201,7 +201,7 @@ indicator_server <- function(id, pool) {
     })
 
     output$set_include <- shiny::renderUI({
-      shiny::req(input$indicator)
+      shiny::req(input$indicator, rv$ind_data$include)
       shiny::tags$div(
         title = "Angi om indikatoren skal vises frem eller ikke",
         shiny::checkboxInput(
@@ -212,7 +212,7 @@ indicator_server <- function(id, pool) {
     })
 
     output$set_level_direction <- shiny::renderUI({
-      shiny::req(input$indicator)
+      shiny::req(input$indicator, rv$ind_data$level_direction)
       shiny::tags$div(
         title = paste(
           "Ta vekk haken hvis synkende indikatorverdier gir \u00f8kt",
@@ -242,7 +242,7 @@ indicator_server <- function(id, pool) {
     })
 
     output$set_level_yellow <- shiny::renderUI({
-      shiny::req(input$indicator)
+      shiny::req(input$indicator, rv$ind_data$level_yellow)
       shiny::tags$div(
         title = "Grenseverdi for middels m\u00e5loppn\u00e5else",
         shiny::numericInput(
