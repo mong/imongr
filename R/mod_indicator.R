@@ -377,7 +377,16 @@ indicator_server <- function(id, pool) {
       if (any(c(rv$title_oversize, rv$short_oversize, rv$long_oversize))) {
         NULL
       } else {
-        shiny::actionButton(ns("update_txt"), "Oppdat\u00e9r tekster")
+        no_new_text <- c(
+          identical(input$ind_short, rv$ind_data$short_description),
+          identical(input$ind_title, rv$ind_data$title),
+          identical(input$ind_long, rv$ind_data$long_description)
+          )
+        if (all(no_new_text)) {
+          return(NULL)
+        } else {
+          shiny::actionButton(ns("update_txt"), "Oppdat\u00e9r tekster")
+        }
       }
     })
 
