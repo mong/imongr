@@ -296,22 +296,23 @@ indicator_server <- function(id, pool) {
       )) {
         NULL
       } else {
-        if (identical(input$include, as.logical(rv$ind_data$include)) &&
-            identical(
-              input$level_direction, as.logical(rv$ind_data$level_direction)
-            ) &&
-            identical(
-              as.numeric(input$level_green), as.numeric(rv$ind_data$level_green)
-            ) &&
-            identical(
-              as.numeric(input$level_yellow),
-              as.numeric(rv$ind_data$level_yellow)
-            ) &&
-            identical(
-              as.numeric(input$min_denominator),
-              as.numeric(rv$ind_data$min_denominator)
-            ) &&
-            identical(input$type, rv$ind_data$type)) {
+        no_new_values <- c(
+          identical(input$include, as.logical(rv$ind_data$include)),
+          identical(input$level_direction,
+                    as.logical(rv$ind_data$level_direction)
+                    ),
+          identical(as.numeric(input$level_green),
+                    as.numeric(rv$ind_data$level_green)
+                    ),
+          identical(as.numeric(input$level_yellow),
+                    as.numeric(rv$ind_data$level_yellow)
+                    ),
+          identical(as.numeric(input$min_denominator),
+                    as.numeric(rv$ind_data$min_denominator)
+                    ),
+          identical(input$type, rv$ind_data$type)
+          )
+        if (all(no_new_values)) {
           return(NULL)
         } else {
           if (level_consistent()) {
@@ -377,7 +378,16 @@ indicator_server <- function(id, pool) {
       if (any(c(rv$title_oversize, rv$short_oversize, rv$long_oversize))) {
         NULL
       } else {
-        shiny::actionButton(ns("update_txt"), "Oppdat\u00e9r tekster")
+        no_new_text <- c(
+          identical(input$ind_short, rv$ind_data$short_description),
+          identical(input$ind_title, rv$ind_data$title),
+          identical(input$ind_long, rv$ind_data$long_description)
+          )
+        if (all(no_new_text)) {
+          return(NULL)
+        } else {
+          shiny::actionButton(ns("update_txt"), "Oppdat\u00e9r tekster")
+        }
       }
     })
 

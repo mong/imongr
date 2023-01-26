@@ -158,6 +158,7 @@ publish_server <- function(id, pool, pool_verify) {
 
     shiny::observeEvent(input$publish, {
       update_ind_text(pool, publish_ind())
+      update_ind_val(pool, publish_ind())
       insert_data(
         pool = pool,
         df = publish_data(),
