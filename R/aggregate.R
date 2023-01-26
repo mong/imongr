@@ -143,7 +143,7 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
   # Previously a function calculated levels on data
   # ("H", "M" or "L"). This is no longer done by imongr
   # but directly in the browser (mongts/apps/skde).
-  # level and level_direction defined here to avoid db error.
+  # Dummy level and level_direction are defined here to avoid db error.
   aggs <- aggs %>% dplyr::mutate(level = "", level_direction = NA)
 
   # add/update dg and all depending indicators
