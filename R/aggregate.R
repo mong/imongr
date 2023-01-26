@@ -8,9 +8,8 @@
 #' of function arguments are changed somewhat. Main source of underlying data
 #' is the qmongr database and where tables are used in these function their
 #' names are kept as is (\emph{org} and \emph{ind}). Other data frames
-#' passed into or between function are denoted \emph{df} or \emph{gdf} where
-#' the latter denotes a data frame that has been grouped (by
-#' \code{dplyr::group_by()}. The aggregate consists of the following variables:
+#' passed into or between function is denoted \emph{df}.
+#' The aggregate consists of the following variables:
 #' \describe{
 #'   \item{year}{The year of the current record}
 #'   \item{ind_id}{Indicator ID}
@@ -19,17 +18,14 @@
 #'   or patient residency}
 #'   \item{count}{Number of observations of the current record}
 #'   \item{var}{Summarised indicator value, for instance mean or median}
-#'   \item{level}{Code providing evaluated discrete level such as 'H' (high),
-#'   'M' (intermediate) and 'L' (low)}
-#'   \item{level_direction}{Name providing the desired level such as 'Lavt'
-#'   (low) or 'Høyt' (high)}
+#'   \item{level}{No longer in use}
+#'   \item{level_direction}{No longer in use}
 #'   \item{unit_level}{Code providing level of aggregation such as 'hospital',
 #'   'hf' (health trust), 'rhf' (regional health trust) and 'national'}
 #'   \item{unit_name}{Name of the organization unit}
 #' }
 #'
 #' @param df Data frame
-#' @param gdf Data frame of grouped data
 #' @param org Data frame holding the flat org table with all levels needed. May
 #' be obtained by \code{get_flat_org(pool)}
 #' @param ind Data frame holding the indicator db table providing all
@@ -44,7 +40,7 @@
 #' @param from_level Integer specifying from what level to aggregate from
 #' @return Data frame in raw, grouped or aggregated form
 #' @name aggregate
-#' @aliases agg agg_dg agg_from_level agg_residual agg_udef get_indicator_level
+#' @aliases agg agg_dg agg_from_level agg_residual agg_udef
 #' @importFrom rlang .data
 NULL
 
@@ -140,8 +136,11 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
     aggs <- df_noagg
   }
 
-  # class values into defined levels
-  aggs <- get_indicator_level(aggs, ind)
+  # Previously a function calculated levels on data
+  # ("H", "M" or "L"). This is no longer done by imongr
+  # but directly in the browser (mongts/apps/skde).
+  # Dummy level and level_direction are defined here to avoid db error.
+  aggs <- aggs %>% dplyr::mutate(level = "", level_direction = NA)
 
   # add/update dg and all depending indicators
   aggs <- agg_dg(aggs, ind)
@@ -453,104 +452,4 @@ agg_udef <- function(diff, conf) {
   diff$var <- diff$var_diff
   diff$denominator <- diff$denominator_diff
   diff[, !names(diff) %in% c("var_diff", "denominator_diff")]
-}
-
-
-#' @rdname aggregate
-#' @importFrom rlang .data
-#' @export
-get_indicator_level <- function(gdf, ind) {
-  gdf$level <- ""
-  gdf$level_direction <- NA
-
-  round_digits <- function(level) {
-    # return 2 decimal places for levels equal 1 or greater under the assumption
-    # that integer percentages will always be used in presentations
-    if (level >= 1) {
-      return(2)
-    } else {
-      # NB! significant digits set based on the db field type of levels that is
-      # currently set to DOUBLE(7,3). If db spec changes the number of digits
-      # for signif() must be updated accordingly
-      decimals <- nchar(signif(abs(level), digits = 6)) - 2
-      # for levels with one decimal place force 2 under same as above assumption
-      # and also enforce 3 decimals for levels below 0.1. Hence, for the current
-      # db type DOUBLE(7,3) the fallback of the below logic is redundant and
-      # only kept in case of a future increase of allowed level decimals in db
-      if (decimals < 2) {
-        return(2)
-      } else if (level < 0.1) {
-        return(max(decimals, 3))
-      } else {
-        return(decimals)
-      }
-    }
-  }
-  high <- function(value, green, yellow) {
-    gd <- round_digits(green)
-    yd <- round_digits(yellow)
-    if (round(value, digits = gd) >= green) {
-      level <- "H"
-    } else if (round(value, digits = gd) < green &&
-               round(value, digits = yd) >= yellow) {
-      level <- "M"
-    } else {
-      level <- "L"
-    }
-    level_direction <- 1
-    return(list(level = level, level_direction = level_direction))
-  }
-  low <- function(value, green, yellow) {
-    gd <- round_digits(green)
-    yd <- round_digits(yellow)
-    if (round(value, digits = gd) <= green) {
-      level <- "H"
-    } else if (round(value, digits = gd) > green &&
-               round(value, digits = yd) <= yellow) {
-      level <- "M"
-    } else {
-      level <- "L"
-    }
-    level_direction <- 0
-    return(list(level = level, level_direction = level_direction))
-  }
-  lapply(
-    seq_len(nrow(gdf)),
-    function(x) {
-      data_row <- gdf[x, ]
-      ind <- ind %>%
-        dplyr::filter(.data[["id"]] == data_row[["ind_id"]])
-      if (!is.na(ind[["level_direction"]])) {
-        if (!is.na(ind[["level_green"]]) &&
-            !is.na(ind[["level_yellow"]])) {
-          if (ind[["level_direction"]] == 1) {
-            level <- high(
-              value = data_row[["var"]],
-              green = ind[["level_green"]],
-              yellow = ind[["level_yellow"]]
-            )
-          } else if (ind[["level_direction"]] == 0) {
-            level <- low(
-              value = data_row[["var"]],
-              green = ind[["level_green"]],
-              yellow =  ind[["level_yellow"]]
-            )
-          }
-        } else {
-          level_direction <- switch(
-            paste(ind[["level_direction"]]),
-            "1" =  1,
-            "0" =  0
-          )
-          level <- list(level = "undefined", level_direction = level_direction)
-        }
-      } else {
-        level <- list(level = "undefined", level_direction = NA)
-      }
-      gdf$level[x] <<- level$level
-      gdf$level_direction[x] <<- level$level_direction
-    }
-  )
-
-  gdf
 }

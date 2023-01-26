@@ -82,7 +82,6 @@ reference:
     - agg_from_level
     - agg_residual
     - agg_udef
-    - get_indicator_level
 
   - title: Environment
     desc: >
