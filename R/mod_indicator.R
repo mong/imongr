@@ -29,8 +29,7 @@ indicator_ui <- function(id) {
         shiny::uiOutput(ns("set_min_denominator")),
         shiny::uiOutput(ns("set_type")),
         shiny::uiOutput(ns("update_indicator_val")),
-        shiny::hr(),
-        shiny::verbatimTextOutput(ns("message"))
+        shiny::uiOutput(ns("message"))
       ),
       shiny::mainPanel(
         shiny::uiOutput(ns("edit_ind_title")),
@@ -83,6 +82,10 @@ indicator_server <- function(id, pool) {
       }
     })
 
+    level_inconsistent_message <- paste0(
+      "<i style='color:red;'>",
+      "Verdier for m\u00e5loppn\u00e5else er ikke konsistente!",
+      "</i>")
     level_consistent <- shiny::reactive({
       if (!is.na(input$level_green) && !is.na(input$level_yellow)) {
         if (input$level_direction) {
@@ -93,7 +96,7 @@ indicator_server <- function(id, pool) {
             shinyjs::html("message", "")
             shinyjs::html(
               "message",
-              "Verdier for m\u00e5loppn\u00e5else er ikke konsistente!"
+              level_inconsistent_message
             )
             return(FALSE)
           }
@@ -105,7 +108,7 @@ indicator_server <- function(id, pool) {
             shinyjs::html("message", "")
             shinyjs::html(
               "message",
-              "Verdier for m\u00e5loppn\u00e5else er ikke konsistente!"
+              level_inconsistent_message
             )
             return(FALSE)
           }
@@ -140,14 +143,6 @@ indicator_server <- function(id, pool) {
       rv$ind_data$min_denominator <- input$min_denominator
       rv$ind_data$type <- input$type
       update_ind_val(pool, rv$ind_data)
-      df <- get_registry_data(pool, input$indicator_registry)
-      withCallingHandlers({
-        shinyjs::html("message", "")
-        insert_agg_data(pool, df)
-      },
-      message = function(m) {
-        shinyjs::html(id = "message", html = m$message, add = TRUE)
-      })
       rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
       rv$ind_data <- rv$ind_data %>%
         dplyr::filter(.data$id == input$indicator)
