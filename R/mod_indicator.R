@@ -82,6 +82,10 @@ indicator_server <- function(id, pool) {
       }
     })
 
+    level_inconsistent_message <- paste0(
+      "<i style='color:red;'>",
+      "Verdier for m\u00e5loppn\u00e5else er ikke konsistente!",
+      "</i>")
     level_consistent <- shiny::reactive({
       if (!is.na(input$level_green) && !is.na(input$level_yellow)) {
         if (input$level_direction) {
@@ -92,7 +96,7 @@ indicator_server <- function(id, pool) {
             shinyjs::html("message", "")
             shinyjs::html(
               "message",
-              "<div style='color:red;'>Verdier for m\u00e5loppn\u00e5else er ikke konsistente!</div>"
+              level_inconsistent_message
             )
             return(FALSE)
           }
@@ -104,7 +108,7 @@ indicator_server <- function(id, pool) {
             shinyjs::html("message", "")
             shinyjs::html(
               "message",
-              "<div style='color:red;'>Verdier for m\u00e5loppn\u00e5else er ikke konsistente!</div>"
+              level_inconsistent_message
             )
             return(FALSE)
           }
