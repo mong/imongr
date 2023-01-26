@@ -44,7 +44,7 @@
 #' @param from_level Integer specifying from what level to aggregate from
 #' @return Data frame in raw, grouped or aggregated form
 #' @name aggregate
-#' @aliases agg agg_dg agg_from_level agg_residual agg_udef get_indicator_level
+#' @aliases agg agg_dg agg_from_level agg_residual agg_udef
 #' @importFrom rlang .data
 NULL
 
@@ -140,8 +140,11 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
     aggs <- df_noagg
   }
 
-  # class values into defined levels
-  aggs <- get_indicator_level(aggs, ind)
+  # Previously a function calculated levels on data
+  # ("H", "M" or "L"). This is no longer done by imongr
+  # but directly in the browser (mongts/apps/skde).
+  # level and level_direction defined here to avoid db error.
+  aggs <- agg %>% dplyr::mutate(level = "", level_direction = NA)
 
   # add/update dg and all depending indicators
   aggs <- agg_dg(aggs, ind)
@@ -453,18 +456,4 @@ agg_udef <- function(diff, conf) {
   diff$var <- diff$var_diff
   diff$denominator <- diff$denominator_diff
   diff[, !names(diff) %in% c("var_diff", "denominator_diff")]
-}
-
-
-#' @rdname aggregate
-#' @importFrom rlang .data
-#' @export
-get_indicator_level <- function(gdf, ind) {
-# Previously this function calculated levels on data
-# ("H", "M" or "L"). This is no longer done by imongr
-# but directly in the browser (mongts/apps/skde).
-  gdf$level <- ""
-  gdf$level_direction <- NA
-
-  gdf
 }

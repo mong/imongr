@@ -7,7 +7,6 @@
 \alias{agg_from_level}
 \alias{agg_residual}
 \alias{agg_udef}
-\alias{get_indicator_level}
 \title{Aggregate hospital data}
 \usage{
 agg(df, org, ind, ind_noagg = character(), orgnr_name_map)
@@ -19,8 +18,6 @@ agg_from_level(df, org, ind, conf, from_level)
 agg_residual(aggs, conf)
 
 agg_udef(diff, conf)
-
-get_indicator_level(gdf, ind)
 }
 \arguments{
 \item{df}{Data frame}
