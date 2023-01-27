@@ -1,6 +1,24 @@
-# imongr 0.28.4.9000
+# imongr 1.0.0
+
+## App changes
+
+* Do not aggregate data if updating `ind` table ([#258](https://github.com/mong/imongr/pull/258))
+* No longer calculate indicator level ([#254](https://github.com/mong/imongr/pull/254))
+* Remove choose encoding option ([#262](https://github.com/mong/imongr/pull/262))
+* Update all relevant `ind` values when publishing ([#260](https://github.com/mong/imongr/pull/260))
+* Only show *Oppdater tekster* button when new text ([#264](https://github.com/mong/imongr/pull/264))
 * Extended indicator editor ([#208](https://github.com/mong/imongr/pull/208))
 * Added a report with brief summary of status for all registries ([#209](https://github.com/mong/imongr/pull/209))
+
+## Dev stuff
+
+* Modularization of shiny app ([#244](https://github.com/mong/imongr/pull/244) and [#245](https://github.com/mong/imongr/pull/245))
+* Allow 120 characters per line ([#243](https://github.com/mong/imongr/pull/243))
+* `docker-compose`: 
+  - Expose db instances to the outside, so they can be used by API/`mongts` ([#231](https://github.com/mong/imongr/pull/231))
+  - Mount local source code into docker-compose ([#239](https://github.com/mong/imongr/pull/239))
+* Use Renovate instead of dependabot
+* Changed name of main branch from `master` to `main`
 
 # imongr 0.28.4
 * Duplicate check incorporate indicator table data (to be extended in next feature version)
