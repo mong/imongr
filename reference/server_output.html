@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.28.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -53,9 +53,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">profile_ui</span><span class="op">(</span><span class="va">conf</span>, <span class="va">pool</span>, <span class="va">valid_user</span>, <span class="va">iusr</span>, <span class="va">igrs</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">select_registry_ui</span><span class="op">(</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">select_registry_ui</span><span class="op">(</span></span>
 <span>  <span class="va">pool</span>,</span>
 <span>  <span class="va">conf</span>,</span>
 <span>  <span class="va">input_id</span>,</span>
@@ -65,7 +63,7 @@
 <span>  pool0 <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">submit_ui</span><span class="op">(</span><span class="va">conf</span>, <span class="va">pool</span>, <span class="va">upload_file</span>, <span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">context</span><span class="op">)</span></span>
+<span><span class="fu">submit_ui</span><span class="op">(</span><span class="va">input_id</span>, <span class="va">conf</span>, <span class="va">pool</span>, <span class="va">upload_file</span>, <span class="va">registry</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">context</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">error_report_ui</span><span class="op">(</span><span class="va">pool</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">upload_file</span>, <span class="va">registry</span><span class="op">)</span></span>
 <span></span>
@@ -82,24 +80,12 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>conf</dt>
-<dd><p>List of configuration</p></dd>
-
-
-<dt>pool</dt>
+    <dl><dt>pool</dt>
 <dd><p>Database pool object</p></dd>
 
 
-<dt>valid_user</dt>
-<dd><p>Logical valid user</p></dd>
-
-
-<dt>iusr</dt>
-<dd><p>Character string username</p></dd>
-
-
-<dt>igrs</dt>
-<dd><p>Character string comma separated user groups</p></dd>
+<dt>conf</dt>
+<dd><p>List of configuration</p></dd>
 
 
 <dt>input_id</dt>
@@ -171,7 +157,7 @@ values are to be returned.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

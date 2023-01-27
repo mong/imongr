@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.28.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -59,7 +59,7 @@
           <p class="section-desc"></p><p>Basic database interaction</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="db.html">make_pool()</a></code> <code><a href="db.html">drain_pool()</a></code> <code><a href="db.html">insert_table()</a></code> <code><a href="db.html">get_table()</a></code> </p>
+          <p><code><a href="db.html">make_pool()</a></code> <code><a href="db.html">drain_pool()</a></code> <code><a href="db.html">insert_table()</a></code> <code><a href="db.html">get_table()</a></code> <code><a href="db.html">get_table_raw()</a></code> </p>
         </td>
         <td><p>Low level database functions for imongr</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
@@ -75,7 +75,7 @@
           <p class="section-desc"></p><p>Speciffic data operations</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="ops.html">duplicate_delivery()</a></code> <code><a href="ops.html">retire_user_deliveries()</a></code> <code><a href="ops.html">delete_indicator_data()</a></code> <code><a href="ops.html">delete_agg_data()</a></code> <code><a href="ops.html">insert_data()</a></code> <code><a href="ops.html">insert_agg_data()</a></code> <code><a href="ops.html">update_aggdata_delivery()</a></code> <code><a href="ops.html">update_aggdata_delivery_time()</a></code> <code><a href="ops.html">agg_all_data()</a></code> <code><a href="ops.html">clean_agg_data()</a></code> <code><a href="ops.html">create_imongr_user()</a></code> <code><a href="ops.html">update_registry_medfield()</a></code> <code><a href="ops.html">update_registry_user()</a></code> <code><a href="ops.html">update_ind_text()</a></code> </p>
+          <p><code><a href="ops.html">duplicate_delivery()</a></code> <code><a href="ops.html">retire_user_deliveries()</a></code> <code><a href="ops.html">delete_indicator_data()</a></code> <code><a href="ops.html">delete_agg_data()</a></code> <code><a href="ops.html">insert_data()</a></code> <code><a href="ops.html">insert_agg_data()</a></code> <code><a href="ops.html">update_aggdata_delivery()</a></code> <code><a href="ops.html">update_aggdata_delivery_time()</a></code> <code><a href="ops.html">agg_all_data()</a></code> <code><a href="ops.html">clean_agg_data()</a></code> <code><a href="ops.html">create_imongr_user()</a></code> <code><a href="ops.html">update_registry_medfield()</a></code> <code><a href="ops.html">update_registry_user()</a></code> <code><a href="ops.html">update_ind_text()</a></code> <code><a href="ops.html">update_ind_val()</a></code> </p>
         </td>
         <td><p>Functions for data operations in imongr</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
@@ -83,7 +83,7 @@
           <p class="section-desc"></p><p>Prepare data for qmongr by aggregation</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="aggregate.html">agg()</a></code> <code><a href="aggregate.html">agg_dg()</a></code> <code><a href="aggregate.html">agg_from_level()</a></code> <code><a href="aggregate.html">agg_residual()</a></code> <code><a href="aggregate.html">agg_udef()</a></code> <code><a href="aggregate.html">get_indicator_level()</a></code> </p>
+          <p><code><a href="aggregate.html">agg()</a></code> <code><a href="aggregate.html">agg_dg()</a></code> <code><a href="aggregate.html">agg_from_level()</a></code> <code><a href="aggregate.html">agg_residual()</a></code> <code><a href="aggregate.html">agg_udef()</a></code> </p>
         </td>
         <td><p>Aggregate hospital data</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
@@ -115,12 +115,16 @@
           <p class="section-desc"></p><p>For use by the app server function</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="server_output.html">profile_ui()</a></code> <code><a href="server_output.html">select_registry_ui()</a></code> <code><a href="server_output.html">submit_ui()</a></code> <code><a href="server_output.html">error_report_ui()</a></code> <code><a href="server_output.html">upload_sample_text_ui()</a></code> <code><a href="server_output.html">upload_sample_ui()</a></code> <code><a href="server_output.html">var_doc_ui()</a></code> <code><a href="server_output.html">medfield_summary_text_ui()</a></code> <code><a href="server_output.html">reguser_summary_text_ui()</a></code> </p>
+          <p><code><a href="mod_profile.html">profile_ui()</a></code> <code><a href="mod_profile.html">profile_server()</a></code> <code><a href="mod_profile.html">profile_app()</a></code> </p>
+        </td>
+        <td><p>Shiny module providing GUI and server logic for (user) profile</p></td>
+      </tr><tr><td>
+          <p><code><a href="server_output.html">select_registry_ui()</a></code> <code><a href="server_output.html">submit_ui()</a></code> <code><a href="server_output.html">error_report_ui()</a></code> <code><a href="server_output.html">upload_sample_text_ui()</a></code> <code><a href="server_output.html">upload_sample_ui()</a></code> <code><a href="server_output.html">var_doc_ui()</a></code> <code><a href="server_output.html">medfield_summary_text_ui()</a></code> <code><a href="server_output.html">reguser_summary_text_ui()</a></code> </p>
         </td>
         <td><p>Functions that provide server output</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="app">App <a href="#app" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Application server, user interface and start-up</p>
+          <p class="section-desc"></p><p>Application server, user interface, modules and start-up</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="run_app.html">run_app()</a></code> </p>
@@ -134,6 +138,22 @@
           <p><code><a href="app_ui.html">app_ui()</a></code> </p>
         </td>
         <td><p>Client (ui) for the imongr app</p></td>
+      </tr><tr><td>
+          <p><code><a href="mod_indicator.html">indicator_ui()</a></code> <code><a href="mod_indicator.html">indicator_server()</a></code> <code><a href="mod_indicator.html">indicator_app()</a></code> </p>
+        </td>
+        <td><p>Shiny module providing GUI and server logic for the indicator tab</p></td>
+      </tr><tr><td>
+          <p><code><a href="mod_publish.html">publish_ui()</a></code> <code><a href="mod_publish.html">publish_server()</a></code> <code><a href="mod_publish.html">publish_app()</a></code> </p>
+        </td>
+        <td><p>Shiny module providing GUI and server logic for the publish indicator tab</p></td>
+      </tr><tr><td>
+          <p><code><a href="mod_upload.html">upload_ui()</a></code> <code><a href="mod_upload.html">upload_server()</a></code> <code><a href="mod_upload.html">upload_app()</a></code> </p>
+        </td>
+        <td><p>Shiny module providing GUI and server logic for the upload data tab</p></td>
+      </tr><tr><td>
+          <p><code><a href="mod_download.html">download_ui()</a></code> <code><a href="mod_download.html">download_server()</a></code> <code><a href="mod_download.html">download_app()</a></code> </p>
+        </td>
+        <td><p>Shiny module providing GUI and server logic for the download data tab</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="data">Data <a href="#data" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>Package data, mosty for testing</p>
@@ -198,6 +218,22 @@
           <p><code><a href="registry_medfield.html">registry_medfield</a></code> </p>
         </td>
         <td><p>registry_medfield example data for qmongr data store</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="to-be-added">To be added <a href="#to-be-added" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>New items yet to be structured…</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="report.html">.registry_status_data()</a></code> <code><a href="report.html">registry_status_report()</a></code> </p>
+        </td>
+        <td><p>Functions providing reports to be used in imongr</p></td>
+      </tr><tr><td>
+          <p><code><a href="mod_report.html">report_ui()</a></code> <code><a href="mod_report.html">report_server()</a></code> <code><a href="mod_report.html">report_app()</a></code> </p>
+        </td>
+        <td><p>Shiny module providing GUI and server logic for reports</p></td>
+      </tr><tr><td>
+          <p><code><a href="db.html">make_pool()</a></code> <code><a href="db.html">drain_pool()</a></code> <code><a href="db.html">insert_table()</a></code> <code><a href="db.html">get_table()</a></code> <code><a href="db.html">get_table_raw()</a></code> </p>
+        </td>
+        <td><p>Low level database functions for imongr</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -211,7 +247,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

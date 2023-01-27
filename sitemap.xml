@@ -64,6 +64,24 @@
     <loc>/reference/misc.html</loc>
   </url>
   <url>
+    <loc>/reference/mod_download.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mod_indicator.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mod_profile.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mod_publish.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mod_report.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mod_upload.html</loc>
+  </url>
+  <url>
     <loc>/reference/nation.html</loc>
   </url>
   <url>
@@ -89,6 +107,9 @@
   </url>
   <url>
     <loc>/reference/registry_medfield.html</loc>
+  </url>
+  <url>
+    <loc>/reference/report.html</loc>
   </url>
   <url>
     <loc>/reference/rhf.html</loc>

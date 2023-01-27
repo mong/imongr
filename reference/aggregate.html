@@ -19,7 +19,7 @@ national."><meta property="og:image" content="/logo.png"><!-- mathjax --><script
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.28.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -65,9 +65,7 @@ national.</p>
 <span></span>
 <span><span class="fu">agg_residual</span><span class="op">(</span><span class="va">aggs</span>, <span class="va">conf</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">agg_udef</span><span class="op">(</span><span class="va">diff</span>, <span class="va">conf</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">get_indicator_level</span><span class="op">(</span><span class="va">gdf</span>, <span class="va">ind</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">agg_udef</span><span class="op">(</span><span class="va">diff</span>, <span class="va">conf</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -111,10 +109,6 @@ name. Applied on data to be used as is (no aggregation).</p></dd>
 <dt>diff</dt>
 <dd><p>Data frame with diff data</p></dd>
 
-
-<dt>gdf</dt>
-<dd><p>Data frame of grouped data</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -128,9 +122,8 @@ name. Applied on data to be used as is (no aggregation).</p></dd>
 of function arguments are changed somewhat. Main source of underlying data
 is the qmongr database and where tables are used in these function their
 names are kept as is (<em>org</em> and <em>ind</em>). Other data frames
-passed into or between function are denoted <em>df</em> or <em>gdf</em> where
-the latter denotes a data frame that has been grouped (by
-<code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">dplyr::group_by()</a></code>. The aggregate consists of the following variables:</p><dl><dt>year</dt>
+passed into or between function is denoted <em>df</em>.
+The aggregate consists of the following variables:</p><dl><dt>year</dt>
 <dd><p>The year of the current record</p></dd>
 
   <dt>ind_id</dt>
@@ -150,12 +143,10 @@ the latter denotes a data frame that has been grouped (by
 <dd><p>Summarised indicator value, for instance mean or median</p></dd>
 
   <dt>level</dt>
-<dd><p>Code providing evaluated discrete level such as 'H' (high),
-  'M' (intermediate) and 'L' (low)</p></dd>
+<dd><p>No longer in use</p></dd>
 
   <dt>level_direction</dt>
-<dd><p>Name providing the desired level such as 'Lavt'
-  (low) or 'Høyt' (high)</p></dd>
+<dd><p>No longer in use</p></dd>
 
   <dt>unit_level</dt>
 <dd><p>Code providing level of aggregation such as 'hospital',
@@ -179,7 +170,7 @@ the latter denotes a data frame that has been grouped (by
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
