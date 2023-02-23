@@ -237,7 +237,7 @@ indicator_server <- function(id, pool) {
     })
 
     output$set_level_yellow <- shiny::renderUI({
-      shiny::req(input$indicator, rv$ind_data$level_yellow)
+      shiny::req(input$indicator)
       shiny::tags$div(
         title = "Grenseverdi for middels m\u00e5loppn\u00e5else",
         shiny::numericInput(
