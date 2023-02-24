@@ -1,3 +1,5 @@
+# Unreleased
+
 # imongr 1.0.1
 
 * Mulighet til å velge gult målnivå hvis grønn er `NULL` ([#272](https://github.com/mong/imongr/pull/272))
