@@ -143,15 +143,21 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
   aggs <- aggs %>% dplyr::mutate(level = "", level_direction = NA)
 
   # add/update dg and all depending indicators
-  aggs <- agg_dg(aggs, ind)
+  aggs <- agg_dg(aggs, ind, org)
 
   aggs
 }
 
 #' @rdname aggregate
 #' @export
-agg_dg <- function(aggs, ind) {
+agg_dg <- function(aggs, ind, org) {
 
+  print("Inside agg_dg")
+  print("aggs")
+  print(aggs)
+  org_hospital_hf <- dplyr::transmute(org, orgnr = orgnr_hospital, orgnr_hf)
+  print("org_hospital_hf")
+  print(org_hospital_hf)
   # no dg as outset
   aggs$dg <- NA
 
@@ -162,9 +168,26 @@ agg_dg <- function(aggs, ind) {
 
   # dgs from current data that we will work on
   dgs <- unique(aggs$dg_id[!is.na(aggs$dg_id)])
+  print("dgs")
+  print(dgs)
 
   # current dg data
   dg_data <- dplyr::filter(aggs, .data$ind_id %in% dgs)
+  print("dg_data")
+  print(dg_data)
+
+  # Expand dg table by trickle down values from HF to hospitals
+  org_in_agg <- dplyr::select(aggs, "unit_level", "orgnr") %>%
+    dplyr::filter(unit_level == "hospital" & orgnr != 444444444) %>%
+    dplyr::distinct() %>%
+    dplyr::left_join(org_hospital_hf)
+
+  print("org_in_agg")
+  print(org_in_agg)
+
+  hf_wo_hospital <- org_in_agg %>% dplyr::pull(orgnr)
+  print("hf_wo_hospital")
+  print(hf_wo_hospital)
 
   # unique years represented by dgs in data, ascending order
   years <- dplyr::select(dg_data, "year") %>%
@@ -172,6 +195,8 @@ agg_dg <- function(aggs, ind) {
     dplyr::arrange() %>%
     dplyr::pull()
 
+  print("years")
+  print(years)
   # dg might not be present for every year, hence start filling in oldest
   # and consecutively replace these with newer if present. Data older than
   # the oldest dg will not be provided with a dg and will remain default (NA)
@@ -197,8 +222,11 @@ agg_dg <- function(aggs, ind) {
       dplyr::filter(.data$year < years[i]) %>%
       dplyr::bind_rows(at)
   }
+  print("aggs 3")
+  print(aggs)
 
-  aggs %>% dplyr::select(-c("dg_id"))
+  aggs <- aggs %>% dplyr::select(-c("dg_id"))
+  return(aggs)
 }
 
 #' @rdname aggregate
