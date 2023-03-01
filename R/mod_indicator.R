@@ -208,7 +208,7 @@ indicator_server <- function(id, pool) {
       shiny::req(input$indicator, rv$ind_data$include)
       shiny::tags$div(
         title = "Angi om indikatoren ikke skal vises på Sykehusviseren",
-        shinyWidgets::materialSwitch(
+        shiny::checkboxInput(
           ns("hide"), "Skjul i Sykehusviseren",
           value = !as.logical(rv$ind_data$include)
         )
