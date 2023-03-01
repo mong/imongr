@@ -22,7 +22,7 @@ indicator_ui <- function(id) {
         shiny::uiOutput(ns("select_indicator_registry")),
         shiny::uiOutput(ns("select_indicator")),
         shiny::hr(),
-        shiny::uiOutput(ns("set_include")),
+        shiny::uiOutput(ns("set_hide")),
         shiny::uiOutput(ns("set_level_direction")),
         shiny::uiOutput(ns("set_level_green")),
         shiny::uiOutput(ns("set_level_yellow")),
@@ -145,7 +145,7 @@ indicator_server <- function(id, pool) {
     })
 
     shiny::observeEvent(input$update_val, {
-      rv$ind_data$include <- input$include
+      rv$ind_data$include <- !(input$hide)
       rv$ind_data$level_direction <- input$level_direction
       rv$ind_data$level_green <- input$level_green
       rv$ind_data$level_yellow <- input$level_yellow
@@ -204,13 +204,13 @@ indicator_server <- function(id, pool) {
       )
     })
 
-    output$set_include <- shiny::renderUI({
+    output$set_hide <- shiny::renderUI({
       shiny::req(input$indicator, rv$ind_data$include)
       shiny::tags$div(
-        title = "Angi om indikatoren skal vises frem eller ikke",
-        shiny::checkboxInput(
-          ns("include"), "Vis i Sykehusviseren",
-          value = as.logical(rv$ind_data$include)
+        title = "Angi om indikatoren ikke skal vises på Sykehusviseren",
+        shinyWidgets::materialSwitch(
+          ns("hide"), "Skjul i Sykehusviseren",
+          value = !as.logical(rv$ind_data$include)
         )
       )
     })
@@ -294,14 +294,14 @@ indicator_server <- function(id, pool) {
     output$update_indicator_val <- shiny::renderUI({
       if (any(c(
         is.null(input$indicator),
-        is.null(input$include),
+        is.null(input$hide),
         is.null(input$level_direction)
       )
       )) {
         NULL
       } else {
         no_new_values <- c(
-          identical(input$include, as.logical(rv$ind_data$include)),
+          identical(input$hide, !(as.logical(rv$ind_data$include))),
           identical(input$level_direction,
                     as.logical(rv$ind_data$level_direction)
                     ),
