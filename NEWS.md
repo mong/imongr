@@ -1,5 +1,9 @@
 # Unreleased
 
+# imongr 1.0.2
+
+Erstatt `NA` med tom tekst for kort og lang beskrivelse som hentes fra db ([#275](https://github.com/mong/imongr/pull/275)). `NULL` i `ind`-verdier ga `NA` i indikator-fane-felt, og dermed aktiv "Oppdater tekst"-knapp.
+
 # imongr 1.0.1
 
 * Mulighet til å velge gult målnivå hvis grønn er `NULL` ([#272](https://github.com/mong/imongr/pull/272))
