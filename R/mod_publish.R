@@ -300,6 +300,7 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
         }
       )
 
+      invalidate_cache()
       rv$inv_publish <- rv$inv_publish + 1
       shinyalert::shinyalert(
         conf$publish$reciept$title, conf$publish$reciept$body,

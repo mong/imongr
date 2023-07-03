@@ -173,3 +173,7 @@ delete_all_data <- function(prompt = TRUE) {
 
   invisible()
 }
+
+invalidate_cache <- function() {
+  NULL
+}
