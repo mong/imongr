@@ -128,14 +128,20 @@ publish_server <- function(id, pool, pool_verify) {
         get_registry_ind(pool_verify, input$publish_registry)
       }
     })
-    publish_delivery <- shiny::reactive({
+    publish_deliveries <- shiny::reactive({
       if (is.null(input$publish_registry)) {
         data.frame()
       } else {
-        get_registry_latest_delivery(pool_verify, input$publish_registry)
+        get_registry_latest_deliveries(pool_verify, input$publish_registry)
       }
     })
-
+    previous_deliveries <- shiny::reactive({
+      if (is.null(input$publish_registry)) {
+        data.frame()
+      } else {
+        get_registry_latest_deliveries(pool, input$publish_registry)
+      }
+    })
     shiny::observeEvent(input$publish_registry, {
       if (!is.null(input$publish_registry)) {
         rv$inv_publish <- rv$inv_publish + 1
@@ -159,15 +165,16 @@ publish_server <- function(id, pool, pool_verify) {
     shiny::observeEvent(input$publish, {
       update_ind_text(pool, publish_ind())
       update_ind_val(pool, publish_ind())
-      insert_data(
+
+      insert_data_prod(
         pool = pool,
-        df = publish_data(),
-        update = publish_delivery()$latest_update,
-        affirm = publish_delivery()$latest_affirm,
+        pool_verify = pool_verify,
+        publish_deliveries = publish_deliveries(),
+        previous_deliveries = previous_deliveries(),
         terms_version = version_info(newline = "")
       )
-      insert_agg_data(pool, publish_data())
-      rv$inv_publish <- rv$inv_publish + 1
+      #insert_agg_data(pool, publish_data()) Needs to go into insert_data_prod
+      rv$inv_publish <- rv$inv_publish + 1 # What does this do? 
       shinyalert::shinyalert(
         conf$publish$reciept$title, conf$publish$reciept$body, type = "success",
         showConfirmButton = FALSE, timer = 7000

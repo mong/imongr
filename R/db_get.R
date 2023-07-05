@@ -1,4 +1,4 @@
-#' Retreiv data from imongr database
+#' Retriev data from imongr database
 #'
 #' Database metadata are read from config. If one or more of these are
 #' defined 'env' corresponding values will be fetched from the environmental
@@ -190,7 +190,6 @@ ORDER BY
 #' @rdname db_get
 #' @export
 get_user_latest_delivery_id <- function(pool) {
-
   query <- paste0("
 SELECT
   id
@@ -444,23 +443,20 @@ FROM
 
 #' @rdname db_get
 #' @export
-get_registry_latest_delivery <- function(pool, registry) {
-
+get_registry_latest_deliveries <- function(pool, registry) {
   query <- paste0("
-SELECT
-  d.*
+SELECT DISTINCT delivery_id, ind_id, time, latest_update, latest_affirm
 FROM
-  user_registry ur
-LEFT JOIN delivery d ON
-  ur.user_id = d.user_id
+  data
+LEFT JOIN ind ON
+  data.ind_id = ind.id
+LEFT JOIN delivery as del ON
+  data.delivery_id = del.id
 WHERE
-  d.latest = 1 AND
-  ur.registry_id = ", registry, "
-ORDER BY
-  d.time DESC;"
+  ind.registry_id = '", registry, "';"
   )
 
-  pool::dbGetQuery(pool, query)[1, ]
+  pool::dbGetQuery(pool, query)
 }
 
 #' @rdname db_get
@@ -583,6 +579,8 @@ SELECT
 FROM
   delivery;"
   )
+
+
 
   delivery <- pool::dbGetQuery(pool, query)
 

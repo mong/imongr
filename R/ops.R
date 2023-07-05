@@ -131,6 +131,93 @@ insert_data <- function(pool, df, update = NA, affirm = NA,
 
 }
 
+#' @rdname ops
+#' @export
+get_registry_data <- function(pool, registry) {
+
+  conf <- get_config()
+  fields <- paste(conf$db$tab$data$insert[conf$upload$data_var_ind],
+                  collapse = ",\n  ")
+
+  query <- paste0("
+SELECT
+  d.", fields, "
+FROM
+  data d
+LEFT JOIN
+  ind i
+ON
+  d.ind_id = i.id
+WHERE
+  i.registry_id=", registry, ";")
+
+  pool::dbGetQuery(pool, query)
+
+}
+
+#' @rdname ops
+#' @export
+get_delivery_data <- function(pool, delivery) {
+
+  conf <- get_config()
+  fields <- paste(conf$db$tab$data$insert[conf$upload$data_var_ind],
+                  collapse = ",\n  ")
+
+  query <- paste0("
+SELECT
+  d.", fields, "
+FROM
+  data d
+LEFT JOIN
+  ind i
+ON
+  d.ind_id = i.id
+WHERE
+  d.delivery_id = '", delivery, "';")
+
+  pool::dbGetQuery(pool, query)
+
+}
+
+#' @rdname ops
+#' @export
+insert_data_prod <- function(pool, pool_verify, publish_deliveries, previous_deliveries, terms_version) {
+  # df may contain more than one delivery
+  current_delivery_ids <- sort(unique(publish_deliveries$delivery_id))
+  previous_delivery_ids <- sort(unique(previous_deliveries$delivery_id))
+  
+  delivery_ids = current_delivery_ids[!current_delivery_ids %in% previous_delivery_ids]
+
+  for (i in delivery_ids) {
+    publish_data = get_delivery_data(pool_verify, i)
+    publish_data_reorder = publish_data[,c(6, 3, 2, 4, 5, 1)]
+
+    ind <- get_table(pool, table = "ind") %>%
+      dplyr::filter(.data$id %in% unique(publish_data$ind_id))
+
+    csum <- md5_checksum(publish_data_reorder, ind) 
+
+    # Fetch delivery from imongr-verify
+    delivery <- pool::dbGetQuery(pool_verify, paste0("SELECT * FROM delivery WHERE id = '", i, "';"))
+
+    # TODO:
+    # Here the csum value should be compared with delivery$md5_checksum
+    # For now, assume that they are equal
+
+    delete_indicator_data(pool, publish_data)
+
+    # The "latest" column doesn't come into play here, so skip updating its value
+
+    insert_table(pool, "delivery", delivery[, c(-1, -3)]) # Strip off the id and time columns
+
+    # TODO: append delivery_id and unit_level
+    insert_table(pool, "data", publish_data)
+  
+    insert_agg_data(pool, publish_data)
+  }
+
+}
+
 
 #' @rdname ops
 #' @export
@@ -192,7 +279,6 @@ insert_agg_data <- function(pool, df) {
 #' @rdname ops
 #' @export
 update_aggdata_delivery <- function(pool) {
-
   delivery <- get_aggdata_delivery(pool)
 
   pool::dbWriteTable(pool, name = "temp_agg_data", value = delivery,
