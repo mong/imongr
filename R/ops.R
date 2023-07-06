@@ -282,6 +282,7 @@ insert_agg_data <- function(pool, df) {
 #' @rdname ops
 #' @export
 update_aggdata_delivery <- function(pool) {
+  
   delivery <- get_aggdata_delivery(pool)
 
   pool::dbWriteTable(pool, name = "temp_agg_data", value = delivery,
