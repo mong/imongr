@@ -185,7 +185,7 @@ insert_data_prod <- function(pool, pool_verify, publish_deliveries, previous_del
   # df may contain more than one delivery
   current_delivery_ids <- sort(unique(publish_deliveries$delivery_id))
   previous_delivery_ids <- sort(unique(previous_deliveries$delivery_id))
-  
+
   delivery_ids = current_delivery_ids[!current_delivery_ids %in% previous_delivery_ids]
 
   for (i in delivery_ids) {
@@ -195,7 +195,7 @@ insert_data_prod <- function(pool, pool_verify, publish_deliveries, previous_del
     ind <- get_table(pool, table = "ind") %>%
       dplyr::filter(.data$id %in% unique(publish_data$ind_id))
 
-    csum <- md5_checksum(publish_data_reorder, ind) 
+    csum <- md5_checksum(publish_data_reorder, ind)
 
     # Fetch delivery from imongr-verify
     delivery <- pool::dbGetQuery(pool_verify, paste0("SELECT * FROM delivery WHERE id = '", i, "';"))
@@ -211,8 +211,12 @@ insert_data_prod <- function(pool, pool_verify, publish_deliveries, previous_del
     insert_table(pool, "delivery", delivery[, c(-1, -3)]) # Strip off the id and time columns
 
     # TODO: append delivery_id and unit_level
+    df_id <- data.frame(delivery_id = rep(i, nrow(publish_data)))
+
+    publish_data <- dplyr::left_join(publish_data, get_all_orgnr(pool), by = "orgnr")
+    publish_data = cbind(publish_data, df_id)
+
     insert_table(pool, "data", publish_data)
-  
     insert_agg_data(pool, publish_data)
   }
 
