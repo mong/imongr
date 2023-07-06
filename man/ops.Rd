@@ -18,6 +18,9 @@
 \alias{update_registry_user}
 \alias{update_ind_text}
 \alias{update_ind_val}
+\alias{get_registry_data}
+\alias{get_delivery_data}
+\alias{insert_data_prod}
 \title{Functions for data operations in imongr}
 \usage{
 duplicate_delivery(pool, df, ind, registry)
@@ -28,7 +31,19 @@ delete_indicator_data(pool, df)
 
 delete_agg_data(pool, df)
 
+get_registry_data(pool, registry)
+
+get_delivery_data(pool, delivery)
+
 insert_data(pool, df, update = NA, affirm = NA, terms_version = NA)
+
+insert_data_prod(
+  pool,
+  pool_verify,
+  publish_deliveries,
+  previous_deliveries,
+  terms_version
+)
 
 insert_agg_data(pool, df)
 

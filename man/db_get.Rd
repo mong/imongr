@@ -28,7 +28,8 @@
 \alias{get_user_deliveries}
 \alias{get_indicators_registry}
 \alias{get_registry_ind}
-\title{Retreiv data from imongr database}
+\alias{get_registry_latest_deliveries}
+\title{Retrieve data from imongr database}
 \usage{
 get_indicator(pool)
 
@@ -64,7 +65,7 @@ get_user(pool, sample = NA)
 
 get_users(pool, valid = TRUE)
 
-get_registry_latest_delivery(pool, registry)
+get_registry_latest_deliveries(pool, registry)
 
 get_registry_indicators(pool, registry)
 

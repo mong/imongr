@@ -1,4 +1,4 @@
-#' Retriev data from imongr database
+#' Retrieve data from imongr database
 #'
 #' Database metadata are read from config. If one or more of these are
 #' defined 'env' corresponding values will be fetched from the environmental
