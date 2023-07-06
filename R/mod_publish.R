@@ -128,20 +128,6 @@ publish_server <- function(id, pool, pool_verify) {
         get_registry_ind(pool_verify, input$publish_registry)
       }
     })
-    publish_deliveries <- shiny::reactive({
-      if (is.null(input$publish_registry)) {
-        data.frame()
-      } else {
-        get_registry_latest_deliveries(pool_verify, input$publish_registry)
-      }
-    })
-    previous_deliveries <- shiny::reactive({
-      if (is.null(input$publish_registry)) {
-        data.frame()
-      } else {
-        get_registry_latest_deliveries(pool, input$publish_registry)
-      }
-    })
     shiny::observeEvent(input$publish_registry, {
       if (!is.null(input$publish_registry)) {
         rv$inv_publish <- rv$inv_publish + 1
@@ -169,8 +155,8 @@ publish_server <- function(id, pool, pool_verify) {
       insert_data_prod(
         pool = pool,
         pool_verify = pool_verify,
-        publish_deliveries = publish_deliveries(),
-        previous_deliveries = previous_deliveries(),
+        publish_deliveries = get_registry_latest_deliveries(pool_verify, input$publish_registry), 
+        previous_deliveries = get_registry_latest_deliveries(pool, input$publish_registry),
         terms_version = version_info(newline = "")
       )
       #insert_agg_data(pool, publish_data()) Needs to go into insert_data_prod

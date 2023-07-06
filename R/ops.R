@@ -102,35 +102,6 @@ WHERE
   pool::dbExecute(pool, query)
 }
 
-
-#' @rdname ops
-#' @export
-insert_data <- function(pool, df, update = NA, affirm = NA,
-                        terms_version = NA) {
-
-  ind <- get_table(pool, table = "ind") %>%
-    dplyr::filter(.data$id %in% unique(df$ind_id))
-
-  delivery <- data.frame(latest = 1,
-                         md5_checksum = md5_checksum(df, ind),
-                         latest_update = update,
-                         latest_affirm = affirm,
-                         terms_version = terms_version,
-                         user_id = get_user_id(pool))
-
-  delete_indicator_data(pool, df)
-  retire_user_deliveries(pool)
-
-  insert_table(pool, "delivery", delivery)
-  did <- get_user_latest_delivery_id(pool)
-  df_id <- data.frame(delivery_id = did)
-
-  df <- dplyr::left_join(df, get_all_orgnr(pool), by = "orgnr")
-
-  insert_table(pool, "data", cbind(df, df_id))
-
-}
-
 #' @rdname ops
 #' @export
 get_registry_data <- function(pool, registry) {
@@ -181,6 +152,34 @@ WHERE
 
 #' @rdname ops
 #' @export
+insert_data <- function(pool, df, update = NA, affirm = NA,
+                        terms_version = NA) {
+
+  ind <- get_table(pool, table = "ind") %>%
+    dplyr::filter(.data$id %in% unique(df$ind_id))
+
+  delivery <- data.frame(latest = 1,
+                         md5_checksum = md5_checksum(df, ind),
+                         latest_update = update,
+                         latest_affirm = affirm,
+                         terms_version = terms_version,
+                         user_id = get_user_id(pool))
+
+  delete_indicator_data(pool, df)
+  retire_user_deliveries(pool)
+
+  insert_table(pool, "delivery", delivery)
+  did <- get_user_latest_delivery_id(pool)
+  df_id <- data.frame(delivery_id = did)
+
+  df <- dplyr::left_join(df, get_all_orgnr(pool), by = "orgnr")
+
+  insert_table(pool, "data", cbind(df, df_id))
+
+}
+
+#' @rdname ops
+#' @export
 insert_data_prod <- function(pool, pool_verify, publish_deliveries, previous_deliveries, terms_version) {
   # df may contain more than one delivery
   current_delivery_ids <- sort(unique(publish_deliveries$delivery_id))
@@ -190,7 +189,9 @@ insert_data_prod <- function(pool, pool_verify, publish_deliveries, previous_del
 
   for (i in delivery_ids) {
     publish_data = get_delivery_data(pool_verify, i)
-    publish_data_reorder = publish_data[,c(6, 3, 2, 4, 5, 1)]
+
+    # Need to reorder the columns for the checksum to be correct
+    publish_data_reorder = publish_data[,c(6, 3, 2, 4, 5, 1)] 
 
     ind <- get_table(pool, table = "ind") %>%
       dplyr::filter(.data$id %in% unique(publish_data$ind_id))
@@ -204,18 +205,16 @@ insert_data_prod <- function(pool, pool_verify, publish_deliveries, previous_del
     # Here the csum value should be compared with delivery$md5_checksum
     # For now, assume that they are equal
 
-    delete_indicator_data(pool, publish_data)
-
     # The "latest" column doesn't come into play here, so skip updating its value
 
-    insert_table(pool, "delivery", delivery[, c(-1, -3)]) # Strip off the id and time columns
+    pool::dbWriteTable(pool, "delivery", delivery[,-3], append = TRUE, row.names = FALSE)
 
-    # TODO: append delivery_id and unit_level
     df_id <- data.frame(delivery_id = rep(i, nrow(publish_data)))
 
     publish_data <- dplyr::left_join(publish_data, get_all_orgnr(pool), by = "orgnr")
     publish_data = cbind(publish_data, df_id)
 
+    delete_indicator_data(pool, publish_data)
     insert_table(pool, "data", publish_data)
     insert_agg_data(pool, publish_data)
   }
