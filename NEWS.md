@@ -1,4 +1,6 @@
-# Unreleased
+# imongr 1.0.3
+
+Update imongr-base-r from v1.5.3 to v1.6.0 ([#287](https://github.com/mong/imongr/pull/287))
 
 # imongr 1.0.2
 
