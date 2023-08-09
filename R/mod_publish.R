@@ -44,16 +44,23 @@ publish_ui <- function(id) {
 
 #' @rdname mod_publish
 #' @export
-publish_server <- function(id, pool, pool_verify) {
+publish_server <- function(id, parent_input, pool, pool_verify) {
 
   shiny::moduleServer(id, function(input, output, session) {
 
     ns <- session$ns
 
     conf <- get_config()
+
+    # Reactive value to tie the app together and update renderings
+    # The value is never used
     rv <- shiny::reactiveValues(
       inv_publish = 0
     )
+
+    ####################
+    ##### Basic UI #####
+    ####################
 
     # Registry selection drop down menu
     output$select_publish_registry <- shiny::renderUI({
@@ -89,6 +96,114 @@ publish_server <- function(id, pool, pool_verify) {
       }
     )
 
+    # Loading animation
+    output$publishing <- shiny::renderText({
+      input$publish
+      paste("")
+    })
+
+    # Main page text, heading "Kvalitetskontroll"
+    output$publish_verify_doc <- shiny::renderText({
+      verify_hypertext <- paste0(
+        "<a href='https://verify.skde.no/kvalitetsregistre/",
+        get_registry_name(pool_verify, shiny::req(input$publish_registry),
+                          full_name = FALSE),
+        "/sykehus'>her.</a>"
+      )
+      paste(
+        get_registry_name(pool_verify,
+                          shiny::req(input$publish_registry),
+                          TRUE),
+        conf$publish$doc$verify,
+        verify_hypertext
+      )
+    })
+
+    # Heading "Veiledning"
+    output$publish_main_doc <- shiny::renderText(conf$publish$doc$main)
+    
+    #####################################
+    ##### Database getter functions #####
+    #####################################
+
+    publish_data <- shiny::reactive({
+      rv$inv_publish
+      if (is.null(input$publish_registry)) {
+        data.frame()
+      } else {
+        get_registry_data(pool_verify, input$publish_registry)
+      }
+    })
+
+    publish_ind <- shiny::reactive({
+      rv$inv_publish
+      if (is.null(input$publish_registry)) {
+        data.frame()
+      } else {
+        get_registry_ind(pool_verify, input$publish_registry)
+      }
+    })
+
+    publish_delivery <- shiny::reactive({
+      rv$inv_publish
+      if (is.null(input$publish_registry)) {
+        data.frame()
+      } else {
+        get_registry_latest_delivery(pool_verify, input$publish_registry)
+      }
+    })
+
+
+    ##############################################
+    ##### Reactive value increment observers #####
+    ##############################################
+
+    # Reevaluate publish logic on selecting a registry
+    shiny::observeEvent(input$publish_registry, {
+      if (!is.null(input$publish_registry)) {
+        rv$inv_publish <- rv$inv_publish + 1
+      }
+    })
+
+    # Reevaluate publish logic on selecting the publish tab
+    shiny::observeEvent(parent_input$tabs, {
+      if (parent_input$tabs == "publish") {
+        rv$inv_publish <- rv$inv_publish + 1
+      }
+    })
+
+    # New window on view terms click
+    shiny::observeEvent(input$view_terms, {
+      f <- rmarkdown::render(input = system.file("terms.Rmd",
+                                                 package = "imongr"),
+                             output_format = "html_fragment",
+                             output_file = tempfile())
+      shiny::showModal(shiny::modalDialog(
+        shiny::HTML(readLines(f)),
+        footer = shiny::tagList(
+          shiny::downloadButton(ns("downloadTerms"), "Last ned vilk\u00e5r"),
+          shiny::modalButton("Lukk")
+        )
+      ))
+    })
+
+    ##############################
+    ##### Publish data logic #####
+    ##############################
+
+    # ui main panel
+    output$error_report_publish <- shiny::renderText({
+      shiny::req(input$publish_registry)
+      rv$inv_publish
+      error_report_ui(
+        pool = pool,
+        df = publish_data(),
+        ind = publish_ind(),
+        upload_file = "none",
+        registry = input$publish_registry
+      )
+    })
+
     # Publish button
     output$publish <- shiny::renderUI({
       rv$inv_publish
@@ -115,62 +230,6 @@ publish_server <- function(id, pool, pool_verify) {
       }
     })
 
-    # Replace loading animation with empty text on startup
-    output$publishing <- shiny::renderText({
-      input$publish
-      paste("")
-    })
-
-    # Database getter functions
-    publish_data <- shiny::reactive({
-      if (is.null(input$publish_registry)) {
-        data.frame()
-      } else {
-        get_registry_data(pool_verify, input$publish_registry)
-      }
-    })
-
-    publish_ind <- shiny::reactive({
-      if (is.null(input$publish_registry)) {
-        data.frame()
-      } else {
-        get_registry_ind(pool_verify, input$publish_registry)
-      }
-    })
-
-    publish_delivery <- shiny::reactive({
-      if (is.null(input$publish_registry)) {
-        data.frame()
-      } else {
-        get_registry_latest_delivery(pool_verify, input$publish_registry)
-      }
-    })
-
-
-
-
-    # Reactive value increment? 
-    shiny::observeEvent(input$publish_registry, {
-      if (!is.null(input$publish_registry)) {
-        rv$inv_publish <- rv$inv_publish + 1
-      }
-    })
-
-    # New window on view terms click
-    shiny::observeEvent(input$view_terms, {
-      f <- rmarkdown::render(input = system.file("terms.Rmd",
-                                                 package = "imongr"),
-                             output_format = "html_fragment",
-                             output_file = tempfile())
-      shiny::showModal(shiny::modalDialog(
-        shiny::HTML(readLines(f)),
-        footer = shiny::tagList(
-          shiny::downloadButton(ns("downloadTerms"), "Last ned vilk\u00e5r"),
-          shiny::modalButton("Lukk")
-        )
-      ))
-    })
-
     # Publish new data
     shiny::observeEvent(input$publish, {
       update_ind_text(pool, publish_ind())
@@ -190,41 +249,6 @@ publish_server <- function(id, pool, pool_verify) {
       )
     })
 
-
-    ## ui main panel
-    output$error_report_publish <- shiny::renderText({
-      shiny::req(input$publish_registry)
-      rv$inv_publish
-      error_report_ui(
-        pool = pool,
-        df = publish_data(),
-        ind = publish_ind(),
-        upload_file = "none",
-        registry = input$publish_registry
-      )
-    })
-
-    # Main page text, heading "Kvalitetskontroll"
-    output$publish_verify_doc <- shiny::renderText({
-      verify_hypertext <- paste0(
-        "<a href='https://verify.skde.no/kvalitetsregistre/",
-        get_registry_name(pool_verify, shiny::req(input$publish_registry),
-                          full_name = FALSE),
-        "/sykehus'>her.</a>"
-      )
-      paste(
-        get_registry_name(pool_verify,
-                          shiny::req(input$publish_registry),
-                          TRUE),
-        conf$publish$doc$verify,
-        verify_hypertext
-      )
-    })
-
-    # Heading "Veiledning"
-    output$publish_main_doc <- shiny::renderText(conf$publish$doc$main)
-
-
   })
 }
 
@@ -237,7 +261,7 @@ publish_app <- function(pool, pool_verify) {
   )
 
   server <- function(input, output, sessjon) {
-    publish_server("publish", pool, pool_verify)
+    publish_server("publish", "", pool, pool_verify)
   }
 
   shiny::shinyApp(ui, server)

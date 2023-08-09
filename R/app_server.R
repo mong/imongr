@@ -123,7 +123,7 @@ app_server <- function(input, output, session) {
   upload_server("upload", pool_verify)
 
   # publish
-  publish_server("publ", pool, pool_verify)
+  publish_server("publ", input, pool, pool_verify)
 
   # loss
   download_server("download", pool, pool_verify)
