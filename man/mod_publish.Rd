@@ -9,12 +9,14 @@
 \usage{
 publish_ui(id)
 
-publish_server(id, pool, pool_verify)
+publish_server(id, parent_input, pool, pool_verify)
 
 publish_app(pool, pool_verify)
 }
 \arguments{
 \item{id}{Character string module namespace}
+
+\item{parent_input}{A Shiny input object}
 
 \item{pool}{A database pool object}
 
