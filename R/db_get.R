@@ -675,3 +675,32 @@ FROM
   aggdata_delivery_time[!is.na(aggdata_delivery_time$delivery_time), ]
 
 }
+
+#' @rdname db_get
+#' @export
+get_aggdata = function(pool, registry) {
+
+  col_names = pool::dbGetQuery(pool, "SELECT * FROM agg_data WHERE 1 = 0") %>%
+    colnames()
+
+  col_names = paste0("ad.", col_names) %>% paste(collapse = ", ")
+
+  query = paste0(
+    "SELECT ", col_names,
+    " FROM agg_data AS ad
+    LEFT JOIN ind on ad.ind_id = ind.id
+    WHERE registry_id = ", registry)
+
+  aggdata = pool::dbGetQuery(pool, query)
+
+  # Change timestamp and date formats to strings to avoid unexpected changes to the data
+  aggdata$delivery_time = as.character(aggdata$delivery_time)
+  aggdata$time = as.character(aggdata$time)
+  aggdata$delivery_latest_update = as.character(aggdata$delivery_latest_update)
+  aggdata$delivery_latest_affirm = as.character(aggdata$delivery_latest_affirm)
+
+  # NA to NULL
+  aggdata[is.na(aggdata)] = "NULL"
+
+  return(aggdata)
+}

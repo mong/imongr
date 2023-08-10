@@ -28,6 +28,7 @@
 \alias{get_user_deliveries}
 \alias{get_indicators_registry}
 \alias{get_registry_ind}
+\alias{get_aggdata}
 \title{Retreiv data from imongr database}
 \usage{
 get_indicator(pool)
@@ -79,6 +80,8 @@ get_user_registry(pool, user)
 get_aggdata_delivery(pool)
 
 get_aggdata_delivery_time(pool)
+
+get_aggdata(pool, registry)
 }
 \arguments{
 \item{pool}{a database connection pool object}
