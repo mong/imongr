@@ -45,7 +45,8 @@ services:
   dev:
     depends_on:
       - db
-    image: hnskde/mongr-dev
+    image: hnskde/mongr-dev:latest
+    platform: linux/x86_64
     restart: "no"
     volumes:
       - ~/.ssh:/home/rstudio/.ssh
@@ -58,6 +59,7 @@ services:
 
   app:
     image: hnskde/imongr:latest
+    platform: linux/x86_64
     ports:
       - 3838:3838
     environment:

@@ -30,9 +30,9 @@ app_server <- function(input, output, session) {
     indicator_data = data.frame(),
     pool = make_pool(context = "verify"),
     admin_url = paste0(adminer_url(), "/?",
-                        "server=", db_host(context = "verify"), "&",
-                        "username=", db_username(), "&",
-                        "db=", db_name())
+                       "server=", db_host(context = "verify"), "&",
+                       "username=", db_username(), "&",
+                       "db=", db_name())
   )
 
   # always from default db, never selectable by user
@@ -43,13 +43,19 @@ app_server <- function(input, output, session) {
   if (!known_user) {
     insert_table(
       pool, "user",
-      data.frame(
-        user_name = iusr, name = "", phone = "", email = iusr, valid = 0)
+      data.frame(user_name = iusr,
+                 name = "",
+                 phone = "",
+                 email = iusr,
+                 valid = 0)
     )
     insert_table(
       pool_verify, "user",
-      data.frame(
-        user_name = iusr, name = "", phone = "", email = iusr, valid = 0)
+      data.frame(user_name = iusr,
+                 name = "",
+                 phone = "",
+                 email = iusr,
+                 valid = 0)
     )
   }
 
@@ -287,7 +293,7 @@ app_server <- function(input, output, session) {
 
   # Heartbeat every 5 seconds, to avoid app to die when user is inactive.
   output$clock <- shiny::renderText({
-   shiny::invalidateLater(5000)
+    shiny::invalidateLater(5000)
     Sys.time()
   })
 }

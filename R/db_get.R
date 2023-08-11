@@ -254,8 +254,7 @@ get_registry_ind <- function(pool, registry) {
   conf <- get_config()
 
   query <- paste0("
-SELECT\n  ",
-  paste(conf$db$tab$ind$insert, collapse = ",\n  "), "
+SELECT\n  ", paste(conf$db$tab$ind$insert, collapse = ",\n  "), "
 FROM
   ind
 WHERE
