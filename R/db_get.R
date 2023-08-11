@@ -678,29 +678,29 @@ FROM
 
 #' @rdname db_get
 #' @export
-get_aggdata = function(pool, registry) {
+get_aggdata <- function(pool, registry) {
 
-  col_names = pool::dbGetQuery(pool, "SELECT * FROM agg_data WHERE 1 = 0") %>%
+  col_names <- pool::dbGetQuery(pool, "SELECT * FROM agg_data WHERE 1 = 0") %>%
     colnames()
 
-  col_names = paste0("ad.", col_names) %>% paste(collapse = ", ")
+  col_names <- paste0("ad.", col_names) %>% paste(collapse = ", ")
 
-  query = paste0(
+  query <- paste0(
     "SELECT ", col_names,
     " FROM agg_data AS ad
     LEFT JOIN ind on ad.ind_id = ind.id
     WHERE registry_id = ", registry)
 
-  aggdata = pool::dbGetQuery(pool, query)
+  aggdata <- pool::dbGetQuery(pool, query)
 
   # Change timestamp and date formats to strings to avoid unexpected changes to the data
-  aggdata$delivery_time = as.character(aggdata$delivery_time)
-  aggdata$time = as.character(aggdata$time)
-  aggdata$delivery_latest_update = as.character(aggdata$delivery_latest_update)
-  aggdata$delivery_latest_affirm = as.character(aggdata$delivery_latest_affirm)
+  aggdata$delivery_time <- as.character(aggdata$delivery_time)
+  aggdata$time <- as.character(aggdata$time)
+  aggdata$delivery_latest_update <- as.character(aggdata$delivery_latest_update)
+  aggdata$delivery_latest_affirm <- as.character(aggdata$delivery_latest_affirm)
 
   # NA to NULL
-  aggdata[is.na(aggdata)] = "NULL"
+  aggdata[is.na(aggdata)] <- "NULL"
 
   return(aggdata)
 }
