@@ -110,8 +110,8 @@ download_server <- function(id, pool, pool_verify) {
       },
       content = function(file) {
         switch(input$file_format,
-               `csv` = readr::write_excel_csv(db_table(), file),
-               `csv (nordisk)` = readr::write_excel_csv2(db_table(), file),
+               `csv` = readr::write_csv(db_table(), file),
+               `csv (nordisk)` = readr::write_csv2(db_table(), file),
                `rds` = readr::write_rds(db_table(), file)
         )
       }
