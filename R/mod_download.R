@@ -79,7 +79,9 @@ download_server <- function(id, pool, pool_verify) {
           get_registry_data(pool_download(), input$download_registry)
         } else if (input$tab_set == "ind") {
           get_registry_ind(pool_download(), input$download_registry)
-        } else {
+        } else if (input$tab_set == "agg_data") {
+          get_aggdata(pool_download(), input$download_registry)
+          } else {
           get_table(pool_download(), input$tab_set)
         }
       }

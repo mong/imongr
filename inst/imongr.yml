@@ -453,6 +453,7 @@ aggregate:
 download:
   tab:
   - data
+  - agg_data
   - ind
   - hospital
   - hf
