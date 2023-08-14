@@ -699,8 +699,7 @@ get_aggdata <- function(pool, registry) {
   aggdata$delivery_latest_update <- as.character(aggdata$delivery_latest_update)
   aggdata$delivery_latest_affirm <- as.character(aggdata$delivery_latest_affirm)
 
-  # NA to NULL
-  aggdata[is.na(aggdata)] <- "NULL"
+  aggdata[is.na(aggdata)] <- ""
 
   return(aggdata)
 }
