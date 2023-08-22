@@ -36,34 +36,54 @@ check_db <- function(is_test_that = TRUE) {
 # Make test databases in verify and prod
 if (is.null(check_db(is_test_that = FALSE))) {
 
-  # Queries for test data insertion
+
+  ##### Queries for test data insertion #####
   fc <- file(system.file("2_create_tabs.sql", package = "imongr"), "r")
   t <- readLines(fc)
   close(fc)
   sql <- paste0(t, collapse = "\n")
-  queries <- strsplit(sql, ";")[[1]]
+  queries2 <- strsplit(sql, ";")[[1]]
 
-  # Users
-  insert_user1 = paste("INSERT INTO user VALUES (10, 'Tom',",
+  fc <- file(system.file("3_create_indices.sql", package = "imongr"), "r")
+  t <- readLines(fc)
+  close(fc)
+  sql <- paste0(t, collapse = "\n")
+  queries3 <- strsplit(sql, ";")[[1]]
+
+  fc <- file(system.file("4_create_views.sql", package = "imongr"), "r")
+  t <- readLines(fc)
+  close(fc)
+  sql <- paste0(t, collapse = "\n")
+  queries4 <- strsplit(sql, ";")[[1]]
+
+  queries <- c(queries2, queries3, queries4)
+
+
+  ##### Test users #####
+  insert_user1 <- paste("INSERT INTO user VALUES (10, 'Tom',",
                  "'Tom',",
                  "'+0000000000', 'tom@nowhere.com', 1);")
 
-  insert_user2 = paste("INSERT INTO user VALUES (11, 'Dick',",
+  insert_user2 <- paste("INSERT INTO user VALUES (11, 'Dick',",
                  "'Dick',",
                  "'+0000000000', 'dick@nowhere.com', 1);")
 
-  insert_user3 = paste("INSERT INTO user VALUES (12, 'Harry',",
+  insert_user3 <- paste("INSERT INTO user VALUES (12, 'Harry',",
                  "'Harry',",
                  "'+0000000000', 'harry@nowhere.com', 1);")
 
 
+  
   make_testdb <- function(test_context) {
+
     pool <- make_pool(context = test_context)
     query <- paste("CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
                   "COLLATE = 'utf8_danish_ci';")
+
     pool::dbExecute(pool, query)
 
     drain_pool(pool)
+
     # New connections to testdb
     Sys.setenv(IMONGR_DB_NAME = "testdb")
 
@@ -96,18 +116,15 @@ if (is.null(check_db(is_test_that = FALSE))) {
     Sys.setenv(IMONGR_DB_NAME = env_name)
   }
 
-
  # Make test databases
 
   make_testdb("verify")
   make_testdb("prod")
 }
 
+##### Test delivery data #####
 
-
-# Test delivery data
-
-
+# Registry id 8
 delivery1 <- data.frame(context = "caregiver",
                  year = 2018,
                  orgnr = 974633574,
@@ -118,7 +135,7 @@ delivery1 <- data.frame(context = "caregiver",
 delivery2 <- data.frame(context = "caregiver",
                   year = 2023,
                   orgnr = 997005562,
-                  ind_id = "nakke1",
+                  ind_id = "nakke2",
                   var = 1,
                   denominator = 2)
 
@@ -130,13 +147,11 @@ delivery3 <- data.frame(context = "caregiver",
                   denominator = 3)
 
 
-  ##### Oppsett #####
-# - Lag to testdatabaser (verify og prod) og
-#   sett inn testdata.
 
 Sys.setenv(IMONGR_DB_NAME = "testdb")
 pool <- make_pool(context = "verify")
 
+# Check that the data is ok
 test_that("valid vars pass the check", {
   expect_true(
     length(
@@ -161,24 +176,139 @@ test_that("valid vars pass the check", {
   )
 })
 
+drain_pool(pool)
+
+###########################################
+#####            Test 1               #####
+##### Check that data can be uploaded #####
+###########################################
+
+# Tom uploads delivery 1
+
 Sys.setenv("SHINYPROXY_USERNAME" = "Tom")
 
-insert_data(
+test_that("upload is working", {
+
+  check_db()
+
+  pool <- make_pool(context = "verify")
+
+  insert_data(
   pool = pool,
   df = delivery1,
   update = "2023-08-20",
   affirm = "2023-01-01"
 )
-insert_agg_data(pool, delivery1)
-
-test_that("upload is working", {
-  check_db()
+  insert_agg_data(pool, delivery1)
   dat_delivery <- pool::dbGetQuery(pool, "SELECT * FROM delivery")
-  dat_sorted = dat_delivery[order(dat_delivery$id, decreasing = TRUE), ]
-  latest = dat_sorted[1,]
-  browser()
+  drain_pool(pool)
+
+  dat_sorted <- dat_delivery[order(dat_delivery$id, decreasing = TRUE), ]
+  latest <- dat_sorted[1, ]
+
   expect_equal(as.character(latest$latest_update), "2023-08-20")
 })
+
+  #################################################
+  #####               Test 2                  #####
+  ##### Check that data are publish correctly #####
+  #################################################
+
+# Tom publishes delivery 1
+
+test_that("publishing is working", {
+  check_db()
+
+  pool <- make_pool(context = "verify")
+
+  dat_publish <- get_registry_data(pool, 8)
+
+  agg_data_verify <- pool::dbGetQuery(pool, "SELECT * FROM agg_data")
+
+  drain_pool(pool)
+  pool <- make_pool(context = "prod")
+
+  insert_data(
+        pool = pool,
+        df = dat_publish,
+        update = "2023-08-20",
+        affirm = "2023-01-01",
+        terms_version = version_info(newline = "")
+        )
+
+  insert_agg_data(pool, dat_publish)
+
+  agg_data_prod <- pool::dbGetQuery(pool, "SELECT * FROM agg_data")
+  drain_pool(pool)
+
+  expect_equal(agg_data_verify[, c(-13, -16)], agg_data_prod[, c(-13, -16)])
+})
+
+############################################################
+#####                  Test 3                          #####
+##### Check that the delivery table in prod is correct #####
+############################################################
+
+# Dick uploads delivery 2 and delivery 3 and Harry publishes both
+
+Sys.setenv("SHINYPROXY_USERNAME" = "Dick")
+
+test_that("deliveries are correctly transferred to prod", {
+  check_db()
+
+  pool <- make_pool(context = "verify")
+
+  # Upload
+  insert_data(
+    pool = pool,
+    df = delivery2,
+    update = "2023-08-22",
+    affirm = "2023-01-01"
+  )
+
+  insert_agg_data(pool, delivery2)
+
+  insert_data(
+    pool = pool,
+    df = delivery3,
+    update = "2023-08-23",
+    affirm = "2023-01-01"
+  )
+
+  insert_agg_data(pool, delivery3)
+
+  # Publish
+
+  Sys.setenv("SHINYPROXY_USERNAME" = "Harry")
+
+  dat_publish <- get_registry_data(pool, 8)
+
+  drain_pool(pool)
+  pool <- make_pool(context = "prod")
+
+  insert_data( # Should iterate over deliveries
+        pool = pool,
+        df = dat_publish,
+        update = "2023-08-20", # Remove
+        affirm = "2023-01-01", # Remove
+        terms_version = version_info(newline = "")
+        )
+  
+  insert_agg_data(pool, dat_publish)
+
+  dat_delivery <- pool::dbGetQuery(pool, "SELECT * FROM delivery")
+  drain_pool(pool)
+
+  dat_sorted <- dat_delivery[order(dat_delivery$id, decreasing = TRUE), ]
+
+  latest <- dat_sorted[1, ]
+  browser()
+  expect_equal(as.character(latest$latest_update), "2023-08-23")
+  expect_equal(nrow(dat_delivery), 4) # 3 recent deliveries plus one from initialization
+  expect_equal(latest$user_id, 12)
+})
+
+
 
 ##### Oppsett #####
 # - Lag to testdatabaser (verify og prod) og
@@ -190,7 +320,7 @@ test_that("upload is working", {
 #   - De samme leveransene er overført til prod
 #   - Har rett id til registrering i publish-tabellen
 #   - Har samme checksum
-#   - Har har samme bruker-id
+#   - Har samme bruker-id
 #   - Har rett datoer
 # - Sjekk i publish at:
 #   - Har bruker-id til brukeren som trykker publiser
