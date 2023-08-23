@@ -73,53 +73,57 @@ if (is.null(check_db(is_test_that = FALSE))) {
                  "'+0000000000', 'harry@nowhere.com', 1);")
 
 
-  
-  make_testdb <- function(test_context) {
 
-    pool <- make_pool(context = test_context)
-    query <- paste("CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
+  make_testdb <- function(db_name) {
+    browser()
+    local_pool <- make_pool()
+
+    query <- paste("CREATE DATABASE IF NOT EXISTS", db_name, "CHARACTER SET = 'utf8'",
                   "COLLATE = 'utf8_danish_ci';")
 
-    pool::dbExecute(pool, query)
+    pool::dbExecute(local_pool, query)
 
-    drain_pool(pool)
-
-    # New connections to testdb
-    Sys.setenv(IMONGR_DB_NAME = "testdb")
-
-    pool = make_pool(context = test_context)
+    drain_pool(local_pool)
+    Sys.setenv("IMONGR_DB_NAME" = db_name)
+    local_pool <- make_pool()
 
     for (i in seq_len(length(queries))) {
-      pool::dbExecute(pool, queries[i])
+      pool::dbExecute(local_pool, queries[i])
     }
 
-    insert_table(pool, table = "nation", df = imongr::nation)
-    insert_table(pool, table = "rhf", df = imongr::rhf)
-    insert_table(pool, table = "hf", df = imongr::hf)
-    insert_table(pool, table = "hospital", df = imongr::hospital)
-    insert_table(pool, table = "registry", df = imongr::registry)
-    insert_table(pool, table = "ind", df = imongr::ind)
-    insert_table(pool, table = "user", df = imongr::user)
-    insert_table(pool, table = "user_registry", df = imongr::user_registry)
-    insert_table(pool, table = "delivery", df = imongr::delivery)
-    insert_table(pool, table = "medfield", df = imongr::medfield)
-    insert_table(pool, table = "registry_medfield",
-                df = imongr::registry_medfield)
-    insert_table(pool, table = "data", df = imongr::data)
+    insert_table(local_pool, table = "nation", df = imongr::nation)
+    insert_table(local_pool, table = "rhf", df = imongr::rhf)
+    insert_table(local_pool, table = "hf", df = imongr::hf)
+    insert_table(local_pool, table = "hospital", df = imongr::hospital)
+    insert_table(local_pool, table = "registry", df = imongr::registry)
+    insert_table(local_pool, table = "ind", df = imongr::ind)
+    insert_table(local_pool, table = "user", df = imongr::user)
+    insert_table(local_pool, table = "user_registry", df = imongr::user_registry)
+    insert_table(local_pool, table = "publish", df = imongr::publish)
+    insert_table(local_pool, table = "delivery", df = imongr::delivery)
+    insert_table(local_pool, table = "medfield", df = imongr::medfield)
+    insert_table(local_pool, table = "registry_medfield",
+                 df = imongr::registry_medfield)
+    insert_table(local_pool, table = "data", df = imongr::data)
 
-    pool::dbExecute(pool, insert_user1)
-    pool::dbExecute(pool, insert_user2)
-    pool::dbExecute(pool, insert_user3)
+    pool::dbExecute(local_pool, insert_user1)
+    pool::dbExecute(local_pool, insert_user2)
+    pool::dbExecute(local_pool, insert_user3)
 
-    drain_pool(pool)
+    drain_pool(local_pool)
 
     Sys.setenv(IMONGR_DB_NAME = env_name)
   }
 
- # Make test databases
+  # Make test databases
+  make_testdb("testdb_verify")
+  make_testdb("testdb_prod")
 
-  make_testdb("verify")
-  make_testdb("prod")
+  # Set up database connections
+  Sys.setenv(IMONGR_DB_NAME = "testdb_verify")
+  pool_verify <- make_pool()
+  Sys.setenv(IMONGR_DB_NAME = "testdb_prod")
+  pool_prod <- make_pool()
 }
 
 ##### Test delivery data #####
@@ -148,41 +152,33 @@ delivery3 <- data.frame(context = "caregiver",
 
 
 
-Sys.setenv(IMONGR_DB_NAME = "testdb")
-pool <- make_pool(context = "verify")
 
 # Check that the data is ok
 test_that("valid vars pass the check", {
   expect_true(
     length(
-      check_invalid_var(registry, delivery1, data.frame(), conf, pool)$report
+      check_invalid_var(registry, delivery1, data.frame(), conf, pool_verify)$report
     ) == 0
   )
-})
-
-test_that("valid vars pass the check", {
   expect_true(
     length(
-      check_invalid_var(registry, delivery2, data.frame(), conf, pool)$report
+      check_invalid_var(registry, delivery2, data.frame(), conf, pool_verify)$report
     ) == 0
   )
-})
 
-test_that("valid vars pass the check", {
   expect_true(
     length(
-      check_invalid_var(registry, delivery3, data.frame(), conf, pool)$report
+      check_invalid_var(registry, delivery3, data.frame(), conf, pool_verify)$report
     ) == 0
   )
 })
-
-drain_pool(pool)
 
 ###########################################
 #####            Test 1               #####
 ##### Check that data can be uploaded #####
 ###########################################
 
+# In testdb_verify
 # Tom uploads delivery 1
 
 Sys.setenv("SHINYPROXY_USERNAME" = "Tom")
@@ -191,17 +187,14 @@ test_that("upload is working", {
 
   check_db()
 
-  pool <- make_pool(context = "verify")
-
   insert_data(
-  pool = pool,
+  pool = pool_verify,
   df = delivery1,
   update = "2023-08-20",
   affirm = "2023-01-01"
 )
-  insert_agg_data(pool, delivery1)
-  dat_delivery <- pool::dbGetQuery(pool, "SELECT * FROM delivery")
-  drain_pool(pool)
+  insert_agg_data(pool_verify, delivery1)
+  dat_delivery <- pool::dbGetQuery(pool_verify, "SELECT * FROM delivery")
 
   dat_sorted <- dat_delivery[order(dat_delivery$id, decreasing = TRUE), ]
   latest <- dat_sorted[1, ]
@@ -214,32 +207,27 @@ test_that("upload is working", {
   ##### Check that data are publish correctly #####
   #################################################
 
+# In testdb_verify
 # Tom publishes delivery 1
 
 test_that("publishing is working", {
   check_db()
 
-  pool <- make_pool(context = "verify")
+  dat_publish <- get_registry_data(pool_verify, 8)
 
-  dat_publish <- get_registry_data(pool, 8)
-
-  agg_data_verify <- pool::dbGetQuery(pool, "SELECT * FROM agg_data")
-
-  drain_pool(pool)
-  pool <- make_pool(context = "prod")
+  agg_data_verify <- pool::dbGetQuery(pool_verify, "SELECT * FROM agg_data")
 
   insert_data(
-        pool = pool,
+        pool = pool_prod,
         df = dat_publish,
         update = "2023-08-20",
         affirm = "2023-01-01",
         terms_version = version_info(newline = "")
         )
 
-  insert_agg_data(pool, dat_publish)
+  insert_agg_data(pool_prod, dat_publish)
 
-  agg_data_prod <- pool::dbGetQuery(pool, "SELECT * FROM agg_data")
-  drain_pool(pool)
+  agg_data_prod <- pool::dbGetQuery(pool_prod, "SELECT * FROM agg_data")
 
   expect_equal(agg_data_verify[, c(-13, -16)], agg_data_prod[, c(-13, -16)])
 })
@@ -249,6 +237,7 @@ test_that("publishing is working", {
 ##### Check that the delivery table in prod is correct #####
 ############################################################
 
+# In testdb_prod
 # Dick uploads delivery 2 and delivery 3 and Harry publishes both
 
 Sys.setenv("SHINYPROXY_USERNAME" = "Dick")
@@ -256,56 +245,60 @@ Sys.setenv("SHINYPROXY_USERNAME" = "Dick")
 test_that("deliveries are correctly transferred to prod", {
   check_db()
 
-  pool <- make_pool(context = "verify")
-
   # Upload
   insert_data(
-    pool = pool,
+    pool = pool_verify,
     df = delivery2,
     update = "2023-08-22",
     affirm = "2023-01-01"
   )
 
-  insert_agg_data(pool, delivery2)
+  insert_agg_data(pool_verify, delivery2)
 
   insert_data(
-    pool = pool,
+    pool = pool_verify,
     df = delivery3,
     update = "2023-08-23",
     affirm = "2023-01-01"
   )
 
-  insert_agg_data(pool, delivery3)
+  insert_agg_data(pool_verify, delivery3)
 
   # Publish
 
   Sys.setenv("SHINYPROXY_USERNAME" = "Harry")
 
-  dat_publish <- get_registry_data(pool, 8)
-
-  drain_pool(pool)
-  pool <- make_pool(context = "prod")
+  dat_publish <- get_registry_data(pool_verify, 8)
 
   insert_data( # Should iterate over deliveries
-        pool = pool,
+        pool = pool_prod,
         df = dat_publish,
         update = "2023-08-20", # Remove
         affirm = "2023-01-01", # Remove
         terms_version = version_info(newline = "")
         )
-  
-  insert_agg_data(pool, dat_publish)
 
-  dat_delivery <- pool::dbGetQuery(pool, "SELECT * FROM delivery")
-  drain_pool(pool)
+  insert_agg_data(pool_prod, dat_publish)
 
-  dat_sorted <- dat_delivery[order(dat_delivery$id, decreasing = TRUE), ]
+  dat_delivery <- pool::dbGetQuery(pool_prod, "SELECT * FROM delivery")
+  dat_publish <- pool::dbGetQuery(pool_prod, "SELECT * FROM publish")
 
-  latest <- dat_sorted[1, ]
-  browser()
+  dat_delivery_sorted <- dat_delivery[order(dat_delivery$id, decreasing = TRUE), ]
+  dat_publish_sorted <- dat_publish[order(dat_publish$id, decreasing = TRUE), ]
+
+  latest_delivery <- dat_delivery_sorted[1, ]
+  latest_publish <- dat_publish_sorted[1, ]
+
   expect_equal(as.character(latest$latest_update), "2023-08-23")
   expect_equal(nrow(dat_delivery), 4) # 3 recent deliveries plus one from initialization
-  expect_equal(latest$user_id, 12)
+
+  # Check that delivery has the user that uploaded the data
+  expect_equal(latest_delivery$user_id, 11)
+
+  # Check that publish has the user that published the data
+  expect_equal(latest_publish$user_id, 12)
+
+  expect_equal(latest_delivery$publish_id, latest_publish$id)
 })
 
 
@@ -335,29 +328,30 @@ test_that("deliveries are correctly transferred to prod", {
 
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
-clean_up <- function(test_context) {
-  pool <- make_pool(test_context)
-  if (is.null(check_db(is_test_that = FALSE))) {
-    conf <- get_config()
 
-    pool::dbExecute(pool,
-                    paste("DROP TABLE",
-                          paste(names(conf$db$tab), collapse = ", "), ";")
-    )
-  }
-  ## if db dropped on Github Actions the coverage reporting will fail...
-  if (is.null(check_db(is_test_that = FALSE)) &&
-      Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
-    pool::dbExecute(pool, "drop database testdb;")
-  }
-  ## drain pool
-  if (is.null(check_db(is_test_that = FALSE))) {
-    drain_pool(pool)
-  }
+if (is.null(check_db(is_test_that = FALSE))) {
+  conf <- get_config()
+
+  pool::dbExecute(pool_verify, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
+  pool::dbExecute(pool_prod, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
+
+  pool::dbExecute(pool_verify, paste("DROP TABLE",
+                        paste(names(conf$db$tab), collapse = ", "), ";"))
+
+  pool::dbExecute(pool_prod, paste("DROP TABLE",
+                        paste(names(conf$db$tab), collapse = ", "), ";"))
 }
-
-clean_up("verify")
-clean_up("prod")
+## if db dropped on Github Actions the coverage reporting will fail...
+if (is.null(check_db(is_test_that = FALSE)) &&
+  Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
+    pool::dbExecute(pool_verify, "DROP DATABASE testdb_verify ;")
+    pool::dbExecute(pool_prod, "DROP DATABASE testdb_prod;")
+}
+## drain pool
+if (is.null(check_db(is_test_that = FALSE))) {
+  drain_pool(pool_verify)
+  drain_pool(pool_prod)
+}
 
 ## and finally, remove local config##### End copy #####
 file.remove("_imongr.yml")

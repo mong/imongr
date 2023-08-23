@@ -106,14 +106,19 @@ db:
       insert:
       - registry_id
       - user_id
-    delivery:
+    publish:
       insert:
-      - latest
-      - latest_update
-      - latest_affirm
       - md5_checksum
       - terms_version
       - user_id
+      - registry_id
+    delivery:
+      insert:
+      - latest_update
+      - latest_affirm
+      - md5_checksum
+      - user_id
+      - publish_id
     user:
       insert:
       - user_name
