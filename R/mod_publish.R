@@ -235,11 +235,10 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
     shiny::observeEvent(input$publish, {
       update_ind_text(pool, publish_ind())
       update_ind_val(pool, publish_ind())
-      insert_data(
-        pool = pool,
+      insert_data_prod(
+        pool_verify = pool_verify,
+        pool_prod = pool,
         df = publish_data(),
-        update = publish_delivery()$latest_update,
-        affirm = publish_delivery()$latest_affirm,
         terms_version = version_info(newline = "")
       )
       insert_agg_data(pool, publish_data())

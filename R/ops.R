@@ -183,7 +183,7 @@ insert_data_prod <- function(pool_verify, pool_prod, df, terms_version = NA) {
   df <- dplyr::left_join(df, get_all_orgnr(pool_prod), by = "orgnr")
 
   # Indicator data for the checksum
-  ind <- get_table(pool_verify, table = "ind") %>%
+  ind <- get_table(pool_prod, table = "ind") %>%
     dplyr::filter(.data$id %in% unique(df$ind_id))
 
   # Find the registry id
