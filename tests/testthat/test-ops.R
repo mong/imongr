@@ -90,6 +90,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
   insert_table(pool, table = "ind", df = imongr::ind)
   insert_table(pool, table = "user", df = imongr::user)
   insert_table(pool, table = "user_registry", df = imongr::user_registry)
+  insert_table(pool, table = "publish", df = imongr::publish)
   insert_table(pool, table = "delivery", df = imongr::delivery)
   insert_table(pool, table = "data", df = imongr::data[1:100, ])
 }
@@ -116,7 +117,9 @@ df <- df[, df_var_ind]
 
 ### make a delivery
 if (is.null(check_db(is_test_that = FALSE))) {
-  insert_data(pool, df)
+  test_that("data can be inserted", {
+    expect_invisible(insert_data_verify(pool, df))
+  })
 }
 
 
@@ -203,6 +206,7 @@ test_that("indicator values can be updated", {
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
   conf <- get_config()
+  pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
   pool::dbExecute(pool,
                   paste("DROP TABLE",
                         paste(names(conf$db$tab), collapse = ", "), ";")
