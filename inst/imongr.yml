@@ -119,6 +119,7 @@ db:
       - md5_checksum
       - user_id
       - publish_id
+      - published
     user:
       insert:
       - user_name

@@ -131,6 +131,114 @@ insert_data <- function(pool, df, update = NA, affirm = NA,
 
 }
 
+#' @rdname ops
+#' @export
+insert_data_verify <- function(pool, df, update = NA, affirm = NA) {
+
+  ind <- get_table(pool, table = "ind") %>%
+    dplyr::filter(.data$id %in% unique(df$ind_id))
+
+  delivery <- data.frame(md5_checksum = md5_checksum(df, ind),
+                         latest_update = update,
+                         latest_affirm = affirm,
+                         user_id = get_user_id(pool),
+                         publish_id = NA,
+                         published = 0)
+
+  delete_indicator_data(pool, df)
+
+  insert_table(pool, "delivery", delivery)
+
+  df_id <- pool::dbGetQuery(pool, "SELECT MAX(id) from delivery")
+
+  colnames(df_id) <- "delivery_id"
+
+  df <- dplyr::left_join(df, get_all_orgnr(pool), by = "orgnr")
+
+  insert_table(pool, "data", cbind(df, df_id))
+}
+
+#' @rdname ops
+#' @export
+insert_data_prod <- function(pool_verify, pool_prod, df, terms_version = NA) {
+  # 1) Get delivery and publish from from pool_verify
+  # 2) Get terms version and user id
+  # 3) Find delivery items not linked to any publish item
+  # 4) Insert publish item into prod and verify and get publish_id
+  # 5) Iterate over deliveries
+  #   - In prod:
+  #     - Insert delivery item and link to publish item
+  #     - Insert data into pool_prod
+  #   - In verify:
+  #     - Link delivery items
+  #     - Set delivery.published to 1
+
+
+
+  # Deliveries to be published
+  new_deliveries <- pool::dbGetQuery(pool_verify,
+      "SELECT * FROM delivery WHERE published = 0")
+
+  # Orgnr for the data
+  df <- dplyr::left_join(df, get_all_orgnr(pool_prod), by = "orgnr")
+
+  # Indicator data for the checksum
+  ind <- get_table(pool_verify, table = "ind") %>%
+    dplyr::filter(.data$id %in% unique(df$ind_id))
+
+  # Find the registry id
+  reg_id <- ind$registry_id[1]
+
+  # New row in the publish table in prod
+  new_publish <- data.frame(md5_checksum = md5_checksum(df, ind),
+                           terms_version = terms_version,
+                           user_id = get_user_id(pool_prod),
+                           registry_id = reg_id
+  )
+
+  # Insert new row in publish and get the row id
+  insert_table(pool_prod, "publish", new_publish)
+  new_publish_id_prod <- pool::dbGetQuery(pool_prod, "SELECT MAX(id) FROM publish")
+  new_publish_id_prod <- new_publish_id_prod$`MAX(id)`
+
+  insert_table(pool_verify, "publish", new_publish)
+  new_publish_id_verify <- pool::dbGetQuery(pool_verify, "SELECT MAX(id) FROM publish")
+  new_publish_id_verify <- new_publish_id_verify$`MAX(id)`
+
+  # Iterate over deliveries and insert data into prod
+  for (i in seq_len(nrow(new_deliveries))) {
+
+    ##### In production #####
+    delivery_i <- new_deliveries[i, ]
+
+    delivery <- data.frame(md5_checksum = delivery_i$md5_checksum,
+                          latest_update = delivery_i$latest_update,
+                          latest_affirm = delivery_i$latest_affirm,
+                          user_id = delivery_i$user_id,
+                          publish_id = new_publish_id_prod,
+                          published = 1)
+
+    delete_indicator_data(pool_prod, df)
+
+    insert_table(pool_prod, "delivery", delivery)
+
+    df_id <- pool::dbGetQuery(pool_prod, "SELECT MAX(id) from delivery")
+
+    colnames(df_id) <- "delivery_id"
+
+    insert_table(pool_prod, "data", cbind(df, df_id))
+
+    ##### In verify #####
+    query <- paste("UPDATE delivery 
+        SET published = 1, publish_id =", new_publish_id_verify,
+        "WHERE id =", delivery_i$id)
+
+    pool::dbExecute(pool_verify, query)
+  }
+
+
+
+}
 
 #' @rdname ops
 #' @export

@@ -75,7 +75,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
 
 
   make_testdb <- function(db_name) {
-    browser()
+
     local_pool <- make_pool()
 
     query <- paste("CREATE DATABASE IF NOT EXISTS", db_name, "CHARACTER SET = 'utf8'",
@@ -187,7 +187,7 @@ test_that("upload is working", {
 
   check_db()
 
-  insert_data(
+  insert_data_verify(
   pool = pool_verify,
   df = delivery1,
   update = "2023-08-20",
@@ -217,11 +217,10 @@ test_that("publishing is working", {
 
   agg_data_verify <- pool::dbGetQuery(pool_verify, "SELECT * FROM agg_data")
 
-  insert_data(
-        pool = pool_prod,
+  insert_data_prod(
+        pool_verify = pool_verify,
+        pool_prod = pool_prod,
         df = dat_publish,
-        update = "2023-08-20",
-        affirm = "2023-01-01",
         terms_version = version_info(newline = "")
         )
 
@@ -229,7 +228,17 @@ test_that("publishing is working", {
 
   agg_data_prod <- pool::dbGetQuery(pool_prod, "SELECT * FROM agg_data")
 
+  publish <- pool::dbGetQuery(pool_prod, "SELECT * FROM publish")
+  delivery <- pool::dbGetQuery(pool_prod, "SELECT * FROM delivery")
+
   expect_equal(agg_data_verify[, c(-13, -16)], agg_data_prod[, c(-13, -16)])
+  expect_equal(nrow(publish), 2)
+
+  latest_delivery <- delivery[delivery$id == max(delivery$id), ]
+
+  expect_equal(latest_delivery$publish_id, publish$id[2])
+
+  expect_equal(latest_delivery$published, 1)
 })
 
 ############################################################
@@ -246,7 +255,7 @@ test_that("deliveries are correctly transferred to prod", {
   check_db()
 
   # Upload
-  insert_data(
+  insert_data_verify(
     pool = pool_verify,
     df = delivery2,
     update = "2023-08-22",
@@ -255,7 +264,7 @@ test_that("deliveries are correctly transferred to prod", {
 
   insert_agg_data(pool_verify, delivery2)
 
-  insert_data(
+  insert_data_verify(
     pool = pool_verify,
     df = delivery3,
     update = "2023-08-23",
@@ -270,11 +279,10 @@ test_that("deliveries are correctly transferred to prod", {
 
   dat_publish <- get_registry_data(pool_verify, 8)
 
-  insert_data( # Should iterate over deliveries
-        pool = pool_prod,
+  insert_data_prod( # Should iterate over deliveries
+        pool_verify = pool_verify,
+        pool_prod = pool_prod,
         df = dat_publish,
-        update = "2023-08-20", # Remove
-        affirm = "2023-01-01", # Remove
         terms_version = version_info(newline = "")
         )
 
@@ -289,7 +297,7 @@ test_that("deliveries are correctly transferred to prod", {
   latest_delivery <- dat_delivery_sorted[1, ]
   latest_publish <- dat_publish_sorted[1, ]
 
-  expect_equal(as.character(latest$latest_update), "2023-08-23")
+  expect_equal(as.character(latest_delivery$latest_update), "2023-08-23")
   expect_equal(nrow(dat_delivery), 4) # 3 recent deliveries plus one from initialization
 
   # Check that delivery has the user that uploaded the data
@@ -321,8 +329,6 @@ test_that("deliveries are correctly transferred to prod", {
 #   - Har rett dato
 # - Aggreger data og sjekk at agg-data er lik mellom
 #   de to databasene for registeret.
-
-
 
 
 

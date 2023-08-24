@@ -151,6 +151,7 @@ CREATE TABLE IF NOT EXISTS delivery (
   md5_checksum CHAR(32) NOT NULL,
   user_id SMALLINT UNSIGNED NOT NULL,
   publish_id SMALLINT UNSIGNED,
+  published BOOLEAN NOT NULL, 
   CONSTRAINT `fk_delivery_user`
     FOREIGN KEY (user_id) REFERENCES user (id)
     ON UPDATE CASCADE
