@@ -149,6 +149,7 @@ CREATE TABLE IF NOT EXISTS delivery (
   latest_update DATE DEFAULT NULL,
   latest_affirm DATE DEFAULT NULL,
   md5_checksum CHAR(32) NOT NULL,
+  terms_version VARCHAR(127) DEFAULT NULL,
   user_id SMALLINT UNSIGNED NOT NULL,
   publish_id SMALLINT UNSIGNED,
   published BOOLEAN NOT NULL, 
@@ -159,7 +160,7 @@ CREATE TABLE IF NOT EXISTS delivery (
   CONSTRAINT `fk_delivery_publish`
     FOREIGN KEY (publish_id) REFERENCES publish (id)
     ON UPDATE CASCADE
-    ON DELETE SET NULL
+    ON DELETE RESTRICT
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS data (

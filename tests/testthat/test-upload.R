@@ -38,7 +38,7 @@ env_user_name <- Sys.getenv("SHINYPROXY_USERNAME")
 env_user_groups <- Sys.getenv("SHINYPROXY_USERGROUPS")
 
 # env that need to be set for below tests
-Sys.setenv(SHINYPROXY_USERNAME = "imongr@mongr.no")
+Sys.setenv(SHINYPROXY_USERNAME = "mongr")
 Sys.setenv(SHINYPROXY_USERGROUPS = "PROVIDER")
 
 # Database infrastructure is only guaranteed at Github Actions and
@@ -356,6 +356,7 @@ test_that("true fractions can be filtered from mixing data", {
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
+  pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
   pool::dbExecute(pool,
                   paste("DROP TABLE",
                         paste(names(conf$db$tab), collapse = ", "), ";")

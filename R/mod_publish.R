@@ -145,16 +145,6 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
       }
     })
 
-    publish_delivery <- shiny::reactive({
-      rv$inv_publish
-      if (is.null(input$publish_registry)) {
-        data.frame()
-      } else {
-        get_registry_latest_delivery(pool_verify, input$publish_registry)
-      }
-    })
-
-
     ##############################################
     ##### Reactive value increment observers #####
     ##############################################

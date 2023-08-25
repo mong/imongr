@@ -13,7 +13,7 @@
 #'   apply for all uploads prior to publishing.
 #' @return Relevant values from the current environment and database
 #' @name ops
-#' @aliases duplicate_delivery retire_user_deliveries
+#' @aliases duplicate_delivery
 #'   delete_indicator_data delete_registry_data delete_agg_data insert_data
 #'   insert_agg_data update_aggdata_delivery update_aggdata_delivery_time
 #'   agg_all_data clean_agg_data create_imongr_user update_registry_medfield
@@ -21,17 +21,25 @@
 NULL
 
 
+#' Check if there are identical deliveries
+#'
+#' This function returns TRUE if there is a delivery
+#' with the same md5_checksum as the current upload
+#' for the current user.
+#'
+#' @return Returns TRUE if duplicate deliveries are found.
 #' @rdname ops
 #' @export
 duplicate_delivery <- function(pool, df, ind, registry) {
 
-  query <- "
-SELECT
-  md5_checksum
-FROM
-  delivery
-WHERE
-  latest=1;"
+  query <- paste("
+    SELECT
+      md5_checksum
+    FROM
+      delivery
+    WHERE
+      user_id =", get_user_id(pool), ";"
+  )
 
   dat <- pool::dbGetQuery(pool, query)
 
@@ -40,21 +48,6 @@ WHERE
   } else {
     return(FALSE)
   }
-}
-
-#' @rdname ops
-#' @export
-retire_user_deliveries <- function(pool) {
-
-  query <- paste0("
-UPDATE
-  delivery
-SET
-  latest=0
-WHERE
-  user_id=", get_user_id(pool), ";")
-
-  pool::dbExecute(pool, query)
 }
 
 #' @rdname ops
@@ -100,35 +93,6 @@ WHERE
   query <- paste0(query, condition)
 
   pool::dbExecute(pool, query)
-}
-
-
-#' @rdname ops
-#' @export
-insert_data <- function(pool, df, update = NA, affirm = NA,
-                        terms_version = NA) {
-
-  ind <- get_table(pool, table = "ind") %>%
-    dplyr::filter(.data$id %in% unique(df$ind_id))
-
-  delivery <- data.frame(latest = 1,
-                         md5_checksum = md5_checksum(df, ind),
-                         latest_update = update,
-                         latest_affirm = affirm,
-                         terms_version = terms_version,
-                         user_id = get_user_id(pool))
-
-  delete_indicator_data(pool, df)
-  retire_user_deliveries(pool)
-
-  insert_table(pool, "delivery", delivery)
-  did <- get_user_latest_delivery_id(pool)
-  df_id <- data.frame(delivery_id = did)
-
-  df <- dplyr::left_join(df, get_all_orgnr(pool), by = "orgnr")
-
-  insert_table(pool, "data", cbind(df, df_id))
-
 }
 
 #' @rdname ops
@@ -229,7 +193,7 @@ insert_data_prod <- function(pool_verify, pool_prod, df, terms_version = NA) {
     insert_table(pool_prod, "data", cbind(df, df_id))
 
     ##### In verify #####
-    query <- paste("UPDATE delivery 
+    query <- paste("UPDATE delivery
         SET published = 1, publish_id =", new_publish_id_verify,
         "WHERE id =", delivery_i$id)
 
