@@ -130,7 +130,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
 
 # Registry id 8
 delivery1 <- data.frame(context = "caregiver",
-                 year = 2018,
+                 year = 2023,
                  orgnr = 974633574,
                  ind_id = "nakke1",
                  var = 0,
@@ -150,7 +150,12 @@ delivery3 <- data.frame(context = "caregiver",
                   var = 2,
                   denominator = 3)
 
-
+unrelated_delivery <- data.frame(context = "caregiver",
+                  year = 2023,
+                  orgnr = 974633574	,
+                  ind_id = "norgast_saarruptur",
+                  var = 2,
+                  denominator = 3)
 
 
 # Check that the data is ok
@@ -200,6 +205,15 @@ test_that("upload is working", {
   latest <- dat_sorted[1, ]
 
   expect_equal(as.character(latest$latest_update), "2023-08-20")
+
+  agg_data_date <- pool::dbGetQuery(pool_verify, 
+    "SELECT DISTINCT ind_id, delivery_latest_update
+     FROM agg_data WHERE ind_id = 'nakke1'")
+
+  # Same date for all unit_levels
+  expect_equal(nrow(agg_data_date), 1)
+
+  expect_equal(as.character(agg_data_date$delivery_latest_update[1]), "2023-08-20")
 })
 
   #################################################
@@ -247,14 +261,27 @@ test_that("publishing is working", {
 ############################################################
 
 # In testdb_prod
-# Dick uploads delivery 2 and delivery 3 and Harry publishes both
+# Dick uploads a delivery to another registry, then
+# delivery 2 and delivery 3. Harry publishes 
+# delivery 2 and delivery 3. The delivery to the different regustry
+# remains unpublished
 
 Sys.setenv("SHINYPROXY_USERNAME" = "Dick")
 
 test_that("deliveries are correctly transferred to prod", {
   check_db()
 
-  # Upload
+  # Upload delivery from to a different registry
+  # Delivery id 3
+  insert_data_verify(
+    pool = pool_verify,
+    df = unrelated_delivery,
+    update = "2023-08-20",
+    affirm = "2023-01-01"
+)
+  insert_agg_data(pool_verify, delivery1)
+
+  # Upload nakke2
   insert_data_verify(
     pool = pool_verify,
     df = delivery2,
@@ -264,6 +291,7 @@ test_that("deliveries are correctly transferred to prod", {
 
   insert_agg_data(pool_verify, delivery2)
 
+  # Upload nakke1
   insert_data_verify(
     pool = pool_verify,
     df = delivery3,
@@ -274,7 +302,6 @@ test_that("deliveries are correctly transferred to prod", {
   insert_agg_data(pool_verify, delivery3)
 
   # Publish
-
   Sys.setenv("SHINYPROXY_USERNAME" = "Harry")
 
   dat_publish <- get_registry_data(pool_verify, 8)
@@ -288,17 +315,19 @@ test_that("deliveries are correctly transferred to prod", {
 
   insert_agg_data(pool_prod, dat_publish)
 
-  dat_delivery <- pool::dbGetQuery(pool_prod, "SELECT * FROM delivery")
-  dat_publish <- pool::dbGetQuery(pool_prod, "SELECT * FROM publish")
+  ########################################
+  ##### Check the latest publish row #####
+  ########################################
 
-  dat_delivery_sorted <- dat_delivery[order(dat_delivery$id, decreasing = TRUE), ]
-  dat_publish_sorted <- dat_publish[order(dat_publish$id, decreasing = TRUE), ]
+  dat_delivery_prod <- pool::dbGetQuery(pool_prod, "SELECT * FROM delivery ORDER BY id DESC")
+  dat_publish_prod <- pool::dbGetQuery(pool_prod, "SELECT * FROM publish ORDER BY id DESC")
 
-  latest_delivery <- dat_delivery_sorted[1, ]
-  latest_publish <- dat_publish_sorted[1, ]
+  latest_delivery <- dat_delivery_prod[1, ]
+  latest_publish <- dat_publish_prod[1, ]
 
   expect_equal(as.character(latest_delivery$latest_update), "2023-08-23")
-  expect_equal(nrow(dat_delivery), 4) # 3 recent deliveries plus one from initialization
+  expect_equal(nrow(dat_delivery_prod), 4) # 3 recent deliveries plus one from initialization
+  expect_equal(dat_delivery_prod$published, c(1, 1, 1, 1)) # 3 recent deliveries plus one from initialization
 
   # Check that delivery has the user that uploaded the data
   expect_equal(latest_delivery$user_id, 11)
@@ -306,31 +335,53 @@ test_that("deliveries are correctly transferred to prod", {
   # Check that publish has the user that published the data
   expect_equal(latest_publish$user_id, 12)
 
+  # Check that the ids in delivery and publish match
   expect_equal(latest_delivery$publish_id, latest_publish$id)
+
+  # Check that there is an unpublished delivery in verify
+  dat_delivery_verify <- pool::dbGetQuery(pool_verify, "SELECT * from delivery ORDER BY id ASC")
+  expect_equal(nrow(dat_delivery_verify), 5)
+  expect_true(is.null(dat_delivery_verify$latest_delivery_update[3]))
+  expect_equal(dat_delivery_verify$published[3], 0)
+  
+
+  ##################################################
+  ##### Check that the dates are set correctly #####
+  ##################################################
+
+  ##### Verify #####
+  agg_nakke1 <- pool::dbGetQuery(pool_verify, 
+    "SELECT DISTINCT ind_id, delivery_latest_update
+     FROM agg_data WHERE ind_id = 'nakke1'")
+
+  agg_nakke2 <- pool::dbGetQuery(pool_verify, 
+    "SELECT DISTINCT ind_id, delivery_latest_update
+     FROM agg_data WHERE ind_id = 'nakke2'")
+
+  # Same date for all unit_levels
+  expect_equal(nrow(agg_nakke1), 1)
+  expect_equal(nrow(agg_nakke2), 1)
+
+  expect_equal(as.character(agg_nakke2$delivery_latest_update[1]), "2023-08-22")
+  expect_equal(as.character(agg_nakke1$delivery_latest_update[1]), "2023-08-23")
+
+  ##### Prod #####
+  agg_nakke1 <- pool::dbGetQuery(pool_prod, 
+    "SELECT DISTINCT ind_id, delivery_latest_update
+     FROM agg_data WHERE ind_id = 'nakke1'")
+
+  agg_nakke2 <- pool::dbGetQuery(pool_prod, 
+    "SELECT DISTINCT ind_id, delivery_latest_update
+     FROM agg_data WHERE ind_id = 'nakke2'")
+
+  # Same date for all unit_levels
+  expect_equal(nrow(agg_nakke1), 1)
+  expect_equal(nrow(agg_nakke2), 1)
+
+  expect_equal(as.character(agg_nakke2$delivery_latest_update[1]), "2023-08-22")
+  expect_equal(as.character(agg_nakke1$delivery_latest_update[1]), "2023-08-23")
+  
 })
-
-
-
-##### Oppsett #####
-# - Lag to testdatabaser (verify og prod) og
-#   sett inn testdata.
-
-##### Case 1 #####
-# - Last opp tre leveranser til verify og publiser.
-# - Sjekk i delivery at:
-#   - De samme leveransene er overført til prod
-#   - Har rett id til registrering i publish-tabellen
-#   - Har samme checksum
-#   - Har samme bruker-id
-#   - Har rett datoer
-# - Sjekk i publish at:
-#   - Har bruker-id til brukeren som trykker publiser
-#   - Har rett register-id
-#   - Har rett dato
-# - Aggreger data og sjekk at agg-data er lik mellom
-#   de to databasene for registeret.
-
-
 
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
