@@ -24,7 +24,7 @@
 #' @name upload
 #' @aliases check_report check_upload check_missing_registry check_mixing_ind
 #'   check_missing_var check_invalid_var check_invalid_org check_invalid_context
-#'   check_invalid_ind check_none_numeric_var check_duplicate_delivery
+#'   check_invalid_ind check_none_numeric_var
 #'   csv_to_df mail_check_report sample_df indicator_is_fraction
 #'   filter_fraction_indicator
 NULL
@@ -334,14 +334,6 @@ check_zero_denominator <- function(registry, df, ind, conf, pool) {
   list(fail = fail, report = report)
 }
 
-#' @rdname upload
-#' @export
-check_duplicate_delivery <- function(registry, df, ind, conf, pool) {
-
-  fail <- duplicate_delivery(pool, df, ind, registry)
-  report <- ""
-  list(fail = fail, report = report)
-}
 
 #' @rdname upload
 #' @export

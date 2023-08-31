@@ -13,42 +13,13 @@
 #'   apply for all uploads prior to publishing.
 #' @return Relevant values from the current environment and database
 #' @name ops
-#' @aliases duplicate_delivery
+#' @aliases
 #'   delete_indicator_data delete_registry_data delete_agg_data insert_data
 #'   insert_agg_data update_aggdata_delivery update_aggdata_delivery_time
 #'   agg_all_data clean_agg_data create_imongr_user update_registry_medfield
 #'   update_registry_user update_ind_text update_ind_val
 NULL
 
-
-#' Check if there are identical deliveries
-#'
-#' This function returns TRUE if there is a delivery
-#' with the same md5_checksum as the current upload
-#' for the current user.
-#'
-#' @return Returns TRUE if duplicate deliveries are found.
-#' @rdname ops
-#' @export
-duplicate_delivery <- function(pool, df, ind, registry) {
-
-  query <- paste("
-    SELECT
-      md5_checksum
-    FROM
-      delivery
-    WHERE
-      user_id =", get_user_id(pool), ";"
-  )
-
-  dat <- pool::dbGetQuery(pool, query)
-
-  if (md5_checksum(df, ind) %in% dat$md5_checksum) {
-    return(TRUE)
-  } else {
-    return(FALSE)
-  }
-}
 
 #' @rdname ops
 #' @export
@@ -203,9 +174,6 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
 
     pool::dbExecute(pool_verify, query)
   }
-
-
-
 }
 
 #' @rdname ops

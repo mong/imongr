@@ -309,10 +309,6 @@ test_that("zero check on denominator is working", {
     )$report, conf$upload$check_impossible)
 })
 
-test_that("duplicate delivery check is present (tested elsewhere)", {
-  check_db()
-  expect_false(check_duplicate_delivery(registry, df, ind, conf, pool)$fail)
-})
 
 test_that("check report (wrapper) function is working", {
   check_db()

@@ -2,8 +2,6 @@
 % Please edit documentation in R/ops.R
 \name{ops}
 \alias{ops}
-\alias{duplicate_delivery}
-\alias{retire_user_deliveries}
 \alias{delete_indicator_data}
 \alias{delete_registry_data}
 \alias{delete_agg_data}
@@ -18,17 +16,23 @@
 \alias{update_registry_user}
 \alias{update_ind_text}
 \alias{update_ind_val}
+\alias{insert_data_verify}
+\alias{insert_data_prod}
 \title{Functions for data operations in imongr}
 \usage{
-duplicate_delivery(pool, df, ind, registry)
-
-retire_user_deliveries(pool)
-
 delete_indicator_data(pool, df)
 
 delete_agg_data(pool, df)
 
-insert_data(pool, df, update = NA, affirm = NA, terms_version = NA)
+insert_data_verify(pool, df, update = NA, affirm = NA)
+
+insert_data_prod(
+  pool_verify,
+  pool_prod,
+  df,
+  registry_delivery_ids,
+  terms_version = NA
+)
 
 insert_agg_data(pool, df)
 
@@ -55,10 +59,6 @@ update_ind_val(pool, df)
 
 \item{df}{Data frame of relevant data}
 
-\item{ind}{Data frame of relevant indicator data}
-
-\item{registry}{Integer registry id}
-
 \item{update}{Character string of format YYYY-MM-DD providing date until data
 are regarded as updated. Default value is NA.}
 
@@ -68,6 +68,10 @@ are regarded as final. Default value is NA.}
 \item{terms_version}{Character string providing version stamp of of the terms
 accepted when data are published. Default value is NA that will normally
 apply for all uploads prior to publishing.}
+
+\item{ind}{Data frame of relevant indicator data}
+
+\item{registry}{Integer registry id}
 }
 \value{
 Relevant values from the current environment and database
