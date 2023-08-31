@@ -1,6 +1,18 @@
-# Unreleased
+# imongr 1.1.0
 
-Removed quotation marks from downloaded csv files ([#291](https://github.com/mong/imongr/pull/291))
+## App changes
+
+* Removed quotation marks from downloaded csv files ([#291](https://github.com/mong/imongr/pull/291))
+* Added the option of downloading the aggregated data table
+* The publish tab now refreshes the publish button when the tab is selected
+* The duplicate delivery check has been removed
+* Fixed bug that caused the latest update date to be set incorrectly in the aggregated data
+
+## Dev stuff
+
+* The test now use two additional test databases in order to simulate the data flow from the verify database to the prod database
+* Data is now transferred from verify to prod iteratively according to the delivery ID
+* A new table 'publish' has been added to the databases, and a column has been added to the 'delivery' table with a foregin key to the 'publish' table primary key. Each row in the 'delivery' table now corresponds to one upload, and each row in the 'publish' table to one publishing in both verify and prod
 
 # imongr 1.0.3
 
