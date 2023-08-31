@@ -37,7 +37,6 @@ reference:
     - get_user_registries
     - get_user_registry_select
     - get_user_deliveries
-    - get_user_latest_delivery_id
     - get_registry_data
     - get_indicators_registry
     - get_registry_ind
@@ -61,7 +60,8 @@ reference:
     contents:
     - delete_indicator_data
     - delete_agg_data
-    - insert_data
+    - insert_data_verify
+    - insert_data_prod
     - insert_agg_data
     - agg_all_data
     - clean_agg_data

@@ -13,8 +13,7 @@
 #'   apply for all uploads prior to publishing.
 #' @return Relevant values from the current environment and database
 #' @name ops
-#' @aliases
-#'   delete_indicator_data delete_registry_data delete_agg_data insert_data
+#' @aliases delete_indicator_data delete_registry_data delete_agg_data insert_data
 #'   insert_agg_data update_aggdata_delivery update_aggdata_delivery_time
 #'   agg_all_data clean_agg_data create_imongr_user update_registry_medfield
 #'   update_registry_user update_ind_text update_ind_val
