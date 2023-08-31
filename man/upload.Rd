@@ -12,7 +12,6 @@
 \alias{check_invalid_context}
 \alias{check_invalid_ind}
 \alias{check_none_numeric_var}
-\alias{check_duplicate_delivery}
 \alias{csv_to_df}
 \alias{mail_check_report}
 \alias{sample_df}
@@ -57,8 +56,6 @@ check_numeric_denominator(registry, df, ind, conf, pool)
 check_natural_denominator(registry, df, ind, conf, pool)
 
 check_zero_denominator(registry, df, ind, conf, pool)
-
-check_duplicate_delivery(registry, df, ind, conf, pool)
 
 csv_to_df(path, sep = ",", dec, encoding = "UTF-8")
 

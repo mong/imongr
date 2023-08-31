@@ -7,7 +7,6 @@
 \alias{get_user_id}
 \alias{get_user_registries}
 \alias{get_user_registry_select}
-\alias{get_user_latest_delivery_id}
 \alias{get_registry_data}
 \alias{get_indicators_registryget_registry_ind}
 \alias{get_registry_name}
@@ -16,7 +15,6 @@
 \alias{get_all_orgnr}
 \alias{get_user}
 \alias{get_users}
-\alias{get_registry_latest_delivery}
 \alias{get_registry_indicators}
 \alias{get_registry_medfield}
 \alias{get_medfield_registry}
@@ -45,8 +43,6 @@ get_user_registry_select(pool)
 
 get_user_deliveries(pool)
 
-get_user_latest_delivery_id(pool)
-
 get_registry_data(pool, registry)
 
 get_indicators_registry(pool, indicator)
@@ -64,8 +60,6 @@ get_all_orgnr(pool, include_short_name = FALSE)
 get_user(pool, sample = NA)
 
 get_users(pool, valid = TRUE)
-
-get_registry_latest_delivery(pool, registry)
 
 get_registry_indicators(pool, registry)
 

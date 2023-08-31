@@ -190,6 +190,7 @@ test_that("text for reguser summary is properly provided", {
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
+  pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
   pool::dbExecute(pool,
                   paste("DROP TABLE",
                         paste(names(conf$db$tab), collapse = ", "), ";")

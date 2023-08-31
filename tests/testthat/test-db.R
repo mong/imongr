@@ -103,7 +103,8 @@ test_that("database can be populated with test data", {
   expect_true(insert_table(pool, table = "ind", df = imongr::ind))
   expect_true(insert_table(pool, table = "user", df = imongr::user))
   expect_true(insert_table(pool, table = "user_registry",
-                         df = imongr::user_registry))
+                           df = imongr::user_registry))
+  expect_true(insert_table(pool, table = "publish", df = imongr::publish))
   expect_true(insert_table(pool, table = "delivery", df = imongr::delivery))
   expect_true(insert_table(pool, table = "data", df = imongr::data))
   expect_true(insert_table(pool, table = "medfield",
@@ -316,6 +317,7 @@ test_that("pool cannot be established when missing credentials", {
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
+  pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
   pool::dbExecute(pool,
                   paste("DROP TABLE",
                         paste(names(conf$db$tab), collapse = ", "), ";")

@@ -122,6 +122,8 @@ insert_sample_data <- function(include_data_table = TRUE) {
   insert_table(pool, table = "ind", df = imongr::ind)
   insert_table(pool, table = "user", df = imongr::user)
   insert_table(pool, table = "user_registry", df = imongr::user_registry)
+  insert_table(pool, table = "publish", df = imongr::publish)
+  insert_table(pool, table = "user_registry", df = imongr::user_registry)
   insert_table(pool, table = "delivery", df = imongr::delivery)
   insert_table(pool, table = "medfield", df = imongr::medfield)
   insert_table(pool, table = "registry_medfield",
@@ -142,8 +144,8 @@ insert_sample_data <- function(include_data_table = TRUE) {
 delete_all_data <- function(prompt = TRUE) {
 
   if (prompt) {
-  ans <- readline(paste("WARNING! This will delete all data from the db.",
-                        "If this is the intention type 'YES' now "))
+    ans <- readline(paste("WARNING! This will delete all data from the db.",
+                          "If this is the intention type 'YES' now "))
   } else {
     ans <- "YES"
   }
@@ -154,6 +156,7 @@ delete_all_data <- function(prompt = TRUE) {
     query <- "DROP TABLE IF EXISTS "
     pool <- make_pool()
     message("...dropping tables...")
+    pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
     for (i in seq_len(length(tabs))) {
       pool::dbExecute(pool, paste0(query, tabs[i], ";"))
     }

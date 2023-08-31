@@ -107,14 +107,20 @@ db:
       insert:
       - registry_id
       - user_id
-    delivery:
+    publish:
       insert:
-      - latest
-      - latest_update
-      - latest_affirm
       - md5_checksum
       - terms_version
       - user_id
+      - registry_id
+    delivery:
+      insert:
+      - latest_update
+      - latest_affirm
+      - md5_checksum
+      - user_id
+      - publish_id
+      - published
     user:
       insert:
       - user_name
@@ -307,8 +313,6 @@ upload:
       En eller flere verdier i denominator er ikke naturlige tall
     zero_denominator: |-
       En eller flere verdier i denominator er lik 0
-    duplicate_delivery: |-
-      Datasettet er identisk med siste innsending
   check_empty: |-
     nødvendig definisjon, verdi eller format finnes ikke
   check_impossible: |-

@@ -38,7 +38,7 @@ env_user_name <- Sys.getenv("SHINYPROXY_USERNAME")
 env_user_groups <- Sys.getenv("SHINYPROXY_USERGROUPS")
 
 # env that need to be set for below tests
-Sys.setenv(SHINYPROXY_USERNAME = "imongr@mongr.no")
+Sys.setenv(SHINYPROXY_USERNAME = "mongr")
 Sys.setenv(SHINYPROXY_USERGROUPS = "PROVIDER")
 
 # Database infrastructure is only guaranteed at Github Actions and
@@ -309,10 +309,6 @@ test_that("zero check on denominator is working", {
     )$report, conf$upload$check_impossible)
 })
 
-test_that("duplicate delivery check is present (tested elsewhere)", {
-  check_db()
-  expect_false(check_duplicate_delivery(registry, df, ind, conf, pool)$fail)
-})
 
 test_that("check report (wrapper) function is working", {
   check_db()
@@ -356,6 +352,7 @@ test_that("true fractions can be filtered from mixing data", {
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
+  pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
   pool::dbExecute(pool,
                   paste("DROP TABLE",
                         paste(names(conf$db$tab), collapse = ", "), ";")
