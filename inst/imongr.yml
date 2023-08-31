@@ -14,11 +14,12 @@ app_text:
     help: >
       <br>
       Om du trenger hjelp til bruk av denne programvaren ta kontakt med SKDE på
-      <a href="mailto:mong@skde.no">e-post</a> eller telefon
-      +47 77 75 58 00 og spør etter Are, Arnfinn eller Yohannes<br>
+      <a href="mailto:mong@skde.no">e-post</a>, eventuelt direkte e-post til  
+      <a href="mailto:arnfinn.hykkerud.steindal@helse-nord.no">Arnfinn</a> eller 
+      <a href="mailto:stein-kato.lindberg@helse-nord.no">Stein-Kato</a><br>
       <br>
     lisence: >
-      imongr: data contribution to qmongjs
+      imongr: data contribution to skde.no
       Copyright (C) 2020 SKDE<br>
       <br>
       This program is free software: you can redistribute it and/or modify
@@ -185,9 +186,8 @@ profile:
   pending: >
     Du er nesten klar for bruk av imongr. Det eneste som nå mangeler er
     riktige tilganger og det kan <a href="https://helse-nord.no/skde">SKDE</a>
-    helpe deg med. Ta gjerne kontakt per telefon +47 77 75 58 00 og spør etter
-    Arnfinn, Yohannes eller Are. Du kan også sende oss en
-    <a href="mailto:mong@skde.no">e-post</a> om du heller vil.
+    helpe deg med. Kontakt SKDE på <a href="mailto:mong@skde.no">e-post</a>,
+    eventuelt direkte e-post til <a href="mailto:arnfinn.hykkerud.steindal@helse-nord.no">Arnfinn</a>.
   userinfo: >
     Følgende er registrert om deg:
   delivery:
@@ -209,8 +209,10 @@ profile:
     kvalitetskontroll eller data som allerede er publisert.
     Når du er ferdig kan du logge ut ved å bruke lenken oppe i høyre hjørne. Om
     du har spørsmål eller plages kan du alltids ta kontakt med
-    <a href="https://helse-nord.no/skde">SKDE</a> på telefon +47 77 75 58 00
-    eller <a href="mailto:mong@skde.no">e-post</a>. Om du ser eller
+    <a href="https://helse-nord.no/skde">SKDE</a> på <a href="mailto:mong@skde.no">e-post</a>,
+    eventuelt direkte e-post til  
+    <a href="mailto:arnfinn.hykkerud.steindal@helse-nord.no">Arnfinn</a> eller 
+    <a href="mailto:stein-kato.lindberg@helse-nord.no">Stein-Kato</a>. Om du ser eller
     mistenker feil og mangler i denne programvaren setter vi stor pris på om du
     sier ifra, enten ved bruk av kontaktinformasjonen over eller direkte
     gjennom
