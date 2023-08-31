@@ -168,10 +168,7 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
   new_publish_id_verify <- new_publish_id_verify$`MAX(id)`
 
   # Iterate over deliveries and insert data into prod
-  for (i in seq_len(length(new_delivery_ids))) {
-    
-    # Delivery id in verify
-    delivery_id_i <- new_delivery_ids[i]
+  for (delivery_id_i in new_delivery_ids) {
 
     # Filter data to include only the indicators uploaded in the delivery
     inds_i <- new_deliveries_and_inds$ind_id[new_deliveries_and_inds$delivery_id == delivery_id_i]
