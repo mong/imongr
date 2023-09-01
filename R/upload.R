@@ -324,6 +324,7 @@ check_zero_denominator <- function(registry, df, ind, conf, pool) {
 
   fail <- TRUE
   report <- ""
+
   if ("denominator" %in% names(df) && is.numeric(df$denominator)) {
     if (all(df$denominator > 0)) {
       fail <- FALSE
@@ -334,6 +335,37 @@ check_zero_denominator <- function(registry, df, ind, conf, pool) {
   list(fail = fail, report = report)
 }
 
+#' @rdname upload
+#' @export
+check_duplicated_inds <- function(registry, df, ind, conf, pool) {
+
+  fail <- FALSE
+  report <- ""
+
+  if ("ind_id" %in% names(df)) {
+
+    ind_id_type <- data.frame(ind_id = ind$id, type = ind$type)
+    orgnr <- get_all_orgnr(pool)
+
+
+    df_calc <- df %>%
+      dplyr::left_join(ind_id_type, by = "ind_id") %>%
+      dplyr::left_join(orgnr, by = "orgnr") %>%
+      dplyr::filter(grepl("beregnet", type)) %>%
+      dplyr::select(ind_id, orgnr, context, unit_level, year) %>%
+      dplyr::group_by_all() %>%
+      dplyr::count() %>%
+      dplyr::filter(n > 1)
+
+    if (nrow(df_calc) > 0) {
+      fail <- TRUE
+      report <- unique(df_calc$ind_id)
+    }
+  } else {
+    report <- conf$upload$check_impossible
+  }
+  list(fail = fail, report = report)
+}
 
 #' @rdname upload
 #' @export
