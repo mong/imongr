@@ -14,7 +14,7 @@
 #' @return Relevant values from the current environment and database
 #' @name ops
 #' @aliases delete_indicator_data delete_registry_data delete_agg_data insert_data
-#'   insert_agg_data update_aggdata_delivery update_aggdata_delivery_time
+#'   insert_agg_data update_aggdata_delivery
 #'   agg_all_data clean_agg_data create_imongr_user update_registry_medfield
 #'   update_registry_user update_ind_text update_ind_val
 NULL
@@ -248,33 +248,6 @@ SET
   a.delivery_time = t.delivery_time,
   a.delivery_latest_update = t.delivery_latest_update,
   a.delivery_latest_affirm = t.delivery_latest_affirm
-WHERE
-  a.id = t.id;"
-  )
-
-  pool::dbExecute(pool, query)
-  pool::dbRemoveTable(pool, name = "temp_agg_data", temporary = TRUE)
-}
-
-
-#' @rdname ops
-#' @export
-update_aggdata_delivery_time <- function(pool) {
-  lifecycle::deprecate_stop(
-    "0.27.0", "imongr::update_aggdata_delivery_time()",
-    "imongr::update_aggdata_delivery()"
-  )
-
-  delivery_time <- get_aggdata_delivery_time(pool)
-
-  pool::dbWriteTable(pool, name = "temp_agg_data", value = delivery_time,
-                      temporary = TRUE)
-
-  query <- paste0("
-UPDATE
-  agg_data a, temp_agg_data t
-SET
-  a.delivery_time = t.delivery_time
 WHERE
   a.id = t.id;"
   )
