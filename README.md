@@ -27,13 +27,14 @@ The easiest way to develop `imongr` is to fire up the `docker-compose.yml` file:
 docker-compose up
 ```
 
-This file consist of six different services:
+This file consist of seven different services:
 - three mariadb databases (`prod` at port `3331`, `verify` at port `3332`, and `qa` at port `3333`)
 - Adminer, a tool for database management, at port [8888](http://localhost:8888/)
 - RStudio at port [8787](http://localhost:8787/)
+- Code-server (vscode) at port [8080](http://localhost:8080/)
 - The app, based on the `hnskde/imongr:latest` image, at port [3838](http://localhost:3838/)
 
-Open [localhost:8787](http://localhost:8787/) with your favorite browser and login with `rstudio` and `password`. Go into the `imongr` folder, open `imongr.Rproj`, and press **Yes** to *Do you want to open the project ~/imongr?*. Start coding.
+Open [localhost:8787](http://localhost:8787/) with your favorite browser and login with `rstudio` and `password`. Go into the `imongr` folder, open `imongr.Rproj`, and press **Yes** to *Do you want to open the project ~/imongr?*. Start coding. If you prefer *vscode*, you can open [localhost:8080](http://localhost:8080/) instead.
 
 Populate the databases by using Adminer, either through `imongr` (*Administrative verktøy* - *Adminer*) or through [port 8888](http://localhost:8888/) (the password is the same as username/db/repository name).
 
