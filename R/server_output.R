@@ -126,9 +126,9 @@ error_report_ui <- function(pool, df, ind, upload_file, registry) {
 
 #' @rdname server_output
 #' @export
-warning_report_ui <- function(pool, df, upload_file) {
+warning_report_ui <- function(pool, df, upload_file, registry) {
 
-  if (is.null(upload_file)) {
+  if (is.null(upload_file) || is.null(registry)) {
     NULL
   } else {
     df_delivery <- pool::dbGetQuery(pool, "SELECT md5_checksum, user_id, time FROM delivery ORDER BY time ASC")

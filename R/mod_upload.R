@@ -174,7 +174,7 @@ upload_server <- function(id, pool_verify) {
 
     output$warning_report <- shiny::renderText({
       rv$inv_data
-      warning_report_ui(pool_verify, df(), input$upload_file)
+      warning_report_ui(pool_verify, df(), input$upload_file, input$registry)
     })
 
     output$upload_sample_text <- shiny::renderText({
