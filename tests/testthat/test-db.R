@@ -268,17 +268,6 @@ test_that("users registries can be updated", {
   expect_invisible(update_registry_user(pool, df))
 })
 
-## keep until deprecated function is removed (and then delete this block)
-test_that("aggdata delivery times can be provided", {
-  check_db()
-  aggdata_delivery_time <- get_aggdata_delivery_time(pool)
-  expect_equal(class(aggdata_delivery_time), "data.frame")
-  expect_true(class(aggdata_delivery_time$id) %in% c("integer"))
-  expect_true(
-    class(aggdata_delivery_time$delivery_time)[1] %in% c("POSIXct", "POSIXt")
-  )
-})
-
 test_that("aggdata delivery timings can be provided", {
   check_db()
   aggdata_delivery <- get_aggdata_delivery(pool)

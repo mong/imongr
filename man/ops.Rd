@@ -8,7 +8,6 @@
 \alias{insert_data}
 \alias{insert_agg_data}
 \alias{update_aggdata_delivery}
-\alias{update_aggdata_delivery_time}
 \alias{agg_all_data}
 \alias{clean_agg_data}
 \alias{create_imongr_user}
@@ -37,8 +36,6 @@ insert_data_prod(
 insert_agg_data(pool, df)
 
 update_aggdata_delivery(pool)
-
-update_aggdata_delivery_time(pool)
 
 agg_all_data(pool)
 
