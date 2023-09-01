@@ -131,16 +131,20 @@ warning_report_ui <- function(pool, df, upload_file) {
   if (is.null(upload_file)) {
     NULL
   } else {
-    df_delivery <- pool::dbGetQuery(pool, "SELECT md5_checksum, time FROM delivery")
+    df_delivery <- pool::dbGetQuery(pool, "SELECT md5_checksum, user_id, time FROM delivery ORDER BY time ASC")
     checksums = df_delivery$md5_checksum
     current_checksum = md5_checksum(df)
 
     if (current_checksum %in% checksums) {
+
       same_data_deliveries = df_delivery[which(current_checksum == checksums), ]
-      msg_dates = paste(same_data_deliveries$time, collapse = "<br/>")
+      msg_dates <- paste0(same_data_deliveries$time, " (bruker-id ", same_data_deliveries$user_id, ")") %>%
+        paste(collapse = "<br/>")
+
       paste("<font color=\"#b5a633\">",
             "Denne datafilen ble lastet opp på følgende tidspunkt:<br/>",
             msg_dates, "</font>")
+
     } else {
       NULL
     }
