@@ -63,6 +63,7 @@ upload_ui <- function(id) {
       shiny::mainPanel(
         shiny::htmlOutput(ns("in_progress")),
         shiny::htmlOutput(ns("error_report")),
+        shiny::htmlOutput(ns("warning_report")),
         shiny::titlePanel("Last opp fil"),
         shiny::htmlOutput(ns("upload_sample_text")),
         shiny::tableOutput(ns("upload_sample")),
@@ -169,6 +170,11 @@ upload_server <- function(id, pool_verify) {
       rv$inv_data
       error_report_ui(pool_verify, df(), ind(),
                       input$upload_file, input$registry)
+    })
+
+    output$warning_report <- shiny::renderText({
+      rv$inv_data
+      warning_report_ui(pool_verify, df(), input$upload_file, input$registry)
     })
 
     output$upload_sample_text <- shiny::renderText({

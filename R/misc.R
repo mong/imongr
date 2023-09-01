@@ -33,7 +33,7 @@ natural <- function(vals, tolerance = .Machine$double.eps^0.5) {
 
 #' @rdname misc
 #' @export
-md5_checksum <- function(df, ind) {
+md5_checksum <- function(df, ind = "") {
 
   f1 <- tempfile()
   f2 <- tempfile()
