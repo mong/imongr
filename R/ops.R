@@ -72,7 +72,7 @@ insert_data_verify <- function(pool, df, update = NA, affirm = NA) {
   ind <- get_table(pool, table = "ind") %>%
     dplyr::filter(.data$id %in% unique(df$ind_id))
 
-  delivery <- data.frame(md5_checksum = md5_checksum(df, ind),
+  delivery <- data.frame(md5_checksum = md5_checksum(df),
                          latest_update = update,
                          latest_affirm = affirm,
                          user_id = get_user_id(pool),

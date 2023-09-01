@@ -126,6 +126,29 @@ error_report_ui <- function(pool, df, ind, upload_file, registry) {
 
 #' @rdname server_output
 #' @export
+warning_report_ui <- function(pool, df, upload_file) {
+
+  if (is.null(upload_file)) {
+    NULL
+  } else {
+    df_delivery <- pool::dbGetQuery(pool, "SELECT md5_checksum, time FROM delivery")
+    checksums = df_delivery$md5_checksum
+    current_checksum = md5_checksum(df)
+
+    if (current_checksum %in% checksums) {
+      same_data_deliveries = df_delivery[which(current_checksum == checksums), ]
+      msg_dates = paste(same_data_deliveries$time, collapse = "<br/>")
+      paste("<font color=\"#b5a633\">",
+            "Denne datafilen ble lastet opp på følgende tidspunkt:<br/>",
+            msg_dates, "</font>")
+    } else {
+      NULL
+    }
+  }
+}
+
+#' @rdname server_output
+#' @export
 upload_sample_text_ui <- function(pool, conf, upload_file, registry,
                                   indicators) {
 
