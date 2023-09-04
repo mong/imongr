@@ -152,7 +152,7 @@ delivery3 <- data.frame(context = "caregiver",
 
 unrelated_delivery <- data.frame(context = "caregiver",
                   year = 2023,
-                  orgnr = 974633574	,
+                  orgnr = 974633574,
                   ind_id = "norgast_saarruptur",
                   var = 2,
                   denominator = 3)
@@ -206,7 +206,7 @@ test_that("upload is working", {
 
   expect_equal(as.character(latest$latest_update), "2023-08-20")
 
-  agg_data_date <- pool::dbGetQuery(pool_verify, 
+  agg_data_date <- pool::dbGetQuery(pool_verify,
     "SELECT DISTINCT ind_id, delivery_latest_update
      FROM agg_data WHERE ind_id = 'nakke1'")
 
@@ -262,7 +262,7 @@ test_that("publishing is working", {
 
 # In testdb_prod
 # Dick uploads a delivery to another registry, then
-# delivery 2 and delivery 3. Harry publishes 
+# delivery 2 and delivery 3. Harry publishes
 # delivery 2 and delivery 3. The delivery to the different regustry
 # remains unpublished
 
@@ -343,18 +343,18 @@ test_that("deliveries are correctly transferred to prod", {
   expect_equal(nrow(dat_delivery_verify), 5)
   expect_true(is.null(dat_delivery_verify$latest_delivery_update[3]))
   expect_equal(dat_delivery_verify$published[3], 0)
-  
+
 
   ##################################################
   ##### Check that the dates are set correctly #####
   ##################################################
 
   ##### Verify #####
-  agg_nakke1 <- pool::dbGetQuery(pool_verify, 
+  agg_nakke1 <- pool::dbGetQuery(pool_verify,
     "SELECT DISTINCT ind_id, delivery_latest_update
      FROM agg_data WHERE ind_id = 'nakke1'")
 
-  agg_nakke2 <- pool::dbGetQuery(pool_verify, 
+  agg_nakke2 <- pool::dbGetQuery(pool_verify,
     "SELECT DISTINCT ind_id, delivery_latest_update
      FROM agg_data WHERE ind_id = 'nakke2'")
 
@@ -366,11 +366,11 @@ test_that("deliveries are correctly transferred to prod", {
   expect_equal(as.character(agg_nakke1$delivery_latest_update[1]), "2023-08-23")
 
   ##### Prod #####
-  agg_nakke1 <- pool::dbGetQuery(pool_prod, 
+  agg_nakke1 <- pool::dbGetQuery(pool_prod,
     "SELECT DISTINCT ind_id, delivery_latest_update
      FROM agg_data WHERE ind_id = 'nakke1'")
 
-  agg_nakke2 <- pool::dbGetQuery(pool_prod, 
+  agg_nakke2 <- pool::dbGetQuery(pool_prod,
     "SELECT DISTINCT ind_id, delivery_latest_update
      FROM agg_data WHERE ind_id = 'nakke2'")
 
@@ -380,7 +380,7 @@ test_that("deliveries are correctly transferred to prod", {
 
   expect_equal(as.character(agg_nakke2$delivery_latest_update[1]), "2023-08-22")
   expect_equal(as.character(agg_nakke1$delivery_latest_update[1]), "2023-08-23")
-  
+
 })
 
 # clean up
