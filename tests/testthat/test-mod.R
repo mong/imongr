@@ -301,7 +301,7 @@ test_that("indicator module has output...", {
 test_that("publish module has output...", {
   check_db()
   shiny::testServer(
-    
+
     publish_server, args = list(pool = pool, pool_verify = pool), {
       session$setInputs(
         publish_registry = 10

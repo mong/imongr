@@ -122,7 +122,7 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
 
     # Heading "Veiledning"
     output$publish_main_doc <- shiny::renderText(conf$publish$doc$main)
-    
+
     #####################################
     ##### Database getter functions #####
     #####################################
