@@ -24,11 +24,11 @@ publish_ui <- function(id) {
         shiny::uiOutput(ns("select_publish_registry")),
         shiny::uiOutput(ns("publish_liability")),
         shinycssloaders::withSpinner(
-          shiny::textOutput(ns("publishing")),
-          color = "#18bc9c",
-          color.background = "#ffffff",
-          type = 7,
-          proxy.height = 80),
+                                     shiny::textOutput(ns("publishing")),
+                                     color = "#18bc9c",
+                                     color.background = "#ffffff",
+                                     type = 7,
+                                     proxy.height = 80),
         shiny::uiOutput(ns("publish"))
       ),
       shiny::mainPanel(
@@ -199,15 +199,15 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
     output$publish <- shiny::renderUI({
       rv$inv_publish
       if (!is.null(input$publish_registry) &&
-          !(conf$upload$fail %in% input$publish_registry) &&
-          input$liability &&
-          all(
-            !check_upload(
-              input$publish_registry,
-              publish_data(),
-              publish_ind(),
-              pool)$fail
-          )
+        !(conf$upload$fail %in% input$publish_registry) &&
+        input$liability &&
+        all(
+          !check_upload(
+            input$publish_registry,
+            publish_data(),
+            publish_ind(),
+            pool)$fail
+        )
       ) {
         shiny::tagList(
           shiny::actionButton(ns("publish"),

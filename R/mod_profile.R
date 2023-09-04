@@ -47,8 +47,7 @@ profile_server <- function(id, pool, pool_verify) {
       conf <- get_config()
 
       profile <- shiny::reactive({
-        if (!nrow(get_user_data(pool)) > 0 ||
-            conf$role$none %in% get_user_groups()) {
+        if (!nrow(get_user_data(pool)) > 0 || conf$role$none %in% get_user_groups()) {
           conf$profile$pending
         } else {
           df <- get_user_data(pool)

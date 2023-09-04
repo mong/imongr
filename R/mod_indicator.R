@@ -321,7 +321,7 @@ indicator_server <- function(id, pool) {
             as.numeric(rv$ind_data$min_denominator)
           ),
           identical(input$type, rv$ind_data$type)
-          )
+        )
         if (all(no_new_values)) {
           return(NULL)
         } else {
@@ -392,7 +392,7 @@ indicator_server <- function(id, pool) {
           identical(input$ind_short, rv$ind_data$short_description),
           identical(input$ind_title, rv$ind_data$title),
           identical(input$ind_long, rv$ind_data$long_description)
-          )
+        )
         if (all(no_new_text)) {
           return(NULL)
         } else {
