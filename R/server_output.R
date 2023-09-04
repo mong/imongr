@@ -89,10 +89,11 @@ submit_ui <- function(input_id, conf, pool, upload_file,
     df <- cbind(df, denominator = 1L)
   }
 
-  if (!is.null(upload_file) &&
-      !(conf$upload$fail %in% registry) &&
-      all(!check_upload(registry, df, ind, pool)$fail)) {
-
+  if (
+    !is.null(upload_file) &&
+    !(conf$upload$fail %in% registry) &&
+    all(!check_upload(registry, df, ind, pool)$fail)
+    ) {
     shiny::tagList(
     shiny::actionButton(input_id,
                         paste("Send til",
@@ -173,8 +174,9 @@ upload_sample_text_ui <- function(pool, conf, upload_file, registry,
     end_tag[i] <- "</mark></i>"
     indicators <- paste0(start_tag, all_indicators, end_tag)
 
-    paste0(conf$upload$doc$sample, " <b>", get_registry_name(pool, registry,
-                                                          full_name = TRUE),
+    paste0(conf$upload$doc$sample,
+           " <b>",
+           get_registry_name(pool, registry, full_name = TRUE),
            "</b>: ",
           paste(indicators, collapse = ", "),
           ".")

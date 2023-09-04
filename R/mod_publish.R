@@ -203,10 +203,10 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
         input$liability &&
         all(
           !check_upload(
-            input$publish_registry,
-            publish_data(),
-            publish_ind(),
-            pool)$fail
+                        input$publish_registry,
+                        publish_data(),
+                        publish_ind(),
+                        pool)$fail
         )
       ) {
         shiny::tagList(

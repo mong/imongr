@@ -108,7 +108,7 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
      FROM data LEFT JOIN ind ON data.ind_id = ind.id
      LEFT JOIN delivery ON data.delivery_id = delivery.id
      WHERE ind.registry_id =", reg_id,
-     "AND delivery.published = 0
+          "AND delivery.published = 0
      ORDER BY data.delivery_id;")
   )
 
@@ -116,10 +116,11 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
   new_delivery_ids <- unique(new_deliveries_and_inds$delivery_id)
 
   # New row in the publish table in prod
-  new_publish <- data.frame(md5_checksum = md5_checksum(df, ind),
-                           terms_version = terms_version,
-                           user_id = get_user_id(pool_prod),
-                           registry_id = reg_id
+  new_publish <- data.frame(
+    md5_checksum = md5_checksum(df, ind),
+    terms_version = terms_version,
+    user_id = get_user_id(pool_prod),
+    registry_id = reg_id
   )
 
   # Orgnr for the data
@@ -147,11 +148,11 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
     )
 
     delivery <- data.frame(md5_checksum = delivery_i$md5_checksum,
-                          latest_update = delivery_i$latest_update,
-                          latest_affirm = delivery_i$latest_affirm,
-                          user_id = delivery_i$user_id,
-                          publish_id = new_publish_id_prod,
-                          published = 1)
+                           latest_update = delivery_i$latest_update,
+                           latest_affirm = delivery_i$latest_affirm,
+                           user_id = delivery_i$user_id,
+                           publish_id = new_publish_id_prod,
+                           published = 1)
 
     delete_indicator_data(pool_prod, df_i)
 
