@@ -324,7 +324,6 @@ check_zero_denominator <- function(registry, df, ind, conf, pool) {
 
   fail <- TRUE
   report <- ""
-
   if ("denominator" %in% names(df) && is.numeric(df$denominator)) {
     if (all(df$denominator > 0)) {
       fail <- FALSE
@@ -348,7 +347,7 @@ check_duplicated_inds <- function(registry, df, ind, conf, pool) {
     orgnr <- get_all_orgnr(pool)
 
 
-    df_calc <- df %>%
+    df_duplicated <- df %>%
       dplyr::left_join(ind_id_type, by = "ind_id") %>%
       dplyr::left_join(orgnr, by = "orgnr") %>%
       dplyr::filter(grepl("beregnet", type)) %>%
@@ -357,9 +356,9 @@ check_duplicated_inds <- function(registry, df, ind, conf, pool) {
       dplyr::count() %>%
       dplyr::filter(n > 1)
 
-    if (nrow(df_calc) > 0) {
+    if (nrow(df_duplicated) > 0) {
       fail <- TRUE
-      report <- unique(df_calc$ind_id)
+      report <- unique(df_duplicated$ind_id)
     }
   } else {
     report <- conf$upload$check_impossible
