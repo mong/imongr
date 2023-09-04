@@ -9,7 +9,7 @@
 \usage{
 download_ui(id)
 
-download_server(id, pool, pool_verify)
+download_server(id, registry_tracker, pool, pool_verify)
 
 download_app(pool, pool_verify)
 }

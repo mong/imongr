@@ -9,18 +9,18 @@
 \usage{
 publish_ui(id)
 
-publish_server(id, parent_input, pool, pool_verify)
+publish_server(id, tab_tracker, registry_tracker, pool, pool_verify)
 
 publish_app(pool, pool_verify)
 }
 \arguments{
 \item{id}{Character string module namespace}
 
-\item{parent_input}{A Shiny input object}
-
 \item{pool}{A database pool object}
 
 \item{pool_verify}{A database pool object}
+
+\item{parent_input}{A Shiny input object}
 }
 \value{
 Shiny objects for the imongr app

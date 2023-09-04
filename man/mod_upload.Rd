@@ -9,7 +9,7 @@
 \usage{
 upload_ui(id)
 
-upload_server(id, pool_verify)
+upload_server(id, registry_tracker, pool_verify)
 
 upload_app(pool)
 }
