@@ -117,13 +117,23 @@ indicator_server <- function(id, pool) {
       rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
       rv$ind_data <- rv$ind_data %>%
         dplyr::filter(.data$id == input$indicator) %>%
-        dplyr::mutate(title = dplyr::if_else(is.na(title), "", title),
-                      short_description = dplyr::if_else(is.na(short_description),
-                        "",
-                        short_description),
-                      long_description = dplyr::if_else(is.na(long_description),
-                        "",
-                        long_description))
+        dplyr::mutate(
+          title = dplyr::if_else(
+            is.na(title),
+            "",
+            title
+          ),
+          short_description = dplyr::if_else(
+            is.na(short_description),
+            "",
+            short_description
+          ),
+          long_description = dplyr::if_else(
+            is.na(long_description),
+            "",
+            long_description
+          )
+        )
       level_limits()
     })
 
@@ -294,18 +304,22 @@ indicator_server <- function(id, pool) {
       } else {
         no_new_values <- c(
           identical(input$include, as.logical(rv$ind_data$include)),
-          identical(input$level_direction,
-                    as.logical(rv$ind_data$level_direction)
-                    ),
-          identical(as.numeric(input$level_green),
-                    as.numeric(rv$ind_data$level_green)
-                    ),
-          identical(as.numeric(input$level_yellow),
-                    as.numeric(rv$ind_data$level_yellow)
-                    ),
-          identical(as.numeric(input$min_denominator),
-                    as.numeric(rv$ind_data$min_denominator)
-                    ),
+          identical(
+            input$level_direction,
+            as.logical(rv$ind_data$level_direction)
+          ),
+          identical(
+            as.numeric(input$level_green),
+            as.numeric(rv$ind_data$level_green)
+          ),
+          identical(
+            as.numeric(input$level_yellow),
+            as.numeric(rv$ind_data$level_yellow)
+          ),
+          identical(
+            as.numeric(input$min_denominator),
+            as.numeric(rv$ind_data$min_denominator)
+          ),
           identical(input$type, rv$ind_data$type)
           )
         if (all(no_new_values)) {
