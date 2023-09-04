@@ -46,10 +46,6 @@ app_server <- function(input, output, session) {
   # Registry tracker for linking modules
   registry_tracker <- shiny::reactiveValues()
 
-  shiny::observeEvent(registry_tracker$current_registry, {
-    print(registry_tracker$current_registry)
-  })
-
   # always from default db, never selectable by user
   known_user <- nrow(get_all_user_data(pool)) > 0
   valid_user <- nrow(get_user_data(pool)) > 0
