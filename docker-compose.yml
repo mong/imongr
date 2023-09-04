@@ -56,6 +56,20 @@ services:
     environment:
       PASSWORD: password
 
+  code-server:
+    depends_on:
+      - db
+    image: hnskde/mongr-dev-code-server:main
+    restart: "no"
+    volumes:
+      - ~/.ssh:/home/coder/.ssh
+      - ~/.gitconfig:/home/coder/.gitconfig
+      - .:/home/coder/imongr
+    ports:
+      - 8080:8080
+    environment:
+      PASSWORD: password
+
   app:
     image: hnskde/imongr:latest
     ports:
