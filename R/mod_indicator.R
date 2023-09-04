@@ -118,12 +118,10 @@ indicator_server <- function(id, pool) {
       rv$ind_data <- rv$ind_data %>%
         dplyr::filter(.data$id == input$indicator) %>%
         dplyr::mutate(title = dplyr::if_else(is.na(title), "", title),
-                      short_description = dplyr::if_else(
-                        is.na(short_description),
+                      short_description = dplyr::if_else(is.na(short_description),
                         "",
                         short_description),
-                      long_description = dplyr::if_else(
-                        is.na(long_description),
+                      long_description = dplyr::if_else(is.na(long_description),
                         "",
                         long_description))
       level_limits()
