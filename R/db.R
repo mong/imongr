@@ -72,12 +72,12 @@ insert_table <- function(pool, table, df) {
 
   if (!all(is_member)) {
     stop(paste0("One or more variable names (",
-                paste(names(df)[!is_member], collapse = ", ",
-                ") do not match what was expected (", length(insert))))
+                paste(names(df)[!is_member], collapse = ", "),
+                ") do not match what was expected (", length(insert)))
   }
 
   pool::dbWriteTable(pool, table, df[insert], append = TRUE,
-                       row.names = FALSE)
+                     row.names = FALSE)
 }
 
 

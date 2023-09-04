@@ -56,7 +56,7 @@ db_host <- function(context = "prod") {
       host <- Sys.getenv(envvar)
     } else {
       stop(paste0("No database host defined in config or environment",
-                 " varaible ", envvar, ". Cannot go on."))
+                  " varaible ", envvar, ". Cannot go on."))
     }
   }
 
@@ -136,7 +136,7 @@ adminer_url <- function() {
       url <- Sys.getenv("IMONGR_ADMINER_URL")
     } else {
       warning(paste("Expected Adminer url definition in the environment",
-                 "varaiable IMONGR_ADMINER_URL, but it does not exist!."))
+                    "varaiable IMONGR_ADMINER_URL, but it does not exist!."))
       url <- ""
     }
   }

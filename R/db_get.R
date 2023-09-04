@@ -229,8 +229,8 @@ get_registry_ind <- function(pool, registry) {
   conf <- get_config()
 
   query <- paste0("
-SELECT\n  ",
-  paste(conf$db$tab$ind$insert, collapse = ",\n  "), "
+SELECT\n  ", paste(conf$db$tab$ind$insert,
+                   collapse = ",\n  "), "
 FROM
   ind
 WHERE
@@ -579,9 +579,8 @@ get_aggdata <- function(pool, registry) {
 
   col_names <- paste0("ad.", col_names) %>% paste(collapse = ", ")
 
-  query <- paste0(
-    "SELECT ", col_names,
-    " FROM agg_data AS ad
+  query <- paste0("
+SELECT ", col_names, " FROM agg_data AS ad
     LEFT JOIN ind on ad.ind_id = ind.id
     WHERE registry_id = ", registry)
 
