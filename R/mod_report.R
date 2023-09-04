@@ -69,10 +69,11 @@ report_server <- function(id, pool, pool_verify) {
           }
         },
         content = function(file) {
-          switch(input$file_format,
-                 `csv` = readr::write_excel_csv(df(), file),
-                 `csv (nordisk)` = readr::write_excel_csv2(df(), file),
-                 `rds` = readr::write_rds(df(), file)
+          switch(
+            input$file_format,
+            `csv` = readr::write_excel_csv(df(), file),
+            `csv (nordisk)` = readr::write_excel_csv2(df(), file),
+            `rds` = readr::write_rds(df(), file)
           )
         }
       )

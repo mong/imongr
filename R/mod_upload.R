@@ -51,11 +51,11 @@ upload_ui <- function(id) {
                          weekstart = 1,
                          language = "no"),
         shinycssloaders::withSpinner(
-          shiny::textOutput(ns("spinner")),
-          color = "#18bc9c",
-          color.background = "#ffffff",
-          type = 7,
-          proxy.height = 80),
+                                     shiny::textOutput(ns("spinner")),
+                                     color = "#18bc9c",
+                                     color.background = "#ffffff",
+                                     type = 7,
+                                     proxy.height = 80),
         shiny::uiOutput(ns("submit"))
       ),
 
@@ -143,13 +143,15 @@ upload_server <- function(id, pool_verify) {
     })
 
     output$upload_file <- shiny::renderUI({
-      shiny::fileInput(ns("upload_file"), "Velg csv-fil:",
-                       buttonLabel = "Velg fil...",
-                       placeholder = "Ingen fil er valgt",
-                       multiple = FALSE,
-                       accept = c("text/csv",
-                                  "text/comma-separated-values,text/plain",
-                                  ".csv")
+      shiny::fileInput(
+        ns("upload_file"),
+        "Velg csv-fil:",
+        buttonLabel = "Velg fil...",
+        placeholder = "Ingen fil er valgt",
+        multiple = FALSE,
+        accept = c("text/csv",
+                   "text/comma-separated-values,text/plain",
+                   ".csv")
       )
     })
 
