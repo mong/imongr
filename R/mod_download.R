@@ -81,7 +81,7 @@ download_server <- function(id, pool, pool_verify) {
           get_registry_ind(pool_download(), input$download_registry)
         } else if (input$tab_set == "agg_data") {
           get_aggdata(pool_download(), input$download_registry)
-          } else {
+        } else {
           get_table(pool_download(), input$tab_set)
         }
       }
@@ -110,24 +110,24 @@ download_server <- function(id, pool, pool_verify) {
       },
       content = function(file) {
         switch(input$file_format,
-               `csv` = readr::write_csv(db_table(), file),
-               `csv (nordisk)` = readr::write_csv2(db_table(), file),
-               `rds` = readr::write_rds(db_table(), file)
+          `csv` = readr::write_csv(db_table(), file),
+          `csv (nordisk)` = readr::write_csv2(db_table(), file),
+          `rds` = readr::write_rds(db_table(), file)
         )
       }
     )
 
     output$db_table <- DT::renderDataTable(
       DT::datatable(db_table(), rownames = FALSE,
-                    options = list(
-                      dom = "lftp",
-                      language = list(
-                        lengthMenu = "Vis _MENU_ rader per side",
-                        search = "S\u00f8k:",
-                        info = "Rad _START_ til _END_ av totalt _TOTAL_",
-                        paginate = list(previous = "Forrige", `next` = "Neste")
-                      )
-                    )
+        options = list(
+          dom = "lftp",
+          language = list(
+            lengthMenu = "Vis _MENU_ rader per side",
+            search = "S\u00f8k:",
+            info = "Rad _START_ til _END_ av totalt _TOTAL_",
+            paginate = list(previous = "Forrige", `next` = "Neste")
+          )
+        )
       )
     )
 

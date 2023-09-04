@@ -66,8 +66,6 @@ indicator_server <- function(id, pool) {
       long_oversize = FALSE
     )
 
-    oversize_message <- "<i style='color:red;'>Teksten er for lang!</i><br><br>"
-
     level_limits <- shiny::reactive({
       if (rv$ind_data$level_direction == 1) {
         rv$level_green_min <- rv$ind_data$level_yellow
@@ -82,10 +80,6 @@ indicator_server <- function(id, pool) {
       }
     })
 
-    level_inconsistent_message <- paste0(
-      "<i style='color:red;'>",
-      "Verdier for m\u00e5loppn\u00e5else er ikke konsistente!",
-      "</i>")
     level_consistent <- shiny::reactive({
       if (!is.na(input$level_green) && !is.na(input$level_yellow)) {
         if (input$level_direction) {
@@ -96,7 +90,7 @@ indicator_server <- function(id, pool) {
             shinyjs::html("message", "")
             shinyjs::html(
               "message",
-              level_inconsistent_message
+              conf$indicator$level_inconsistent_message
             )
             return(FALSE)
           }
@@ -108,7 +102,7 @@ indicator_server <- function(id, pool) {
             shinyjs::html("message", "")
             shinyjs::html(
               "message",
-              level_inconsistent_message
+              conf$indicator$level_inconsistent_message
             )
             return(FALSE)
           }
@@ -340,7 +334,7 @@ indicator_server <- function(id, pool) {
 
     output$title_oversize <- shiny::renderUI({
       if (rv$title_oversize) {
-        shiny::HTML(oversize_message)
+        shiny::HTML(conf$indicator$oversize_message)
       } else {
         NULL
       }
@@ -356,7 +350,7 @@ indicator_server <- function(id, pool) {
 
     output$short_oversize <- shiny::renderUI({
       if (rv$short_oversize) {
-        shiny::HTML(oversize_message)
+        shiny::HTML(conf$indicator$oversize_message)
       } else {
         NULL
       }
@@ -372,7 +366,7 @@ indicator_server <- function(id, pool) {
 
     output$long_oversize <- shiny::renderUI({
       if (rv$long_oversize) {
-        shiny::HTML(oversize_message)
+        shiny::HTML(conf$indicator$oversize_message)
       } else {
         NULL
       }
