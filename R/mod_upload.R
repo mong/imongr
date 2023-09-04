@@ -83,7 +83,7 @@ upload_ui <- function(id) {
 
 #' @rdname mod_upload
 #' @export
-upload_server <- function(id, pool_verify) {
+upload_server <- function(id, registry_tracker, pool_verify) {
 
   shiny::moduleServer(id, function(input, output, session) {
 
@@ -92,12 +92,14 @@ upload_server <- function(id, pool_verify) {
     conf <- get_config()
 
     rv <- shiny::reactiveValues(
-      inv_data = 0,
-      upload_reg = character(),
+      inv_data = 0
     )
 
+    rv_return <- shiny::reactiveValues()
+    
     ## observers
     shiny::observeEvent(input$registry, {
+      rv_return$registry_id <- input$registry
       if (!is.null(input$upload_file)) {
         rv$inv_data <- rv$inv_data + 1
       }
@@ -117,7 +119,6 @@ upload_server <- function(id, pool_verify) {
                              showConfirmButton = FALSE,
                              timer = 7000)
     })
-
 
     ## reactives
     df <- shiny::reactive({
@@ -139,7 +140,7 @@ upload_server <- function(id, pool_verify) {
     ## ui sidebar panel
     output$select_registry <- shiny::renderUI({
       select_registry_ui(pool_verify, conf, input_id = ns("registry"),
-                         context = "verify", current_reg = rv$upload_reg)
+                         context = "verify", current_reg = registry_tracker$current_registry)
     })
 
     output$upload_file <- shiny::renderUI({
@@ -217,7 +218,7 @@ upload_server <- function(id, pool_verify) {
                 sample = 0.00001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
     )
 
-
+    return(rv_return)
 
   })
 }

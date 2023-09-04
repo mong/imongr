@@ -52,13 +52,20 @@ download_ui <- function(id) {
 
 #' @rdname mod_download
 #' @export
-download_server <- function(id, pool, pool_verify) {
+download_server <- function(id, registry_tracker, pool, pool_verify) {
 
   shiny::moduleServer(id, function(input, output, session) {
 
     ns <- session$ns
 
     conf <- get_config()
+
+    rv_return <- shiny::reactiveValues()
+
+    shiny::observeEvent(input$download_registry, {
+      rv_return$registry_id <- input$download_registry
+    })
+
     pool_download <- shiny::reactive({
       if (is.null(input$download_context)) {
         pool_verify
@@ -92,7 +99,8 @@ download_server <- function(id, pool, pool_verify) {
                          conf,
                          input_id = ns("download_registry"),
                          context = input$download_context,
-                         show_context = FALSE)
+                         show_context = FALSE, 
+                         current_reg = registry_tracker$current_registry)
     })
 
     output$select_db_table <- shiny::renderUI({
@@ -135,6 +143,7 @@ download_server <- function(id, pool, pool_verify) {
       DT::dataTableOutput(ns("db_table"))
     )
 
+    return(rv_return)
   })
 }
 

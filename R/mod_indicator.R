@@ -47,7 +47,7 @@ indicator_ui <- function(id) {
 
 #' @rdname mod_indicator
 #' @export
-indicator_server <- function(id, pool) {
+indicator_server <- function(id, registry_tracker, pool) {
 
   shiny::moduleServer(id, function(input, output, session) {
 
@@ -56,7 +56,6 @@ indicator_server <- function(id, pool) {
     conf <- get_config()
 
     rv <- shiny::reactiveValues(
-      indicator_reg = character(),
       level_logi = "st\u00f8rre eller lik:",
       level_green_min = 0,
       level_green_max = 1,
@@ -65,6 +64,8 @@ indicator_server <- function(id, pool) {
       short_oversize = FALSE,
       long_oversize = FALSE
     )
+
+    rv_return <- shiny::reactiveValues()
 
     oversize_message <- "<i style='color:red;'>Teksten er for lang!</i><br><br>"
 
@@ -117,6 +118,10 @@ indicator_server <- function(id, pool) {
         shinyjs::html("message", "")
         return(TRUE)
       }
+    })
+
+    shiny::observeEvent(input$indicator_registry, {
+      rv_return$registry_id <- input$indicator_registry
     })
 
     shiny::observeEvent(input$indicator, {
@@ -192,7 +197,7 @@ indicator_server <- function(id, pool) {
 
     output$select_indicator_registry <- shiny::renderUI({
       select_registry_ui(pool, conf, input_id = ns("indicator_registry"),
-                         context = "verify", current_reg = rv$indicator_reg,
+                         context = "verify", current_reg = registry_tracker$current_registry,
                          show_context = FALSE)
     })
 
@@ -394,6 +399,8 @@ indicator_server <- function(id, pool) {
         }
       }
     })
+
+    return(rv_return)
 
   })
 }
