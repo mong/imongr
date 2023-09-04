@@ -341,7 +341,8 @@ check_duplicated_inds <- function(registry, df, ind, conf, pool) {
   fail <- FALSE
   report <- ""
 
-  if ("ind_id" %in% names(df)) {
+  if ("ind_id" %in% names(df) &&
+      "orgnr" %in% names(df)) {
 
     ind_id_type <- data.frame(ind_id = ind$id, type = ind$type)
     orgnr <- get_all_orgnr(pool)
