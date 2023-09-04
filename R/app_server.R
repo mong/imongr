@@ -8,7 +8,6 @@
 #' @export
 
 app_server <- function(input, output, session) {
-
   # set max size of uploaded file to 50 Mb
   options(shiny.maxRequestSize = 50 * 1024^2)
 
@@ -20,8 +19,10 @@ app_server <- function(input, output, session) {
   rv <- shiny::reactiveValues(
     context = "verify",
     medfield_data = get_table(pool, "medfield"),
-    medfield_summary = medfield_summary_text_ui(pool, conf,
-                                                get_table(pool, "medfield")),
+    medfield_summary = medfield_summary_text_ui(
+      pool, conf,
+      get_table(pool, "medfield")
+    ),
     user_data = get_users(pool),
     user_summary =
       reguser_summary_text_ui(pool, conf, get_users(pool)),
@@ -29,10 +30,12 @@ app_server <- function(input, output, session) {
     download_reg = character(),
     indicator_data = data.frame(),
     pool = make_pool(context = "verify"),
-    admin_url = paste0(adminer_url(), "/?",
-                       "server=", db_host(context = "verify"), "&",
-                       "username=", db_username(), "&",
-                       "db=", db_name())
+    admin_url = paste0(
+      adminer_url(), "/?",
+      "server=", db_host(context = "verify"), "&",
+      "username=", db_username(), "&",
+      "db=", db_name()
+    )
   )
 
   # always from default db, never selectable by user
@@ -43,7 +46,8 @@ app_server <- function(input, output, session) {
   if (!known_user) {
     insert_table(
       pool, "user",
-      data.frame(user_name = iusr,
+      data.frame(
+        user_name = iusr,
         name = "",
         phone = "",
         email = iusr,
@@ -52,7 +56,8 @@ app_server <- function(input, output, session) {
     )
     insert_table(
       pool_verify, "user",
-      data.frame(user_name = iusr,
+      data.frame(
+        user_name = iusr,
         name = "",
         phone = "",
         email = iusr,
@@ -94,26 +99,31 @@ app_server <- function(input, output, session) {
 
   # app widget
   ## observers
-  shiny::observeEvent(input$app_info,
+  shiny::observeEvent(
+    input$app_info,
     shinyalert::shinyalert(conf$app_text$info$title,
-                           paste(version_info(),
-                                 conf$app_text$info$help,
-                                 conf$app_text$info$lisence,
-                                 sep = "\n"),
-                           type = "",
-                           closeOnEsc = TRUE, closeOnClickOutside = TRUE,
-                           html = TRUE,
-                           confirmButtonText = no_opt_out_ok())
+      paste(version_info(),
+        conf$app_text$info$help,
+        conf$app_text$info$lisence,
+        sep = "\n"
+      ),
+      type = "",
+      closeOnEsc = TRUE, closeOnClickOutside = TRUE,
+      html = TRUE,
+      confirmButtonText = no_opt_out_ok()
+    )
   )
 
   shiny::observeEvent(input$context, {
     rv$context <- input$context
     drain_pool(rv$pool)
     rv$download_reg <- input$download_registry
-    rv$admin_url <- paste0(adminer_url(), "/?",
-                           "server=", db_host(context = rv$context), "&",
-                           "username=", db_username(), "&",
-                           "db=", db_name())
+    rv$admin_url <- paste0(
+      adminer_url(), "/?",
+      "server=", db_host(context = rv$context), "&",
+      "username=", db_username(), "&",
+      "db=", db_name()
+    )
     rv$pool <- make_pool(context = rv$context)
     rv$medfield_data <- get_table(rv$pool, "medfield")
     rv$medfield_summary <-
@@ -144,10 +154,13 @@ app_server <- function(input, output, session) {
   output$select_context <- shiny::renderUI({
     if (valid_user) {
       shiny::selectInput("context", "Velg milj\u00f8:",
-                         choices = list(Produksjon = "prod",
-                                        Kvalitetskontroll = "verify",
-                                        QA = "qa"),
-                         selected = "verify")
+        choices = list(
+          Produksjon = "prod",
+          Kvalitetskontroll = "verify",
+          QA = "qa"
+        ),
+        selected = "verify"
+      )
     } else {
       NULL
     }
@@ -157,8 +170,10 @@ app_server <- function(input, output, session) {
   # registry medfields
   shiny::observeEvent(input$update_medfield, {
     registry_medfield_update <- data.frame(
-      registry_id = rep(input$medfield_registry,
-                        length(input$select_medfield)),
+      registry_id = rep(
+        input$medfield_registry,
+        length(input$select_medfield)
+      ),
       medfield_id = input$select_medfield
     )
     update_registry_medfield(rv$pool, registry_medfield_update)
@@ -167,8 +182,10 @@ app_server <- function(input, output, session) {
   })
 
   output$select_medfield_registry <- shiny::renderUI({
-    select_registry_ui(rv$pool, conf, input_id = "medfield_registry",
-                       context = rv$context)
+    select_registry_ui(rv$pool, conf,
+      input_id = "medfield_registry",
+      context = rv$context
+    )
   })
   output$select_registry_medfield <- shiny::renderUI({
     shiny::req(input$medfield_registry)
@@ -184,17 +201,22 @@ app_server <- function(input, output, session) {
     } else {
       current_medfield <- NULL
     }
-    shiny::selectInput(inputId = "select_medfield",
-                       label = "Velg fagomr\u00e5de(r):",
-                       choices = all_medfield,
-                       selected = current_medfield,
-                       multiple = TRUE)
+    shiny::selectInput(
+      inputId = "select_medfield",
+      label = "Velg fagomr\u00e5de(r):",
+      choices = all_medfield,
+      selected = current_medfield,
+      multiple = TRUE
+    )
   })
   output$registry_medfield_header <- shiny::renderText({
-    paste0("<h2>", conf$medfield$text$heading, " <i>",
-           get_registry_name(rv$pool, shiny::req(input$medfield_registry),
-                             full_name = TRUE),
-           "</i>:</h2><br>", conf$medfield$text$body)
+    paste0(
+      "<h2>", conf$medfield$text$heading, " <i>",
+      get_registry_name(rv$pool, shiny::req(input$medfield_registry),
+        full_name = TRUE
+      ),
+      "</i>:</h2><br>", conf$medfield$text$body
+    )
   })
   output$registry_medfield_summary <- shiny::renderText({
     rv$medfield_summary
@@ -203,8 +225,10 @@ app_server <- function(input, output, session) {
   # user registries
   shiny::observeEvent(input$update_reguser, {
     registry_user_update <- data.frame(
-      registry_id = rep(input$user_registry,
-                        length(input$select_user)),
+      registry_id = rep(
+        input$user_registry,
+        length(input$select_user)
+      ),
       user_id = input$select_user
     )
     update_registry_user(rv$pool, registry_user_update)
@@ -213,8 +237,10 @@ app_server <- function(input, output, session) {
   })
 
   output$select_user_registry <- shiny::renderUI({
-    select_registry_ui(rv$pool, conf, input_id = "user_registry",
-                       context = rv$context)
+    select_registry_ui(rv$pool, conf,
+      input_id = "user_registry",
+      context = rv$context
+    )
   })
   output$select_registry_user <- shiny::renderUI({
     shiny::req(input$user_registry)
@@ -230,17 +256,22 @@ app_server <- function(input, output, session) {
     } else {
       current_reguser <- NULL
     }
-    shiny::selectInput(inputId = "select_user",
-                       label = "Velg bruker(e):",
-                       choices = all_user,
-                       selected = current_reguser,
-                       multiple = TRUE)
+    shiny::selectInput(
+      inputId = "select_user",
+      label = "Velg bruker(e):",
+      choices = all_user,
+      selected = current_reguser,
+      multiple = TRUE
+    )
   })
   output$registry_user_header <- shiny::renderText({
-    paste0("<h2>", conf$reguser$text$heading, " <i>",
-           get_registry_name(rv$pool, shiny::req(input$user_registry),
-                             full_name = TRUE),
-           "</i>:</h2><br>", conf$reguser$text$body)
+    paste0(
+      "<h2>", conf$reguser$text$heading, " <i>",
+      get_registry_name(rv$pool, shiny::req(input$user_registry),
+        full_name = TRUE
+      ),
+      "</i>:</h2><br>", conf$reguser$text$body
+    )
   })
   output$registry_user_summary <- shiny::renderText({
     rv$user_summary
@@ -248,43 +279,53 @@ app_server <- function(input, output, session) {
 
   # our db admin interface
   output$admin_frame <- shiny::renderUI({
-    shiny::tags$iframe(src = rv$admin_url, width = "100%", height = 1024,
-                       frameborder = "no")
+    shiny::tags$iframe(
+      src = rv$admin_url, width = "100%", height = 1024,
+      frameborder = "no"
+    )
   })
 
   # mine field
   shiny::observeEvent(input$agg_all, {
-    withCallingHandlers({
-      shinyjs::html("sysMessage", "")
-      shinyjs::html("funMessage", "")
-      shinyjs::html("funMessage", agg_all_data(rv$pool))
-    },
-    message = function(m) {
-      shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
-    })
+    withCallingHandlers(
+      {
+        shinyjs::html("sysMessage", "")
+        shinyjs::html("funMessage", "")
+        shinyjs::html("funMessage", agg_all_data(rv$pool))
+      },
+      message = function(m) {
+        shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
+      }
+    )
   })
   shiny::observeEvent(input$clean_agg, {
-    withCallingHandlers({
-      shinyjs::html("sysMessage", "")
-      shinyjs::html("funMessage", "")
-      shinyjs::html("funMessage", clean_agg_data(rv$pool))
-    },
-    message = function(m) {
-      shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
-    })
+    withCallingHandlers(
+      {
+        shinyjs::html("sysMessage", "")
+        shinyjs::html("funMessage", "")
+        shinyjs::html("funMessage", clean_agg_data(rv$pool))
+      },
+      message = function(m) {
+        shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
+      }
+    )
   })
   output$mine_field_uc <- shiny::renderUI({
     shiny::tagList(
       shiny::HTML(
-        paste0("<h3 style='color:",
-               switch(rv$context,
-                      prod = "green;'>Produksjon</h3>",
-                      verify = "orange;'>Kvalitetskontroll</h3>",
-                      qa = "red;'>QA</h3>"))
+        paste0(
+          "<h3 style='color:",
+          switch(rv$context,
+            prod = "green;'>Produksjon</h3>",
+            verify = "orange;'>Kvalitetskontroll</h3>",
+            qa = "red;'>QA</h3>"
+          )
+        )
       ),
       shiny::p("Tr\u00e5 forsiktig!"),
       shiny::actionButton("agg_all", "Aggreger alle data",
-                          icon = shiny::icon("skull")),
+        icon = shiny::icon("skull")
+      ),
       shiny::hr(),
       shiny::actionButton("clean_agg", "Rydd aggregerte data")
     )

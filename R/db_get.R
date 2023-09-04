@@ -34,9 +34,10 @@ NULL
 #' @rdname db_get
 #' @export
 get_indicator <- function(pool) {
-
-  lifecycle::deprecate_warn("0.12.0", "imongr::get_indicator()",
-                            "imongr::get_table()")
+  lifecycle::deprecate_warn(
+    "0.12.0", "imongr::get_indicator()",
+    "imongr::get_table()"
+  )
 
   get_table(pool, "ind")
 }
@@ -45,7 +46,6 @@ get_indicator <- function(pool) {
 #' @rdname db_get
 #' @export
 get_all_user_data <- function(pool) {
-
   query <- paste0("
 SELECT
   *
@@ -61,7 +61,6 @@ WHERE
 #' @rdname db_get
 #' @export
 get_user_data <- function(pool) {
-
   query <- paste0("
 SELECT
   *
@@ -78,7 +77,6 @@ WHERE
 #' @rdname db_get
 #' @export
 get_user_id <- function(pool) {
-
   df <- get_user_data(pool)
 
   if (dim(df)[1] == 0) {
@@ -92,7 +90,6 @@ get_user_id <- function(pool) {
 #' @rdname db_get
 #' @export
 get_user_registries <- function(pool) {
-
   valid_user <- nrow(get_user_data(pool)) > 0
 
   if (valid_user) {
@@ -118,7 +115,6 @@ WHERE
 #' @rdname db_get
 #' @export
 get_user_registry_select <- function(pool) {
-
   query <- paste0("
 SELECT
   r.name AS name,
@@ -131,8 +127,7 @@ ON
   ur.registry_id=r.id
 WHERE
   ur.user_id=", get_user_id(pool), "
-ORDER BY name;"
-  )
+ORDER BY name;")
 
   tibble::deframe(pool::dbGetQuery(pool, query))
 }
@@ -141,7 +136,6 @@ ORDER BY name;"
 #' @rdname db_get
 #' @export
 get_user_deliveries <- function(pool) {
-
   valid_user <- nrow(get_user_data(pool)) > 0
 
   if (valid_user) {
@@ -169,10 +163,14 @@ ORDER BY
     df <- pool::dbGetQuery(pool, query)
 
     # timestamp in db is UTC, convert back to "our" time zone
-    df$Dato <- format(df$Dato, format = conf$app_text$format$date, # nolint
-                      tz = conf$app_text$format$tz)
-    df$Tid <- format(df$Tid, format = conf$app_text$format$time, # nolint
-                     tz = conf$app_text$format$tz)
+    df$Dato <- format(df$Dato,
+      format = conf$app_text$format$date, # nolint
+      tz = conf$app_text$format$tz
+    )
+    df$Tid <- format(df$Tid,
+      format = conf$app_text$format$time, # nolint
+      tz = conf$app_text$format$tz
+    )
 
     df
   } else {
@@ -183,10 +181,10 @@ ORDER BY
 #' @rdname db_get
 #' @export
 get_registry_data <- function(pool, registry) {
-
   conf <- get_config()
   fields <- paste(conf$db$tab$data$insert[conf$upload$data_var_ind],
-                  collapse = ",\n  ")
+    collapse = ",\n  "
+  )
 
   query <- paste0("
 SELECT
@@ -201,22 +199,19 @@ WHERE
   i.registry_id=", registry, ";")
 
   pool::dbGetQuery(pool, query)
-
 }
 
 
 #' @rdname db_get
 #' @export
 get_indicators_registry <- function(pool, indicator) {
-
   query <- paste0("
 SELECT
   DISTINCT registry_id AS rid
 FROM
   ind
 WHERE
-  id IN ('", paste0(indicator, collapse = "', '"), "');"
-  )
+  id IN ('", paste0(indicator, collapse = "', '"), "');")
 
   pool::dbGetQuery(pool, query)$rid
 }
@@ -225,12 +220,12 @@ WHERE
 #' @rdname db_get
 #' @export
 get_registry_ind <- function(pool, registry) {
-
   conf <- get_config()
 
   query <- paste0("
 SELECT\n  ", paste(conf$db$tab$ind$insert,
-                   collapse = ",\n  "), "
+    collapse = ",\n  "
+  ), "
 FROM
   ind
 WHERE
@@ -243,7 +238,6 @@ WHERE
 #' @rdname db_get
 #' @export
 get_registry_name <- function(pool, registry, full_name = FALSE) {
-
   if (missing(registry) || paste(registry, collapse = "") == "") {
     return(character())
   }
@@ -268,7 +262,6 @@ WHERE
 #' @rdname db_get
 #' @export
 get_org_name <- function(pool, orgnr) {
-
   query <- paste0("
 SELECT
   orgnr,
@@ -298,14 +291,12 @@ FROM
 
   orgnr <- tibble::tibble(orgnr = orgnr)
   dplyr::left_join(orgnr, orgs, by = "orgnr")$short_name
-
 }
 
 
 #' @rdname db_get
 #' @export
 get_flat_org <- function(pool) {
-
   conf <- get_config()
   prefix <- conf$aggregate$orgnr$prefix
   query <- paste0("
@@ -325,8 +316,7 @@ LEFT JOIN hf h ON
 LEFT JOIN rhf r ON
   h.rhf_orgnr=r.orgnr
 LEFT JOIN nation n ON
-  r.nation_orgnr=n.orgnr;"
-  )
+  r.nation_orgnr=n.orgnr;")
 
   pool::dbGetQuery(pool, query)
 }
@@ -335,7 +325,6 @@ LEFT JOIN nation n ON
 #' @rdname db_get
 #' @export
 get_all_orgnr <- function(pool, include_short_name = FALSE) {
-
   conf <- get_config()
 
   query <- paste0("
@@ -379,7 +368,6 @@ FROM
 #' @rdname db_get
 #' @export
 get_user <- function(pool, sample = NA) {
-
   conf <- get_config()
   query <- paste0("
 SELECT
@@ -400,14 +388,12 @@ WHERE
 #' @rdname db_get
 #' @export
 get_users <- function(pool, valid = TRUE) {
-
   query <- paste0("
 SELECT
   *
 FROM
   user
-"
-  )
+")
 
   if (valid) {
     query <- paste(query, "WHERE\n  valid=1")
@@ -419,15 +405,13 @@ FROM
 #' @rdname db_get
 #' @export
 get_registry_indicators <- function(pool, registry) {
-
   query <- paste0("
 SELECT
   id
 FROM
   ind
 WHERE
-  registry_id=", registry, ";"
-  )
+  registry_id=", registry, ";")
 
   pool::dbGetQuery(pool, query)
 }
@@ -436,7 +420,6 @@ WHERE
 #' @rdname db_get
 #' @export
 get_registry_medfield <- function(pool, registry) {
-
   query <- paste0("
 SELECT
   mr.medfield_id,
@@ -447,8 +430,7 @@ FROM
 LEFT JOIN medfield m ON
   mr.medfield_id=m.id
 WHERE
-  mr.registry_id=", registry, ";"
-  )
+  mr.registry_id=", registry, ";")
 
   pool::dbGetQuery(pool, query)
 }
@@ -457,15 +439,13 @@ WHERE
 #' @rdname db_get
 #' @export
 get_medfield_registry <- function(pool, medfield) {
-
   query <- paste0("
 SELECT
   DISTINCT(registry_id)
 FROM
   registry_medfield
 WHERE
-  medfield_id=", medfield, ";"
-  )
+  medfield_id=", medfield, ";")
 
   pool::dbGetQuery(pool, query)
 }
@@ -473,7 +453,6 @@ WHERE
 #' @rdname db_get
 #' @export
 get_registry_user <- function(pool, registry) {
-
   query <- paste0("
 SELECT
   user_registry.user_id,
@@ -483,8 +462,7 @@ FROM
 LEFT JOIN user ON
   user_registry.user_id=user.id
 WHERE
-  user_registry.registry_id=", registry, ";"
-  )
+  user_registry.registry_id=", registry, ";")
 
   pool::dbGetQuery(pool, query)
 }
@@ -493,15 +471,13 @@ WHERE
 #' @rdname db_get
 #' @export
 get_user_registry <- function(pool, user) {
-
   query <- paste0("
 SELECT
   DISTINCT(registry_id)
 FROM
   user_registry
 WHERE
-  user_id=", user, ";"
-  )
+  user_id=", user, ";")
 
   pool::dbGetQuery(pool, query)
 }
@@ -510,7 +486,6 @@ WHERE
 #' @rdname db_get
 #' @export
 get_aggdata_delivery <- function(pool) {
-
   # get current delivery ids in data
   query <- paste0("
 SELECT
@@ -521,8 +496,7 @@ FROM
   data
 GROUP BY
   ind_id,
-  context;"
-  )
+  context;")
 
   dat <- pool::dbGetQuery(pool, query)
 
@@ -534,8 +508,7 @@ SELECT
   latest_update AS delivery_latest_update,
   latest_affirm AS delivery_latest_affirm
 FROM
-  delivery;"
-  )
+  delivery;")
 
   delivery <- pool::dbGetQuery(pool, query)
 
@@ -551,8 +524,7 @@ SELECT
   ind_id,
   context
 FROM
-  agg_data;"
-  )
+  agg_data;")
 
   agg <- pool::dbGetQuery(pool, query)
 
@@ -573,7 +545,6 @@ FROM
 #' @rdname db_get
 #' @export
 get_aggdata <- function(pool, registry) {
-
   col_names <- pool::dbGetQuery(pool, "SELECT * FROM agg_data WHERE 1 = 0") %>%
     colnames()
 

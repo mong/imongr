@@ -47,8 +47,10 @@ test_that("a pool object can be provided", {
 
 test_that("database server is up and test database can be made", {
   check_db()
-  query <- paste("CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
-                 "COLLATE = 'utf8_danish_ci';")
+  query <- paste(
+    "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
+    "COLLATE = 'utf8_danish_ci';"
+  )
   expect_equal(pool::dbExecute(pool, query), 1)
   expect_equal(class(pool::dbGetQuery(pool, "SELECT 1")), "data.frame")
 })
@@ -102,15 +104,21 @@ test_that("database can be populated with test data", {
   expect_true(insert_table(pool, table = "registry", df = imongr::registry))
   expect_true(insert_table(pool, table = "ind", df = imongr::ind))
   expect_true(insert_table(pool, table = "user", df = imongr::user))
-  expect_true(insert_table(pool, table = "user_registry",
-                           df = imongr::user_registry))
+  expect_true(insert_table(pool,
+    table = "user_registry",
+    df = imongr::user_registry
+  ))
   expect_true(insert_table(pool, table = "publish", df = imongr::publish))
   expect_true(insert_table(pool, table = "delivery", df = imongr::delivery))
   expect_true(insert_table(pool, table = "data", df = imongr::data))
-  expect_true(insert_table(pool, table = "medfield",
-                           df = imongr::medfield))
-  expect_true(insert_table(pool, table = "registry_medfield",
-                           df = imongr::registry_medfield))
+  expect_true(insert_table(pool,
+    table = "medfield",
+    df = imongr::medfield
+  ))
+  expect_true(insert_table(pool,
+    table = "registry_medfield",
+    df = imongr::registry_medfield
+  ))
 })
 
 test_that("agg_data can be populated from existing (test) data", {
@@ -131,27 +139,37 @@ test_that("a complete set will be aggregated if given subset of inds", {
 test_that("function provides error when inserting non-consistent data", {
   check_db()
   expect_error(insert_table(pool, table = "wrong_table", df = data.frame))
-  expect_error(insert_table(pool, table = "org",
-                          df = cbind(imongr::org, unvalid_var = 1)))
-  expect_error(insert_table(pool, table = "org",
-                          df = data.frame(name = "", OrgNr = 123456789,
-                                          valid = 1)))
-  wrong_var_name <- data.frame(delivery_id = 100,
-                               unit_level = "hospital",
-                               orgnr = 974633574,
-                               year = 2018,
-                               var = 0,
-                               numerator = 1,
-                               ind_id = "norgast_andel_avdoede_bykspytt_tolv")
+  expect_error(insert_table(pool,
+    table = "org",
+    df = cbind(imongr::org, unvalid_var = 1)
+  ))
+  expect_error(insert_table(pool,
+    table = "org",
+    df = data.frame(
+      name = "", OrgNr = 123456789,
+      valid = 1
+    )
+  ))
+  wrong_var_name <- data.frame(
+    delivery_id = 100,
+    unit_level = "hospital",
+    orgnr = 974633574,
+    year = 2018,
+    var = 0,
+    numerator = 1,
+    ind_id = "norgast_andel_avdoede_bykspytt_tolv"
+  )
   expect_error(insert_table(pool, table = "data", df = wrong_var_name))
-  too_many_vars <- data.frame(delivery_id = 100,
-                              unit_level = "hospital",
-                              orgnr = 974633574,
-                              year = 2018,
-                              var = 0,
-                              denominator = 1,
-                              ind_id = "norgast_andel_avdoede_bykspytt_tolv",
-                              sucker = TRUE)
+  too_many_vars <- data.frame(
+    delivery_id = 100,
+    unit_level = "hospital",
+    orgnr = 974633574,
+    year = 2018,
+    var = 0,
+    denominator = 1,
+    ind_id = "norgast_andel_avdoede_bykspytt_tolv",
+    sucker = TRUE
+  )
   expect_error(insert_table(pool, table = "data", df = too_many_vars))
 })
 
@@ -159,7 +177,7 @@ test_that("data can be fetched from test database", {
   check_db()
   expect_equal(dim(get_table(pool, "data")), dim(imongr::data))
   expect_true(dim(get_table(pool, "data", sample = .1))[1] <
-                dim(imongr::data)[1])
+    dim(imongr::data)[1])
 })
 
 test_that("delivery data can be fetched from test database", {
@@ -198,8 +216,10 @@ test_that("registry name can be fetched from test database", {
 test_that("registries and indicators per registry can be fetched", {
   check_db()
   registries <- unique(imongr::registry$id)
-  expect_equal(class(get_registry_indicators(pool, registries[1])),
-               "data.frame")
+  expect_equal(
+    class(get_registry_indicators(pool, registries[1])),
+    "data.frame"
+  )
   expect_equal(class(get_table(pool, "registry")), "data.frame")
   expect_true(
     dim(get_table(pool, "registry", sample = .5))[1] < dim(imongr::registry)[1]
@@ -307,15 +327,18 @@ test_that("pool cannot be established when missing credentials", {
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
-  pool::dbExecute(pool,
-                  paste("DROP TABLE",
-                        paste(names(conf$db$tab), collapse = ", "), ";")
+  pool::dbExecute(
+    pool,
+    paste(
+      "DROP TABLE",
+      paste(names(conf$db$tab), collapse = ", "), ";"
+    )
   )
 }
 
 ## if db dropped on Github Actions the following coverage will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
-    Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
+  Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
   pool::dbExecute(pool, "drop database testdb;")
 }
 ## finally, drain pool

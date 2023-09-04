@@ -12,7 +12,6 @@ NULL
 #' @rdname mod_indicator
 #' @export
 indicator_ui <- function(id) {
-
   ns <- shiny::NS(id)
 
   shiny::tagList(
@@ -48,9 +47,7 @@ indicator_ui <- function(id) {
 #' @rdname mod_indicator
 #' @export
 indicator_server <- function(id, pool) {
-
   shiny::moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
 
     conf <- get_config()
@@ -190,9 +187,11 @@ indicator_server <- function(id, pool) {
     })
 
     output$select_indicator_registry <- shiny::renderUI({
-      select_registry_ui(pool, conf, input_id = ns("indicator_registry"),
-                         context = "verify", current_reg = rv$indicator_reg,
-                         show_context = FALSE)
+      select_registry_ui(pool, conf,
+        input_id = ns("indicator_registry"),
+        context = "verify", current_reg = rv$indicator_reg,
+        show_context = FALSE
+      )
     })
 
     output$select_indicator <- shiny::renderUI({
@@ -262,8 +261,10 @@ indicator_server <- function(id, pool) {
     output$set_min_denominator <- shiny::renderUI({
       shiny::req(input$indicator)
       shiny::tags$div(
-        title = paste("Minste antall observasjoner (N) som kreves for at",
-                      "indikatoren presenteres"),
+        title = paste(
+          "Minste antall observasjoner (N) som kreves for at",
+          "indikatoren presenteres"
+        ),
         shiny::numericInput(
           ns("min_denominator"), "Minste antall observasjoner:",
           value = rv$ind_data$min_denominator, min = 0
@@ -295,8 +296,7 @@ indicator_server <- function(id, pool) {
         is.null(input$indicator),
         is.null(input$include),
         is.null(input$level_direction)
-      )
-      )) {
+      ))) {
         NULL
       } else {
         no_new_values <- c(
@@ -397,14 +397,12 @@ indicator_server <- function(id, pool) {
         }
       }
     })
-
   })
 }
 
 #' @rdname mod_indicator
 #' @export
 indicator_app <- function(pool) {
-
   ui <- shiny::fluidPage(
     indicator_ui("ind")
   )

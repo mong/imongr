@@ -12,7 +12,6 @@ NULL
 #' @rdname mod_upload
 #' @export
 upload_ui <- function(id) {
-
   ns <- shiny::NS(id)
 
   shiny::tagList(
@@ -22,40 +21,54 @@ upload_ui <- function(id) {
         shiny::uiOutput(ns("select_registry")),
         shiny::uiOutput(ns("upload_file")),
         shiny::radioButtons(ns("sep"), "Kolonneseparator",
-                            choices = c(Semikolon = ";",
-                                        Komma = ",",
-                                        Tab = "\t"),
-                            selected = ";"),
+          choices = c(
+            Semikolon = ";",
+            Komma = ",",
+            Tab = "\t"
+          ),
+          selected = ";"
+        ),
         shiny::radioButtons(ns("dec_sep"), "Desimalseparator",
-                            choices = c(Punktum = ".",
-                                        Komma = ","),
-                            selected = ","),
+          choices = c(
+            Punktum = ".",
+            Komma = ","
+          ),
+          selected = ","
+        ),
         shiny::numericInput(ns("sample_size"),
-                            "Antall rader vist:",
-                            20,
-                            min = 1,
-                            max = 50),
-        shiny::selectInput(ns("sample_type"),
-                           "Utvalg:",
-                           list(`toppen` = FALSE,
-                                `tilfeldig` = TRUE),
-                           FALSE),
+          "Antall rader vist:",
+          20,
+          min = 1,
+          max = 50
+        ),
+        shiny::selectInput(
+          ns("sample_type"),
+          "Utvalg:",
+          list(
+            `toppen` = FALSE,
+            `tilfeldig` = TRUE
+          ),
+          FALSE
+        ),
         shiny::dateInput(ns("latest_update"),
-                         "Alle indikatorer er oppdatert per:",
-                         value = Sys.Date(),
-                         weekstart = 1,
-                         language = "no"),
+          "Alle indikatorer er oppdatert per:",
+          value = Sys.Date(),
+          weekstart = 1,
+          language = "no"
+        ),
         shiny::dateInput(ns("latest_affirm"),
-                         "Merk alle indikatorer som forel\u00f8pig etter:",
-                         value = paste0(format(Sys.Date(), "%Y"), "-01-01"),
-                         weekstart = 1,
-                         language = "no"),
+          "Merk alle indikatorer som forel\u00f8pig etter:",
+          value = paste0(format(Sys.Date(), "%Y"), "-01-01"),
+          weekstart = 1,
+          language = "no"
+        ),
         shinycssloaders::withSpinner(
-                                     shiny::textOutput(ns("spinner")),
-                                     color = "#18bc9c",
-                                     color.background = "#ffffff",
-                                     type = 7,
-                                     proxy.height = 80),
+          shiny::textOutput(ns("spinner")),
+          color = "#18bc9c",
+          color.background = "#ffffff",
+          type = 7,
+          proxy.height = 80
+        ),
         shiny::uiOutput(ns("submit"))
       ),
 
@@ -76,7 +89,6 @@ upload_ui <- function(id) {
         shiny::tableOutput(ns("sample_data")),
       )
     )
-
   )
 }
 
@@ -84,9 +96,7 @@ upload_ui <- function(id) {
 #' @rdname mod_upload
 #' @export
 upload_server <- function(id, pool_verify) {
-
   shiny::moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
 
     conf <- get_config()
@@ -112,10 +122,11 @@ upload_server <- function(id, pool_verify) {
       insert_agg_data(pool_verify, df())
       rv$inv_data <- rv$inv_data + 1
       shinyalert::shinyalert(conf$upload$reciept$title,
-                             conf$upload$reciept$body,
-                             type = "success",
-                             showConfirmButton = FALSE,
-                             timer = 7000)
+        conf$upload$reciept$body,
+        type = "success",
+        showConfirmButton = FALSE,
+        timer = 7000
+      )
     })
 
 
@@ -138,8 +149,10 @@ upload_server <- function(id, pool_verify) {
 
     ## ui sidebar panel
     output$select_registry <- shiny::renderUI({
-      select_registry_ui(pool_verify, conf, input_id = ns("registry"),
-                         context = "verify", current_reg = rv$upload_reg)
+      select_registry_ui(pool_verify, conf,
+        input_id = ns("registry"),
+        context = "verify", current_reg = rv$upload_reg
+      )
     })
 
     output$upload_file <- shiny::renderUI({
@@ -149,16 +162,20 @@ upload_server <- function(id, pool_verify) {
         buttonLabel = "Velg fil...",
         placeholder = "Ingen fil er valgt",
         multiple = FALSE,
-        accept = c("text/csv",
-                   "text/comma-separated-values,text/plain",
-                   ".csv")
+        accept = c(
+          "text/csv",
+          "text/comma-separated-values,text/plain",
+          ".csv"
+        )
       )
     })
 
     output$submit <- shiny::renderUI({
       rv$inv_data
-      submit_ui(ns("submit"), conf, pool_verify, input$upload_file,
-                input$registry, df(), ind(), "verify")
+      submit_ui(
+        ns("submit"), conf, pool_verify, input$upload_file,
+        input$registry, df(), ind(), "verify"
+      )
     })
 
     output$spinner <- shiny::renderText({
@@ -170,8 +187,10 @@ upload_server <- function(id, pool_verify) {
     ## ui main panel
     output$error_report <- shiny::renderText({
       rv$inv_data
-      error_report_ui(pool_verify, df(), ind(),
-                      input$upload_file, input$registry)
+      error_report_ui(
+        pool_verify, df(), ind(),
+        input$upload_file, input$registry
+      )
     })
 
     output$warning_report <- shiny::renderText({
@@ -185,14 +204,18 @@ upload_server <- function(id, pool_verify) {
         NULL
       } else {
         upload_sample_text_ui(pool_verify, conf, input$upload_file,
-                              input$registry, indicators = unique(df()$ind_id))
+          input$registry,
+          indicators = unique(df()$ind_id)
+        )
       }
     })
 
     output$upload_sample <- shiny::renderTable({
       rv$inv_data
-      upload_sample_ui(df(), input$upload_file, input$registry,
-                       input$sample_size, input$sample_type)
+      upload_sample_ui(
+        df(), input$upload_file, input$registry,
+        input$sample_size, input$sample_type
+      )
     })
 
     output$main_doc <- shiny::renderText(conf$upload$doc$main)
@@ -202,10 +225,13 @@ upload_server <- function(id, pool_verify) {
     })
 
     output$valid_ind <- shiny::renderText({
-      paste0("<h4>", conf$upload$doc$valid_ind, " <i>",
-             get_registry_name(pool_verify, shiny::req(input$registry),
-                               full_name = TRUE),
-             "</i>:</h4>")
+      paste0(
+        "<h4>", conf$upload$doc$valid_ind, " <i>",
+        get_registry_name(pool_verify, shiny::req(input$registry),
+          full_name = TRUE
+        ),
+        "</i>:</h4>"
+      )
     })
 
     output$valid_ind_tab <- shiny::renderTable(
@@ -216,18 +242,15 @@ upload_server <- function(id, pool_verify) {
 
     output$sample_data <- shiny::renderTable(
       get_table(pool_verify, "data",
-                sample = 0.00001)[conf$db$tab$data$insert[conf$upload$data_var_ind]]
+        sample = 0.00001
+      )[conf$db$tab$data$insert[conf$upload$data_var_ind]]
     )
-
-
-
   })
 }
 
 #' @rdname mod_upload
 #' @export
 upload_app <- function(pool) {
-
   ui <- shiny::fluidPage(
     upload_ui("ind")
   )

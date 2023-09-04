@@ -33,7 +33,6 @@ NULL
 #' @rdname upload
 #' @export
 check_report <- function(registry, df, ind, pool) {
-
   conf <- get_config()
   r <- check_upload(registry, df, ind, pool)
 
@@ -44,10 +43,14 @@ check_report <- function(registry, df, ind, pool) {
     msg <- "<font color=\"#FF0000\">"
     for (i in seq_len(length(r$unit))) {
       if (r$fail[i]) {
-        msg <- paste(msg, "<b>", conf$upload$check[r$unit[i]], "</b>",
-                     r$report[i], "<br>")
-        mail_msg <- paste(mail_msg, conf$upload$check[r$unit[i]],
-                          r$report[i], "\n")
+        msg <- paste(
+          msg, "<b>", conf$upload$check[r$unit[i]], "</b>",
+          r$report[i], "<br>"
+        )
+        mail_msg <- paste(
+          mail_msg, conf$upload$check[r$unit[i]],
+          r$report[i], "\n"
+        )
       }
     }
     msg <- paste(msg, mail_check_report(pool, registry, mail_msg))
@@ -59,19 +62,24 @@ check_report <- function(registry, df, ind, pool) {
 #' @rdname upload
 #' @export
 mail_check_report <- function(pool, registry, mail_msg) {
-
   user <- get_user_data(pool)
   to <- "mailto:mong@skde.no"
-  subject <- paste("imongr: Feilmelding ved opplasting",
-                   get_registry_name(pool, registry))
-  body <- paste("Hei,",
-                "\n\nDet kan godt hende jeg trenger hjelp med f\u00f8lgende",
-                "feil:",
-                "\n\n", paste(gsub("'", "", mail_msg)),
-                "\n\nSo long og vennlig hilsen,\n", user$name, "\n", user$phone)
+  subject <- paste(
+    "imongr: Feilmelding ved opplasting",
+    get_registry_name(pool, registry)
+  )
+  body <- paste(
+    "Hei,",
+    "\n\nDet kan godt hende jeg trenger hjelp med f\u00f8lgende",
+    "feil:",
+    "\n\n", paste(gsub("'", "", mail_msg)),
+    "\n\nSo long og vennlig hilsen,\n", user$name, "\n", user$phone
+  )
 
-  content <- paste0(to, "?subject=", URLencode(subject), "&body=",
-                    URLencode(body))
+  content <- paste0(
+    to, "?subject=", URLencode(subject), "&body=",
+    URLencode(body)
+  )
 
   paste0("<a href='", content, "'>Send feilmelding til SKDE</a>")
 }
@@ -80,7 +88,6 @@ mail_check_report <- function(pool, registry, mail_msg) {
 #' @rdname upload
 #' @export
 check_upload <- function(registry, df, ind, pool) {
-
   unit <- character()
   fail <- logical()
   report <- character()
@@ -115,7 +122,6 @@ check_upload <- function(registry, df, ind, pool) {
 #' @rdname upload
 #' @export
 check_missing_registry <- function(registry, df, ind, conf, pool) {
-
   # pro forma, will never fail but present to maintain consistent config
   fail <- FALSE
   report <- character()
@@ -129,14 +135,14 @@ check_missing_registry <- function(registry, df, ind, conf, pool) {
 #' @rdname upload
 #' @export
 check_mixing_ind <- function(registry, df, ind, conf, pool) {
-
   # upload cannot contain a mix of fractions and other types of indicators
   ind_is_fraction <- indicator_is_fraction(pool, df, conf, return_ind = TRUE)
   if (all(ind_is_fraction$is_fraction) || all(!ind_is_fraction$is_fraction)) {
     list(fail = FALSE, report = "")
   } else {
     report <- paste(ind_is_fraction$ind[!ind_is_fraction$is_fraction],
-                    collapse = ", ")
+      collapse = ", "
+    )
     list(fail = TRUE, report = report)
   }
 }
@@ -144,7 +150,6 @@ check_mixing_ind <- function(registry, df, ind, conf, pool) {
 #' @rdname upload
 #' @export
 check_missing_var <- function(registry, df, ind, conf, pool) {
-
   fail <- TRUE
   report <- setdiff(conf$upload$file$vars, names(df))
   if (length(report) == 0) {
@@ -156,7 +161,6 @@ check_missing_var <- function(registry, df, ind, conf, pool) {
 #' @rdname upload
 #' @export
 check_invalid_var <- function(registry, df, ind, conf, pool) {
-
   fail <- TRUE
   report <- setdiff(names(df), conf$upload$file$vars)
   if (length(report) == 0) {
@@ -169,7 +173,6 @@ check_invalid_var <- function(registry, df, ind, conf, pool) {
 #' @rdname upload
 #' @export
 check_invalid_context <- function(registry, df, ind, conf, pool) {
-
   fail <- TRUE
   if ("context" %in% names(df)) {
     report <- setdiff(df$context, conf$upload$file$vals$context)
@@ -186,7 +189,6 @@ check_invalid_context <- function(registry, df, ind, conf, pool) {
 #' @rdname upload
 #' @export
 check_invalid_org <- function(registry, df, ind, conf, pool) {
-
   fail <- TRUE
   if ("orgnr" %in% names(df)) {
     report <- setdiff(df$orgnr, get_all_orgnr(pool)$orgnr)
@@ -203,12 +205,13 @@ check_invalid_org <- function(registry, df, ind, conf, pool) {
 #' @rdname upload
 #' @export
 check_invalid_ind <- function(registry, df, ind, conf, pool) {
-
   fail <- TRUE
 
   if ("ind_id" %in% names(df)) {
-    report <- setdiff(df$ind_id,
-                      get_registry_indicators(pool, registry)$id)
+    report <- setdiff(
+      df$ind_id,
+      get_registry_indicators(pool, registry)$id
+    )
   } else {
     report <- conf$upload$check_empty
   }
@@ -222,7 +225,6 @@ check_invalid_ind <- function(registry, df, ind, conf, pool) {
 #' @rdname upload
 #' @export
 check_numeric_var <- function(registry, df, ind, conf, pool) {
-
   fail <- TRUE
   report <- ""
   if ("var" %in% names(df)) {
@@ -239,12 +241,10 @@ check_numeric_var <- function(registry, df, ind, conf, pool) {
 #' @rdname upload
 #' @export
 check_natural_var <- function(registry, df, ind, conf, pool) {
-
   fail <- TRUE
   report <- ""
 
   if ("var" %in% names(df) && is.numeric(df$var) && "ind_id" %in% names(df)) {
-
     # check only on indicator data that are true fractions
     df <- filter_fraction_indicator(pool, df, conf)
     if (dim(df)[1] < 1) {
@@ -263,13 +263,11 @@ check_natural_var <- function(registry, df, ind, conf, pool) {
 #' @rdname upload
 #' @export
 check_overflow_var <- function(registry, df, ind, conf, pool) {
-
   fail <- TRUE
   report <- ""
   if ("var" %in% names(df) && is.numeric(df$var) &&
-      "denominator" %in% names(df) && is.numeric(df$denominator) &&
-      "ind_id" %in% names(df)) {
-
+    "denominator" %in% names(df) && is.numeric(df$denominator) &&
+    "ind_id" %in% names(df)) {
     # check only on indicator data that are true fractions
     df <- filter_fraction_indicator(pool, df, conf)
     if (dim(df)[1] < 1) {
@@ -288,7 +286,6 @@ check_overflow_var <- function(registry, df, ind, conf, pool) {
 #' @rdname upload
 #' @export
 check_numeric_denominator <- function(registry, df, ind, conf, pool) {
-
   fail <- TRUE
   report <- ""
   if ("denominator" %in% names(df)) {
@@ -305,7 +302,6 @@ check_numeric_denominator <- function(registry, df, ind, conf, pool) {
 #' @rdname upload
 #' @export
 check_natural_denominator <- function(registry, df, ind, conf, pool) {
-
   fail <- TRUE
   report <- ""
   if ("denominator" %in% names(df) && is.numeric(df$denominator)) {
@@ -321,7 +317,6 @@ check_natural_denominator <- function(registry, df, ind, conf, pool) {
 #' @rdname upload
 #' @export
 check_zero_denominator <- function(registry, df, ind, conf, pool) {
-
   fail <- TRUE
   report <- ""
   if ("denominator" %in% names(df) && is.numeric(df$denominator)) {
@@ -338,7 +333,6 @@ check_zero_denominator <- function(registry, df, ind, conf, pool) {
 #' @rdname upload
 #' @export
 csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
-
   if (!file.exists(path)) {
     stop(paste("The file", path, "does not exist!"))
   }
@@ -346,21 +340,28 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
   std_enc <- c("UTF-8", "LATIN1")
 
   tryCatch(
-    withCallingHandlers({
-        df <- read.csv(path, header = TRUE, sep = sep, dec = dec,
-                       fileEncoding = encoding, stringsAsFactors = FALSE)
+    withCallingHandlers(
+      {
+        df <- read.csv(path,
+          header = TRUE, sep = sep, dec = dec,
+          fileEncoding = encoding, stringsAsFactors = FALSE
+        )
       },
       warning = function(w) {
         alternative_encoding <- setdiff(std_enc, encoding)
-        warning(paste("imongr is trying the alternative encoding",
-                      alternative_encoding, "when reading a csv file",
-                      "hopefully recovering from initial warning:\n\t", w))
-        df <<- read.csv(path, header = TRUE, sep = sep, dec = dec,
-                        fileEncoding = alternative_encoding,
-                        stringsAsFactors = FALSE)
+        warning(paste(
+          "imongr is trying the alternative encoding",
+          alternative_encoding, "when reading a csv file",
+          "hopefully recovering from initial warning:\n\t", w
+        ))
+        df <<- read.csv(path,
+          header = TRUE, sep = sep, dec = dec,
+          fileEncoding = alternative_encoding,
+          stringsAsFactors = FALSE
+        )
         invokeRestart("silent")
       }
-      ),
+    ),
     error = function(e) {
       return(e)
     },
@@ -379,7 +380,6 @@ csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
 #' @rdname upload
 #' @export
 sample_df <- function(df, skip = c(""), n, random = FALSE) {
-
   if (ncol(df) > length(skip)) {
     df <- df[, !(names(df) %in% skip)]
   }
@@ -402,7 +402,6 @@ sample_df <- function(df, skip = c(""), n, random = FALSE) {
 #' @rdname upload
 #' @export
 indicator_is_fraction <- function(pool, df, conf, return_ind = FALSE) {
-
   ind_id <- unique(df$ind_id)
   ind <- imongr::get_table(pool, "ind")
   ind <- ind %>%
@@ -414,13 +413,11 @@ indicator_is_fraction <- function(pool, df, conf, return_ind = FALSE) {
   } else {
     data.frame(ind = ind$id, is_fraction = ind$type %in% conf$var$fraction$type)
   }
-
 }
 
 #' @rdname upload
 #' @export
 filter_fraction_indicator <- function(pool, df, conf) {
-
   frac <- indicator_is_fraction(pool, df, conf, return_ind = TRUE)
 
   df %>%

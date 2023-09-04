@@ -13,7 +13,6 @@ NULL
 #' @rdname mod_report
 #' @export
 report_ui <- function(id) {
-
   ns <- shiny::NS(id)
 
   shiny::tagList(
@@ -21,8 +20,10 @@ report_ui <- function(id) {
       shiny::sidebarPanel(
         shiny::selectInput(ns("report"), "Velg rapport:", c("Registerstatus")),
         shiny::tags$div(
-          title = paste("csv (nordisk): semikolon-delt csv med komma som",
-                        "desimalskilletegn"),
+          title = paste(
+            "csv (nordisk): semikolon-delt csv med komma som",
+            "desimalskilletegn"
+          ),
           shiny::selectInput(
             ns("file_format"),
             "Filformat for nedlasting:",
@@ -41,11 +42,9 @@ report_ui <- function(id) {
 #' @rdname mod_report
 #' @export
 report_server <- function(id, pool, pool_verify) {
-
   shiny::moduleServer(
     id,
     function(input, output, session) {
-
       ns <- session$ns
 
       df <- shiny::reactive({
@@ -69,8 +68,7 @@ report_server <- function(id, pool, pool_verify) {
           }
         },
         content = function(file) {
-          switch(
-            input$file_format,
+          switch(input$file_format,
             `csv` = readr::write_excel_csv(df(), file),
             `csv (nordisk)` = readr::write_excel_csv2(df(), file),
             `rds` = readr::write_rds(df(), file)
@@ -104,7 +102,6 @@ report_server <- function(id, pool, pool_verify) {
 #' @rdname mod_report
 #' @export
 report_app <- function(pool, pool_verify) {
-
   ui <- shiny::fluidPage(
     report_ui("report")
   )

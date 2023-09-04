@@ -13,7 +13,6 @@ NULL
 #' @rdname mod_download
 #' @export
 download_ui <- function(id) {
-
   ns <- shiny::NS(id)
 
   shiny::tagList(
@@ -32,8 +31,10 @@ download_ui <- function(id) {
         shiny::uiOutput(ns("select_download_registry")),
         shiny::uiOutput(ns("select_db_table")),
         shiny::tags$div(
-          title = paste("csv (nordisk): semikolon-delt csv med komma som",
-                        "desimalskilletegn"),
+          title = paste(
+            "csv (nordisk): semikolon-delt csv med komma som",
+            "desimalskilletegn"
+          ),
           shiny::selectInput(
             ns("file_format"),
             "Filformat:",
@@ -53,9 +54,7 @@ download_ui <- function(id) {
 #' @rdname mod_download
 #' @export
 download_server <- function(id, pool, pool_verify) {
-
   shiny::moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
 
     conf <- get_config()
@@ -89,15 +88,17 @@ download_server <- function(id, pool, pool_verify) {
 
     output$select_download_registry <- shiny::renderUI({
       select_registry_ui(pool_download(),
-                         conf,
-                         input_id = ns("download_registry"),
-                         context = input$download_context,
-                         show_context = FALSE)
+        conf,
+        input_id = ns("download_registry"),
+        context = input$download_context,
+        show_context = FALSE
+      )
     })
 
     output$select_db_table <- shiny::renderUI({
       shiny::selectInput(ns("tab_set"), "Velg tabell:", conf$download$tab,
-                         selected = conf$download$tab[1])
+        selected = conf$download$tab[1]
+      )
     })
 
     output$download_db_table <- shiny::downloadHandler(
@@ -118,7 +119,8 @@ download_server <- function(id, pool, pool_verify) {
     )
 
     output$db_table <- DT::renderDataTable(
-      DT::datatable(db_table(), rownames = FALSE,
+      DT::datatable(db_table(),
+        rownames = FALSE,
         options = list(
           dom = "lftp",
           language = list(
@@ -134,14 +136,12 @@ download_server <- function(id, pool, pool_verify) {
     output$ui_db_table <- shiny::renderUI(
       DT::dataTableOutput(ns("db_table"))
     )
-
   })
 }
 
 #' @rdname mod_download
 #' @export
 download_app <- function(pool, pool_verify) {
-
   ui <- shiny::fluidPage(
     download_ui("download")
   )

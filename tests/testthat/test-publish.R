@@ -35,8 +35,6 @@ check_db <- function(is_test_that = TRUE) {
 
 # Make test databases in verify and prod
 if (is.null(check_db(is_test_that = FALSE))) {
-
-
   ##### Queries for test data insertion #####
   fc <- file(system.file("2_create_tabs.sql", package = "imongr"), "r")
   t <- readLines(fc)
@@ -60,26 +58,33 @@ if (is.null(check_db(is_test_that = FALSE))) {
 
 
   ##### Test users #####
-  insert_user1 <- paste("INSERT INTO user VALUES (10, 'Tom',",
-                 "'Tom',",
-                 "'+0000000000', 'tom@nowhere.com', 1);")
+  insert_user1 <- paste(
+    "INSERT INTO user VALUES (10, 'Tom',",
+    "'Tom',",
+    "'+0000000000', 'tom@nowhere.com', 1);"
+  )
 
-  insert_user2 <- paste("INSERT INTO user VALUES (11, 'Dick',",
-                 "'Dick',",
-                 "'+0000000000', 'dick@nowhere.com', 1);")
+  insert_user2 <- paste(
+    "INSERT INTO user VALUES (11, 'Dick',",
+    "'Dick',",
+    "'+0000000000', 'dick@nowhere.com', 1);"
+  )
 
-  insert_user3 <- paste("INSERT INTO user VALUES (12, 'Harry',",
-                 "'Harry',",
-                 "'+0000000000', 'harry@nowhere.com', 1);")
+  insert_user3 <- paste(
+    "INSERT INTO user VALUES (12, 'Harry',",
+    "'Harry',",
+    "'+0000000000', 'harry@nowhere.com', 1);"
+  )
 
 
 
   make_testdb <- function(db_name) {
-
     local_pool <- make_pool()
 
-    query <- paste("CREATE DATABASE IF NOT EXISTS", db_name, "CHARACTER SET = 'utf8'",
-                  "COLLATE = 'utf8_danish_ci';")
+    query <- paste(
+      "CREATE DATABASE IF NOT EXISTS", db_name, "CHARACTER SET = 'utf8'",
+      "COLLATE = 'utf8_danish_ci';"
+    )
 
     pool::dbExecute(local_pool, query)
 
@@ -102,8 +107,10 @@ if (is.null(check_db(is_test_that = FALSE))) {
     insert_table(local_pool, table = "publish", df = imongr::publish)
     insert_table(local_pool, table = "delivery", df = imongr::delivery)
     insert_table(local_pool, table = "medfield", df = imongr::medfield)
-    insert_table(local_pool, table = "registry_medfield",
-                 df = imongr::registry_medfield)
+    insert_table(local_pool,
+      table = "registry_medfield",
+      df = imongr::registry_medfield
+    )
     insert_table(local_pool, table = "data", df = imongr::data)
 
     pool::dbExecute(local_pool, insert_user1)
@@ -129,33 +136,41 @@ if (is.null(check_db(is_test_that = FALSE))) {
 ##### Test delivery data #####
 
 # Registry id 8
-delivery1 <- data.frame(context = "caregiver",
-                 year = 2023,
-                 orgnr = 974633574,
-                 ind_id = "nakke1",
-                 var = 0,
-                 denominator = 1)
+delivery1 <- data.frame(
+  context = "caregiver",
+  year = 2023,
+  orgnr = 974633574,
+  ind_id = "nakke1",
+  var = 0,
+  denominator = 1
+)
 
-delivery2 <- data.frame(context = "caregiver",
-                  year = 2023,
-                  orgnr = 997005562,
-                  ind_id = "nakke2",
-                  var = 1,
-                  denominator = 2)
+delivery2 <- data.frame(
+  context = "caregiver",
+  year = 2023,
+  orgnr = 997005562,
+  ind_id = "nakke2",
+  var = 1,
+  denominator = 2
+)
 
-delivery3 <- data.frame(context = "caregiver",
-                  year = 2023,
-                  orgnr = 997005562,
-                  ind_id = "nakke1",
-                  var = 2,
-                  denominator = 3)
+delivery3 <- data.frame(
+  context = "caregiver",
+  year = 2023,
+  orgnr = 997005562,
+  ind_id = "nakke1",
+  var = 2,
+  denominator = 3
+)
 
-unrelated_delivery <- data.frame(context = "caregiver",
-                  year = 2023,
-                  orgnr = 974633574,
-                  ind_id = "norgast_saarruptur",
-                  var = 2,
-                  denominator = 3)
+unrelated_delivery <- data.frame(
+  context = "caregiver",
+  year = 2023,
+  orgnr = 974633574,
+  ind_id = "norgast_saarruptur",
+  var = 2,
+  denominator = 3
+)
 
 
 # Check that the data is ok
@@ -189,15 +204,14 @@ test_that("valid vars pass the check", {
 Sys.setenv("SHINYPROXY_USERNAME" = "Tom")
 
 test_that("upload is working", {
-
   check_db()
 
   insert_data_verify(
-  pool = pool_verify,
-  df = delivery1,
-  update = "2023-08-20",
-  affirm = "2023-01-01"
-)
+    pool = pool_verify,
+    df = delivery1,
+    update = "2023-08-20",
+    affirm = "2023-01-01"
+  )
   insert_agg_data(pool_verify, delivery1)
   dat_delivery <- pool::dbGetQuery(pool_verify, "SELECT * FROM delivery")
 
@@ -206,9 +220,11 @@ test_that("upload is working", {
 
   expect_equal(as.character(latest$latest_update), "2023-08-20")
 
-  agg_data_date <- pool::dbGetQuery(pool_verify,
+  agg_data_date <- pool::dbGetQuery(
+    pool_verify,
     "SELECT DISTINCT ind_id, delivery_latest_update
-     FROM agg_data WHERE ind_id = 'nakke1'")
+     FROM agg_data WHERE ind_id = 'nakke1'"
+  )
 
   # Same date for all unit_levels
   expect_equal(nrow(agg_data_date), 1)
@@ -216,10 +232,10 @@ test_that("upload is working", {
   expect_equal(as.character(agg_data_date$delivery_latest_update[1]), "2023-08-20")
 })
 
-  #################################################
-  #####               Test 2                  #####
-  ##### Check that data are publish correctly #####
-  #################################################
+#################################################
+#####               Test 2                  #####
+##### Check that data are publish correctly #####
+#################################################
 
 # In testdb_verify
 # Tom publishes delivery 1
@@ -232,11 +248,11 @@ test_that("publishing is working", {
   agg_data_verify <- pool::dbGetQuery(pool_verify, "SELECT * FROM agg_data")
 
   insert_data_prod(
-        pool_verify = pool_verify,
-        pool_prod = pool_prod,
-        df = dat_publish,
-        terms_version = version_info(newline = "")
-        )
+    pool_verify = pool_verify,
+    pool_prod = pool_prod,
+    df = dat_publish,
+    terms_version = version_info(newline = "")
+  )
 
   insert_agg_data(pool_prod, dat_publish)
 
@@ -278,7 +294,7 @@ test_that("deliveries are correctly transferred to prod", {
     df = unrelated_delivery,
     update = "2023-08-20",
     affirm = "2023-01-01"
-)
+  )
   insert_agg_data(pool_verify, delivery1)
 
   # Upload nakke2
@@ -307,11 +323,11 @@ test_that("deliveries are correctly transferred to prod", {
   dat_publish <- get_registry_data(pool_verify, 8)
 
   insert_data_prod( # Should iterate over deliveries
-        pool_verify = pool_verify,
-        pool_prod = pool_prod,
-        df = dat_publish,
-        terms_version = version_info(newline = "")
-        )
+    pool_verify = pool_verify,
+    pool_prod = pool_prod,
+    df = dat_publish,
+    terms_version = version_info(newline = "")
+  )
 
   insert_agg_data(pool_prod, dat_publish)
 
@@ -350,13 +366,17 @@ test_that("deliveries are correctly transferred to prod", {
   ##################################################
 
   ##### Verify #####
-  agg_nakke1 <- pool::dbGetQuery(pool_verify,
+  agg_nakke1 <- pool::dbGetQuery(
+    pool_verify,
     "SELECT DISTINCT ind_id, delivery_latest_update
-     FROM agg_data WHERE ind_id = 'nakke1'")
+     FROM agg_data WHERE ind_id = 'nakke1'"
+  )
 
-  agg_nakke2 <- pool::dbGetQuery(pool_verify,
+  agg_nakke2 <- pool::dbGetQuery(
+    pool_verify,
     "SELECT DISTINCT ind_id, delivery_latest_update
-     FROM agg_data WHERE ind_id = 'nakke2'")
+     FROM agg_data WHERE ind_id = 'nakke2'"
+  )
 
   # Same date for all unit_levels
   expect_equal(nrow(agg_nakke1), 1)
@@ -366,13 +386,17 @@ test_that("deliveries are correctly transferred to prod", {
   expect_equal(as.character(agg_nakke1$delivery_latest_update[1]), "2023-08-23")
 
   ##### Prod #####
-  agg_nakke1 <- pool::dbGetQuery(pool_prod,
+  agg_nakke1 <- pool::dbGetQuery(
+    pool_prod,
     "SELECT DISTINCT ind_id, delivery_latest_update
-     FROM agg_data WHERE ind_id = 'nakke1'")
+     FROM agg_data WHERE ind_id = 'nakke1'"
+  )
 
-  agg_nakke2 <- pool::dbGetQuery(pool_prod,
+  agg_nakke2 <- pool::dbGetQuery(
+    pool_prod,
     "SELECT DISTINCT ind_id, delivery_latest_update
-     FROM agg_data WHERE ind_id = 'nakke2'")
+     FROM agg_data WHERE ind_id = 'nakke2'"
+  )
 
   # Same date for all unit_levels
   expect_equal(nrow(agg_nakke1), 1)
@@ -380,7 +404,6 @@ test_that("deliveries are correctly transferred to prod", {
 
   expect_equal(as.character(agg_nakke2$delivery_latest_update[1]), "2023-08-22")
   expect_equal(as.character(agg_nakke1$delivery_latest_update[1]), "2023-08-23")
-
 })
 
 # clean up
@@ -392,17 +415,21 @@ if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool_verify, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
   pool::dbExecute(pool_prod, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
 
-  pool::dbExecute(pool_verify, paste("DROP TABLE",
-                        paste(names(conf$db$tab), collapse = ", "), ";"))
+  pool::dbExecute(pool_verify, paste(
+    "DROP TABLE",
+    paste(names(conf$db$tab), collapse = ", "), ";"
+  ))
 
-  pool::dbExecute(pool_prod, paste("DROP TABLE",
-                        paste(names(conf$db$tab), collapse = ", "), ";"))
+  pool::dbExecute(pool_prod, paste(
+    "DROP TABLE",
+    paste(names(conf$db$tab), collapse = ", "), ";"
+  ))
 }
 ## if db dropped on Github Actions the coverage reporting will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
   Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
-    pool::dbExecute(pool_verify, "DROP DATABASE testdb_verify ;")
-    pool::dbExecute(pool_prod, "DROP DATABASE testdb_prod;")
+  pool::dbExecute(pool_verify, "DROP DATABASE testdb_verify ;")
+  pool::dbExecute(pool_prod, "DROP DATABASE testdb_prod;")
 }
 ## drain pool
 if (is.null(check_db(is_test_that = FALSE))) {

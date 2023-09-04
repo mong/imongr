@@ -23,7 +23,6 @@ NULL
 #' @rdname ops
 #' @export
 delete_indicator_data <- function(pool, df) {
-
   if (!"ind_id" %in% names(df)) {
     stop("Data frame has no notion of 'indicator' (id). Cannot delete!")
   }
@@ -44,7 +43,6 @@ WHERE
 #' @rdname ops
 #' @export
 delete_agg_data <- function(pool, df) {
-
   query <- "
 DELETE FROM
   agg_data
@@ -57,8 +55,7 @@ WHERE
   cc <- paste(paste0("'", context, "'"), collapse = ", ")
   condition <- paste0("
   ind_id IN (", ic, ") AND
-  context IN (", cc, ");"
-  )
+  context IN (", cc, ");")
 
   query <- paste0(query, condition)
 
@@ -68,13 +65,14 @@ WHERE
 #' @rdname ops
 #' @export
 insert_data_verify <- function(pool, df, update = NA, affirm = NA) {
-
-  delivery <- data.frame(md5_checksum = md5_checksum(df),
-                         latest_update = update,
-                         latest_affirm = affirm,
-                         user_id = get_user_id(pool),
-                         publish_id = NA,
-                         published = 0)
+  delivery <- data.frame(
+    md5_checksum = md5_checksum(df),
+    latest_update = update,
+    latest_affirm = affirm,
+    user_id = get_user_id(pool),
+    publish_id = NA,
+    published = 0
+  )
 
   delete_indicator_data(pool, df)
 
@@ -92,7 +90,6 @@ insert_data_verify <- function(pool, df, update = NA, affirm = NA) {
 #' @rdname ops
 #' @export
 insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, terms_version = NA) {
-
   # Indicator data for the checksum
   ind <- get_table(pool_prod, table = "ind") %>%
     dplyr::filter(.data$id %in% unique(df$ind_id))
@@ -103,13 +100,16 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
   # Deliveries to be published
   # Get all deliverie with published = 0 that are referenced
   # in the data table for the current registry
-  new_deliveries_and_inds <- pool::dbGetQuery(pool_verify,
-    paste("SELECT DISTINCT data.delivery_id, data.ind_id 
+  new_deliveries_and_inds <- pool::dbGetQuery(
+    pool_verify,
+    paste(
+      "SELECT DISTINCT data.delivery_id, data.ind_id
      FROM data LEFT JOIN ind ON data.ind_id = ind.id
      LEFT JOIN delivery ON data.delivery_id = delivery.id
      WHERE ind.registry_id =", reg_id,
-          "AND delivery.published = 0
-     ORDER BY data.delivery_id;")
+      "AND delivery.published = 0
+     ORDER BY data.delivery_id;"
+    )
   )
 
   # To iterate over
@@ -137,22 +137,24 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
 
   # Iterate over deliveries and insert data into prod
   for (delivery_id_i in new_delivery_ids) {
-
     # Filter data to include only the indicators uploaded in the delivery
     inds_i <- new_deliveries_and_inds$ind_id[new_deliveries_and_inds$delivery_id == delivery_id_i]
     df_i <- df[df$ind_id %in% inds_i, ]
 
     ##### In production #####
-    delivery_i <- pool::dbGetQuery(pool_verify,
+    delivery_i <- pool::dbGetQuery(
+      pool_verify,
       paste0("SELECT * FROM delivery WHERE id =", delivery_id_i, ";")
     )
 
-    delivery <- data.frame(md5_checksum = delivery_i$md5_checksum,
-                           latest_update = delivery_i$latest_update,
-                           latest_affirm = delivery_i$latest_affirm,
-                           user_id = delivery_i$user_id,
-                           publish_id = new_publish_id_prod,
-                           published = 1)
+    delivery <- data.frame(
+      md5_checksum = delivery_i$md5_checksum,
+      latest_update = delivery_i$latest_update,
+      latest_affirm = delivery_i$latest_affirm,
+      user_id = delivery_i$user_id,
+      publish_id = new_publish_id_prod,
+      published = 1
+    )
 
     delete_indicator_data(pool_prod, df_i)
 
@@ -165,9 +167,11 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
     insert_table(pool_prod, "data", cbind(df_i, df_id))
 
     ##### In verify #####
-    query <- paste("UPDATE delivery
+    query <- paste(
+      "UPDATE delivery
         SET published = 1, publish_id =", new_publish_id_verify,
-        "WHERE id =", delivery_i$id)
+      "WHERE id =", delivery_i$id
+    )
 
     pool::dbExecute(pool_verify, query)
   }
@@ -176,7 +180,6 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
 #' @rdname ops
 #' @export
 insert_agg_data <- function(pool, df) {
-
   # data for re-use
   org <- get_flat_org(pool)
   ind <- get_table(pool, "ind")
@@ -206,8 +209,10 @@ insert_agg_data <- function(pool, df) {
       dplyr::select(-c("registry_id"))
     # if delivery is a subset of registry indicators AND dg is part of subset,
     # agg_data for all indicators of the current registry must be updated.
-    if (!setequal(get_registry_indicators(pool, reg[i])$id,
-                  unique(dat$ind_id))) {
+    if (!setequal(
+      get_registry_indicators(pool, reg[i])$id,
+      unique(dat$ind_id)
+    )) {
       message("  subset of indicators provided, fetching a compleete data set")
       dat <- get_registry_data(pool, reg[i])
       if (!"unit_level" %in% names(dat)) {
@@ -233,11 +238,12 @@ insert_agg_data <- function(pool, df) {
 #' @rdname ops
 #' @export
 update_aggdata_delivery <- function(pool) {
-
   delivery <- get_aggdata_delivery(pool)
 
-  pool::dbWriteTable(pool, name = "temp_agg_data", value = delivery,
-                     temporary = TRUE)
+  pool::dbWriteTable(pool,
+    name = "temp_agg_data", value = delivery,
+    temporary = TRUE
+  )
 
   query <- paste0("
 UPDATE
@@ -247,8 +253,7 @@ SET
   a.delivery_latest_update = t.delivery_latest_update,
   a.delivery_latest_affirm = t.delivery_latest_affirm
 WHERE
-  a.id = t.id;"
-  )
+  a.id = t.id;")
 
   pool::dbExecute(pool, query)
   pool::dbRemoveTable(pool, name = "temp_agg_data", temporary = TRUE)
@@ -257,14 +262,12 @@ WHERE
 #' @rdname ops
 #' @export
 agg_all_data <- function(pool) {
-
   insert_agg_data(pool, get_table(pool, "data"))
 }
 
 #' @rdname ops
 #' @export
 clean_agg_data <- function(pool) {
-
   message("Start cleaning agg_data")
 
   # remove data for indicators not present in ind table
@@ -279,8 +282,7 @@ clean_agg_data <- function(pool) {
 DELETE FROM
   agg_data
 WHERE
-  ind_id IN (", orphant, ");"
-    )
+  ind_id IN (", orphant, ");")
     message("...deleting orphant indicators from agg_data table")
     pool::dbExecute(pool, query)
   } else {
@@ -293,7 +295,6 @@ WHERE
 #' @rdname ops
 #' @export
 create_imongr_user <- function(pool, df) {
-
   user <- get_user(pool)
   if (df$user_name %in% user$user_name) {
     return("User already exists. Nothing to do!")
@@ -306,7 +307,6 @@ create_imongr_user <- function(pool, df) {
 #' @rdname ops
 #' @export
 update_registry_medfield <- function(pool, df) {
-
   query <- paste0("
 DELETE FROM
   registry_medfield
@@ -315,14 +315,15 @@ WHERE
 
   pool::dbExecute(pool, query)
 
-  pool::dbWriteTable(pool, "registry_medfield", df, append = TRUE,
-                     row.names = FALSE)
+  pool::dbWriteTable(pool, "registry_medfield", df,
+    append = TRUE,
+    row.names = FALSE
+  )
 }
 
 #' @rdname ops
 #' @export
 update_registry_user <- function(pool, df) {
-
   query <- paste0("
 DELETE FROM
   user_registry
@@ -331,14 +332,15 @@ WHERE
 
   pool::dbExecute(pool, query)
 
-  pool::dbWriteTable(pool, "user_registry", df, append = TRUE,
-                     row.names = FALSE)
+  pool::dbWriteTable(pool, "user_registry", df,
+    append = TRUE,
+    row.names = FALSE
+  )
 }
 
 #' @rdname ops
 #' @export
 update_ind_text <- function(pool, df) {
-
   query <- paste0("
 UPDATE
   ind
@@ -361,13 +363,11 @@ WHERE
   DBI::dbBind(rs, params)
   DBI::dbClearResult(rs)
   pool::poolReturn(con)
-
 }
 
 #' @rdname ops
 #' @export
 update_ind_val <- function(pool, df) {
-
   query <- paste0("
 UPDATE
   ind
@@ -396,5 +396,4 @@ WHERE
   DBI::dbBind(rs, params)
   DBI::dbClearResult(rs)
   pool::poolReturn(con)
-
 }

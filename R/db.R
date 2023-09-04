@@ -30,7 +30,6 @@ NULL
 #' @rdname db
 #' @export
 make_pool <- function(context = "prod") {
-
   pool::dbPool(
     drv = RMariaDB::MariaDB(),
     dbname = db_name(),
@@ -52,39 +51,45 @@ drain_pool <- function(pool) {
 #' @rdname db
 #' @export
 insert_table <- function(pool, table, df) {
-
   conf <- get_config()
 
   if (!table %in% names(conf$db$tab)) {
-    stop(paste("Table specified is not recognized. Valid tables are:",
-               paste(names(conf$db$tab), collapse = ", ")))
+    stop(paste(
+      "Table specified is not recognized. Valid tables are:",
+      paste(names(conf$db$tab), collapse = ", ")
+    ))
   }
 
   insert <- conf$db$tab[[table]]$insert
 
   if (!length(names(df)) == length(insert)) {
-    stop(paste0("In 'df' the number of variables (",
-                length(names(df)), ") is not equal to what was expected (",
-                length(insert), ")"))
+    stop(paste0(
+      "In 'df' the number of variables (",
+      length(names(df)), ") is not equal to what was expected (",
+      length(insert), ")"
+    ))
   }
 
   is_member <- names(df) %in% insert
 
   if (!all(is_member)) {
-    stop(paste0("One or more variable names (",
-                paste(names(df)[!is_member], collapse = ", "),
-                ") do not match what was expected (", length(insert)))
+    stop(paste0(
+      "One or more variable names (",
+      paste(names(df)[!is_member], collapse = ", "),
+      ") do not match what was expected (", length(insert)
+    ))
   }
 
-  pool::dbWriteTable(pool, table, df[insert], append = TRUE,
-                     row.names = FALSE)
+  pool::dbWriteTable(pool, table, df[insert],
+    append = TRUE,
+    row.names = FALSE
+  )
 }
 
 
 #' @rdname db
 #' @export
 get_table <- function(pool, table, sample = NA) {
-
   # make sure we deal in proper encoding
   pool::dbExecute(pool, "SET NAMES utf8")
 
@@ -105,7 +110,6 @@ FROM
 #' @rdname db
 #' @export
 get_table_raw <- function(pool, table, sample = NA) {
-
   # make sure we deal in proper encoding
   pool::dbExecute(pool, "SET NAMES utf8")
 

@@ -14,7 +14,6 @@ NULL
 #' @rdname mod_publish
 #' @export
 publish_ui <- function(id) {
-
   ns <- shiny::NS(id)
 
   shiny::tagList(
@@ -24,11 +23,12 @@ publish_ui <- function(id) {
         shiny::uiOutput(ns("select_publish_registry")),
         shiny::uiOutput(ns("publish_liability")),
         shinycssloaders::withSpinner(
-                                     shiny::textOutput(ns("publishing")),
-                                     color = "#18bc9c",
-                                     color.background = "#ffffff",
-                                     type = 7,
-                                     proxy.height = 80),
+          shiny::textOutput(ns("publishing")),
+          color = "#18bc9c",
+          color.background = "#ffffff",
+          type = 7,
+          proxy.height = 80
+        ),
         shiny::uiOutput(ns("publish"))
       ),
       shiny::mainPanel(
@@ -46,9 +46,7 @@ publish_ui <- function(id) {
 #' @rdname mod_publish
 #' @export
 publish_server <- function(id, parent_input, pool, pool_verify) {
-
   shiny::moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
 
     conf <- get_config()
@@ -65,9 +63,11 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
 
     # Registry selection drop down menu
     output$select_publish_registry <- shiny::renderUI({
-      select_registry_ui(pool, conf, input_id = ns("publish_registry"),
-                         context = "verify", show_context = TRUE,
-                         pool0 = pool_verify)
+      select_registry_ui(pool, conf,
+        input_id = ns("publish_registry"),
+        context = "verify", show_context = TRUE,
+        pool0 = pool_verify
+      )
     })
 
     # Liability text next to checkbox
@@ -108,13 +108,16 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
       verify_hypertext <- paste0(
         "<a href='https://verify.skde.no/kvalitetsregistre/",
         get_registry_name(pool_verify, shiny::req(input$publish_registry),
-                          full_name = FALSE),
+          full_name = FALSE
+        ),
         "/sykehus'>her.</a>"
       )
       paste(
-        get_registry_name(pool_verify,
-                          shiny::req(input$publish_registry),
-                          TRUE),
+        get_registry_name(
+          pool_verify,
+          shiny::req(input$publish_registry),
+          TRUE
+        ),
         conf$publish$doc$verify,
         verify_hypertext
       )
@@ -165,10 +168,13 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
 
     # New window on view terms click
     shiny::observeEvent(input$view_terms, {
-      f <- rmarkdown::render(input = system.file("terms.Rmd",
-                                                 package = "imongr"),
-                             output_format = "html_fragment",
-                             output_file = tempfile())
+      f <- rmarkdown::render(
+        input = system.file("terms.Rmd",
+          package = "imongr"
+        ),
+        output_format = "html_fragment",
+        output_file = tempfile()
+      )
       shiny::showModal(shiny::modalDialog(
         shiny::HTML(readLines(f)),
         footer = shiny::tagList(
@@ -203,18 +209,23 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
         input$liability &&
         all(
           !check_upload(
-                        input$publish_registry,
-                        publish_data(),
-                        publish_ind(),
-                        pool)$fail
+            input$publish_registry,
+            publish_data(),
+            publish_ind(),
+            pool
+          )$fail
         )
       ) {
         shiny::tagList(
-          shiny::actionButton(ns("publish"),
-                              "Publiser",
-                              shiny::icon("paper-plane")),
-          shiny::p(paste(conf$upload$doc$submit$warning,
-                         get_registry_name(pool, input$publish_registry)))
+          shiny::actionButton(
+            ns("publish"),
+            "Publiser",
+            shiny::icon("paper-plane")
+          ),
+          shiny::p(paste(
+            conf$upload$doc$submit$warning,
+            get_registry_name(pool, input$publish_registry)
+          ))
         )
       } else {
         NULL
@@ -234,18 +245,17 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
       insert_agg_data(pool, publish_data())
       rv$inv_publish <- rv$inv_publish + 1
       shinyalert::shinyalert(
-        conf$publish$reciept$title, conf$publish$reciept$body, type = "success",
+        conf$publish$reciept$title, conf$publish$reciept$body,
+        type = "success",
         showConfirmButton = FALSE, timer = 7000
       )
     })
-
   })
 }
 
 #' @rdname mod_publish
 #' @export
 publish_app <- function(pool, pool_verify) {
-
   ui <- shiny::fluidPage(
     publish_ui("publish")
   )

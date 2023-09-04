@@ -58,12 +58,14 @@ check_db <- function(is_test_that = TRUE) {
 }
 
 # make a sample df to be used for the remaining tests
-df <- data.frame(context = "caregiver",
-                 year = 2018,
-                 orgnr = 974633574,
-                 ind_id = "norgast_andel_avdoede_bykspytt_tolv",
-                 var = 0,
-                 denominator = 1)
+df <- data.frame(
+  context = "caregiver",
+  year = 2018,
+  orgnr = 974633574,
+  ind_id = "norgast_andel_avdoede_bykspytt_tolv",
+  var = 0,
+  denominator = 1
+)
 
 test_that("valid vars pass the check", {
   expect_true(
@@ -85,13 +87,17 @@ test_that("an upload csv can be converted to a data frame", {
 })
 
 test_that("encoding magic can be performed on csv file", {
-  df_nordic <- rbind(df[, !names(df) %in% "nevner"],
-                     data.frame(context = "caregiver",
-                                year = 2018,
-                                orgnr = 974633574,
-                                ind_id = "æøåÆØÅ",
-                                var = 0,
-                                denominator = 1))
+  df_nordic <- rbind(
+    df[, !names(df) %in% "nevner"],
+    data.frame(
+      context = "caregiver",
+      year = 2018,
+      orgnr = 974633574,
+      ind_id = "æøåÆØÅ",
+      var = 0,
+      denominator = 1
+    )
+  )
   csv_file <- tempfile(fileext = ".csv")
   write.csv(df_nordic, file = csv_file, fileEncoding = "LATIN1")
   expect_warning(csv_to_df(csv_file, dec = "."))
@@ -108,8 +114,10 @@ test_that("a (sub) sample df can be provided", {
 ## first off with no data
 if (is.null(check_db(is_test_that = FALSE))) {
   pool <- make_pool()
-  query <- paste("CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
-                 "COLLATE = 'utf8_danish_ci';")
+  query <- paste(
+    "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
+    "COLLATE = 'utf8_danish_ci';"
+  )
   pool::dbExecute(pool, query)
 
   # new connections to testdb
@@ -133,13 +141,16 @@ if (is.null(check_db(is_test_that = FALSE))) {
 # test that depend on db
 conf <- get_config()
 
-df_mix <- rbind(df,
-                data.frame(context = "caregiver",
-                           year = 2018,
-                           orgnr = 974633574,
-                           ind_id = "norgast_dummy",
-                           var = 0,
-                           denominator = 1)
+df_mix <- rbind(
+  df,
+  data.frame(
+    context = "caregiver",
+    year = 2018,
+    orgnr = 974633574,
+    ind_id = "norgast_dummy",
+    var = 0,
+    denominator = 1
+  )
 )
 
 # get indicators for norgast (id = 10), but only if we have a db
@@ -158,8 +169,10 @@ test_that("(valid) context check is working", {
   expect_false(check_invalid_context(registry, df, ind, conf, pool)$fail)
   expect_equal(
     check_invalid_context(
-      registry, df[, !names(df) %in% "context"], ind, conf, pool)$report,
-    conf$upload$check_empty)
+      registry, df[, !names(df) %in% "context"], ind, conf, pool
+    )$report,
+    conf$upload$check_empty
+  )
   # set an invalid context
   df$context <- "careprovider"
   expect_true(check_invalid_context(registry, df, ind, conf, pool)$fail)
@@ -172,8 +185,10 @@ test_that("(valid) context check is working", {
 test_that("org id checks is working", {
   check_db()
   expect_false(check_invalid_org(registry, df, ind, conf, pool)$fail)
-  expect_equal(check_invalid_org(registry, df[, !names(df) %in% "orgnr"], ind,
-                                 conf, pool)$report, conf$upload$check_empty)
+  expect_equal(check_invalid_org(
+    registry, df[, !names(df) %in% "orgnr"], ind,
+    conf, pool
+  )$report, conf$upload$check_empty)
   # set an org id that (assumable) does not exist
   df$orgnr <- -1
   expect_true(check_invalid_org(registry, df, ind, conf, pool)$fail)
@@ -243,12 +258,14 @@ test_that("natural number check on var is working", {
   # checks ok when no data left after filtering
   expect_false(check_natural_var(
     registry,
-    data.frame(context = "caregiver",
-               year = 2018,
-               orgnr = 974633574,
-               ind_id = "norgast_dummy",
-               var = 0,
-               denominator = 1),
+    data.frame(
+      context = "caregiver",
+      year = 2018,
+      orgnr = 974633574,
+      ind_id = "norgast_dummy",
+      var = 0,
+      denominator = 1
+    ),
     ind,
     conf,
     pool
@@ -264,18 +281,21 @@ test_that("check on var <= denominator is working", {
   expect_equal(
     check_overflow_var(
       registry, df[, !names(df) %in% "var"], ind, conf, pool
-    )$report, conf$upload$check_impossible)
+    )$report, conf$upload$check_impossible
+  )
   # filters when data contains none-fraction indicators
   expect_false(check_overflow_var(registry, df_mix, ind, conf, pool)$fail)
   # checks ok when no data left after filtering
   expect_false(check_overflow_var(
     registry,
-    data.frame(context = "caregiver",
-               year = 2018,
-               orgnr = 974633574,
-               ind_id = "norgast_dummy",
-               var = 0,
-               denominator = 1),
+    data.frame(
+      context = "caregiver",
+      year = 2018,
+      orgnr = 974633574,
+      ind_id = "norgast_dummy",
+      var = 0,
+      denominator = 1
+    ),
     ind,
     conf,
     pool
@@ -293,7 +313,8 @@ test_that("natural number check on denominator is working", {
   expect_equal(
     check_natural_denominator(
       registry, df[, !names(df) %in% "denominator"], ind, conf, pool
-    )$report, conf$upload$check_impossible)
+    )$report, conf$upload$check_impossible
+  )
 })
 
 test_that("zero check on denominator is working", {
@@ -306,7 +327,8 @@ test_that("zero check on denominator is working", {
   expect_equal(
     check_zero_denominator(
       registry, df[, !names(df) %in% "denominator"], ind, conf, pool
-    )$report, conf$upload$check_impossible)
+    )$report, conf$upload$check_impossible
+  )
 })
 
 
@@ -338,7 +360,8 @@ test_that("true fractions can be detected", {
     class(
       indicator_is_fraction(pool, df, conf, return_ind = TRUE)
     ),
-    "data.frame")
+    "data.frame"
+  )
 })
 
 test_that("true fractions can be filtered from mixing data", {
@@ -353,14 +376,17 @@ test_that("true fractions can be filtered from mixing data", {
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
-  pool::dbExecute(pool,
-                  paste("DROP TABLE",
-                        paste(names(conf$db$tab), collapse = ", "), ";")
+  pool::dbExecute(
+    pool,
+    paste(
+      "DROP TABLE",
+      paste(names(conf$db$tab), collapse = ", "), ";"
+    )
   )
 }
 ## if db dropped on Github Actions the coverage reporting will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
-    Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
+  Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
   pool::dbExecute(pool, "drop database testdb;")
 }
 ## drain pool
