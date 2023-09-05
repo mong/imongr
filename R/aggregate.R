@@ -93,13 +93,10 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
     # sum over levels (i.e. organizations)
     aggs <- aggs %>%
       dplyr::group_by(.data$year, .data$ind_id, .data$orgnr, .data$context) %>%
-      dplyr::summarise(
-        var = sum(.data$var),
-        denominator = sum(.data$denominator),
-        unit_level = unique(.data$unit_level),
-        unit_name = unique(.data$unit_name)
-      ) %>%
-      dplyr::ungroup() %>%
+      dplyr::reframe(var = sum(.data$var),
+                     denominator = sum(.data$denominator),
+                     unit_level = unique(.data$unit_level),
+                     unit_name = unique(.data$unit_name)) %>%
       as.data.frame()
 
     # find diffs between levels (if any, to be placed in undefined orgs)
@@ -198,7 +195,7 @@ agg_dg <- function(aggs, ind) {
       dplyr::select(-c("dg"))
     dt <- dplyr::filter(dg_data, .data$year == years[i]) %>%
       dplyr::select("ind_id", "orgnr", "var", "context") %>%
-      dplyr::rename(dg_id = .data$ind_id, dg = .data$var)
+      dplyr::rename(dg_id = "ind_id", dg = "var")
     # join current year dg into data from current year and newer. Then, move on
     # with only those vars needed for updating aggs
     at <- at %>%
