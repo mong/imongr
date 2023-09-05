@@ -351,7 +351,7 @@ check_duplicated_inds <- function(registry, df, ind, conf, pool) {
     df_duplicated <- df %>%
       dplyr::left_join(ind_id_type, by = "ind_id") %>%
       dplyr::left_join(orgnr, by = "orgnr") %>%
-      dplyr::filter(grepl("beregnet", type)) %>%
+      dplyr::filter(!type %in% conf$var$fraction$type) %>%
       dplyr::select(ind_id, orgnr, context, unit_level, year) %>%
       dplyr::group_by_all() %>%
       dplyr::count() %>%
