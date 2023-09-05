@@ -49,3 +49,5 @@ jobs:
         run: |
           R CMD INSTALL .
           Rscript -e "lintr::lint_package()"
+        env:
+          LINTR_ERROR_ON_LINT: true
