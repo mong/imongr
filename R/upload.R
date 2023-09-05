@@ -266,8 +266,8 @@ check_overflow_var <- function(registry, df, ind, conf, pool) {
   fail <- TRUE
   report <- ""
   if ("var" %in% names(df) && is.numeric(df$var) &&
-    "denominator" %in% names(df) && is.numeric(df$denominator) &&
-    "ind_id" %in% names(df)) {
+        "denominator" %in% names(df) && is.numeric(df$denominator) &&
+        "ind_id" %in% names(df)) {
     # check only on indicator data that are true fractions
     df <- filter_fraction_indicator(pool, df, conf)
     if (dim(df)[1] < 1) {

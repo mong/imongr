@@ -176,8 +176,9 @@ test_that("function provides error when inserting non-consistent data", {
 test_that("data can be fetched from test database", {
   check_db()
   expect_equal(dim(get_table(pool, "data")), dim(imongr::data))
-  expect_true(dim(get_table(pool, "data", sample = .1))[1] <
-    dim(imongr::data)[1])
+  expect_true(
+    dim(get_table(pool, "data", sample = .1))[1] < dim(imongr::data)[1]
+  )
 })
 
 test_that("delivery data can be fetched from test database", {
@@ -338,7 +339,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
 
 ## if db dropped on Github Actions the following coverage will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
-  Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
+      Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
   pool::dbExecute(pool, "drop database testdb;")
 }
 ## finally, drain pool
