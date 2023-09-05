@@ -10,6 +10,7 @@
 \alias{var_doc_ui}
 \alias{medfield_summary_text_ui}
 \alias{reguser_summary_text_ui}
+\alias{warning_report_ui}
 \title{Functions that provide server output}
 \usage{
 select_registry_ui(
@@ -25,6 +26,8 @@ select_registry_ui(
 submit_ui(input_id, conf, pool, upload_file, registry, df, ind, context)
 
 error_report_ui(pool, df, ind, upload_file, registry)
+
+warning_report_ui(pool, df, upload_file, registry)
 
 upload_sample_text_ui(pool, conf, upload_file, registry, indicators)
 

@@ -13,7 +13,6 @@ NULL
 #' @rdname mod_profile
 #' @export
 profile_ui <- function(id) {
-
   ns <- shiny::NS(id)
 
   conf <- get_config()
@@ -37,18 +36,15 @@ profile_ui <- function(id) {
 #' @rdname mod_profile
 #' @export
 profile_server <- function(id, pool, pool_verify) {
-
   shiny::moduleServer(
     id,
     function(input, output, session) {
-
       ns <- session$ns
 
       conf <- get_config()
 
       profile <- shiny::reactive({
-        if (!nrow(get_user_data(pool)) > 0 ||
-            conf$role$none %in% get_user_groups()) {
+        if (!nrow(get_user_data(pool)) > 0 || conf$role$none %in% get_user_groups()) {
           conf$profile$pending
         } else {
           df <- get_user_data(pool)
@@ -57,13 +53,15 @@ profile_server <- function(id, pool, pool_verify) {
           } else {
             delivery_history <- conf$profile$delivery$none
           }
-          paste(conf$profile$greeting, "<b>", get_user_name(), "</b>", "<br>",
-                conf$profile$userinfo, "<br>",
-                "Navn:", df$name, "<br>",
-                "Telefon:", df$phone, "<br>",
-                "e-post:", df$email, "<br><br>",
-                conf$profile$howto, "<br><br>",
-                delivery_history)
+          paste(
+            conf$profile$greeting, "<b>", get_user_name(), "</b>", "<br>",
+            conf$profile$userinfo, "<br>",
+            "Navn:", df$name, "<br>",
+            "Telefon:", df$phone, "<br>",
+            "e-post:", df$email, "<br><br>",
+            conf$profile$howto, "<br><br>",
+            delivery_history
+          )
         }
       })
 
@@ -136,7 +134,6 @@ profile_server <- function(id, pool, pool_verify) {
 #' @rdname mod_profile
 #' @export
 profile_app <- function(pool, pool_verify) {
-
   ui <- shiny::fluidPage(
     profile_ui("profile")
   )

@@ -13,7 +13,7 @@
 \usage{
 natural(vals, tolerance = .Machine$double.eps^0.5)
 
-md5_checksum(df, ind)
+md5_checksum(df, ind = "")
 
 user_widget()
 
