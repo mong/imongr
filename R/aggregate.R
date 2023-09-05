@@ -97,7 +97,6 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
                      denominator = sum(.data$denominator),
                      unit_level = unique(.data$unit_level),
                      unit_name = unique(.data$unit_name)) %>%
-      dplyr::ungroup() %>%
       as.data.frame()
 
     # find diffs between levels (if any, to be placed in undefined orgs)
