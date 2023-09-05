@@ -1,10 +1,12 @@
 conf <- get_config()
 df <- imongr::data
-org <- imongr::org #flattened organization table as obtained by get_flat_org()
+org <- imongr::org # flattened organization table as obtained by get_flat_org()
 ind <- imongr::ind
 
-onm <- data.frame(orgnr = 999999999, unit_name = "for_the_test",
-                             stringsAsFactors = FALSE)
+onm <- data.frame(
+  orgnr = 999999999, unit_name = "for_the_test",
+  stringsAsFactors = FALSE
+)
 
 test_that("example data can be aggregated", {
   expect_true("data.frame" %in% class(agg(df, org, ind, orgnr_name_map = onm)))
@@ -17,26 +19,30 @@ test_that("error is provided when compulsory varaibles are missing", {
 })
 
 test_that("data from higher lever org can be spread downwards in agg_data", {
-  df <- rbind(df, data.frame(year = 2018,
-                             orgnr = 1,
-                             var = 33,
-                             ind_id = "norgast_saarruptur",
-                             context = "caregiver",
-                             delivery_id = 11,
-                             denominator = 100,
-                             unit_level = "nation"))
+  df <- rbind(df, data.frame(
+    year = 2018,
+    orgnr = 1,
+    var = 33,
+    ind_id = "norgast_saarruptur",
+    context = "caregiver",
+    delivery_id = 11,
+    denominator = 100,
+    unit_level = "nation"
+  ))
   expect_true("data.frame" %in% class(agg(df, org, ind, orgnr_name_map = onm)))
 })
 
 test_that("data from mid level can be spread both ways (up and down orgs)", {
-  df <- rbind(df, data.frame(year = 2018,
-                             orgnr = 983974899,
-                             var = 11,
-                             ind_id = "norgast_saarruptur",
-                             context = "caregiver",
-                             delivery_id = 11,
-                             denominator = 33,
-                             unit_level = "nation"))
+  df <- rbind(df, data.frame(
+    year = 2018,
+    orgnr = 983974899,
+    var = 11,
+    ind_id = "norgast_saarruptur",
+    context = "caregiver",
+    delivery_id = 11,
+    denominator = 33,
+    unit_level = "nation"
+  ))
   expect_true("data.frame" %in% class(agg(df, org, ind, orgnr_name_map = onm)))
 })
 
@@ -86,12 +92,13 @@ test_that("child (data record) inherits dg within context", {
     unit_level = "hospital"
   )
   test_data <- agg(rbind(df_cargiver_parent, df_child), org, ind,
-                   orgnr_name_map = onm)
+    orgnr_name_map = onm
+  )
   test_child <- test_data[test_data$year == 2018, ]
   expect_true(all(is.na(test_child$dg)))
   test_data <- agg(rbind(df_resident_parent, df_child), org, ind,
-                   orgnr_name_map = onm)
+    orgnr_name_map = onm
+  )
   test_child <- test_data[test_data$year == 2018, ]
   expect_true(all(test_child$dg == .25))
-
 })

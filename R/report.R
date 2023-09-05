@@ -10,7 +10,6 @@ NULL
 
 #' @rdname report
 .registry_status_data <- function(pool) {
-
   reg <- get_table(pool, "registry")
   data <- get_table(pool, "data")
   ind <- get_table(pool, "ind")
@@ -31,13 +30,11 @@ NULL
     dplyr::left_join(ind, by = c("ind_id" = "id")) %>%
     dplyr::left_join(reg, by = c("registry_id" = "id")) %>%
     dplyr::left_join(delivery, by = c("delivery_id" = "id"))
-
 }
 
 #' @rdname report
 #' @export
 registry_status_report <- function(pool, pool_verify) {
-
   rdf <- .registry_status_data(pool) %>%
     dplyr::select("name", "year", "time") %>%
     dplyr::group_by(.data$name) %>%

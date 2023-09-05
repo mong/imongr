@@ -31,8 +31,10 @@ check_db <- function(is_test_that = TRUE) {
 ## first off with no data
 if (is.null(check_db(is_test_that = FALSE))) {
   pool <- make_pool()
-  query <- paste("CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
-                 "COLLATE = 'utf8_danish_ci';")
+  query <- paste(
+    "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
+    "COLLATE = 'utf8_danish_ci';"
+  )
   pool::dbExecute(pool, query)
 
   # new connections to testdb
@@ -53,9 +55,11 @@ if (is.null(check_db(is_test_that = FALSE))) {
   insert_sample_data()
 
   # add a user with no deliveries
-  query <- paste("INSERT INTO user VALUES (10, 'nobody@nowhere.com',",
-                 "'Mr Nobody',",
-                 "'+0000000000', 'nobody@nowhere.com', 1);")
+  query <- paste(
+    "INSERT INTO user VALUES (10, 'nobody@nowhere.com',",
+    "'Mr Nobody',",
+    "'+0000000000', 'nobody@nowhere.com', 1);"
+  )
   pool::dbExecute(pool, query)
 }
 
@@ -77,8 +81,9 @@ Sys.setenv(SHINYPROXY_USERNAME = "unknown")
 test_that("profile module server provides sensible output for not known user", {
   check_db()
   shiny::testServer(
-    profile_server, args = list(pool = pool, pool_verify = pool), {
-
+    profile_server,
+    args = list(pool = pool, pool_verify = pool),
+    {
       # when unknown user, status should be reported accordingly
       session$setInputs(upload_history = TRUE, publish_history = TRUE)
       expect_equal(profile(), conf$profile$pending)
@@ -91,14 +96,18 @@ Sys.setenv(SHINYPROXY_USERGROUPS = "PROVIDER,MANAGER")
 test_that("known user with no previous deliveries get relevant message", {
   check_db()
   shiny::testServer(
-    profile_server, args = list(pool = pool, pool_verify = pool), {
+    profile_server,
+    args = list(pool = pool, pool_verify = pool),
+    {
       session$setInputs(upload_history = TRUE, publish_history = TRUE)
       expect_true(
         grepl(
-          conf$profile$delivery$none, profile(), fixed = TRUE, useBytes = TRUE
+          conf$profile$delivery$none, profile(),
+          fixed = TRUE, useBytes = TRUE
         )
       )
-    })
+    }
+  )
 })
 
 Sys.setenv(SHINYPROXY_USERNAME = "mongr")
@@ -106,8 +115,9 @@ Sys.setenv(SHINYPROXY_USERGROUPS = "PROVIDER,MANAGER")
 test_that("profile module server provides sensible output for known user", {
   check_db()
   shiny::testServer(
-    profile_server, args = list(pool = pool, pool_verify = pool), {
-
+    profile_server,
+    args = list(pool = pool, pool_verify = pool),
+    {
       session$setInputs(upload_history = FALSE, publish_history = FALSE)
       expect_null(upload_history())
       expect_null(publish_history())
@@ -135,8 +145,9 @@ test_that("report module ui returns returns a shiny tag list object", {
 test_that("report module server provides sensible output", {
   check_db()
   shiny::testServer(
-    report_server, args = list(pool = pool, pool_verify = pool), {
-
+    report_server,
+    args = list(pool = pool, pool_verify = pool),
+    {
       # when unknown report an empty data frame should be returned
       session$setInputs(
         report = "",
@@ -171,8 +182,9 @@ test_that("indicator module ui returns returns a shiny tag list object", {
 test_that("indicator module server provides sensible output", {
   check_db()
   shiny::testServer(
-    indicator_server, args = list(pool = pool), {
-
+    indicator_server,
+    args = list(pool = pool),
+    {
       # use package data from imongr, relevant part looks like
       # imongr::ind[imongr::ind$id == "norgast_saarruptur",
       #             c("id",
@@ -288,7 +300,9 @@ test_that("indicator module server provides sensible output", {
 test_that("indicator module has output...", {
   check_db()
   shiny::testServer(
-    indicator_server, args = list(pool = pool), {
+    indicator_server,
+    args = list(pool = pool),
+    {
       session$setInputs(
         indicator_registry = 10,
         indicator = "norgast_saarruptur"
@@ -301,8 +315,10 @@ test_that("indicator module has output...", {
 test_that("publish module has output...", {
   check_db()
   shiny::testServer(
-    
-    publish_server, args = list(pool = pool, pool_verify = pool), {
+
+    publish_server,
+    args = list(pool = pool, pool_verify = pool),
+    {
       session$setInputs(
         publish_registry = 10
       )
@@ -323,7 +339,9 @@ test_that("publish module has output...", {
 test_that("upload module has output...", {
   check_db()
   shiny::testServer(
-    upload_server, args = list(pool = pool), {
+    upload_server,
+    args = list(pool = pool),
+    {
       session$setInputs(
         registry = 10,
         sep = ";",
@@ -342,7 +360,9 @@ test_that("upload module has output...", {
 test_that("download module has output...", {
   check_db()
   shiny::testServer(
-    download_server, args = list(pool = pool, pool_verify = pool), {
+    download_server,
+    args = list(pool = pool, pool_verify = pool),
+    {
       session$setInputs(
         download_registry = 10,
         tab_set = "ind",
@@ -389,14 +409,17 @@ test_that("download module has output...", {
 if (is.null(check_db(is_test_that = FALSE))) {
   conf <- get_config()
   pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
-  pool::dbExecute(pool,
-                  paste("DROP TABLE",
-                        paste(names(conf$db$tab), collapse = ", "), ";")
+  pool::dbExecute(
+    pool,
+    paste(
+      "DROP TABLE",
+      paste(names(conf$db$tab), collapse = ", "), ";"
+    )
   )
 }
 ## if db dropped on Github Actions the coverage reporting will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
-    Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
+      Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
   pool::dbExecute(pool, "drop database testdb;")
 }
 ## drain pool

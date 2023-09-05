@@ -15,8 +15,10 @@ test_that("local config can be handled properly", {
 conf <- get_config(dir = tmpdir)
 conf_file <- paste0(tmpdir, "/test.yml")
 test_that("local config can be made from a list in session", {
-  expect_silent(write_config(config = conf, dir = tmpdir,
-                             filename = basename(conf_file)))
+  expect_silent(write_config(
+    config = conf, dir = tmpdir,
+    filename = basename(conf_file)
+  ))
 })
 
 # clean up

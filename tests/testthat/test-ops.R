@@ -48,8 +48,10 @@ test_that("user groups can be returned", {
 ## first off with no data
 if (is.null(check_db(is_test_that = FALSE))) {
   pool <- make_pool()
-  query <- paste("CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
-                 "COLLATE = 'utf8_danish_ci';")
+  query <- paste(
+    "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
+    "COLLATE = 'utf8_danish_ci';"
+  )
   pool::dbExecute(pool, query)
 
   # new connections to testdb
@@ -125,13 +127,16 @@ if (is.null(check_db(is_test_that = FALSE))) {
 
 test_that("existing user will not be (re-)created", {
   check_db()
-  expect_equal(create_imongr_user(pool, data.frame(
-    user_name = "mongr",
-    name = "Mongr No",
-    phone = "+4747474747",
-    email = "jesus@sky.com",
-    stringsAsFactors = FALSE)),
-    "User already exists. Nothing to do!")
+  expect_equal(
+    create_imongr_user(pool, data.frame(
+      user_name = "mongr",
+      name = "Mongr No",
+      phone = "+4747474747",
+      email = "jesus@sky.com",
+      stringsAsFactors = FALSE
+    )),
+    "User already exists. Nothing to do!"
+  )
 })
 
 test_that("data from a registry can be fetched", {
@@ -163,7 +168,8 @@ test_that("a new user can be created", {
     phone = "+4747474747",
     email = "jesus@sky.com",
     valid = 1,
-    stringsAsFactors = FALSE)))
+    stringsAsFactors = FALSE
+  )))
 })
 
 test_that("indicator texts can be updated", {
@@ -171,11 +177,13 @@ test_that("indicator texts can be updated", {
   expect_silent(
     update_ind_text(
       pool,
-      data.frame(title = "Dummy for NoRGast v2",
-                 short_description = "Dummy for NoRGast v2",
-                 long_description = "Dummy for NoRGast v2",
-                 id = "norgast_dummy")
+      data.frame(
+        title = "Dummy for NoRGast v2",
+        short_description = "Dummy for NoRGast v2",
+        long_description = "Dummy for NoRGast v2",
+        id = "norgast_dummy"
       )
+    )
   )
 })
 
@@ -202,14 +210,17 @@ test_that("indicator values can be updated", {
 if (is.null(check_db(is_test_that = FALSE))) {
   conf <- get_config()
   pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
-  pool::dbExecute(pool,
-                  paste("DROP TABLE",
-                        paste(names(conf$db$tab), collapse = ", "), ";")
+  pool::dbExecute(
+    pool,
+    paste(
+      "DROP TABLE",
+      paste(names(conf$db$tab), collapse = ", "), ";"
+    )
   )
 }
 ## if db dropped on Github Actions the coverage reporting will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
-    Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
+      Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
   pool::dbExecute(pool, "drop database testdb;")
 }
 ## drain pool
