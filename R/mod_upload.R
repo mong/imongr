@@ -96,7 +96,6 @@ upload_ui <- function(id) {
 #' @rdname mod_upload
 #' @export
 upload_server <- function(id, registry_tracker, pool_verify) {
-
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -107,7 +106,7 @@ upload_server <- function(id, registry_tracker, pool_verify) {
     )
 
     rv_return <- shiny::reactiveValues()
-    
+
     ## observers
     shiny::observeEvent(input$registry, {
       rv_return$registry_id <- input$registry
@@ -152,7 +151,8 @@ upload_server <- function(id, registry_tracker, pool_verify) {
     ## ui sidebar panel
     output$select_registry <- shiny::renderUI({
       select_registry_ui(pool_verify, conf, input_id = ns("registry"),
-                         context = "verify", current_reg = registry_tracker$current_registry)
+                         context = "verify", 
+                         current_reg = registry_tracker$current_registry)
 
     })
 

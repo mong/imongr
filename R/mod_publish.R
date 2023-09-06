@@ -46,7 +46,6 @@ publish_ui <- function(id) {
 #' @rdname mod_publish
 #' @export
 publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify) {
-
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -68,7 +67,8 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
     output$select_publish_registry <- shiny::renderUI({
       select_registry_ui(pool, conf, input_id = ns("publish_registry"),
                          context = "verify", show_context = TRUE,
-                         pool0 = pool_verify, current_reg = registry_tracker$current_registry)
+                         pool0 = pool_verify, 
+                         current_reg = registry_tracker$current_registry)
 
     })
 

@@ -216,7 +216,6 @@ app_server <- function(input, output, session) {
   })
 
   output$select_medfield_registry <- shiny::renderUI({
-
     select_registry_ui(rv$pool, conf, input_id = "medfield_registry",
                        context = rv$context,
                        current_reg = registry_tracker$current_registry)

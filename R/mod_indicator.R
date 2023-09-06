@@ -47,7 +47,6 @@ indicator_ui <- function(id) {
 #' @rdname mod_indicator
 #' @export
 indicator_server <- function(id, registry_tracker, pool) {
-
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -195,7 +194,8 @@ indicator_server <- function(id, registry_tracker, pool) {
 
     output$select_indicator_registry <- shiny::renderUI({
       select_registry_ui(pool, conf, input_id = ns("indicator_registry"),
-                         context = "verify", current_reg = registry_tracker$current_registry,
+                         context = "verify",
+                         current_reg = registry_tracker$current_registry,
                          show_context = FALSE)
     })
 
