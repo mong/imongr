@@ -62,7 +62,6 @@ indicator_server <- function(id, registry_tracker, pool) {
       long_oversize = FALSE
     )
 
-
     rv_return <- shiny::reactiveValues()
 
     level_limits <- shiny::reactive({
