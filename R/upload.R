@@ -346,7 +346,7 @@ check_duplicated_inds <- function(registry, df, ind, conf, pool) {
       dplyr::left_join(ind_id_type, by = "ind_id") %>%
       dplyr::left_join(orgnr, by = "orgnr") %>%
       dplyr::filter(!.data$type %in% conf$var$fraction$type) %>%
-      dplyr::select(.data$ind_id, .data$orgnr, .data$context, .data$unit_level, .data$year) %>%
+      dplyr::select("ind_id", "orgnr", "context", "unit_level", "year") %>%
       dplyr::group_by_all() %>%
       dplyr::count() %>%
       dplyr::filter(.data$n > 1)
