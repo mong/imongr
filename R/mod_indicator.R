@@ -192,10 +192,12 @@ indicator_server <- function(id, registry_tracker, pool) {
     })
 
     output$select_indicator_registry <- shiny::renderUI({
-      select_registry_ui(pool, conf, input_id = ns("indicator_registry"),
-                         context = "verify",
-                         show_context = FALSE,
-                         current_reg = registry_tracker$current_registry)
+      select_registry_ui(pool, conf,
+        input_id = ns("indicator_registry"),
+        context = "verify",
+        show_context = FALSE,
+        current_reg = registry_tracker$current_registry
+      )
     })
 
     output$select_indicator <- shiny::renderUI({

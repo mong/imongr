@@ -216,11 +216,13 @@ app_server <- function(input, output, session) {
   })
 
   output$select_medfield_registry <- shiny::renderUI({
-    select_registry_ui(rv$pool, conf, input_id = "medfield_registry",
-                       context = rv$context,
-                       current_reg = registry_tracker$current_registry)
-
+    select_registry_ui(rv$pool, conf,
+      input_id = "medfield_registry",
+      context = rv$context,
+      current_reg = registry_tracker$current_registry
+    )
   })
+
   output$select_registry_medfield <- shiny::renderUI({
     shiny::req(input$medfield_registry)
     if (dim(rv$medfield_data)[1] > 0) {
@@ -243,6 +245,7 @@ app_server <- function(input, output, session) {
       multiple = TRUE
     )
   })
+
   output$registry_medfield_header <- shiny::renderText({
     paste0(
       "<h2>", conf$medfield$text$heading, " <i>",
@@ -252,6 +255,7 @@ app_server <- function(input, output, session) {
       "</i>:</h2><br>", conf$medfield$text$body
     )
   })
+
   output$registry_medfield_summary <- shiny::renderText({
     rv$medfield_summary
   })
@@ -275,12 +279,13 @@ app_server <- function(input, output, session) {
   })
 
   output$select_user_registry <- shiny::renderUI({
-
-    select_registry_ui(rv$pool, conf, input_id = "user_registry",
-                       context = rv$context,
-                       current_reg = registry_tracker$current_registry)
-
+    select_registry_ui(rv$pool, conf,
+      input_id = "user_registry",
+      context = rv$context,
+      current_reg = registry_tracker$current_registry
+    )
   })
+
   output$select_registry_user <- shiny::renderUI({
     shiny::req(input$user_registry)
     if (dim(rv$user_data)[1] > 0) {

@@ -150,10 +150,11 @@ upload_server <- function(id, registry_tracker, pool_verify) {
 
     ## ui sidebar panel
     output$select_registry <- shiny::renderUI({
-      select_registry_ui(pool_verify, conf, input_id = ns("registry"),
-                         context = "verify",
-                         current_reg = registry_tracker$current_registry)
-
+      select_registry_ui(pool_verify, conf,
+        input_id = ns("registry"),
+        context = "verify",
+        current_reg = registry_tracker$current_registry
+      )
     })
 
     output$upload_file <- shiny::renderUI({

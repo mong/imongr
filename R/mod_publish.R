@@ -65,11 +65,12 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
 
     # Registry selection drop down menu
     output$select_publish_registry <- shiny::renderUI({
-      select_registry_ui(pool, conf, input_id = ns("publish_registry"),
-                         context = "verify", show_context = TRUE,
-                         pool0 = pool_verify, 
-                         current_reg = registry_tracker$current_registry)
-
+      select_registry_ui(pool, conf,
+        input_id = ns("publish_registry"),
+        context = "verify", show_context = TRUE,
+        pool0 = pool_verify,
+        current_reg = registry_tracker$current_registry
+      )
     })
 
     # Liability text next to checkbox
