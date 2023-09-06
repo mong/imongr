@@ -30,7 +30,6 @@ NULL
 select_registry_ui <- function(pool, conf, input_id, context,
                                current_reg = character(), show_context = TRUE,
                                pool0 = NULL) {
-
   if (conf$role$manager %in% get_user_groups()) {
     regs <- get_table(pool, "registry") %>%
       dplyr::transmute(.data$name, .data$id) %>%
@@ -66,11 +65,14 @@ select_registry_ui <- function(pool, conf, input_id, context,
   contex_ui <- NULL
   if (show_context) {
     contex_ui <- shiny::HTML(
-      paste0("<h3 style='color:",
-             switch(context,
-                    prod = "green;'>Produksjon</h3>",
-                    verify = "orange;'>Kvalitetskontroll</h3>",
-                    qa = "red;'>QA</h3>"))
+      paste0(
+        "<h3 style='color:",
+        switch(context,
+          prod = "green;'>Produksjon</h3>",
+          verify = "orange;'>Kvalitetskontroll</h3>",
+          qa = "red;'>QA</h3>"
+        )
+      )
     )
   }
 
@@ -84,36 +86,41 @@ select_registry_ui <- function(pool, conf, input_id, context,
 #' @export
 submit_ui <- function(input_id, conf, pool, upload_file,
                       registry, df, ind, context) {
-
   if (!is.null(upload_file) && !"denominator" %in% names(df)) {
     df <- cbind(df, denominator = 1L)
   }
 
-  if (!is.null(upload_file) &&
+  if (
+    !is.null(upload_file) &&
       !(conf$upload$fail %in% registry) &&
-      all(!check_upload(registry, df, ind, pool)$fail)) {
-
+      all(!check_upload(registry, df, ind, pool)$fail)
+  ) {
     shiny::tagList(
-    shiny::actionButton(input_id,
-                        paste("Send til",
-                              switch(context,
-                                     prod = "produksjonsserver",
-                                     verify = "verifiseringsserver",
-                                     qa = "QA-server")),
-                        shiny::icon("paper-plane")),
-    shiny::p(paste(conf$upload$doc$submit$warning,
-                   get_registry_name(pool, registry)))
+      shiny::actionButton(
+        input_id,
+        paste(
+          "Send til",
+          switch(context,
+            prod = "produksjonsserver",
+            verify = "verifiseringsserver",
+            qa = "QA-server"
+          )
+        ),
+        shiny::icon("paper-plane")
+      ),
+      shiny::p(paste(
+        conf$upload$doc$submit$warning,
+        get_registry_name(pool, registry)
+      ))
     )
   } else {
     NULL
   }
-
 }
 
 #' @rdname server_output
 #' @export
 error_report_ui <- function(pool, df, ind, upload_file, registry) {
-
   if (is.null(upload_file) || is.null(registry)) {
     NULL
   } else {
@@ -127,7 +134,6 @@ error_report_ui <- function(pool, df, ind, upload_file, registry) {
 #' @rdname server_output
 #' @export
 warning_report_ui <- function(pool, df, upload_file, registry) {
-
   if (is.null(upload_file) || is.null(registry)) {
     NULL
   } else {
@@ -136,7 +142,6 @@ warning_report_ui <- function(pool, df, upload_file, registry) {
     current_checksum <- md5_checksum(df)
 
     if (current_checksum %in% checksums) {
-
       df_users <- pool::dbGetQuery(pool, "SELECT id, user_name FROM user")
       colnames(df_users) <- c("user_id", "user_name")
 
@@ -146,10 +151,11 @@ warning_report_ui <- function(pool, df, upload_file, registry) {
       msg_dates <- paste0(same_data_deliveries$time, " av ", same_data_deliveries$user_name) %>%
         paste(collapse = "<br/>")
 
-      paste("<font color=\"#b5a633\">",
-            "En identisk fil har vært lastet opp tidligere:<br/>",
-            msg_dates, "</font>")
-
+      paste(
+        "<font color=\"#b5a633\">",
+        "En identisk fil har vært lastet opp tidligere:<br/>",
+        msg_dates, "</font>"
+      )
     } else {
       NULL
     }
@@ -160,7 +166,6 @@ warning_report_ui <- function(pool, df, upload_file, registry) {
 #' @export
 upload_sample_text_ui <- function(pool, conf, upload_file, registry,
                                   indicators) {
-
   if (is.null(upload_file)) {
     NULL
   } else {
@@ -173,11 +178,14 @@ upload_sample_text_ui <- function(pool, conf, upload_file, registry,
     end_tag[i] <- "</mark></i>"
     indicators <- paste0(start_tag, all_indicators, end_tag)
 
-    paste0(conf$upload$doc$sample, " <b>", get_registry_name(pool, registry,
-                                                          full_name = TRUE),
-           "</b>: ",
-          paste(indicators, collapse = ", "),
-          ".")
+    paste0(
+      conf$upload$doc$sample,
+      " <b>",
+      get_registry_name(pool, registry, full_name = TRUE),
+      "</b>: ",
+      paste(indicators, collapse = ", "),
+      "."
+    )
   }
 }
 
@@ -188,8 +196,10 @@ upload_sample_ui <- function(df, upload_file, registry, sample_size,
   if (is.null(upload_file)) {
     NULL
   } else {
-    sample_df(df = df, skip = c(registry), n = sample_size,
-              random = sample_type)
+    sample_df(
+      df = df, skip = c(registry), n = sample_size,
+      random = sample_type
+    )
   }
 }
 
@@ -199,8 +209,10 @@ var_doc_ui <- function(conf) {
   l <- "<ul>\n"
   for (i in conf$upload$data_var_ind) {
     var <- conf$db$tab$data$insert[i]
-    l <- paste0(l, "\t<li><b>", var, "</b>: ",
-                conf$upload$doc[[var]], "</li>\n")
+    l <- paste0(
+      l, "\t<li><b>", var, "</b>: ",
+      conf$upload$doc[[var]], "</li>\n"
+    )
   }
   l
 }
@@ -208,19 +220,23 @@ var_doc_ui <- function(conf) {
 #' @rdname server_output
 #' @export
 medfield_summary_text_ui <- function(pool, conf, df) {
-
   if (dim(df)[1] > 0) {
     txt <- paste0("<h2>", conf$medfield$text$summary, "</h2>\n")
     for (i in seq_len(length(df$id))) {
       txt <- paste0(txt, "<h3>", df$full_name[i], "</h3>\n")
       regs <- get_medfield_registry(pool, df$id[i])
       if (dim(regs)[1] > 0) {
-        regtxt <- paste0("<ul>\n\t<li>",
-                         paste(get_registry_name(pool,
-                                                 registry = regs$registry_id,
-                                                 full_name = FALSE),
-                               collapse = "</li>\n\t<li>"),
-                         "</li>\n</ul>")
+        regtxt <- paste0(
+          "<ul>\n\t<li>",
+          paste(
+            get_registry_name(pool,
+              registry = regs$registry_id,
+              full_name = FALSE
+            ),
+            collapse = "</li>\n\t<li>"
+          ),
+          "</li>\n</ul>"
+        )
       } else {
         regtxt <- conf$medfield$text$missing
       }
@@ -235,19 +251,23 @@ medfield_summary_text_ui <- function(pool, conf, df) {
 #' @rdname server_output
 #' @export
 reguser_summary_text_ui <- function(pool, conf, df) {
-
   if (dim(df)[1] > 0) {
     txt <- paste0("<h2>", conf$reguser$text$summary, "</h2>\n")
     for (i in seq_len(length(df$id))) {
       txt <- paste0(txt, "<h3>", df$user_name[i], "</h3>\n")
       regs <- get_user_registry(pool, df$id[i])
       if (dim(regs)[1] > 0) {
-        regtxt <- paste0("<ul>\n\t<li>",
-                         paste(get_registry_name(pool,
-                                                 registry = regs$registry_id,
-                                                 full_name = FALSE),
-                               collapse = "</li>\n\t<li>"),
-                         "</li>\n</ul>")
+        regtxt <- paste0(
+          "<ul>\n\t<li>",
+          paste(
+            get_registry_name(pool,
+              registry = regs$registry_id,
+              full_name = FALSE
+            ),
+            collapse = "</li>\n\t<li>"
+          ),
+          "</li>\n</ul>"
+        )
       } else {
         regtxt <- conf$reguser$text$missing
       }

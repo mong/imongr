@@ -48,8 +48,10 @@ test_that("a consistent md5 checksum of a data frame can be provided", {
 ## first off with no data
 if (is.null(check_db(is_test_that = FALSE))) {
   pool <- make_pool()
-  query <- paste("CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
-                 "COLLATE = 'utf8_danish_ci';")
+  query <- paste(
+    "CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET = 'utf8'",
+    "COLLATE = 'utf8_danish_ci';"
+  )
   pool::dbExecute(pool, query)
 
   # new connections to testdb
@@ -102,14 +104,17 @@ test_that("sample data can be deleted from db", {
 if (is.null(check_db(is_test_that = FALSE))) {
   conf <- get_config()
   pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
-  pool::dbExecute(pool,
-                  paste("DROP TABLE",
-                        paste(names(conf$db$tab), collapse = ", "), ";")
+  pool::dbExecute(
+    pool,
+    paste(
+      "DROP TABLE",
+      paste(names(conf$db$tab), collapse = ", "), ";"
+    )
   )
 }
 ## if db dropped on Github Actions the coverage reporting will fail...
 if (is.null(check_db(is_test_that = FALSE)) &&
-    Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
+      Sys.getenv("GITHUB_ACTIONS_RUN_DB_UNIT_TESTS") != "true") {
   pool::dbExecute(pool, "drop database testdb;")
 }
 ## drain pool

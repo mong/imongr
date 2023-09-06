@@ -313,6 +313,8 @@ upload:
       En eller flere verdier i denominator er ikke naturlige tall
     zero_denominator: |-
       En eller flere verdier i denominator er lik 0
+    duplicated_inds: |-
+      En eller flere beregnede indikatorer er duplisert
   check_empty: |-
     nødvendig definisjon, verdi eller format finnes ikke
   check_impossible: |-
@@ -384,6 +386,12 @@ indicator:
   - median
   - dg_andel
   - dg_beregnet_andel
+  level_inconsistent_message: >
+      <i style='color:red;'>
+      Verdier for m\u00e5loppn\u00e5else er ikke konsistente!
+      </i>
+  oversize_message: >
+      <i style='color:red;'>Teksten er for lang!</i><br><br>
 medfield:
   text:
     heading: >

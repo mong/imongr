@@ -21,20 +21,17 @@ NULL
 #' @rdname misc
 #' @export
 natural <- function(vals, tolerance = .Machine$double.eps^0.5) {
-
   stopifnot(is.numeric(vals))
   if (any(vals < 0)) {
     return(FALSE)
   }
   abs(vals - round(vals)) < tolerance
-
 }
 
 
 #' @rdname misc
 #' @export
 md5_checksum <- function(df, ind = "") {
-
   f1 <- tempfile()
   f2 <- tempfile()
   utils::write.csv(df, file = f1)
@@ -51,18 +48,17 @@ md5_checksum <- function(df, ind = "") {
   t <- paste0(paste0(t1, collapse = ""), paste0(t2, collapse = ""))
 
   digest::digest(t, algo = "md5", serialize = FALSE)
-
 }
 
 
 #' @rdname misc
 #' @export
 user_widget <- function() {
-
   conf <- get_config()
 
   bslib::nav_menu(
-    get_user_name(), align = "right",
+    get_user_name(),
+    align = "right",
     bslib::nav_item(
       shiny::tags$a(
         shiny::icon("info-circle"),
@@ -87,7 +83,6 @@ user_widget <- function() {
 #' @examples
 #' version_info()
 version_info <- function(newline = "<br>") {
-
   conf <- get_config()
   pkg <- conf$app_text$info$version$app
   vpkg <- installed.packages()[pkg, 3]
@@ -99,19 +94,15 @@ version_info <- function(newline = "<br>") {
 #' @export
 #' @examples
 #' no_opt_out_ok()
-
 no_opt_out_ok <- function() {
-
   conf <- get_config()
   msg <- conf$app_text$action_button$no_opt_out_ok
   sample(msg, 1)
-
 }
 
 #' @rdname misc
 #' @export
 insert_sample_data <- function(include_data_table = TRUE) {
-
   pool <- make_pool()
 
   insert_table(pool, table = "nation", df = imongr::nation)
@@ -126,8 +117,10 @@ insert_sample_data <- function(include_data_table = TRUE) {
   insert_table(pool, table = "user_registry", df = imongr::user_registry)
   insert_table(pool, table = "delivery", df = imongr::delivery)
   insert_table(pool, table = "medfield", df = imongr::medfield)
-  insert_table(pool, table = "registry_medfield",
-               df = imongr::registry_medfield)
+  insert_table(pool,
+    table = "registry_medfield",
+    df = imongr::registry_medfield
+  )
 
   if (include_data_table) {
     insert_table(pool, table = "data", df = imongr::data)
@@ -142,10 +135,11 @@ insert_sample_data <- function(include_data_table = TRUE) {
 #' @rdname misc
 #' @export
 delete_all_data <- function(prompt = TRUE) {
-
   if (prompt) {
-    ans <- readline(paste("WARNING! This will delete all data from the db.",
-                          "If this is the intention type 'YES' now "))
+    ans <- readline(paste(
+      "WARNING! This will delete all data from the db.",
+      "If this is the intention type 'YES' now "
+    ))
   } else {
     ans <- "YES"
   }
@@ -176,5 +170,4 @@ delete_all_data <- function(prompt = TRUE) {
   }
 
   invisible()
-
 }

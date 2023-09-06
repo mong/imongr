@@ -12,7 +12,6 @@ NULL
 #' @rdname mod_indicator
 #' @export
 indicator_ui <- function(id) {
-
   ns <- shiny::NS(id)
 
   shiny::tagList(
@@ -50,7 +49,6 @@ indicator_ui <- function(id) {
 indicator_server <- function(id, registry_tracker, pool) {
 
   shiny::moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
 
     conf <- get_config()
@@ -64,6 +62,7 @@ indicator_server <- function(id, registry_tracker, pool) {
       short_oversize = FALSE,
       long_oversize = FALSE
     )
+
 
     rv_return <- shiny::reactiveValues()
 
@@ -83,10 +82,6 @@ indicator_server <- function(id, registry_tracker, pool) {
       }
     })
 
-    level_inconsistent_message <- paste0(
-      "<i style='color:red;'>",
-      "Verdier for m\u00e5loppn\u00e5else er ikke konsistente!",
-      "</i>")
     level_consistent <- shiny::reactive({
       if (!is.na(input$level_green) && !is.na(input$level_yellow)) {
         if (input$level_direction) {
@@ -97,7 +92,7 @@ indicator_server <- function(id, registry_tracker, pool) {
             shinyjs::html("message", "")
             shinyjs::html(
               "message",
-              level_inconsistent_message
+              conf$indicator$level_inconsistent_message
             )
             return(FALSE)
           }
@@ -109,7 +104,7 @@ indicator_server <- function(id, registry_tracker, pool) {
             shinyjs::html("message", "")
             shinyjs::html(
               "message",
-              level_inconsistent_message
+              conf$indicator$level_inconsistent_message
             )
             return(FALSE)
           }
@@ -128,15 +123,20 @@ indicator_server <- function(id, registry_tracker, pool) {
       rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
       rv$ind_data <- rv$ind_data %>%
         dplyr::filter(.data$id == input$indicator) %>%
-        dplyr::mutate(title = dplyr::if_else(is.na(title), "", title),
-                      short_description = dplyr::if_else(
-                        is.na(short_description),
-                        "",
-                        short_description),
-                      long_description = dplyr::if_else(
-                        is.na(long_description),
-                        "",
-                        long_description))
+        dplyr::mutate(
+          title = dplyr::case_when(
+            is.na(title) ~ "",
+            TRUE ~ title
+          ),
+          short_description = dplyr::case_when(
+            is.na(short_description) ~ "",
+            TRUE ~ short_description
+          ),
+          long_description = dplyr::case_when(
+            is.na(long_description) ~ "",
+            TRUE ~ long_description
+          )
+        )
       level_limits()
     })
 
@@ -196,9 +196,11 @@ indicator_server <- function(id, registry_tracker, pool) {
     })
 
     output$select_indicator_registry <- shiny::renderUI({
+
       select_registry_ui(pool, conf, input_id = ns("indicator_registry"),
                          context = "verify", current_reg = registry_tracker$current_registry,
                          show_context = FALSE)
+
     })
 
     output$select_indicator <- shiny::renderUI({
@@ -268,8 +270,10 @@ indicator_server <- function(id, registry_tracker, pool) {
     output$set_min_denominator <- shiny::renderUI({
       shiny::req(input$indicator)
       shiny::tags$div(
-        title = paste("Minste antall observasjoner (N) som kreves for at",
-                      "indikatoren presenteres"),
+        title = paste(
+          "Minste antall observasjoner (N) som kreves for at",
+          "indikatoren presenteres"
+        ),
         shiny::numericInput(
           ns("min_denominator"), "Minste antall observasjoner:",
           value = rv$ind_data$min_denominator, min = 0
@@ -301,26 +305,29 @@ indicator_server <- function(id, registry_tracker, pool) {
         is.null(input$indicator),
         is.null(input$include),
         is.null(input$level_direction)
-      )
-      )) {
+      ))) {
         NULL
       } else {
         no_new_values <- c(
           identical(input$include, as.logical(rv$ind_data$include)),
-          identical(input$level_direction,
-                    as.logical(rv$ind_data$level_direction)
-                    ),
-          identical(as.numeric(input$level_green),
-                    as.numeric(rv$ind_data$level_green)
-                    ),
-          identical(as.numeric(input$level_yellow),
-                    as.numeric(rv$ind_data$level_yellow)
-                    ),
-          identical(as.numeric(input$min_denominator),
-                    as.numeric(rv$ind_data$min_denominator)
-                    ),
+          identical(
+            input$level_direction,
+            as.logical(rv$ind_data$level_direction)
+          ),
+          identical(
+            as.numeric(input$level_green),
+            as.numeric(rv$ind_data$level_green)
+          ),
+          identical(
+            as.numeric(input$level_yellow),
+            as.numeric(rv$ind_data$level_yellow)
+          ),
+          identical(
+            as.numeric(input$min_denominator),
+            as.numeric(rv$ind_data$min_denominator)
+          ),
           identical(input$type, rv$ind_data$type)
-          )
+        )
         if (all(no_new_values)) {
           return(NULL)
         } else {
@@ -345,7 +352,7 @@ indicator_server <- function(id, registry_tracker, pool) {
 
     output$title_oversize <- shiny::renderUI({
       if (rv$title_oversize) {
-        shiny::HTML(oversize_message)
+        shiny::HTML(conf$indicator$oversize_message)
       } else {
         NULL
       }
@@ -361,7 +368,7 @@ indicator_server <- function(id, registry_tracker, pool) {
 
     output$short_oversize <- shiny::renderUI({
       if (rv$short_oversize) {
-        shiny::HTML(oversize_message)
+        shiny::HTML(conf$indicator$oversize_message)
       } else {
         NULL
       }
@@ -377,7 +384,7 @@ indicator_server <- function(id, registry_tracker, pool) {
 
     output$long_oversize <- shiny::renderUI({
       if (rv$long_oversize) {
-        shiny::HTML(oversize_message)
+        shiny::HTML(conf$indicator$oversize_message)
       } else {
         NULL
       }
@@ -391,7 +398,7 @@ indicator_server <- function(id, registry_tracker, pool) {
           identical(input$ind_short, rv$ind_data$short_description),
           identical(input$ind_title, rv$ind_data$title),
           identical(input$ind_long, rv$ind_data$long_description)
-          )
+        )
         if (all(no_new_text)) {
           return(NULL)
         } else {
@@ -399,6 +406,7 @@ indicator_server <- function(id, registry_tracker, pool) {
         }
       }
     })
+
 
     return(rv_return)
 
@@ -408,7 +416,6 @@ indicator_server <- function(id, registry_tracker, pool) {
 #' @rdname mod_indicator
 #' @export
 indicator_app <- function(pool) {
-
   ui <- shiny::fluidPage(
     indicator_ui("ind")
   )
