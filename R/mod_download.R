@@ -98,7 +98,7 @@ download_server <- function(id, registry_tracker, pool, pool_verify) {
       conf,
       input_id = ns("download_registry"),
       context = input$download_context,
-      show_context = FALSE, 
+      show_context = FALSE,
       current_reg = registry_tracker$current_registry)
     })
 
