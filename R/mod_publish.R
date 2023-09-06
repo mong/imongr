@@ -47,7 +47,6 @@ publish_ui <- function(id) {
 #' @export
 publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify) {
 
-
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -256,7 +255,6 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
     })
 
     return(rv_return)
-
   })
 }
 
