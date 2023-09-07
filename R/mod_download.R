@@ -95,11 +95,11 @@ download_server <- function(id, registry_tracker, pool, pool_verify) {
 
     output$select_download_registry <- shiny::renderUI({
       select_registry_ui(pool_download(),
-      conf,
-      input_id = ns("download_registry"),
-      context = input$download_context,
-      show_context = FALSE,
-      current_reg = registry_tracker$current_registry)
+                         conf,
+                         input_id = ns("download_registry"),
+                         context = input$download_context,
+                         show_context = FALSE,
+                         current_reg = registry_tracker$current_registry)
     })
 
     output$select_db_table <- shiny::renderUI({
