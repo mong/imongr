@@ -65,8 +65,8 @@ upload_ui <- function(id) {
         shiny::checkboxInput(ns("filter_years"), "Oppdater kun valgte år"
         ),
         shiny::sliderInput(ns("upload_years"),
-          "Oppdater følgende \u00e5r:",
-          min = 2010,
+          "",
+          min = 2010, # Min and max values just for initialisation
           max = as.numeric(format(Sys.Date(), "%Y")),
           value = c(2010, as.numeric(format(Sys.Date(), "%Y"))),
           sep = ""
