@@ -62,6 +62,15 @@ upload_ui <- function(id) {
           weekstart = 1,
           language = "no"
         ),
+        shiny::checkboxInput(ns("filter_years"), "Oppdater kun valgte år"
+        ),
+        shiny::sliderInput(ns("upload_years"),
+          "Oppdater følgende \u00e5r:",
+          min = 2010,
+          max = as.numeric(format(Sys.Date(), "%Y")),
+          value = c(2010, as.numeric(format(Sys.Date(), "%Y"))),
+          sep = ""
+        ),
         shinycssloaders::withSpinner(
           shiny::textOutput(ns("spinner")),
           color = "#18bc9c",
@@ -106,12 +115,47 @@ upload_server <- function(id, pool_verify) {
       upload_reg = character(),
     )
 
+    # Enable when a file is selected
+    shinyjs::disable("filter_years")
+    shinyjs::disable("upload_years")
+
     ## observers
     shiny::observeEvent(input$registry, {
       if (!is.null(input$upload_file)) {
         rv$inv_data <- rv$inv_data + 1
       }
     })
+
+    shiny::observeEvent(input$upload_file, {
+      if (!is.null(input$upload_file)) {
+        shinyjs::enable("filter_years")
+      } else {
+        shinyjs::disable("filter_years")
+      }
+    })
+
+
+    shiny::observeEvent(input$filter_years, {
+      if (input$filter_years) {
+        shinyjs::enable("upload_years")
+      } else {
+        shinyjs::disable("upload_years")
+      }
+    })
+
+    shiny::observeEvent(df_raw(), {
+      if (!is.null(input$upload_file)) {
+        min_year <- min(df_raw()$year)
+        max_year <- max(df_raw()$year)
+        print(paste(min_year, max_year))
+        shiny::updateSliderInput(session, "upload_years",
+          min = min_year,
+          max = max_year,
+          value = c(min_year, max_year)
+        )
+      }
+    })
+
     shiny::observeEvent(input$submit, {
       insert_data_verify(
         pool = pool_verify,
@@ -131,11 +175,20 @@ upload_server <- function(id, pool_verify) {
 
 
     ## reactives
-    df <- shiny::reactive({
+    df_raw <- shiny::reactive({
       if (is.null(input$upload_file)) {
         data.frame()
       } else {
-        csv_to_df(input$upload_file$datapath, input$sep, input$dec_sep)
+        csv_to_df(input$upload_file$datapath, input$sep, input$dec_sep) 
+      }
+    })
+
+    df <- shiny::reactive({
+      if (input$filter_years) {
+        df_raw() %>%
+          dplyr::filter(.data$year %in% input$upload_years[1]:input$upload_years[2])
+      } else {
+        df_raw()
       }
     })
 
