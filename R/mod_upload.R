@@ -18,6 +18,7 @@ upload_ui <- function(id) {
     shinyjs::useShinyjs(),
     shiny::sidebarLayout(
       shiny::sidebarPanel(
+        tags$style(type = "text/css", ".irs-grid-pol.small {height: 0px;}"),
         shiny::uiOutput(ns("select_registry")),
         shiny::uiOutput(ns("upload_file")),
         shiny::radioButtons(ns("sep"), "Kolonneseparator",
@@ -64,12 +65,7 @@ upload_ui <- function(id) {
         ),
         shiny::checkboxInput(ns("filter_years"), "Oppdater kun valgte år"
         ),
-        shiny::sliderInput(ns("upload_years"),
-          "",
-          min = 2010, # Min and max values just for initialisation
-          max = as.numeric(format(Sys.Date(), "%Y")),
-          value = c(2010, as.numeric(format(Sys.Date(), "%Y"))),
-          sep = ""
+        shiny::uiOutput(ns("upload_years_UI"),
         ),
         shinycssloaders::withSpinner(
           shiny::textOutput(ns("spinner")),
@@ -115,9 +111,17 @@ upload_server <- function(id, pool_verify) {
       upload_reg = character(),
     )
 
+    slider_params <- shiny::reactiveValues(
+      # Values just for initialization
+      min = 2010,
+      max = as.numeric(format(Sys.Date(), "%Y")),
+      value = c(2010, as.numeric(format(Sys.Date(), "%Y")))
+    )
+
     # Enable when a file is selected
     shinyjs::disable("filter_years")
-    shinyjs::disable("upload_years")
+
+
 
     ## observers
     shiny::observeEvent(input$registry, {
@@ -129,6 +133,7 @@ upload_server <- function(id, pool_verify) {
     shiny::observeEvent(input$upload_file, {
       if (!is.null(input$upload_file)) {
         shinyjs::enable("filter_years")
+        shiny::updateCheckboxInput(session, "filter_years", value = FALSE)
       } else {
         shinyjs::disable("filter_years")
       }
@@ -147,12 +152,10 @@ upload_server <- function(id, pool_verify) {
       if (!is.null(input$upload_file)) {
         min_year <- min(df_raw()$year)
         max_year <- max(df_raw()$year)
-        print(paste(min_year, max_year))
-        shiny::updateSliderInput(session, "upload_years",
-          min = min_year,
-          max = max_year,
-          value = c(min_year, max_year)
-        )
+
+        slider_params$min <- min_year
+        slider_params$max <- max_year
+        slider_params$value <- c(min_year, max_year)
       }
     })
 
@@ -219,6 +222,20 @@ upload_server <- function(id, pool_verify) {
           "text/csv",
           "text/comma-separated-values,text/plain",
           ".csv"
+        )
+      )
+    })
+
+    output$upload_years_UI <- shiny::renderUI({
+      shinyjs::disabled(
+        shiny::sliderInput(
+          ns("upload_years"),
+          "",
+          min = slider_params$min,
+          max = slider_params$max,
+          value = slider_params$value,
+          step = 1,
+          sep = ""
         )
       )
     })
