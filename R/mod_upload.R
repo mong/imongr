@@ -179,7 +179,7 @@ upload_server <- function(id, pool_verify) {
       if (is.null(input$upload_file)) {
         data.frame()
       } else {
-        csv_to_df(input$upload_file$datapath, input$sep, input$dec_sep) 
+        csv_to_df(input$upload_file$datapath, input$sep, input$dec_sep)
       }
     })
 
