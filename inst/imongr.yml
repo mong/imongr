@@ -335,7 +335,7 @@ upload:
       endres i menyen til venstre. Her er det også mulig å angi en dato fra når
       registerets indikatorer skal betraktes som foreløpige. Denne datoen er på
       forhånd satt til dato for opplasting. <b>Merk at når du sender nye data
-      så vil alle gamle data for tilsvarende indikatorer og kontekst gitt i
+      så vil alle gamle data for tilsvarende indikatorer, år og kontekst gitt i
       datasettet overskrives/slettes</b>. Følgende indikatorer (med markering
       for de som finnes i csv-fila) er gyldige for
     year: >

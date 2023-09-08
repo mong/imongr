@@ -28,13 +28,15 @@ delete_indicator_data <- function(pool, df) {
   }
   ind <- unique(df$ind_id)
   context <- unique(df$context)
+  year <- unique(df$year)
 
   query <- paste0("
 DELETE FROM
   data
 WHERE
   ind_id IN ('", paste0(ind, collapse = "', '"), "') AND
-  context IN ('", paste0(context, collapse = "', '"), "');")
+  context IN ('", paste0(context, collapse = "', '"), "') AND
+  year IN ('", paste0(year, collapse = "', '"), "');")
 
   pool::dbExecute(pool, query)
 }
