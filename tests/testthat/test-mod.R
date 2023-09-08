@@ -317,7 +317,7 @@ test_that("publish module has output...", {
   shiny::testServer(
 
     publish_server,
-    args = list(pool = pool, pool_verify = pool),
+    args = list(pool = pool, pool_verify = pool, parent_input = NULL),
     {
       session$setInputs(
         publish_registry = 10
