@@ -26,19 +26,21 @@ delete_indicator_data <- function(pool, df) {
   if (!"ind_id" %in% names(df)) {
     stop("Data frame has no notion of 'indicator' (id). Cannot delete!")
   }
-  ind <- unique(df$ind_id)
-  context <- unique(df$context)
-  year <- unique(df$year)
 
-  query <- paste0("
-DELETE FROM
-  data
-WHERE
-  ind_id IN ('", paste0(ind, collapse = "', '"), "') AND
-  context IN ('", paste0(context, collapse = "', '"), "') AND
-  year IN ('", paste0(year, collapse = "', '"), "');")
+  ind_context_year <- df %>% dplyr::select("ind_id", "context", "year") %>% unique()
 
-  pool::dbExecute(pool, query)
+  for (i in seq_len(nrow(ind_context_year))) {
+    query <- paste0("
+  DELETE FROM
+    data
+  WHERE
+    ind_id = '", ind_context_year$ind_id[i], "' AND
+    context = '", ind_context_year$context[i], "' AND
+    year = '", ind_context_year$year[i], "';")
+
+    pool::dbExecute(pool, query)
+  }
+
 }
 
 
