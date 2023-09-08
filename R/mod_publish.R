@@ -261,7 +261,7 @@ publish_app <- function(pool, pool_verify) {
   )
 
   server <- function(input, output, sessjon) {
-    publish_server("publish", "", pool, pool_verify)
+    publish_server("publish", NULL, pool, pool_verify)
   }
 
   shiny::shinyApp(ui, server)
