@@ -9,7 +9,7 @@
 \usage{
 indicator_ui(id)
 
-indicator_server(id, pool)
+indicator_server(id, registry_tracker, pool)
 
 indicator_app(pool)
 }

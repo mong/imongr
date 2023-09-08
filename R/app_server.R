@@ -38,6 +38,17 @@ app_server <- function(input, output, session) {
     )
   )
 
+  # Tab tracker for linking modules
+  tab_tracker <- shiny::reactiveValues()
+
+  shiny::observeEvent(input$tabs, {
+    tab_tracker$previous_tab <- tab_tracker$current_tab
+    tab_tracker$current_tab <- input$tabs
+  })
+
+  # Registry tracker for linking modules
+  registry_tracker <- shiny::reactiveValues()
+
   # always from default db, never selectable by user
   known_user <- nrow(get_all_user_data(pool)) > 0
   valid_user <- nrow(get_user_data(pool)) > 0
@@ -134,21 +145,45 @@ app_server <- function(input, output, session) {
   })
 
 
+  ##### Tabs #####
+
   # profile
   profile_server("profile", pool, pool_verify)
 
+
   # last
-  upload_server("upload", pool_verify)
+  rv_upload <- upload_server("upload", registry_tracker, pool_verify)
+
+  shiny::observeEvent(rv_upload$registry_id, {
+    registry_tracker$current_registry <- rv_upload$registry_id
+  })
+
 
   # publish
-  publish_server("publ", input, pool, pool_verify)
+  rv_publish <- publish_server("publ", tab_tracker, registry_tracker, pool, pool_verify)
+
+  shiny::observeEvent(rv_publish$registry_id, {
+    registry_tracker$current_registry <- rv_publish$registry_id
+  })
+
 
   # loss
-  download_server("download", pool, pool_verify)
+  rv_download <- download_server("download", registry_tracker, pool, pool_verify)
+
+  shiny::observeEvent(rv_download$registry_id, {
+    registry_tracker$current_registry <- rv_download$registry_id
+  })
+
 
   # indicator
-  indicator_server("ind", pool_verify)
+  rv_indicator <- indicator_server("ind", registry_tracker, pool_verify)
 
+  shiny::observeEvent(rv_indicator$registry_id, {
+    registry_tracker$current_registry <- rv_indicator$registry_id
+  })
+
+
+  ##### Admin #####
 
   # manager settings
   output$select_context <- shiny::renderUI({
@@ -165,7 +200,6 @@ app_server <- function(input, output, session) {
       NULL
     }
   })
-
 
   # registry medfields
   shiny::observeEvent(input$update_medfield, {
@@ -184,9 +218,11 @@ app_server <- function(input, output, session) {
   output$select_medfield_registry <- shiny::renderUI({
     select_registry_ui(rv$pool, conf,
       input_id = "medfield_registry",
-      context = rv$context
+      context = rv$context,
+      current_reg = registry_tracker$current_registry
     )
   })
+
   output$select_registry_medfield <- shiny::renderUI({
     shiny::req(input$medfield_registry)
     if (dim(rv$medfield_data)[1] > 0) {
@@ -209,6 +245,7 @@ app_server <- function(input, output, session) {
       multiple = TRUE
     )
   })
+
   output$registry_medfield_header <- shiny::renderText({
     paste0(
       "<h2>", conf$medfield$text$heading, " <i>",
@@ -218,8 +255,13 @@ app_server <- function(input, output, session) {
       "</i>:</h2><br>", conf$medfield$text$body
     )
   })
+
   output$registry_medfield_summary <- shiny::renderText({
     rv$medfield_summary
+  })
+
+  shiny::observeEvent(input$medfield_registry, {
+    registry_tracker$current_registry <- input$medfield_registry
   })
 
   # user registries
@@ -239,9 +281,11 @@ app_server <- function(input, output, session) {
   output$select_user_registry <- shiny::renderUI({
     select_registry_ui(rv$pool, conf,
       input_id = "user_registry",
-      context = rv$context
+      context = rv$context,
+      current_reg = registry_tracker$current_registry
     )
   })
+
   output$select_registry_user <- shiny::renderUI({
     shiny::req(input$user_registry)
     if (dim(rv$user_data)[1] > 0) {
@@ -275,6 +319,10 @@ app_server <- function(input, output, session) {
   })
   output$registry_user_summary <- shiny::renderText({
     rv$user_summary
+  })
+
+  shiny::observeEvent(input$user_registry, {
+    registry_tracker$current_registry <- input$user_registry
   })
 
   # our db admin interface

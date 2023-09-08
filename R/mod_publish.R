@@ -45,7 +45,7 @@ publish_ui <- function(id) {
 
 #' @rdname mod_publish
 #' @export
-publish_server <- function(id, parent_input, pool, pool_verify) {
+publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -57,6 +57,8 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
       inv_publish = 0
     )
 
+    rv_return <- shiny::reactiveValues()
+
     ####################
     ##### Basic UI #####
     ####################
@@ -66,7 +68,8 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
       select_registry_ui(pool, conf,
         input_id = ns("publish_registry"),
         context = "verify", show_context = TRUE,
-        pool0 = pool_verify
+        pool0 = pool_verify,
+        current_reg = registry_tracker$current_registry
       )
     })
 
@@ -156,12 +159,13 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
     shiny::observeEvent(input$publish_registry, {
       if (!is.null(input$publish_registry)) {
         rv$inv_publish <- rv$inv_publish + 1
+        rv_return$registry_id <- input$publish_registry
       }
     })
 
     # Reevaluate publish logic on selecting the publish tab
-    shiny::observeEvent(parent_input$tabs, {
-      if (parent_input$tabs == "publish") {
+    shiny::observeEvent(tab_tracker$current_tab, {
+      if (tab_tracker$current_tab == "publish") {
         rv$inv_publish <- rv$inv_publish + 1
       }
     })
@@ -250,6 +254,8 @@ publish_server <- function(id, parent_input, pool, pool_verify) {
         showConfirmButton = FALSE, timer = 7000
       )
     })
+
+    return(rv_return)
   })
 }
 
