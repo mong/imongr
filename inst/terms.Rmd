@@ -4,25 +4,8 @@ params:
 title: '`r paste0("Vilkår for å publisere resultater fra nasjonale medisinske kvalitetsregistre på SKDEs nettsider")`'
 author: "Senter for Klinisk Dokumentasjon og Evaluering (SKDE)"
 date: '`r imongr::version_info(newline = "")`'
-header-includes:
-  \usepackage[utf8]{inputenc}
-  \usepackage[T1]{fontenc}
-classoption:
-  - twocolumn
-papersize: a4
-linestretch: 1
-fontsize: 10pt
 links-as-notes: true
 ---
-
-```{r printlayout, results = "asis", echo = FALSE, eval = (params$output == "pdf")}
-cat(
-  paste(
-    "\n\n\\hyphenation{kvalitets-registre opplys-ninger identi-fiserbar",
-    "hend-elser hand-linger}\n\n"
-  )
-)
-```
 
 ## 1. Formål
 Formålet med dette dokumentet er å regulere vilkår for å publisere anonyme opplysninger fra nasjonale medisinske kvalitetsregistre på Senter for klinisk dokumentasjon og evaluering (SKDE) sine nettsider.

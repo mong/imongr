@@ -160,13 +160,15 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
 
     # New window on view terms click
     shiny::observeEvent(input$view_terms, {
-      rmd_filename <- system.file(
-        "terms.Rmd",
-        package = methods::getPackageName()
+      f <- rmarkdown::render(
+        input = system.file("terms.Rmd",
+          package = "imongr"
+        ),
+        output_format = "html_fragment",
+        output_file = tempfile()
       )
-      md <- knitr::knit(rmd_filename, quiet = TRUE)
       shiny::showModal(shiny::modalDialog(
-        shiny::withMathJax(shiny::includeMarkdown(md)),
+        shiny::HTML(readLines(f)),
         footer = shiny::tagList(
           shiny::modalButton("Lukk")
         )

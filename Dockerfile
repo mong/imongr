@@ -9,7 +9,7 @@ WORKDIR /app/R
 # hadolint ignore=DL3010
 COPY *.tar.gz .
 
-## install package, clean up and make sure sufficient latex tools exists in base image
+## install package and clean up
 RUN R CMD INSTALL --clean ./*.tar.gz \
     && rm ./*.tar.gz
 
