@@ -11,8 +11,7 @@ COPY *.tar.gz .
 
 ## install package, clean up and make sure sufficient latex tools exists in base image
 RUN R CMD INSTALL --clean ./*.tar.gz \
-    && rm ./*.tar.gz \
-    && R -e "rmarkdown::render(input = system.file('terms.Rmd', package = 'imongr'), output_format = 'pdf_document')"
+    && rm ./*.tar.gz
 
 EXPOSE 3838
 

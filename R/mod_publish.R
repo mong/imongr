@@ -88,21 +88,6 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
       )
     })
 
-    # Download terms handler
-    output$downloadTerms <- shiny::downloadHandler(
-      filename = basename(
-        tempfile(pattern = "VilkaarPubliseringSKDE", fileext = ".pdf")
-      ),
-      content = function(file) {
-        fn <- rmarkdown::render(
-          input = system.file("terms.Rmd", package = "imongr"),
-          output_format = "pdf_document",
-          params = list(output = "pdf")
-        )
-        file.rename(fn, file)
-      }
-    )
-
     # Loading animation
     output$publishing <- shiny::renderText({
       input$publish
@@ -175,17 +160,14 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
 
     # New window on view terms click
     shiny::observeEvent(input$view_terms, {
-      f <- rmarkdown::render(
-        input = system.file("terms.Rmd",
-          package = "imongr"
-        ),
-        output_format = "html_fragment",
-        output_file = tempfile()
+      rmd_filename <- system.file(
+        "terms.Rmd",
+        package = methods::getPackageName()
       )
+      md <- knitr::knit(rmd_filename, quiet = TRUE)
       shiny::showModal(shiny::modalDialog(
-        shiny::HTML(readLines(f)),
+        shiny::withMathJax(shiny::includeMarkdown(md)),
         footer = shiny::tagList(
-          shiny::downloadButton(ns("downloadTerms"), "Last ned vilk\u00e5r"),
           shiny::modalButton("Lukk")
         )
       ))
