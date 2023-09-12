@@ -157,7 +157,7 @@ test_that("agg data can be cleaned", {
 
 test_that("agg_data delivery timings can be updated without errors", {
   check_db()
-  expect_invisible(update_aggdata_delivery(pool))
+  expect_invisible(update_aggdata_delivery(pool, c("dummy")))
 })
 
 test_that("a new user can be created", {

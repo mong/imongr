@@ -35,7 +35,7 @@ insert_data_prod(
 
 insert_agg_data(pool, df)
 
-update_aggdata_delivery(pool)
+update_aggdata_delivery(pool, ind_id)
 
 agg_all_data(pool)
 

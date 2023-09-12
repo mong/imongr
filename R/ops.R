@@ -231,14 +231,15 @@ insert_agg_data <- function(pool, df) {
     insert_table(pool, "agg_data", dat)
   }
   message("\nUpdating delivery timings")
-  update_aggdata_delivery(pool)
+  ind_id <- unique(df$ind_id)
+  update_aggdata_delivery(pool, ind_id)
   message("Done!")
 }
 
 #' @rdname ops
 #' @export
-update_aggdata_delivery <- function(pool) {
-  delivery <- get_aggdata_delivery(pool)
+update_aggdata_delivery <- function(pool, ind_id) {
+  delivery <- get_aggdata_delivery(pool, ind_id)
 
   pool::dbWriteTable(pool,
     name = "temp_agg_data", value = delivery,
