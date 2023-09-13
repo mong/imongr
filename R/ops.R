@@ -232,8 +232,10 @@ insert_agg_data <- function(pool, df) {
     insert_table(pool, "agg_data", dat)
   }
   message("\nUpdating delivery timings")
-  ind_id <- unique(df$ind_id)
-  update_aggdata_delivery(pool, ind_id)
+  # Get all indicator ids from delivered registries,
+  # since all dates are removed from agg_data in the loop above.
+  all_ind_id <- dplyr::filter(ind_reg, .data$registry_id %in% reg)$id
+  update_aggdata_delivery(pool, all_ind_id)
   message("Done!")
 }
 
