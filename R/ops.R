@@ -3,6 +3,7 @@
 #' @param pool Database connection pool object
 #' @param df Data frame of relevant data
 #' @param ind Data frame of relevant indicator data
+#' @param ind_id List of indicators id
 #' @param registry Integer registry id
 #' @param update Character string of format YYYY-MM-DD providing date until data
 #'   are regarded as updated. Default value is NA.
