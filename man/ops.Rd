@@ -66,6 +66,8 @@ are regarded as final. Default value is NA.}
 accepted when data are published. Default value is NA that will normally
 apply for all uploads prior to publishing.}
 
+\item{ind_id}{List of indicators id}
+
 \item{ind}{Data frame of relevant indicator data}
 
 \item{registry}{Integer registry id}
