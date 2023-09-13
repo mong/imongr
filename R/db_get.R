@@ -484,7 +484,7 @@ WHERE
 
 #' @rdname db_get
 #' @export
-get_aggdata_delivery <- function(pool, ind_id) {
+get_aggdata_delivery <- function(pool, indicator) {
   # get current delivery ids in data
   query <- paste0("
 SELECT
@@ -493,7 +493,7 @@ SELECT
   MAX(delivery_id) as id
 FROM
   data
-WHERE ind_id IN ('", paste(ind_id, collapse = "', '"), "')
+WHERE ind_id IN ('", paste(indicator, collapse = "', '"), "')
 GROUP BY
   ind_id,
   context;")

@@ -35,7 +35,7 @@ insert_data_prod(
 
 insert_agg_data(pool, df)
 
-update_aggdata_delivery(pool, ind_id)
+update_aggdata_delivery(pool, indicator)
 
 agg_all_data(pool)
 
@@ -66,7 +66,7 @@ are regarded as final. Default value is NA.}
 accepted when data are published. Default value is NA that will normally
 apply for all uploads prior to publishing.}
 
-\item{ind_id}{List of indicators id}
+\item{indicator}{Character vector of indicator ids}
 
 \item{ind}{Data frame of relevant indicator data}
 

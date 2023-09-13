@@ -70,7 +70,7 @@ get_registry_user(pool, registry)
 
 get_user_registry(pool, user)
 
-get_aggdata_delivery(pool, ind_id)
+get_aggdata_delivery(pool, indicator)
 
 get_aggdata(pool, registry)
 }

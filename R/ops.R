@@ -3,7 +3,7 @@
 #' @param pool Database connection pool object
 #' @param df Data frame of relevant data
 #' @param ind Data frame of relevant indicator data
-#' @param ind_id List of indicators id
+#' @param indicator Character vector of indicator ids
 #' @param registry Integer registry id
 #' @param update Character string of format YYYY-MM-DD providing date until data
 #'   are regarded as updated. Default value is NA.
@@ -241,8 +241,8 @@ insert_agg_data <- function(pool, df) {
 
 #' @rdname ops
 #' @export
-update_aggdata_delivery <- function(pool, ind_id) {
-  delivery <- get_aggdata_delivery(pool, ind_id)
+update_aggdata_delivery <- function(pool, indicator) {
+  delivery <- get_aggdata_delivery(pool, indicator)
 
   pool::dbWriteTable(pool,
     name = "temp_agg_data", value = delivery,
