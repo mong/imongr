@@ -11,7 +11,12 @@ Authors@R: c(
            family = "Steindal",
            role = c("aut"),
            email = "arnfinn.steindal@gmail.com",
-           comment = c(ORCID = "0000-0002-4088-7860"))
+           comment = c(ORCID = "0000-0002-4088-7860")),
+    person(given = "Stein-Kato",
+           family = "Lindberg",
+           role = c("aut"),
+           email = "stein-kato.lindberg@helse-nord.no",
+           comment = c(ORCID = "0000-0001-6088-255X"))
            )
 Description: Primarily a tool to update data used by the mongts application.
 License: GPL-3
