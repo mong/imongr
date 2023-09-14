@@ -3,6 +3,7 @@
 #' @param pool Database connection pool object
 #' @param df Data frame of relevant data
 #' @param ind Data frame of relevant indicator data
+#' @param indicator Character vector of indicator ids
 #' @param registry Integer registry id
 #' @param update Character string of format YYYY-MM-DD providing date until data
 #'   are regarded as updated. Default value is NA.
@@ -231,14 +232,17 @@ insert_agg_data <- function(pool, df) {
     insert_table(pool, "agg_data", dat)
   }
   message("\nUpdating delivery timings")
-  update_aggdata_delivery(pool)
+  # Get all indicator ids from delivered registries,
+  # since all dates are removed from agg_data in the loop above.
+  all_ind_id <- dplyr::filter(ind_reg, .data$registry_id %in% reg)$id
+  update_aggdata_delivery(pool, all_ind_id)
   message("Done!")
 }
 
 #' @rdname ops
 #' @export
-update_aggdata_delivery <- function(pool) {
-  delivery <- get_aggdata_delivery(pool)
+update_aggdata_delivery <- function(pool, indicator) {
+  delivery <- get_aggdata_delivery(pool, indicator)
 
   pool::dbWriteTable(pool,
     name = "temp_agg_data", value = delivery,

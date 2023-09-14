@@ -35,7 +35,7 @@ insert_data_prod(
 
 insert_agg_data(pool, df)
 
-update_aggdata_delivery(pool)
+update_aggdata_delivery(pool, indicator)
 
 agg_all_data(pool)
 
@@ -65,6 +65,8 @@ are regarded as final. Default value is NA.}
 \item{terms_version}{Character string providing version stamp of of the terms
 accepted when data are published. Default value is NA that will normally
 apply for all uploads prior to publishing.}
+
+\item{indicator}{Character vector of indicator ids}
 
 \item{ind}{Data frame of relevant indicator data}
 
