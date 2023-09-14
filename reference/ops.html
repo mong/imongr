@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -53,21 +53,23 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">duplicate_delivery</span><span class="op">(</span><span class="va">pool</span>, <span class="va">df</span>, <span class="va">ind</span>, <span class="va">registry</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">retire_user_deliveries</span><span class="op">(</span><span class="va">pool</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">delete_indicator_data</span><span class="op">(</span><span class="va">pool</span>, <span class="va">df</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">delete_indicator_data</span><span class="op">(</span><span class="va">pool</span>, <span class="va">df</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">delete_agg_data</span><span class="op">(</span><span class="va">pool</span>, <span class="va">df</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">insert_data</span><span class="op">(</span><span class="va">pool</span>, <span class="va">df</span>, update <span class="op">=</span> <span class="cn">NA</span>, affirm <span class="op">=</span> <span class="cn">NA</span>, terms_version <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="fu">insert_data_verify</span><span class="op">(</span><span class="va">pool</span>, <span class="va">df</span>, update <span class="op">=</span> <span class="cn">NA</span>, affirm <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">insert_data_prod</span><span class="op">(</span></span>
+<span>  <span class="va">pool_verify</span>,</span>
+<span>  <span class="va">pool_prod</span>,</span>
+<span>  <span class="va">df</span>,</span>
+<span>  <span class="va">registry_delivery_ids</span>,</span>
+<span>  terms_version <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">insert_agg_data</span><span class="op">(</span><span class="va">pool</span>, <span class="va">df</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">update_aggdata_delivery</span><span class="op">(</span><span class="va">pool</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">update_aggdata_delivery_time</span><span class="op">(</span><span class="va">pool</span><span class="op">)</span></span>
+<span><span class="fu">update_aggdata_delivery</span><span class="op">(</span><span class="va">pool</span>, <span class="va">indicator</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">agg_all_data</span><span class="op">(</span><span class="va">pool</span><span class="op">)</span></span>
 <span></span>
@@ -94,14 +96,6 @@
 <dd><p>Data frame of relevant data</p></dd>
 
 
-<dt>ind</dt>
-<dd><p>Data frame of relevant indicator data</p></dd>
-
-
-<dt>registry</dt>
-<dd><p>Integer registry id</p></dd>
-
-
 <dt>update</dt>
 <dd><p>Character string of format YYYY-MM-DD providing date until data
 are regarded as updated. Default value is NA.</p></dd>
@@ -116,6 +110,18 @@ are regarded as final. Default value is NA.</p></dd>
 <dd><p>Character string providing version stamp of of the terms
 accepted when data are published. Default value is NA that will normally
 apply for all uploads prior to publishing.</p></dd>
+
+
+<dt>indicator</dt>
+<dd><p>Character vector of indicator ids</p></dd>
+
+
+<dt>ind</dt>
+<dd><p>Data frame of relevant indicator data</p></dd>
+
+
+<dt>registry</dt>
+<dd><p>Integer registry id</p></dd>
 
 </dl></div>
     <div id="value">
@@ -133,7 +139,7 @@ apply for all uploads prior to publishing.</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Are Edvardsen, Arnfinn Hykkerud Steindal.</p>
+  <p></p><p>Developed by Are Edvardsen, Arnfinn Hykkerud Steindal, Stein-Kato Lindberg.</p>
 </div>
 
 <div class="pkgdown">

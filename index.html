@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -90,8 +90,8 @@
 </h2>
 <p>The easiest way to develop <code>imongr</code> is to fire up the <code>docker-compose.yml</code> file:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker-compose</span> up</span></code></pre></div>
-<p>This file consist of six different services: - three mariadb databases (<code>prod</code> at port <code>3331</code>, <code>verify</code> at port <code>3332</code>, and <code>qa</code> at port <code>3333</code>) - Adminer, a tool for database management, at port <a href="http://localhost:8888/" class="external-link">8888</a> - RStudio at port <a href="http://localhost:8787/" class="external-link">8787</a> - The app, based on the <code>hnskde/imongr:latest</code> image, at port <a href="http://localhost:3838/" class="external-link">3838</a></p>
-<p>Open <a href="http://localhost:8787/" class="external-link">localhost:8787</a> with your favorite browser and login with <code>rstudio</code> and <code>password</code>. Go into the <code>imongr</code> folder, open <code>imongr.Rproj</code>, and press <strong>Yes</strong> to <em>Do you want to open the project ~/imongr?</em>. Start coding.</p>
+<p>This file consist of seven different services: - three mariadb databases (<code>prod</code> at port <code>3331</code>, <code>verify</code> at port <code>3332</code>, and <code>qa</code> at port <code>3333</code>) - Adminer, a tool for database management, at port <a href="http://localhost:8888/" class="external-link">8888</a> - RStudio at port <a href="http://localhost:8787/" class="external-link">8787</a> - Code-server (vscode) at port <a href="http://localhost:8080/" class="external-link">8080</a> - The app, based on the <code>hnskde/imongr:latest</code> image, at port <a href="http://localhost:3838/" class="external-link">3838</a></p>
+<p>Open <a href="http://localhost:8787/" class="external-link">localhost:8787</a> with your favorite browser and login with <code>rstudio</code> and <code>password</code>. Go into the <code>imongr</code> folder, open <code>imongr.Rproj</code>, and press <strong>Yes</strong> to <em>Do you want to open the project ~/imongr?</em>. Start coding. If you prefer <em>vscode</em>, you can open <a href="http://localhost:8080/" class="external-link">localhost:8080</a> instead.</p>
 <p>Populate the databases by using Adminer, either through <code>imongr</code> (<em>Administrative verktøy</em> - <em>Adminer</em>) or through <a href="http://localhost:8888/" class="external-link">port 8888</a> (the password is the same as username/db/repository name).</p>
 <p>The data can be visualized by using the <code>mongts</code> app:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">DB_PORT</span><span class="op">=</span>3331 <span class="co"># or 3332 for the verify database</span></span>
@@ -164,6 +164,7 @@
 <ul class="list-unstyled">
 <li>Are Edvardsen <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-5210-3656" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Arnfinn Hykkerud Steindal <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-4088-7860" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Stein-Kato Lindberg <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-6088-255X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
 
@@ -175,7 +176,7 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Are Edvardsen, Arnfinn Hykkerud Steindal.</p>
+<p>Developed by Are Edvardsen, Arnfinn Hykkerud Steindal, Stein-Kato Lindberg.</p>
 </div>
 
 <div class="pkgdown">

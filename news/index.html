@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -47,6 +47,28 @@
       <small>Source: <a href="https://github.com/mong/imongr/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.1.0" id="imongr-110">imongr 1.1.0<a class="anchor" aria-label="anchor" href="#imongr-110"></a></h2>
+<div class="section level3">
+<h3 id="app-changes-1-1-0">App changes<a class="anchor" aria-label="anchor" href="#app-changes-1-1-0"></a></h3>
+<ul><li>Removed quotation marks from downloaded csv files (<a href="https://github.com/mong/imongr/pull/291" class="external-link">#291</a>)</li>
+<li>Added the option of downloading the aggregated data table (<a href="https://github.com/mong/imongr/pull/295" class="external-link">#295</a>).</li>
+<li>The publish tab now refreshes the publish button when the tab is selected (<a href="https://github.com/mong/imongr/pull/290" class="external-link">#290</a>).</li>
+<li>The duplicate delivery check has been removed (<a href="https://github.com/mong/imongr/pull/229" class="external-link">#229</a>), and replaced with a warning if the same file has been delivered before (<a href="https://github.com/mong/imongr/pull/303" class="external-link">#303</a>).</li>
+<li>Fixed bug that caused the latest update date to be set incorrectly in the aggregated data (<a href="https://github.com/mong/imongr/pull/229" class="external-link">#229</a>).</li>
+<li>Selected register will be kept selected when user changes tab (<a href="https://github.com/mong/imongr/pull/309" class="external-link">#309</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="dev-stuff-1-1-0">Dev stuff<a class="anchor" aria-label="anchor" href="#dev-stuff-1-1-0"></a></h3>
+<ul><li>The test now use two additional test databases in order to simulate the data flow from the verify database to the prod database (<a href="https://github.com/mong/imongr/pull/229" class="external-link">#229</a>).</li>
+<li>Data is now transferred from verify to prod iteratively according to the delivery ID (<a href="https://github.com/mong/imongr/pull/229" class="external-link">#229</a>).</li>
+<li>A new table ‘publish’ has been added to the databases, and a column has been added to the ‘delivery’ table with a foregin key to the ‘publish’ table primary key. Each row in the ‘delivery’ table now corresponds to one upload, and each row in the ‘publish’ table to one publishing in both verify and prod (<a href="https://github.com/mong/imongr/pull/229" class="external-link">#229</a>).</li>
+<li>Speed up aggregation by only update delivery times on given registyr (<a href="https://github.com/mong/imongr/pull/322" class="external-link">#322</a>).</li>
+<li>Removed some unused functions (<a href="https://github.com/mong/imongr/pull/304" class="external-link">#304</a>).</li>
+<li>Added <code>code-server</code> (<code>vscode</code>) as separate dev container (<a href="https://github.com/mong/imongr/pull/305" class="external-link">#305</a>).</li>
+<li>Return failure on github actions if <code>lintr</code> returns warnings (<a href="https://github.com/mong/imongr/pull/312" class="external-link">#312</a>).</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.0.3" id="imongr-103">imongr 1.0.3<a class="anchor" aria-label="anchor" href="#imongr-103"></a></h2>
 <p>Update imongr-base-r from v1.5.3 to v1.6.0 (<a href="https://github.com/mong/imongr/pull/287" class="external-link">#287</a>)</p>
@@ -339,7 +361,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Are Edvardsen, Arnfinn Hykkerud Steindal.</p>
+  <p></p><p>Developed by Are Edvardsen, Arnfinn Hykkerud Steindal, Stein-Kato Lindberg.</p>
 </div>
 
 <div class="pkgdown">

@@ -24,7 +24,7 @@ are reflected by configuration."><meta property="og:image" content="/logo.png"><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -81,8 +81,6 @@ are reflected by configuration.</p>
 <span></span>
 <span><span class="fu">get_user_deliveries</span><span class="op">(</span><span class="va">pool</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">get_user_latest_delivery_id</span><span class="op">(</span><span class="va">pool</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu">get_registry_data</span><span class="op">(</span><span class="va">pool</span>, <span class="va">registry</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">get_indicators_registry</span><span class="op">(</span><span class="va">pool</span>, <span class="va">indicator</span><span class="op">)</span></span>
@@ -101,8 +99,6 @@ are reflected by configuration.</p>
 <span></span>
 <span><span class="fu">get_users</span><span class="op">(</span><span class="va">pool</span>, valid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">get_registry_latest_delivery</span><span class="op">(</span><span class="va">pool</span>, <span class="va">registry</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu">get_registry_indicators</span><span class="op">(</span><span class="va">pool</span>, <span class="va">registry</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">get_registry_medfield</span><span class="op">(</span><span class="va">pool</span>, <span class="va">registry</span><span class="op">)</span></span>
@@ -113,9 +109,9 @@ are reflected by configuration.</p>
 <span></span>
 <span><span class="fu">get_user_registry</span><span class="op">(</span><span class="va">pool</span>, <span class="va">user</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">get_aggdata_delivery</span><span class="op">(</span><span class="va">pool</span><span class="op">)</span></span>
+<span><span class="fu">get_aggdata_delivery</span><span class="op">(</span><span class="va">pool</span>, <span class="va">indicator</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">get_aggdata_delivery_time</span><span class="op">(</span><span class="va">pool</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">get_aggdata</span><span class="op">(</span><span class="va">pool</span>, <span class="va">registry</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -167,13 +163,6 @@ Defaults to NA in which case all data is returned</p></dd>
 
 <p>Data object from database</p>
     </div>
-    <div id="details">
-    <h2>Details</h2>
-    <p><code>get_aggdata_delivery_time()</code> provides a data.frame with the variables
-<em>id</em> and <em>delivery_time</em> where the first one corresponds to the id
-field in the agg_data table. The latter is a db TIMESTAMP represented as a
-POSIX(c)t object in R</p>
-    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -183,7 +172,7 @@ POSIX(c)t object in R</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Are Edvardsen, Arnfinn Hykkerud Steindal.</p>
+  <p></p><p>Developed by Are Edvardsen, Arnfinn Hykkerud Steindal, Stein-Kato Lindberg.</p>
 </div>
 
 <div class="pkgdown">
