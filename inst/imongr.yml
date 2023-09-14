@@ -14,8 +14,8 @@ app_text:
     help: >
       <br>
       Om du trenger hjelp til bruk av denne programvaren ta kontakt med SKDE på
-      <a href="mailto:mong@skde.no">e-post</a>, eventuelt direkte e-post til  
-      <a href="mailto:arnfinn.hykkerud.steindal@helse-nord.no">Arnfinn</a> eller 
+      <a href="mailto:mong@skde.no">e-post</a>, eventuelt direkte e-post til
+      <a href="mailto:arnfinn.hykkerud.steindal@helse-nord.no">Arnfinn</a> eller
       <a href="mailto:stein-kato.lindberg@helse-nord.no">Stein-Kato</a><br>
       <br>
     lisence: >
@@ -90,8 +90,6 @@ db:
       - year
       - denominator
       - var
-      - level
-      - level_direction
       - dg
     data:
       insert:
@@ -216,8 +214,8 @@ profile:
     Når du er ferdig kan du logge ut ved å bruke lenken oppe i høyre hjørne. Om
     du har spørsmål eller plages kan du alltids ta kontakt med
     <a href="https://helse-nord.no/skde">SKDE</a> på <a href="mailto:mong@skde.no">e-post</a>,
-    eventuelt direkte e-post til  
-    <a href="mailto:arnfinn.hykkerud.steindal@helse-nord.no">Arnfinn</a> eller 
+    eventuelt direkte e-post til
+    <a href="mailto:arnfinn.hykkerud.steindal@helse-nord.no">Arnfinn</a> eller
     <a href="mailto:stein-kato.lindberg@helse-nord.no">Stein-Kato</a>. Om du ser eller
     mistenker feil og mangler i denne programvaren setter vi stor pris på om du
     sier ifra, enten ved bruk av kontaktinformasjonen over eller direkte

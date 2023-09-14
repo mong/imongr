@@ -193,8 +193,6 @@ CREATE TABLE IF NOT EXISTS `agg_data` (
   `year` smallint(5) unsigned NOT NULL,
   `denominator` int(10) unsigned NOT NULL,
   `var` double(9,5) unsigned NOT NULL,
-  `level` varchar(15) COLLATE utf8_danish_ci NOT NULL,
-  `level_direction` TINYINT,
   `dg` double(6,5) unsigned DEFAULT NULL,
   `delivery_time` timestamp NULL DEFAULT NULL,
   `delivery_latest_update` DATE DEFAULT NULL,
