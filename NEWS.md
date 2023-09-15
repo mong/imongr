@@ -1,18 +1,25 @@
+# Unpublished
+
 # imongr 1.1.0
 
 ## App changes
 
 * Removed quotation marks from downloaded csv files ([#291](https://github.com/mong/imongr/pull/291))
-* Added the option of downloading the aggregated data table
-* The publish tab now refreshes the publish button when the tab is selected
-* The duplicate delivery check has been removed
-* Fixed bug that caused the latest update date to be set incorrectly in the aggregated data
+* Added the option of downloading the aggregated data table ([#295](https://github.com/mong/imongr/pull/295)).
+* The publish tab now refreshes the publish button when the tab is selected ([#290](https://github.com/mong/imongr/pull/290)).
+* The duplicate delivery check has been removed ([#229](https://github.com/mong/imongr/pull/229)), and replaced with a warning if the same file has been delivered before ([#303](https://github.com/mong/imongr/pull/303)).
+* Fixed bug that caused the latest update date to be set incorrectly in the aggregated data ([#229](https://github.com/mong/imongr/pull/229)).
+* Selected register will be kept selected when user changes tab ([#309](https://github.com/mong/imongr/pull/309)).
 
 ## Dev stuff
 
-* The test now use two additional test databases in order to simulate the data flow from the verify database to the prod database
-* Data is now transferred from verify to prod iteratively according to the delivery ID
-* A new table 'publish' has been added to the databases, and a column has been added to the 'delivery' table with a foregin key to the 'publish' table primary key. Each row in the 'delivery' table now corresponds to one upload, and each row in the 'publish' table to one publishing in both verify and prod
+* The test now use two additional test databases in order to simulate the data flow from the verify database to the prod database ([#229](https://github.com/mong/imongr/pull/229)).
+* Data is now transferred from verify to prod iteratively according to the delivery ID ([#229](https://github.com/mong/imongr/pull/229)).
+* A new table 'publish' has been added to the databases, and a column has been added to the 'delivery' table with a foregin key to the 'publish' table primary key. Each row in the 'delivery' table now corresponds to one upload, and each row in the 'publish' table to one publishing in both verify and prod ([#229](https://github.com/mong/imongr/pull/229)).
+* Speed up aggregation by only update delivery times on given registyr ([#322](https://github.com/mong/imongr/pull/322)).
+* Removed some unused functions  ([#304](https://github.com/mong/imongr/pull/304)).
+* Added `code-server` (`vscode`) as separate dev container  ([#305](https://github.com/mong/imongr/pull/305)).
+* Return failure on github actions if `lintr` returns warnings ([#312](https://github.com/mong/imongr/pull/312)).
 
 # imongr 1.0.3
 
