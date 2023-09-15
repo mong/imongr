@@ -153,7 +153,7 @@ warning_report_ui <- function(pool, df, upload_file, registry) {
 
       paste(
         "<font color=\"#b5a633\">",
-        "En identisk fil har vært lastet opp tidligere:<br/>",
+        "En identisk fil har blitt lastet opp tidligere:<br/>",
         msg_dates, "</font>"
       )
     } else {

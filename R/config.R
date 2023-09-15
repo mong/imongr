@@ -49,7 +49,7 @@ get_config <- function(dir = ".") {
 #' @rdname config
 #' @export
 check_config <- function(config) {
-  if ((class(config) != "list") || (!("db" %in% attributes(config)$names))) {
+  if (!inherits(config, "list") || (!("db" %in% attributes(config)$names))) {
     stop("Complete the config file: _imongr.yml")
   }
   invisible()

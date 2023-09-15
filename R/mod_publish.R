@@ -3,7 +3,8 @@
 #' @param id Character string module namespace
 #' @param pool A database pool object
 #' @param pool_verify A database pool object
-#' @param parent_input A Shiny input object
+#' @param tab_tracker String defining tab
+#' @param registry_tracker Integer defining registry id
 #'
 #' @return Shiny objects for the imongr app
 #'

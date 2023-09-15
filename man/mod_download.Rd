@@ -16,6 +16,8 @@ download_app(pool, pool_verify)
 \arguments{
 \item{id}{Character string module namespace}
 
+\item{registry_tracker}{Integer defining registry id}
+
 \item{pool}{A database pool object}
 
 \item{pool_verify}{A database pool object}
