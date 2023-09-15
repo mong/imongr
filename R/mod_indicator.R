@@ -2,6 +2,7 @@
 #'
 #' @param id Character string module namespace
 #' @param pool A database pool object
+#' @param registry_tracker Integer defining registry id
 #'
 #' @return Shiny objects for the imongr app
 #'

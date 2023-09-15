@@ -16,11 +16,13 @@ publish_app(pool, pool_verify)
 \arguments{
 \item{id}{Character string module namespace}
 
+\item{tab_tracker}{String defining tab}
+
+\item{registry_tracker}{Integer defining registry id}
+
 \item{pool}{A database pool object}
 
 \item{pool_verify}{A database pool object}
-
-\item{parent_input}{A Shiny input object}
 }
 \value{
 Shiny objects for the imongr app

@@ -1,10 +1,11 @@
 #' Functions for data operations in imongr
 #'
 #' @param pool Database connection pool object
+#' @param pool_prod A database pool object
+#' @param pool_verify A database pool object
 #' @param df Data frame of relevant data
-#' @param ind Data frame of relevant indicator data
 #' @param indicator Character vector of indicator ids
-#' @param registry Integer registry id
+#' @param registry_delivery_ids Integer delivery ids
 #' @param update Character string of format YYYY-MM-DD providing date until data
 #'   are regarded as updated. Default value is NA.
 #' @param affirm Character string of format YYYY-MM-DD providing date until data

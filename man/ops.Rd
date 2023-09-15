@@ -62,15 +62,17 @@ are regarded as updated. Default value is NA.}
 \item{affirm}{Character string of format YYYY-MM-DD providing date until data
 are regarded as final. Default value is NA.}
 
+\item{pool_verify}{A database pool object}
+
+\item{pool_prod}{A database pool object}
+
+\item{registry_delivery_ids}{Integer delivery ids}
+
 \item{terms_version}{Character string providing version stamp of of the terms
 accepted when data are published. Default value is NA that will normally
 apply for all uploads prior to publishing.}
 
 \item{indicator}{Character vector of indicator ids}
-
-\item{ind}{Data frame of relevant indicator data}
-
-\item{registry}{Integer registry id}
 }
 \value{
 Relevant values from the current environment and database
