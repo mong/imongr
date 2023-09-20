@@ -318,7 +318,6 @@ test_that("publish module has output...", {
 
     publish_server,
     args = list(pool = pool, pool_verify = pool, tab_tracker = {}),
-
     {
       session$setInputs(
         publish_registry = 10
