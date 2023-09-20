@@ -2,8 +2,6 @@
 ##### Tester for publisering til prod #####
 ###########################################
 
-##### Copied from test-mod.R and test-upload.R #####
-
 create_config()
 
 conf <- get_config()
@@ -279,7 +277,7 @@ test_that("publishing is working", {
 # In testdb_prod
 # Dick uploads a delivery to another registry, then
 # delivery 2 and delivery 3. Harry publishes
-# delivery 2 and delivery 3. The delivery to the different regustry
+# delivery 2 and delivery 3. The delivery to the different registry
 # remains unpublished
 
 Sys.setenv("SHINYPROXY_USERNAME" = "Dick")
@@ -322,7 +320,7 @@ test_that("deliveries are correctly transferred to prod", {
 
   dat_publish <- get_registry_data(pool_verify, 8)
 
-  insert_data_prod( # Should iterate over deliveries
+  insert_data_prod(
     pool_verify = pool_verify,
     pool_prod = pool_prod,
     df = dat_publish,
@@ -406,8 +404,79 @@ test_that("deliveries are correctly transferred to prod", {
   expect_equal(as.character(agg_nakke1$delivery_latest_update[1]), "2023-08-23")
 })
 
-# clean up
-## drop tables (in case tests are re-run on the same instance)
+############################################################
+#####                  Test 4                          #####
+#####         Mixed indicators and years               #####
+############################################################
+
+delivery5 <- data.frame(
+  context = rep("caregiver", 4),
+  year = c(2022, 2023, 2022, 2023),
+  orgnr = rep(997005562, 4),
+  ind_id = c("nakke1", "nakke1", "nakke2", "nakke2"),
+  var = c(1, 2, 1, 2),
+  denominator = c(3, 3, 3, 3)
+)
+
+delivery6 <- data.frame(
+  context = rep("caregiver", 2),
+  year = c(2022, 2023),
+  orgnr = rep(997005562, 2),
+  ind_id = c("nakke1", "nakke2"),
+  var = c(1, 2),
+  denominator = c(3, 3)
+)
+
+insert_data_verify(
+  pool = pool_verify,
+  df = delivery5,
+  update = "2023-08-22",
+  affirm = "2023-01-01"
+)
+insert_agg_data(pool_verify, delivery5)
+
+insert_data_verify(
+  pool = pool_verify,
+  df = delivery6,
+  update = "2023-08-23",
+  affirm = "2023-01-01"
+)
+insert_agg_data(pool_verify, delivery6)
+
+dat_publish <- get_registry_data(pool_verify, 8)
+
+insert_data_prod(
+  pool_verify = pool_verify,
+  pool_prod = pool_prod,
+  df = dat_publish,
+  terms_version = version_info(newline = "")
+)
+
+insert_agg_data(pool_prod, dat_publish)
+
+dat_verify <- pool::dbGetQuery(pool_verify, "SELECT * FROM data WHERE ind_id REGEXP 'nakke'")
+dat_prod <- pool::dbGetQuery(pool_prod, "SELECT * FROM data WHERE ind_id REGEXP 'nakke'")
+
+# Check that the previous data has been deleted
+expect_equal(nrow(dat_verify), 4)
+expect_equal(nrow(dat_prod), 4)
+
+# Check that the deliery IDs are correct
+expect_equal(dat_verify$delivery_id[dat_verify$ind_id == "nakke1" & dat_verify$year == 2022], 7)
+expect_equal(dat_verify$delivery_id[dat_verify$ind_id == "nakke1" & dat_verify$year == 2023], 6)
+expect_equal(dat_verify$delivery_id[dat_verify$ind_id == "nakke2" & dat_verify$year == 2022], 6)
+expect_equal(dat_verify$delivery_id[dat_verify$ind_id == "nakke2" & dat_verify$year == 2023], 7)
+
+expect_equal(dat_prod$delivery_id[dat_prod$ind_id == "nakke1" & dat_verify$year == 2022], 6)
+expect_equal(dat_prod$delivery_id[dat_prod$ind_id == "nakke1" & dat_verify$year == 2023], 5)
+expect_equal(dat_prod$delivery_id[dat_prod$ind_id == "nakke2" & dat_verify$year == 2022], 5)
+expect_equal(dat_prod$delivery_id[dat_prod$ind_id == "nakke2" & dat_verify$year == 2023], 6)
+
+####################
+##### clean up #####
+####################
+
+# Drop tables (in case tests are re-run on the same instance)
 
 if (is.null(check_db(is_test_that = FALSE))) {
   conf <- get_config()
@@ -448,5 +517,3 @@ Sys.setenv(IMONGR_DB_NAME = env_name)
 Sys.setenv(IMONGR_DB_HOST = env_host)
 Sys.setenv(SHINYPROXY_USERNAME = env_user_name)
 Sys.setenv(SHINYPROXY_USERGROUPS = env_user_groups)
-
-##### End copy #####
