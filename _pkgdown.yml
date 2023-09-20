@@ -163,6 +163,7 @@ reference:
     - user_registry
     - medfield
     - registry_medfield
+    - publish
 
   - title: To be added
     desc: >

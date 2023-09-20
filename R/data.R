@@ -205,3 +205,16 @@
 #'   \item{full_name}{}
 #' }
 "medfield"
+
+#' publish example data for qmongr data store
+#'
+#' Meta data to allow interactions with qmong data. Only used for testing in
+#' this package. Please refer to the overall data model (ref)
+#' @format Data frame with made up values
+#' \describe{
+#'   \item{md5_checksum}{}
+#'   \item{terms_version}{}
+#'   \item{user_id}{}
+#'   \item{registry_id}{}
+#' }
+"publish"

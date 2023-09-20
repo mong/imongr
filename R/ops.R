@@ -1,9 +1,11 @@
 #' Functions for data operations in imongr
 #'
 #' @param pool Database connection pool object
+#' @param pool_prod A database pool object
+#' @param pool_verify A database pool object
 #' @param df Data frame of relevant data
-#' @param ind Data frame of relevant indicator data
-#' @param registry Integer registry id
+#' @param indicator Character vector of indicator ids
+#' @param registry_delivery_ids Integer delivery ids
 #' @param update Character string of format YYYY-MM-DD providing date until data
 #'   are regarded as updated. Default value is NA.
 #' @param affirm Character string of format YYYY-MM-DD providing date until data
@@ -193,7 +195,7 @@ insert_agg_data <- function(pool, df) {
   ## the aggregate
   orgnr_name_map <- get_all_orgnr(pool, include_short_name = TRUE) %>%
     dplyr::select("orgnr", "short_name") %>%
-    dplyr::rename(unit_name = .data$short_name)
+    dplyr::rename(unit_name = "short_name")
 
 
   # make sure we have unit_levels
@@ -235,14 +237,17 @@ insert_agg_data <- function(pool, df) {
     insert_table(pool, "agg_data", dat)
   }
   message("\nUpdating delivery timings")
-  update_aggdata_delivery(pool)
+  # Get all indicator ids from delivered registries,
+  # since all dates are removed from agg_data in the loop above.
+  all_ind_id <- dplyr::filter(ind_reg, .data$registry_id %in% reg)$id
+  update_aggdata_delivery(pool, all_ind_id)
   message("Done!")
 }
 
 #' @rdname ops
 #' @export
-update_aggdata_delivery <- function(pool) {
-  delivery <- get_aggdata_delivery(pool)
+update_aggdata_delivery <- function(pool, indicator) {
+  delivery <- get_aggdata_delivery(pool, indicator)
 
   pool::dbWriteTable(pool,
     name = "temp_agg_data", value = delivery,

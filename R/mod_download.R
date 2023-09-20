@@ -3,6 +3,7 @@
 #' @param id Character string module namespace
 #' @param pool A database pool object
 #' @param pool_verify A database pool object
+#' @param registry_tracker Integer defining registry id
 #'
 #' @return Shiny objects for the imongr app
 #'
@@ -53,11 +54,18 @@ download_ui <- function(id) {
 
 #' @rdname mod_download
 #' @export
-download_server <- function(id, pool, pool_verify) {
+download_server <- function(id, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     conf <- get_config()
+
+    rv_return <- shiny::reactiveValues()
+
+    shiny::observeEvent(input$download_registry, {
+      rv_return$registry_id <- input$download_registry
+    })
+
     pool_download <- shiny::reactive({
       if (is.null(input$download_context)) {
         pool_verify
@@ -88,11 +96,11 @@ download_server <- function(id, pool, pool_verify) {
 
     output$select_download_registry <- shiny::renderUI({
       select_registry_ui(pool_download(),
-        conf,
-        input_id = ns("download_registry"),
-        context = input$download_context,
-        show_context = FALSE
-      )
+                         conf,
+                         input_id = ns("download_registry"),
+                         context = input$download_context,
+                         show_context = FALSE,
+                         current_reg = registry_tracker$current_registry)
     })
 
     output$select_db_table <- shiny::renderUI({
@@ -136,6 +144,8 @@ download_server <- function(id, pool, pool_verify) {
     output$ui_db_table <- shiny::renderUI(
       DT::dataTableOutput(ns("db_table"))
     )
+
+    return(rv_return)
   })
 }
 

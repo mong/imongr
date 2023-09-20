@@ -291,7 +291,9 @@ test_that("users registries can be updated", {
 
 test_that("aggdata delivery timings can be provided", {
   check_db()
-  aggdata_delivery <- get_aggdata_delivery(pool)
+  aggdata_delivery <- get_aggdata_delivery(pool, c("norgast_andel_avdoede_bykspytt_tolv",
+                                                   "norgast_saarruptur"))
+  expect_equal((length(aggdata_delivery$id)), 243)
   expect_equal(class(aggdata_delivery), "data.frame")
   expect_true(class(aggdata_delivery$id) %in% c("integer"))
   expect_true(

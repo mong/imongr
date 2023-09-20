@@ -9,14 +9,16 @@
 \usage{
 publish_ui(id)
 
-publish_server(id, parent_input, pool, pool_verify)
+publish_server(id, tab_tracker, registry_tracker, pool, pool_verify)
 
 publish_app(pool, pool_verify)
 }
 \arguments{
 \item{id}{Character string module namespace}
 
-\item{parent_input}{A Shiny input object}
+\item{tab_tracker}{String defining tab}
+
+\item{registry_tracker}{Integer defining registry id}
 
 \item{pool}{A database pool object}
 

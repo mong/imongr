@@ -2,6 +2,7 @@
 #'
 #' @param id Character string module namespace
 #' @param pool A database pool object
+#' @param registry_tracker Integer defining registry id
 #'
 #' @return Shiny objects for the imongr app
 #'
@@ -46,14 +47,13 @@ indicator_ui <- function(id) {
 
 #' @rdname mod_indicator
 #' @export
-indicator_server <- function(id, pool) {
+indicator_server <- function(id, registry_tracker, pool) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     conf <- get_config()
 
     rv <- shiny::reactiveValues(
-      indicator_reg = character(),
       level_logi = "st\u00f8rre eller lik:",
       level_green_min = 0,
       level_green_max = 1,
@@ -62,6 +62,8 @@ indicator_server <- function(id, pool) {
       short_oversize = FALSE,
       long_oversize = FALSE
     )
+
+    rv_return <- shiny::reactiveValues()
 
     level_limits <- shiny::reactive({
       if (rv$ind_data$level_direction == 1) {
@@ -108,6 +110,10 @@ indicator_server <- function(id, pool) {
         shinyjs::html("message", "")
         return(TRUE)
       }
+    })
+
+    shiny::observeEvent(input$indicator_registry, {
+      rv_return$registry_id <- input$indicator_registry
     })
 
     shiny::observeEvent(input$indicator, {
@@ -189,8 +195,9 @@ indicator_server <- function(id, pool) {
     output$select_indicator_registry <- shiny::renderUI({
       select_registry_ui(pool, conf,
         input_id = ns("indicator_registry"),
-        context = "verify", current_reg = rv$indicator_reg,
-        show_context = FALSE
+        context = "verify",
+        show_context = FALSE,
+        current_reg = registry_tracker$current_registry
       )
     })
 
@@ -397,6 +404,8 @@ indicator_server <- function(id, pool) {
         }
       }
     })
+
+    return(rv_return)
   })
 }
 

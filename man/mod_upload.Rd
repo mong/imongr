@@ -9,12 +9,16 @@
 \usage{
 upload_ui(id)
 
-upload_server(id, pool_verify)
+upload_server(id, registry_tracker, pool_verify)
 
 upload_app(pool)
 }
 \arguments{
 \item{id}{Character string module namespace}
+
+\item{registry_tracker}{Integer defining registry id}
+
+\item{pool_verify}{A database pool object}
 
 \item{pool}{A database pool object}
 }
