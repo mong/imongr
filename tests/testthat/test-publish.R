@@ -427,50 +427,54 @@ delivery6 <- data.frame(
   denominator = c(3, 3)
 )
 
-insert_data_verify(
-  pool = pool_verify,
-  df = delivery5,
-  update = "2023-08-22",
-  affirm = "2023-01-01"
-)
-insert_agg_data(pool_verify, delivery5)
+test_that("deliveries are correctly transferred to prod", {
+  check_db()
 
-insert_data_verify(
-  pool = pool_verify,
-  df = delivery6,
-  update = "2023-08-23",
-  affirm = "2023-01-01"
-)
-insert_agg_data(pool_verify, delivery6)
+  insert_data_verify(
+    pool = pool_verify,
+    df = delivery5,
+    update = "2023-08-22",
+    affirm = "2023-01-01"
+  )
+  insert_agg_data(pool_verify, delivery5)
 
-dat_publish <- get_registry_data(pool_verify, 8)
+  insert_data_verify(
+    pool = pool_verify,
+    df = delivery6,
+    update = "2023-08-23",
+    affirm = "2023-01-01"
+  )
+  insert_agg_data(pool_verify, delivery6)
 
-insert_data_prod(
-  pool_verify = pool_verify,
-  pool_prod = pool_prod,
-  df = dat_publish,
-  terms_version = version_info(newline = "")
-)
+  dat_publish <- get_registry_data(pool_verify, 8)
 
-insert_agg_data(pool_prod, dat_publish)
+  insert_data_prod(
+    pool_verify = pool_verify,
+    pool_prod = pool_prod,
+    df = dat_publish,
+    terms_version = version_info(newline = "")
+  )
 
-dat_verify <- pool::dbGetQuery(pool_verify, "SELECT * FROM data WHERE ind_id REGEXP 'nakke'")
-dat_prod <- pool::dbGetQuery(pool_prod, "SELECT * FROM data WHERE ind_id REGEXP 'nakke'")
+  insert_agg_data(pool_prod, dat_publish)
 
-# Check that the previous data has been deleted
-expect_equal(nrow(dat_verify), 4)
-expect_equal(nrow(dat_prod), 4)
+  dat_verify <- pool::dbGetQuery(pool_verify, "SELECT * FROM data WHERE ind_id REGEXP 'nakke'")
+  dat_prod <- pool::dbGetQuery(pool_prod, "SELECT * FROM data WHERE ind_id REGEXP 'nakke'")
 
-# Check that the deliery IDs are correct
-expect_equal(dat_verify$delivery_id[dat_verify$ind_id == "nakke1" & dat_verify$year == 2022], 7)
-expect_equal(dat_verify$delivery_id[dat_verify$ind_id == "nakke1" & dat_verify$year == 2023], 6)
-expect_equal(dat_verify$delivery_id[dat_verify$ind_id == "nakke2" & dat_verify$year == 2022], 6)
-expect_equal(dat_verify$delivery_id[dat_verify$ind_id == "nakke2" & dat_verify$year == 2023], 7)
+  # Check that the previous data has been deleted
+  expect_equal(nrow(dat_verify), 4)
+  expect_equal(nrow(dat_prod), 4)
 
-expect_equal(dat_prod$delivery_id[dat_prod$ind_id == "nakke1" & dat_verify$year == 2022], 6)
-expect_equal(dat_prod$delivery_id[dat_prod$ind_id == "nakke1" & dat_verify$year == 2023], 5)
-expect_equal(dat_prod$delivery_id[dat_prod$ind_id == "nakke2" & dat_verify$year == 2022], 5)
-expect_equal(dat_prod$delivery_id[dat_prod$ind_id == "nakke2" & dat_verify$year == 2023], 6)
+  # Check that the delivery IDs are correct
+  expect_equal(dat_verify$delivery_id[dat_verify$ind_id == "nakke1" & dat_verify$year == 2022], 7)
+  expect_equal(dat_verify$delivery_id[dat_verify$ind_id == "nakke1" & dat_verify$year == 2023], 6)
+  expect_equal(dat_verify$delivery_id[dat_verify$ind_id == "nakke2" & dat_verify$year == 2022], 6)
+  expect_equal(dat_verify$delivery_id[dat_verify$ind_id == "nakke2" & dat_verify$year == 2023], 7)
+
+  expect_equal(dat_prod$delivery_id[dat_prod$ind_id == "nakke1" & dat_verify$year == 2022], 6)
+  expect_equal(dat_prod$delivery_id[dat_prod$ind_id == "nakke1" & dat_verify$year == 2023], 5)
+  expect_equal(dat_prod$delivery_id[dat_prod$ind_id == "nakke2" & dat_verify$year == 2022], 5)
+  expect_equal(dat_prod$delivery_id[dat_prod$ind_id == "nakke2" & dat_verify$year == 2023], 6)
+})
 
 ####################
 ##### clean up #####
