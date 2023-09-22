@@ -360,6 +360,7 @@ test_that("deliveries are correctly transferred to prod", {
   expect_true(is.null(dat_delivery_verify$latest_delivery_update[3]))
   expect_equal(dat_delivery_verify$published[3], 0)
 
+  expect_equal(1, 2)
 
   ##################################################
   ##### Check that the dates are set correctly #####
