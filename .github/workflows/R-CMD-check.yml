@@ -45,6 +45,7 @@ jobs:
           if [[ ${{ runner.os }} == Linux ]]; then
             echo "GITHUB_ACTIONS_RUN_DB_UNIT_TESTS=true" >> $GITHUB_ENV
             echo "IMONGR_DB_HOST=localhost" >> $GITHUB_ENV
+            echo "IMONGR_DB_NAME=imongr" >> $GITHUB_ENV
             echo "IMONGR_DB_USER=root" >> $GITHUB_ENV
             echo "IMONGR_DB_PASS=root" >> $GITHUB_ENV
           else
