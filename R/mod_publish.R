@@ -30,7 +30,9 @@ publish_ui <- function(id) {
           type = 7,
           proxy.height = 80
         ),
-        shiny::uiOutput(ns("publish"))
+        shiny::uiOutput(ns("publish")),
+#        shiny::p(shiny::em("Function message:")),
+        shiny::verbatimTextOutput(ns("funMessage"))
       ),
       shiny::mainPanel(
         shiny::htmlOutput(ns("error_report_publish")),
@@ -239,16 +241,21 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
 
     # Publish new data
     shiny::observeEvent(input$publish, {
+      shinyjs::html("funMessage", "Oppdaterer tekst")
       update_ind_text(pool, publish_ind())
+      shinyjs::html("funMessage", "Oppdaterer indikatorverdier")
       update_ind_val(pool, publish_ind())
+      shinyjs::html("funMessage", "Overfører data")
       insert_data_prod(
         pool_verify = pool_verify,
         pool_prod = pool,
         df = publish_data(),
         terms_version = version_info(newline = "")
       )
+      shinyjs::html("funMessage", "Aggregerer data")
       insert_agg_data(pool, publish_data())
       rv$inv_publish <- rv$inv_publish + 1
+      shinyjs::html("funMessage", "Ferdig")
       shinyalert::shinyalert(
         conf$publish$reciept$title, conf$publish$reciept$body,
         type = "success",
