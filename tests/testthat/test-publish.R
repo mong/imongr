@@ -261,7 +261,7 @@ test_that("publishing is working", {
   publish <- pool::dbGetQuery(pool_prod, "SELECT * FROM publish")
   delivery <- pool::dbGetQuery(pool_prod, "SELECT * FROM delivery")
 
-  expect_equal(agg_data_verify[, c(-13, -16)], agg_data_prod[, c(-13, -16)])
+  expect_equal(agg_data_verify[, c(-11, -14)], agg_data_prod[, c(-11, -14)])
   expect_equal(nrow(publish), 2)
 
   latest_delivery <- delivery[delivery$id == max(delivery$id), ]
