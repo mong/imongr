@@ -186,12 +186,12 @@ agg_dg <- function(aggs, ind) {
     at <- dplyr::filter(aggs, .data$year >= years[i]) %>%
       dplyr::select(-c("dg"))
     dt <- dplyr::filter(dg_data, .data$year == years[i]) %>%
-      dplyr::select("ind_id", "orgnr", "var", "context") %>%
+      dplyr::select("ind_id", "unit_name", "var", "context") %>%
       dplyr::rename(dg_id = "ind_id", dg = "var")
     # join current year dg into data from current year and newer. Then, move on
     # with only those vars needed for updating aggs
     at <- at %>%
-      dplyr::left_join(dt, by = c("dg_id", "orgnr", "context")) %>%
+      dplyr::left_join(dt, by = c("dg_id", "unit_name", "context")) %>%
       dplyr::select(
         "ind_id", "dg_id", "unit_level",
         "unit_name", "orgnr", "year",
