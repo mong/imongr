@@ -65,19 +65,12 @@ If the environment variables have been changed an you want to change them back t
 readRenviron("~/.Renviron")
 ```
 
-If your pool have not been closed properly:
+If your pool have not been closed properly, for instance if you have not cleaned up after testing with database:
 
-```r
-... # TBA
-```
-
-If you have not cleaned up after testing with database:
-
-```r
-readRenviron("~/.Renviron") # get back to default env var
-... # TBA
-```
-
+1. Go into Adminer on port [8888](http://localhost:8888/?server=db&username=imongr), and click on `db` in the breadcrumb.
+2. Click *Refresh* next to *Database* in the database table and delete all unwanted databases.
+3. Look at *Process list* and kill unwanted processes.
+4. Go into *RStudio* on port [8787](http://localhost:8787/) and restart `R` (Ctrl-Shift-F10). 
 
 ## Ethics
 Please note that the 'imongr' project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
