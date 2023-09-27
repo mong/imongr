@@ -497,6 +497,7 @@ FROM
 WHERE ind_id IN ('", paste(indicator, collapse = "', '"), "')
 GROUP BY
   ind_id,
+  delivery_id,
   context,
   year;")
 
