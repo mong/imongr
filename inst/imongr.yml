@@ -386,9 +386,9 @@ indicator:
   - median
   - dg_andel
   - dg_beregnet_andel
-  formats:
-  - prosent
-  - siffer
+  formats: 
+  - '%'
+  - f
   level_inconsistent_message: >
       <i style='color:red;'>
       Verdier for m\u00e5loppn\u00e5else er ikke konsistente!

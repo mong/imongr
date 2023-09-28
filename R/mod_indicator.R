@@ -142,13 +142,11 @@ indicator_server <- function(id, registry_tracker, pool) {
     shiny::observeEvent(rv$ind_data, {
       rv$sformat <- rv$ind_data %>%
         dplyr::mutate(
-          format = dplyr::case_when(
-            grepl("f", sformat) ~ "siffer",
-            grepl("%", sformat) ~ "prosent"
-          ),
+          format = stringr::str_sub(.data$sformat, -1, -1),
           digits = as.numeric(stringr::str_extract(.data$sformat, "[:digit:]+"))
         ) %>%
         dplyr::select("format", "digits")
+        print(rv$sformat)
     })
 
     shiny::observeEvent(input$level_direction, {
@@ -167,13 +165,7 @@ indicator_server <- function(id, registry_tracker, pool) {
       rv$ind_data$level_yellow <- input$level_yellow
       rv$ind_data$min_denominator <- input$min_denominator
       rv$ind_data$type <- input$type
-      rv$ind_data$sformat <- paste0(
-        ",.",
-        input$digits,
-        dplyr::case_when(
-                         input$format == "prosent" ~ "%",
-                         input$format == "siffer" ~ "f")
-      )
+      rv$ind_data$sformat <- paste0(",.", input$digits, input$format)
       update_ind_val(pool, rv$ind_data)
       rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
       rv$ind_data <- rv$ind_data %>%
