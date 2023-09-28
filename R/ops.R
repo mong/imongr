@@ -382,7 +382,8 @@ SET
   level_green = ?,
   level_yellow = ?,
   min_denominator = ?,
-  type = ?
+  type = ?,
+  sformat = ?
 WHERE
   id = ?;")
 
@@ -393,6 +394,7 @@ WHERE
     df$level_yellow,
     df$min_denominator,
     df$type,
+    df$sformat,
     df$id
   )
 

@@ -134,14 +134,21 @@ indicator_server <- function(id, registry_tracker, pool) {
           long_description = dplyr::case_when(
             is.na(long_description) ~ "",
             TRUE ~ long_description
-          ),
+          )
+        )
+      level_limits()
+    })
+
+    shiny::observeEvent(rv$ind_data, {
+      rv$sformat <- rv$ind_data %>%
+        dplyr::mutate(
           format = dplyr::case_when(
             grepl("f", sformat) ~ "siffer",
             grepl("%", sformat) ~ "prosent"
           ),
           digits = as.numeric(stringr::str_extract(.data$sformat, "[:digit:]+"))
-        )
-      level_limits()
+        ) %>%
+        dplyr::select("format", "digits")
     })
 
     shiny::observeEvent(input$level_direction, {
@@ -160,6 +167,15 @@ indicator_server <- function(id, registry_tracker, pool) {
       rv$ind_data$level_yellow <- input$level_yellow
       rv$ind_data$min_denominator <- input$min_denominator
       rv$ind_data$type <- input$type
+      browser()
+      rv$ind_data$sformat <- paste0(
+        ",.",
+        input$digits,
+        dplyr::case_when(
+                         input$format == "prosent" ~ "%",
+                         input$format == "siffer" ~ "f")
+      )
+      browser()
       update_ind_val(pool, rv$ind_data)
       rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
       rv$ind_data <- rv$ind_data %>%
@@ -313,11 +329,10 @@ indicator_server <- function(id, registry_tracker, pool) {
         ),
         shiny::selectInput(
           ns("format"), "Indikatorformat:",
-          choices = conf$indicator$formats, selected = rv$ind_data$format
+          choices = conf$indicator$formats, selected = rv$sformat$format
         )
       )
     })
-
 
     output$set_digits <- shiny::renderUI({
       shiny::req(input$indicator)
@@ -327,7 +342,7 @@ indicator_server <- function(id, registry_tracker, pool) {
         ),
         shiny::numericInput(
           ns("digits"), "Antall desimaler:",
-          value = rv$ind_data$digits, min = 0
+          value = rv$sformat$digits, min = 0
         )
       )
     })
@@ -358,7 +373,12 @@ indicator_server <- function(id, registry_tracker, pool) {
             as.numeric(input$min_denominator),
             as.numeric(rv$ind_data$min_denominator)
           ),
-          identical(input$type, rv$ind_data$type)
+          identical(input$type, rv$ind_data$type),
+          identical(input$format, rv$sformat$format),
+          identical(
+            as.numeric(input$digits),
+            as.numeric(rv$sformat$digits)
+          )
         )
         if (all(no_new_values)) {
           return(NULL)
