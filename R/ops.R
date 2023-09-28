@@ -28,17 +28,21 @@ delete_indicator_data <- function(pool, df) {
   if (!"ind_id" %in% names(df)) {
     stop("Data frame has no notion of 'indicator' (id). Cannot delete!")
   }
-  ind <- unique(df$ind_id)
-  context <- unique(df$context)
 
-  query <- paste0("
-DELETE FROM
-  data
-WHERE
-  ind_id IN ('", paste0(ind, collapse = "', '"), "') AND
-  context IN ('", paste0(context, collapse = "', '"), "');")
+  ind_context_year <- df %>% dplyr::select("ind_id", "context", "year") %>% unique()
 
-  pool::dbExecute(pool, query)
+  for (i in seq_len(nrow(ind_context_year))) {
+    query <- paste0("
+  DELETE FROM
+    data
+  WHERE
+    ind_id = '", ind_context_year$ind_id[i], "' AND
+    context = '", ind_context_year$context[i], "' AND
+    year = '", ind_context_year$year[i], "';")
+
+    pool::dbExecute(pool, query)
+  }
+
 }
 
 
@@ -100,12 +104,12 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
   reg_id <- ind$registry_id[1]
 
   # Deliveries to be published
-  # Get all deliverie with published = 0 that are referenced
+  # Get all deliveries with published = 0 that are referenced
   # in the data table for the current registry
-  new_deliveries_and_inds <- pool::dbGetQuery(
+  filter_values <- pool::dbGetQuery(
     pool_verify,
     paste(
-      "SELECT DISTINCT data.delivery_id, data.ind_id
+      "SELECT DISTINCT data.delivery_id, data.ind_id, data.context, data.year
      FROM data LEFT JOIN ind ON data.ind_id = ind.id
      LEFT JOIN delivery ON data.delivery_id = delivery.id
      WHERE ind.registry_id =", reg_id,
@@ -115,7 +119,7 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
   )
 
   # To iterate over
-  new_delivery_ids <- unique(new_deliveries_and_inds$delivery_id)
+  new_delivery_ids <- unique(filter_values$delivery_id)
 
   # New row in the publish table in prod
   new_publish <- data.frame(
@@ -139,9 +143,19 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
 
   # Iterate over deliveries and insert data into prod
   for (delivery_id_i in new_delivery_ids) {
-    # Filter data to include only the indicators uploaded in the delivery
-    inds_i <- new_deliveries_and_inds$ind_id[new_deliveries_and_inds$delivery_id == delivery_id_i]
-    df_i <- df[df$ind_id %in% inds_i, ]
+
+    # Filter data to include only the lines uploaded in the delivery
+    filter_values_i <- filter_values[filter_values$delivery_id == delivery_id_i, ]
+
+    # Indicator id, context and year are pasted into strings and compared
+    filter_vector_i <- paste0(filter_values_i$ind_id, filter_values_i$context, filter_values_i$year)
+
+    keep_inds <- sapply(paste0(df$ind_id, df$context, df$year),
+                        FUN = function(x) {
+                          x %in% filter_vector_i
+                        })
+
+    df_i <- df[keep_inds, ]
 
     ##### In production #####
     delivery_i <- pool::dbGetQuery(

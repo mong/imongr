@@ -490,13 +490,16 @@ get_aggdata_delivery <- function(pool, indicator) {
 SELECT
   ind_id,
   context,
-  MAX(delivery_id) as id
+  year,
+  delivery_id as id
 FROM
   data
 WHERE ind_id IN ('", paste(indicator, collapse = "', '"), "')
 GROUP BY
   ind_id,
-  context;")
+  delivery_id,
+  context,
+  year;")
 
   dat <- pool::dbGetQuery(pool, query)
 
@@ -522,14 +525,15 @@ FROM
 SELECT
   id,
   ind_id,
-  context
+  context,
+  year
 FROM
   agg_data;")
 
   agg <- pool::dbGetQuery(pool, query)
 
   aggdata_delivery <- agg %>%
-    dplyr::left_join(dat, by = c("ind_id", "context")) %>%
+    dplyr::left_join(dat, by = c("ind_id", "context", "year")) %>%
     dplyr::select(
       "id",
       "delivery_time",
