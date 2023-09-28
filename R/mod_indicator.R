@@ -28,6 +28,8 @@ indicator_ui <- function(id) {
         shiny::uiOutput(ns("set_level_yellow")),
         shiny::uiOutput(ns("set_min_denominator")),
         shiny::uiOutput(ns("set_type")),
+        shiny::uiOutput(ns("set_format")),
+        shiny::uiOutput(ns("set_digits")),
         shiny::uiOutput(ns("update_indicator_val")),
         shiny::uiOutput(ns("message"))
       ),
@@ -137,6 +139,15 @@ indicator_server <- function(id, registry_tracker, pool) {
       level_limits()
     })
 
+    shiny::observeEvent(rv$ind_data, {
+      rv$sformat <- rv$ind_data %>%
+        dplyr::mutate(
+          format = substr(.data$sformat, nchar(.data$sformat), nchar(.data$sformat)),
+          digits = substr(.data$sformat, 3, nchar(.data$sformat) - 1)
+        ) %>%
+        dplyr::select("format", "digits")
+    })
+
     shiny::observeEvent(input$level_direction, {
       if (input$level_direction) {
         rv$level_logi <- "st\u00f8rre eller lik:"
@@ -153,6 +164,7 @@ indicator_server <- function(id, registry_tracker, pool) {
       rv$ind_data$level_yellow <- input$level_yellow
       rv$ind_data$min_denominator <- input$min_denominator
       rv$ind_data$type <- input$type
+      rv$ind_data$sformat <- paste0(",.", input$digits, input$format)
       update_ind_val(pool, rv$ind_data)
       rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
       rv$ind_data <- rv$ind_data %>%
@@ -298,6 +310,32 @@ indicator_server <- function(id, registry_tracker, pool) {
       )
     })
 
+    output$set_format <- shiny::renderUI({
+      shiny::req(input$indicator)
+      shiny::tags$div(
+        title = paste(
+          "Angir om indikatoren er oppgitt i prosent (%) eller siffer (f)"
+        ),
+        shiny::selectInput(
+          ns("format"), "Indikatorformat:",
+          choices = conf$indicator$formats, selected = rv$sformat$format
+        )
+      )
+    })
+
+    output$set_digits <- shiny::renderUI({
+      shiny::req(input$indicator)
+      shiny::tags$div(
+        title = paste(
+          "Antall desimaler"
+        ),
+        shiny::numericInput(
+          ns("digits"), "Antall desimaler:",
+          value = rv$sformat$digits, min = 0
+        )
+      )
+    })
+
     output$update_indicator_val <- shiny::renderUI({
       if (any(c(
         is.null(input$indicator),
@@ -324,7 +362,12 @@ indicator_server <- function(id, registry_tracker, pool) {
             as.numeric(input$min_denominator),
             as.numeric(rv$ind_data$min_denominator)
           ),
-          identical(input$type, rv$ind_data$type)
+          identical(input$type, rv$ind_data$type),
+          identical(input$format, rv$sformat$format),
+          identical(
+            as.numeric(input$digits),
+            as.numeric(rv$sformat$digits)
+          )
         )
         if (all(no_new_values)) {
           return(NULL)
