@@ -146,7 +146,6 @@ indicator_server <- function(id, registry_tracker, pool) {
           digits = as.numeric(stringr::str_extract(.data$sformat, "[:digit:]+"))
         ) %>%
         dplyr::select("format", "digits")
-        print(rv$sformat)
     })
 
     shiny::observeEvent(input$level_direction, {
@@ -315,7 +314,7 @@ indicator_server <- function(id, registry_tracker, pool) {
       shiny::req(input$indicator)
       shiny::tags$div(
         title = paste(
-          "Angir om indikatoren er oppgitt i prosent eller siffer"
+          "Angir om indikatoren er oppgitt i prosent (%) eller siffer (f)"
         ),
         shiny::selectInput(
           ns("format"), "Indikatorformat:",
