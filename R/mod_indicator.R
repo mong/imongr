@@ -28,6 +28,8 @@ indicator_ui <- function(id) {
         shiny::uiOutput(ns("set_level_yellow")),
         shiny::uiOutput(ns("set_min_denominator")),
         shiny::uiOutput(ns("set_type")),
+        shiny::uiOutput(ns("set_format")),
+        shiny::uiOutput(ns("set_digits")),
         shiny::uiOutput(ns("update_indicator_val")),
         shiny::uiOutput(ns("message"))
       ),
@@ -132,7 +134,12 @@ indicator_server <- function(id, registry_tracker, pool) {
           long_description = dplyr::case_when(
             is.na(long_description) ~ "",
             TRUE ~ long_description
-          )
+          ),
+          format = dplyr::case_when(
+            grepl("f", sformat) ~ "siffer",
+            grepl("%", sformat) ~ "prosent"
+          ),
+          digits = as.numeric(stringr::str_extract(.data$sformat, "[:digit:]+"))
         )
       level_limits()
     })
@@ -294,6 +301,33 @@ indicator_server <- function(id, registry_tracker, pool) {
         shiny::selectInput(
           ns("type"), "Indikatortype:",
           choices = conf$indicator$types, selected = rv$ind_data$type
+        )
+      )
+    })
+
+    output$set_format <- shiny::renderUI({
+      shiny::req(input$indicator)
+      shiny::tags$div(
+        title = paste(
+          "Angir om indikatoren er oppgitt i prosent eller siffer"
+        ),
+        shiny::selectInput(
+          ns("format"), "Indikatorformat:",
+          choices = conf$indicator$formats, selected = rv$ind_data$format
+        )
+      )
+    })
+
+
+    output$set_digits <- shiny::renderUI({
+      shiny::req(input$indicator)
+      shiny::tags$div(
+        title = paste(
+          "Antall desimaler"
+        ),
+        shiny::numericInput(
+          ns("digits"), "Antall desimaler:",
+          value = rv$ind_data$digits, min = 0
         )
       )
     })
