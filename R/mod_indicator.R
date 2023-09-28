@@ -167,7 +167,6 @@ indicator_server <- function(id, registry_tracker, pool) {
       rv$ind_data$level_yellow <- input$level_yellow
       rv$ind_data$min_denominator <- input$min_denominator
       rv$ind_data$type <- input$type
-      browser()
       rv$ind_data$sformat <- paste0(
         ",.",
         input$digits,
@@ -175,7 +174,6 @@ indicator_server <- function(id, registry_tracker, pool) {
                          input$format == "prosent" ~ "%",
                          input$format == "siffer" ~ "f")
       )
-      browser()
       update_ind_val(pool, rv$ind_data)
       rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
       rv$ind_data <- rv$ind_data %>%
