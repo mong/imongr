@@ -199,7 +199,7 @@ test_that("indicator values can be updated", {
         level_yellow = 0.5,
         min_denominator = 5,
         type = "andel",
-        sformat = ",.%0",
+        sformat = ",.0%",
         id = "norgast_dummy"
       )
     )
