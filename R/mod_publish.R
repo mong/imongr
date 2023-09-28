@@ -114,7 +114,7 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
         get_registry_name(pool_verify, shiny::req(input$publish_registry),
           full_name = FALSE
         ),
-        "/sykehus'>her.</a>"
+        "/sykehus' target='_blank'>her.</a>"
       )
       paste(
         get_registry_name(
