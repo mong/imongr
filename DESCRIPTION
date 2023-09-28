@@ -40,7 +40,6 @@ Imports:
     shinyalert,
     shinycssloaders,
     shinyjs,
-    stringr,
     tibble,
     yaml
 RoxygenNote: 7.2.3

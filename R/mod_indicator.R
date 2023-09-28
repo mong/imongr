@@ -142,8 +142,8 @@ indicator_server <- function(id, registry_tracker, pool) {
     shiny::observeEvent(rv$ind_data, {
       rv$sformat <- rv$ind_data %>%
         dplyr::mutate(
-          format = stringr::str_sub(.data$sformat, -1, -1),
-          digits = as.numeric(stringr::str_extract(.data$sformat, "[:digit:]+"))
+          format = substr(.data$sformat, nchar(.data$sformat), nchar(.data$sformat)),
+          digits = substr(.data$sformat, 3, nchar(.data$sformat) - 1)
         ) %>%
         dplyr::select("format", "digits")
     })
