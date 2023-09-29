@@ -22,6 +22,7 @@ indicator_ui <- function(id) {
         shiny::uiOutput(ns("select_indicator_registry")),
         shiny::uiOutput(ns("select_indicator")),
         shiny::hr(),
+        shiny::uiOutput(ns("select_dg_indicator")),
         shiny::uiOutput(ns("set_include")),
         shiny::uiOutput(ns("set_level_direction")),
         shiny::uiOutput(ns("set_level_green")),
@@ -159,6 +160,7 @@ indicator_server <- function(id, registry_tracker, pool) {
 
     shiny::observeEvent(input$update_val, {
       rv$ind_data$include <- input$include
+      rv$ind_data$dg_id <- input$dg_indicator
       rv$ind_data$level_direction <- input$level_direction
       rv$ind_data$level_green <- input$level_green
       rv$ind_data$level_yellow <- input$level_yellow
@@ -217,7 +219,16 @@ indicator_server <- function(id, registry_tracker, pool) {
       shiny::req(input$indicator_registry)
       shiny::selectInput(
         ns("indicator"), "Velg indikator:",
-        choices = get_registry_indicators(pool, input$indicator_registry)
+        choices = get_registry_indicators(pool, input$indicator_registry)$id
+      )
+    })
+
+    output$select_dg_indicator <- shiny::renderUI({
+      shiny::req(input$indicator_registry)
+      shiny::selectInput(
+        ns("dg_indicator"), "Tilhørende dekningsgradsindikator:",
+        choices = c("NULL", get_dg_indicators(pool)$id),
+        selected = rv$ind_data$dg_id
       )
     })
 
@@ -346,6 +357,7 @@ indicator_server <- function(id, registry_tracker, pool) {
       } else {
         no_new_values <- c(
           identical(input$include, as.logical(rv$ind_data$include)),
+          identical(input$dg_indicator, rv$ind_data$dg),
           identical(
             input$level_direction,
             as.logical(rv$ind_data$level_direction)

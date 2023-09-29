@@ -415,6 +415,22 @@ WHERE
   pool::dbGetQuery(pool, query)
 }
 
+#' @rdname db_get
+#' @export
+get_dg_indicators <- function(pool) {
+  query <- "
+  SELECT
+    id
+  FROM
+    ind
+  WHERE
+    type = 'dg_andel'
+  OR
+    type = 'dg_beregnet_andel'
+  "
+
+  pool::dbGetQuery(pool, query)
+}
 
 #' @rdname db_get
 #' @export
