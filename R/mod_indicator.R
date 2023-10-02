@@ -213,8 +213,11 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         text = "Velg navn på ny indikator",
         type = "input",
         inputType = "text",
+        showCancelButton = TRUE,
         callbackR = function(x) {
-          rv$new_ind_name <- x
+          if (is.character(x) & nchar(x) > 0) {
+            rv$new_ind_name <- x
+          }
         }
       )
     })
