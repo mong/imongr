@@ -97,7 +97,7 @@ upload_ui <- function(id) {
 
 #' @rdname mod_upload
 #' @export
-upload_server <- function(id, registry_tracker, pool_verify) {
+upload_server <- function(id, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -262,7 +262,7 @@ upload_app <- function(pool) {
   )
 
   server <- function(input, output, sessjon) {
-    upload_server("ind", pool)
+    upload_server("ind", NULL, pool, pool)
   }
 
   shiny::shinyApp(ui, server)

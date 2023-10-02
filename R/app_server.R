@@ -152,7 +152,7 @@ app_server <- function(input, output, session) {
 
 
   # last
-  rv_upload <- upload_server("upload", registry_tracker, pool_verify)
+  rv_upload <- upload_server("upload", registry_tracker, pool, pool_verify)
 
   shiny::observeEvent(rv_upload$registry_id, {
     registry_tracker$current_registry <- rv_upload$registry_id

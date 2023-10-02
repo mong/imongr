@@ -340,7 +340,7 @@ test_that("upload module has output...", {
   check_db()
   shiny::testServer(
     upload_server,
-    args = list(pool = pool),
+    args = list(pool = pool, pool_verify = pool),
     {
       session$setInputs(
         registry = 10,
