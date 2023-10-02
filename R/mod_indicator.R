@@ -65,8 +65,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       title_oversize = FALSE,
       short_oversize = FALSE,
       long_oversize = FALSE,
-      new_ind_counter = 0,
-      ind_list = NULL
+      new_ind_counter = 0
     )
 
     rv_return <- shiny::reactiveValues()
