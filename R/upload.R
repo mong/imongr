@@ -58,6 +58,27 @@ check_report <- function(registry, df, ind, pool) {
   paste(msg, "</font>")
 }
 
+#' @rdname upload
+#' @export
+warning_report <- function(registry, df, ind, pool) {
+  conf <- get_config()
+  r <- check_upload(registry, df, ind, pool, warning = TRUE)
+
+  if (all(!r$fail)) {
+    msg <- NULL
+  } else {
+    msg <- "<font color=\"#b5a633\">"
+    for (i in seq_len(length(r$unit))) {
+      if (r$fail[i]) {
+        msg <- paste(
+          msg, "<b>", conf$upload$warning[r$unit[i]], "</b>",
+          r$report[i], "<br>"
+        )
+      }
+    }
+    paste(msg, "</font>")
+  }
+}
 
 #' @rdname upload
 #' @export
@@ -87,12 +108,18 @@ mail_check_report <- function(pool, registry, mail_msg) {
 
 #' @rdname upload
 #' @export
-check_upload <- function(registry, df, ind, pool) {
+check_upload <- function(registry, df, ind, pool, warning = FALSE) {
   unit <- character()
   fail <- logical()
   report <- character()
 
   conf <- get_config()
+
+  if (warning) {
+    prefix <- "warning_"
+  } else {
+    prefix <- "check_"
+  }
 
   # special case if there registry is not defined
   if (registry == "") {
@@ -100,10 +127,17 @@ check_upload <- function(registry, df, ind, pool) {
     fail <- TRUE
     report <- conf$upload$check_empty
   } else {
-    for (i in seq_len(length(conf$upload$check))) {
-      unit[i] <- names(conf$upload$check)[i]
+
+    if (warning) {
+      check_list <- conf$upload$warning
+    } else {
+      check_list <- conf$upload$check
+    }
+
+    for (i in seq_len(length(check_list))) {
+      unit[i] <- names(check_list)[i]
       r <- do.call(
-        paste0("check_", unit[i]),
+        paste0(prefix, unit[i]),
         args = list(
           registry = registry,
           df = df,
@@ -113,10 +147,36 @@ check_upload <- function(registry, df, ind, pool) {
         )
       )
       fail[i] <- r$fail
-      report[i] <- paste(paste0("'", r$report, "'"), collapse = ", ")
+      report[i] <- paste(r$report, collapse = ", ")
     }
   }
   list(unit = unit, fail = fail, report = report)
+}
+
+#' @rdname upload
+#' @export
+warning_duplicate_delivery <- function(registry, df, ind, conf, pool) {
+  fail <- FALSE
+  report <- character()
+
+  df_delivery <- pool::dbGetQuery(pool, "SELECT md5_checksum, user_id, time FROM delivery ORDER BY time ASC")
+  checksums <- df_delivery$md5_checksum
+  current_checksum <- md5_checksum(df)
+
+  if (current_checksum %in% checksums) {
+    fail <- TRUE
+
+    df_users <- pool::dbGetQuery(pool, "SELECT id, user_name FROM user")
+    colnames(df_users) <- c("user_id", "user_name")
+
+    same_data_deliveries <- df_delivery[which(current_checksum == checksums), ] %>%
+      dplyr::left_join(df_users, by = "user_id")
+
+    report <- paste0(same_data_deliveries$time, " av ", same_data_deliveries$user_name) %>%
+      paste(collapse = "<br/>")
+  }
+
+  list(fail = fail, report = report)
 }
 
 #' @rdname upload

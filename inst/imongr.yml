@@ -288,6 +288,11 @@ upload:
   - 6
   - 7
   - 8
+  warning:
+    duplicate_delivery: |-
+      En identisk fil har blitt lastet opp tidligere <br>
+    test: |-
+      Test-test
   check:
     missing_registry: |-
       Ukjent register (kontakt SKDE):
