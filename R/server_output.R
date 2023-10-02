@@ -133,11 +133,32 @@ error_report_ui <- function(pool, df, ind, upload_file, registry) {
 
 #' @rdname server_output
 #' @export
-warning_report_ui <- function(pool, df, ind, upload_file, registry) {
+warning_report_ui <- function(pool, df, upload_file, registry) {
   if (is.null(upload_file) || is.null(registry)) {
     NULL
   } else {
-    warning_report(registry, df, ind, pool)
+    df_delivery <- pool::dbGetQuery(pool, "SELECT md5_checksum, user_id, time FROM delivery ORDER BY time ASC")
+    checksums <- df_delivery$md5_checksum
+    current_checksum <- md5_checksum(df)
+
+    if (current_checksum %in% checksums) {
+      df_users <- pool::dbGetQuery(pool, "SELECT id, user_name FROM user")
+      colnames(df_users) <- c("user_id", "user_name")
+
+      same_data_deliveries <- df_delivery[which(current_checksum == checksums), ] %>%
+        dplyr::left_join(df_users, by = "user_id")
+
+      msg_dates <- paste0(same_data_deliveries$time, " av ", same_data_deliveries$user_name) %>%
+        paste(collapse = "<br/>")
+
+      paste(
+        "<font color=\"#b5a633\">",
+        "En identisk fil har blitt lastet opp tidligere:<br/>",
+        msg_dates, "</font>"
+      )
+    } else {
+      NULL
+    }
   }
 }
 
