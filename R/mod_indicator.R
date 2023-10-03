@@ -215,8 +215,28 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         inputType = "text",
         showCancelButton = TRUE,
         callbackR = function(x) {
-          if (is.character(x) & nchar(x) > 0) {
-            rv$new_ind_name <- x
+
+          if (x == FALSE) { # Cancel button pressed
+            NULL
+          } else {
+
+            input_checks <- vector()
+
+            # Must be string
+            input_checks <- c(input_checks, is.character(x))
+            # Must have characters
+            input_checks <- c(input_checks, nchar(x) > 0)
+            # No special characters
+            input_checks <- c(input_checks, !grepl("[æøå]", x))
+            # No whitespace
+            input_checks <- c(input_checks, !grepl("[[:space:]]", x))
+
+            if (all(input_checks)) {
+              rv$new_ind_name <- x
+            } else {
+              shinyalert::shinyalert(title = "Ugyldig input",
+                                     text = "Kan ikke inneholde mellomrom eller spesialtegn")
+            }
           }
         }
       )
