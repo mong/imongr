@@ -417,17 +417,21 @@ WHERE
 
 #' @rdname db_get
 #' @export
-get_dg_indicators <- function(pool) {
-  query <- "
+get_dg_indicators <- function(pool, registry_id) {
+  query <- paste0("
   SELECT
     id
   FROM
     ind
   WHERE
+    registry_id = ", registry_id, "
+  AND (
     type = 'dg_andel'
   OR
     type = 'dg_beregnet_andel'
+    )
   "
+  )
 
   pool::dbGetQuery(pool, query)
 }
