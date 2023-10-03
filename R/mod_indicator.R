@@ -236,7 +236,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
             rv$new_ind_name <- x
           } else {
             shinyalert::shinyalert(title = "Ugyldig input",
-                                    text = "Kan ikke inneholde mellomrom eller spesialtegn")
+                                   text = "Kan ikke inneholde mellomrom eller spesialtegn")
           }
         }
       )
