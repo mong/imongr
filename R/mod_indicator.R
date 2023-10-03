@@ -210,7 +210,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$new_indicator, {
       shinyalert::shinyalert(
         title = "",
-        text = "Velg navn på ny indikator",
+        text = "Velg navn p\u00e5 ny indikator",
         type = "input",
         inputType = "text",
         showCancelButton = TRUE,
@@ -227,7 +227,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
             # Must have characters
             input_checks <- c(input_checks, nchar(x) > 0)
             # No special characters
-            input_checks <- c(input_checks, !grepl("[æøå]", x))
+            input_checks <- c(input_checks, !grepl("[\u00e6\u00f8\u00e5]", x))
             # No whitespace
             input_checks <- c(input_checks, !grepl("[[:space:]]", x))
 
