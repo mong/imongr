@@ -245,6 +245,10 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       rv$new_ind_counter <- rv$new_ind_counter + 1
     })
 
+    shiny::observeEvent(rv$new_ind_counter, {
+
+    })
+
     output$select_indicator_registry <- shiny::renderUI({
       select_registry_ui(pool_verify, conf,
         input_id = ns("indicator_registry"),
@@ -259,7 +263,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$indicator_registry)
       shiny::selectInput(
         ns("indicator"), "Velg indikator:",
-        choices = get_registry_indicators(pool_verify, input$indicator_registry)
+        choices = get_registry_indicators(pool_verify, input$indicator_registry),
+        selected = rv$new_ind_name
       )
     })
 
