@@ -216,27 +216,27 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         showCancelButton = TRUE,
         callbackR = function(x) {
 
-          if (x == FALSE) { # Cancel button pressed
-            NULL
+          # Early guard (cancel button)
+          if (x == FALSE) {
+            return(NULL)
+          }
+
+          input_checks <- vector()
+
+          # Must be string
+          input_checks <- c(input_checks, is.character(x))
+          # Must have characters
+          input_checks <- c(input_checks, nchar(x) > 0)
+          # No special characters
+          input_checks <- c(input_checks, !grepl("[\u00e6\u00f8\u00e5]", x))
+          # No whitespace
+          input_checks <- c(input_checks, !grepl("[[:space:]]", x))
+
+          if (all(input_checks)) {
+            rv$new_ind_name <- x
           } else {
-
-            input_checks <- vector()
-
-            # Must be string
-            input_checks <- c(input_checks, is.character(x))
-            # Must have characters
-            input_checks <- c(input_checks, nchar(x) > 0)
-            # No special characters
-            input_checks <- c(input_checks, !grepl("[\u00e6\u00f8\u00e5]", x))
-            # No whitespace
-            input_checks <- c(input_checks, !grepl("[[:space:]]", x))
-
-            if (all(input_checks)) {
-              rv$new_ind_name <- x
-            } else {
-              shinyalert::shinyalert(title = "Ugyldig input",
-                                     text = "Kan ikke inneholde mellomrom eller spesialtegn")
-            }
+            shinyalert::shinyalert(title = "Ugyldig input",
+                                    text = "Kan ikke inneholde mellomrom eller spesialtegn")
           }
         }
       )
