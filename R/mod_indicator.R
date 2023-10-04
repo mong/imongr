@@ -268,7 +268,6 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$indicator_registry)
       shiny::selectInput(
         ns("indicator"), "Velg indikator:",
-
         choices = get_registry_indicators(pool, input$indicator_registry)$id
       )
     })
@@ -284,7 +283,6 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         ns("dg_id"), "Tilhørende dekningsgradsindikator:",
         choices = c("Ingen", get_dg_indicators(pool, input$indicator_registry)$id),
         selected = check_no_dg(rv$ind_data$dg_id)
-
       )
     })
 
