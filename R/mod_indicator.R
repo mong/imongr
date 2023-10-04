@@ -32,10 +32,11 @@ indicator_ui <- function(id) {
         shiny::uiOutput(ns("set_type")),
         shiny::uiOutput(ns("set_format")),
         shiny::uiOutput(ns("set_digits")),
-        shiny::uiOutput(ns("add_new_indicator")),
-        shiny::hr(),
         shiny::uiOutput(ns("update_indicator_val")),
-        shiny::uiOutput(ns("message"))
+        shiny::uiOutput(ns("message")),
+        shiny::hr(),
+        shiny::uiOutput(ns("add_new_indicator"))
+
       ),
       shiny::mainPanel(
         shiny::uiOutput(ns("edit_ind_title")),
