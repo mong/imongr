@@ -269,7 +269,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$indicator_registry)
       shiny::selectInput(
         ns("indicator"), "Velg indikator:",
-        choices = get_registry_indicators(pool, input$indicator_registry)$id
+        choices = get_registry_indicators(pool, input$indicator_registry)$id,
+        selected = rv$new_ind_name
       )
     })
 
