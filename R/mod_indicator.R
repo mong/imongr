@@ -34,7 +34,9 @@ indicator_ui <- function(id) {
         shiny::uiOutput(ns("set_digits")),
         shiny::uiOutput(ns("update_indicator_val")),
         shiny::uiOutput(ns("message")),
+        shiny::br(),
         shiny::hr(),
+        shiny::br(),
         shiny::uiOutput(ns("add_new_indicator"))
 
       ),
@@ -298,7 +300,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
 
     output$add_new_indicator <- shiny::renderUI({
       shiny::req(input$indicator_registry)
-      shiny::actionButton(ns("new_indicator"), "Ny indikator")
+      shiny::actionButton(ns("new_indicator"), "Lag helt ny indikator")
     })
 
     output$set_include <- shiny::renderUI({
