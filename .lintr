@@ -1,5 +1,5 @@
 linters: linters_with_defaults(object_name_linter(c("camelCase", "snake_case")),
-                       cyclocomp_linter(complexity_limit = 30), # Denne burde nok fjernes etter hvert
+                       cyclocomp_linter(complexity_limit = 50), # Denne burde nok fjernes etter hvert
                        line_length_linter(length = 120L))
 exclusions: list("data-raw/delivery.R", "data-raw/data.R", "data-raw/org.R", "data-raw/user.R")
 

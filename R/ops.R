@@ -392,6 +392,7 @@ UPDATE
   ind
 SET
   include = ?,
+  dg_id = ?,
   level_direction = ?,
   level_green = ?,
   level_yellow = ?,
@@ -403,6 +404,7 @@ WHERE
 
   params <- list(
     df$include,
+    df$dg_id,
     df$level_direction,
     df$level_green,
     df$level_yellow,
