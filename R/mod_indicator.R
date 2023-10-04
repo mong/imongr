@@ -153,9 +153,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
 
     shiny::observeEvent(input$level_direction, {
       rv$level_logi <- ifelse(input$level_direction,
-        "st\u00f8rre eller lik:",
-        "mindre eller lik:"
-      )
+                              "st\u00f8rre eller lik:",
+                              "mindre eller lik:")
       level_consistent()
     })
 
@@ -428,9 +427,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
 
     output$title_oversize <- shiny::renderUI({
       ifelse(rv$title_oversize,
-        shiny::HTML(conf$indicator$oversize_message),
-        NULL
-      )
+             shiny::HTML(conf$indicator$oversize_message),
+             NULL)
     })
 
     output$edit_ind_short <- shiny::renderUI({
