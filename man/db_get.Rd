@@ -25,6 +25,7 @@
 \alias{get_user_deliveries}
 \alias{get_indicators_registry}
 \alias{get_registry_ind}
+\alias{get_dg_indicators}
 \alias{get_aggdata}
 \title{Retreiv data from imongr database}
 \usage{
@@ -61,6 +62,8 @@ get_user(pool, sample = NA)
 get_users(pool, valid = TRUE)
 
 get_registry_indicators(pool, registry)
+
+get_dg_indicators(pool)
 
 get_registry_medfield(pool, registry)
 

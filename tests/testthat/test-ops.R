@@ -194,6 +194,7 @@ test_that("indicator values can be updated", {
       pool,
       data.frame(
         include = TRUE,
+        dg_id = NA,
         level_direction = 1,
         level_green = 0.9,
         level_yellow = 0.5,

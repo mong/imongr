@@ -24,6 +24,7 @@ indicator_ui <- function(id) {
         shiny::uiOutput(ns("select_indicator")),
         shiny::uiOutput(ns("add_new_indicator")),
         shiny::hr(),
+        shiny::uiOutput(ns("select_dg_id")),
         shiny::uiOutput(ns("set_include")),
         shiny::uiOutput(ns("set_level_direction")),
         shiny::uiOutput(ns("set_level_green")),
@@ -67,6 +68,13 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       long_oversize = FALSE,
       new_ind_counter = 0
     )
+
+    # We would like the select_dg_id input to return NA,
+    # but shiny::selectInput turns NAs into strings.
+    # The input should therefore go through this function.
+    check_no_dg <- function(s) {
+      dplyr::case_when(s == "Ingen" ~ NA, .default = s)
+    }
 
     rv_return <- shiny::reactiveValues()
 
@@ -162,6 +170,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
 
     shiny::observeEvent(input$update_val, {
       rv$ind_data$include <- input$include
+      rv$ind_data$dg_id <- check_no_dg(input$dg_id)
       rv$ind_data$level_direction <- input$level_direction
       rv$ind_data$level_green <- input$level_green
       rv$ind_data$level_yellow <- input$level_yellow
@@ -259,8 +268,23 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$indicator_registry)
       shiny::selectInput(
         ns("indicator"), "Velg indikator:",
-        choices = get_registry_indicators(pool_verify, input$indicator_registry),
-        selected = rv$new_ind_name
+
+        choices = get_registry_indicators(pool, input$indicator_registry)$id
+      )
+    })
+
+    output$select_dg_id <- shiny::renderUI({
+      shiny::req(input$indicator_registry, rv$ind_data)
+
+      if (grepl("dg_", rv$ind_data$type)) {
+        return(NULL)
+      }
+
+      shiny::selectInput(
+        ns("dg_id"), "Tilhørende dekningsgradsindikator:",
+        choices = c("Ingen", get_dg_indicators(pool, input$indicator_registry)$id),
+        selected = check_no_dg(rv$ind_data$dg_id)
+
       )
     })
 
@@ -394,6 +418,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       } else {
         no_new_values <- c(
           identical(input$include, as.logical(rv$ind_data$include)),
+          identical(check_no_dg(input$dg_id), rv$ind_data$dg_id),
           identical(
             input$level_direction,
             as.logical(rv$ind_data$level_direction)
