@@ -246,12 +246,18 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
 
       new_ind_data <- rv$ind_data
       new_ind_data$id <- rv$new_ind_name
+      new_ind_data$title <- "Indikatortittel"
+      new_ind_data$short_description <- "Kort indikatorbeskrivelse"
+      new_ind_data$long_description <- "Lang indikatorbeskrivelse"
 
       pool::dbExecute(pool, query)
       pool::dbExecute(pool_verify, query)
 
       update_ind_val(pool, new_ind_data)
       update_ind_val(pool_verify, new_ind_data)
+
+      update_ind_text(pool, new_ind_data)
+      update_ind_text(pool_verify, new_ind_data)
 
       rv$new_ind_counter <- rv$new_ind_counter + 1
     })
