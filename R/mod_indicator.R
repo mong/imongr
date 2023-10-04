@@ -152,9 +152,11 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     shiny::observeEvent(input$level_direction, {
-      rv$level_logi <- ifelse(input$level_direction,
-                              "st\u00f8rre eller lik:",
-                              "mindre eller lik:")
+      if (input$level_direction) {
+        rv$level_logi <- "st\u00f8rre eller lik:"
+      } else {
+        rv$level_logi <- "mindre eller lik:"
+      }
       level_consistent()
     })
 
@@ -173,15 +175,27 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     shiny::observeEvent(input$ind_title, {
-      rv$title_oversize <- ifelse(nchar(input$ind_title) > 255, TRUE, FALSE)
+      if (nchar(input$ind_title) > 255) {
+        rv$title_oversize <- TRUE
+      } else {
+        rv$title_oversize <- FALSE
+      }
     })
 
     shiny::observeEvent(input$ind_short, {
-      rv$short_oversize <- ifelse(nchar(input$ind_short) > 1023, TRUE, FALSE)
+      if (nchar(input$ind_short) > 1023) {
+        rv$short_oversize <- TRUE
+      } else {
+        rv$short_oversize <- FALSE
+      }
     })
 
     shiny::observeEvent(input$ind_long, {
-      rv$long_oversize <- ifelse(nchar(input$ind_long) > 2047, TRUE, FALSE)
+      if (nchar(input$ind_long) > 2047) {
+        rv$long_oversize <- TRUE
+      } else {
+        rv$long_oversize <- FALSE
+      }
     })
 
     shiny::observeEvent(input$update_txt, {
@@ -426,9 +440,11 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     output$title_oversize <- shiny::renderUI({
-      ifelse(rv$title_oversize,
-             shiny::HTML(conf$indicator$oversize_message),
-             NULL)
+      if (rv$title_oversize) {
+        shiny::HTML(conf$indicator$oversize_message)
+      } else {
+        NULL
+      }
     })
 
     output$edit_ind_short <- shiny::renderUI({
@@ -440,10 +456,11 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     output$short_oversize <- shiny::renderUI({
-      ifelse(rv$short_oversize,
-        shiny::HTML(conf$indicator$oversize_message),
+      if (rv$short_oversize) {
+        shiny::HTML(conf$indicator$oversize_message)
+      } else {
         NULL
-      )
+      }
     })
 
     output$edit_ind_long <- shiny::renderUI({
@@ -455,10 +472,11 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     output$long_oversize <- shiny::renderUI({
-      ifelse(rv$long_oversize,
-        shiny::HTML(conf$indicator$oversize_message),
+      if (rv$long_oversize) {
+        shiny::HTML(conf$indicator$oversize_message)
+      } else {
         NULL
-      )
+      }
     })
 
     output$update_indicator_txt <- shiny::renderUI({
