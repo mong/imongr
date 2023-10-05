@@ -81,7 +81,7 @@ indicator_server <- function(id, registry_tracker, pool) {
       }
     })
 
-    level_consistent <- shiny::reactive({
+    levels_consistent_check <- function() {
       if (!is.na(input$level_green) && !is.na(input$level_yellow)) {
         if (input$level_direction) {
           if (input$level_green >= input$level_yellow) {
@@ -112,6 +112,10 @@ indicator_server <- function(id, registry_tracker, pool) {
         shinyjs::html("message", "")
         return(TRUE)
       }
+    }
+
+    level_consistent <- shiny::reactive({
+      levels_consistent_check()
     })
 
     shiny::observeEvent(input$indicator_registry, {
@@ -149,11 +153,7 @@ indicator_server <- function(id, registry_tracker, pool) {
     })
 
     shiny::observeEvent(input$level_direction, {
-      if (input$level_direction) {
-        rv$level_logi <- "st\u00f8rre eller lik:"
-      } else {
-        rv$level_logi <- "mindre eller lik:"
-      }
+      rv$level_logi <- ifelse(input$level_direction, "st\u00f8rre eller lik:", "mindre eller lik:")
       level_consistent()
     })
 
@@ -324,7 +324,7 @@ indicator_server <- function(id, registry_tracker, pool) {
       )
     })
 
-    output$update_indicator_val <- shiny::renderUI({
+    update_check <- function() {
       if (any(c(
         is.null(input$indicator),
         is.null(input$include),
@@ -369,6 +369,10 @@ indicator_server <- function(id, registry_tracker, pool) {
           }
         }
       }
+    }
+
+    output$update_indicator_val <- shiny::renderUI({
+      update_check()
     })
 
     output$edit_ind_title <- shiny::renderUI({
@@ -379,12 +383,16 @@ indicator_server <- function(id, registry_tracker, pool) {
       )
     })
 
-    output$title_oversize <- shiny::renderUI({
-      if (rv$title_oversize) {
+    oversize_check <- function(oversize) {
+      if (oversize) {
         shiny::HTML(conf$indicator$oversize_message)
       } else {
         NULL
       }
+    }
+
+    output$title_oversize <- shiny::renderUI({
+      oversize_check(rv$title_oversize)
     })
 
     output$edit_ind_short <- shiny::renderUI({
@@ -396,11 +404,7 @@ indicator_server <- function(id, registry_tracker, pool) {
     })
 
     output$short_oversize <- shiny::renderUI({
-      if (rv$short_oversize) {
-        shiny::HTML(conf$indicator$oversize_message)
-      } else {
-        NULL
-      }
+      oversize_check(rv$short_oversize)
     })
 
     output$edit_ind_long <- shiny::renderUI({
@@ -412,14 +416,10 @@ indicator_server <- function(id, registry_tracker, pool) {
     })
 
     output$long_oversize <- shiny::renderUI({
-      if (rv$long_oversize) {
-        shiny::HTML(conf$indicator$oversize_message)
-      } else {
-        NULL
-      }
+      oversize_check(rv$long_oversize)
     })
 
-    output$update_indicator_txt <- shiny::renderUI({
+    update_indicator_txt_check <- function() {
       if (any(c(rv$title_oversize, rv$short_oversize, rv$long_oversize))) {
         NULL
       } else {
@@ -434,6 +434,10 @@ indicator_server <- function(id, registry_tracker, pool) {
           shiny::actionButton(ns("update_txt"), "Oppdat\u00e9r tekster")
         }
       }
+    }
+
+    output$update_indicator_txt <- shiny::renderUI({
+      update_indicator_txt_check()
     })
 
     return(rv_return)
