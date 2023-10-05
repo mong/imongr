@@ -28,6 +28,7 @@
 #' get_flat_org get_all_orgnr get_user get_users
 #' get_registry_indicators get_registry_medfield get_medfield_registry
 #' get_registry_user get_user_registry get_aggdata_delivery
+#' get_dg_indicators
 NULL
 
 

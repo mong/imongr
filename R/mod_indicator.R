@@ -229,14 +229,16 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         showCancelButton = TRUE,
         callbackR = function(x) {
 
+          ind_ids <- pool::dbGetQuery(pool, "SELECT id FROM ind")$id
           if (x == FALSE) {
             return(NULL)
           } else {
-            if (grepl("^[a-zA-Z0-9_]+$", x)) {
+            if (grepl("^[a-zA-Z0-9_]+$", x) && !(x %in% ind_ids)) {
               rv$new_ind_name <- x
             } else {
               shinyalert::shinyalert(title = "Ugyldig input",
-                                     text = "Kan ikke inneholde mellomrom eller spesialtegn")
+                                     text = "Kan ikke inneholde mellomrom eller spesialtegn, 
+                                     eller v\u00e6re lik en eksisterende indikator.")
             }
           }
         }
