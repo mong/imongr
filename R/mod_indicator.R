@@ -172,27 +172,15 @@ indicator_server <- function(id, registry_tracker, pool) {
     })
 
     shiny::observeEvent(input$ind_title, {
-      if (nchar(input$ind_title) > 255) {
-        rv$title_oversize <- TRUE
-      } else {
-        rv$title_oversize <- FALSE
-      }
+      rv$title_oversize <- ifelse(nchar(input$ind_title) > 255, TRUE, FALSE)
     })
 
     shiny::observeEvent(input$ind_short, {
-      if (nchar(input$ind_short) > 1023) {
-        rv$short_oversize <- TRUE
-      } else {
-        rv$short_oversize <- FALSE
-      }
+      rv$short_oversize <- ifelse(nchar(input$ind_short) > 1023, TRUE, FALSE)
     })
 
     shiny::observeEvent(input$ind_long, {
-      if (nchar(input$ind_long) > 2047) {
-        rv$long_oversize <- TRUE
-      } else {
-        rv$long_oversize <- FALSE
-      }
+      rv$long_oversize <- ifelse(nchar(input$ind_long) > 2047, TRUE, FALSE)
     })
 
     shiny::observeEvent(input$update_txt, {
