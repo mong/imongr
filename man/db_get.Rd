@@ -63,7 +63,7 @@ get_users(pool, valid = TRUE)
 
 get_registry_indicators(pool, registry)
 
-get_dg_indicators(pool)
+get_dg_indicators(pool, registry)
 
 get_registry_medfield(pool, registry)
 
