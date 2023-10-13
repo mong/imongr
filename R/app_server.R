@@ -8,6 +8,8 @@
 #' @export
 
 app_server <- function(input, output, session) {
+  message("Starting app")
+  message(Sys.getenv())
   # set max size of uploaded file to 50 Mb
   options(shiny.maxRequestSize = 50 * 1024^2)
 
