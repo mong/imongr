@@ -219,11 +219,7 @@ indicator_server <- function(id, registry_tracker, pool) {
     })
 
     output$select_dg_id <- shiny::renderUI({
-      shiny::req(input$indicator_registry, rv$ind_data)
-
-      if (grepl("dg_", rv$ind_data$type)) {
-        return(NULL)
-      }
+      shiny::req(input$indicator_registry, rv$ind_data, !grepl("dg_", rv$ind_data$type))
 
       shiny::selectInput(
         ns("dg_id"), "Tilhørende dekningsgradsindikator:",
