@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -111,13 +111,13 @@
 <p>If the environment variables have been changed an you want to change them back to default:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRenviron.html" class="external-link">readRenviron</a></span><span class="op">(</span><span class="st">"~/.Renviron"</span><span class="op">)</span></span></code></pre></div>
-<p>If your pool have not been closed properly:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">...</span> <span class="co"># TBA</span></span></code></pre></div>
-<p>If you have not cleaned up after testing with database:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRenviron.html" class="external-link">readRenviron</a></span><span class="op">(</span><span class="st">"~/.Renviron"</span><span class="op">)</span> <span class="co"># get back to default env var</span></span>
-<span><span class="va">...</span> <span class="co"># TBA</span></span></code></pre></div>
+<p>If your pool have not been closed properly, for instance if you have not cleaned up after testing with database:</p>
+<ol style="list-style-type: decimal">
+<li>Go into Adminer on port <a href="http://localhost:8888/?server=db&amp;username=imongr" class="external-link">8888</a>, and click on <code>db</code> in the breadcrumb.</li>
+<li>Click <em>Refresh</em> next to <em>Database</em> in the database table and delete all unwanted databases.</li>
+<li>Look at <em>Process list</em> and kill unwanted processes.</li>
+<li>Go into <em>RStudio</em> on port <a href="http://localhost:8787/" class="external-link">8787</a> and restart <code>R</code> (Ctrl-Shift-F10).</li>
+</ol>
 </div>
 </div>
 <div class="section level2">
