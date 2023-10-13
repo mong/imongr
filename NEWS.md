@@ -1,4 +1,11 @@
-# Unpublished
+# imongr 1.2.0
+
+- Aggreger indikator og dekningsgrad basert på kortnavn istedenfor orgnummer ([#331](https://github.com/mong/imongr/pull/331))
+- Åpne lenke til verify-side i ny fane ([#335](https://github.com/mong/imongr/pull/335))
+- Behold data fra år som ikke finnes i opplastingsdata ([#314](https://github.com/mong/imongr/pull/314))
+- La bruker oppdatere indikatorformat ([#336](https://github.com/mong/imongr/pull/336))
+- La bruker angi dekningsgradsindikator i UI-en ([#337](https://github.com/mong/imongr/pull/337))
+- Printe `locale` til logg (tegnsetting osv.)
 
 # imongr 1.1.0
 
