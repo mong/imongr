@@ -9,9 +9,9 @@
 \usage{
 indicator_ui(id)
 
-indicator_server(id, registry_tracker, pool)
+indicator_server(id, registry_tracker, pool, pool_verify)
 
-indicator_app(pool)
+indicator_app(pool_verify)
 }
 \arguments{
 \item{id}{Character string module namespace}
@@ -19,6 +19,8 @@ indicator_app(pool)
 \item{registry_tracker}{Integer defining registry id}
 
 \item{pool}{A database pool object}
+
+\item{pool_verify}{A database pool object}
 }
 \value{
 Shiny objects for the imongr app

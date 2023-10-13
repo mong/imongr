@@ -178,7 +178,7 @@ app_server <- function(input, output, session) {
 
 
   # indicator
-  rv_indicator <- indicator_server("ind", registry_tracker, pool_verify)
+  rv_indicator <- indicator_server("ind", registry_tracker, pool, pool_verify)
 
   shiny::observeEvent(rv_indicator$registry_id, {
     registry_tracker$current_registry <- rv_indicator$registry_id
