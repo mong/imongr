@@ -53,6 +53,71 @@ indicator_ui <- function(id) {
   )
 }
 
+#' Replace "Ingen" with NA in a string
+#'
+#' We would like the select_dg_id input to return NA,
+#' but shiny::selectInput turns NAs into strings.
+#' The input should therefore go through this function.
+#'
+#' @param s string
+#' @rdname mod_indicator
+#' @export
+check_no_dg <- function(s) {
+  dplyr::case_when(s == "Ingen" ~ NA, .default = s)
+}
+
+#' Check that the green threshold is lower than the yellow
+#'
+#' @param input Shiny input object
+#' @param conf get_config() output
+#' @rdname mod_indicator
+#' @export
+levels_consistent_check <- function(input, conf) {
+  if (!is.na(input$level_green) && !is.na(input$level_yellow)) {
+    if (input$level_direction) {
+      if (input$level_green >= input$level_yellow) {
+        shinyjs::html("message", "")
+        return(TRUE)
+      } else {
+        shinyjs::html("message", "")
+        shinyjs::html(
+          "message",
+          conf$indicator$level_inconsistent_message
+        )
+        return(FALSE)
+      }
+    } else {
+      if (input$level_yellow >= input$level_green) {
+        shinyjs::html("message", "")
+        return(TRUE)
+      } else {
+        shinyjs::html("message", "")
+        shinyjs::html(
+          "message",
+          conf$indicator$level_inconsistent_message
+        )
+        return(FALSE)
+      }
+    }
+  } else {
+    shinyjs::html("message", "")
+    return(TRUE)
+  }
+}
+
+#' Display an oversize warning if there are too many characters in the input text
+#'
+#' @param oversize Logical
+#' @param conf get_config() output
+#' @rdname mod_indicator
+#' @export
+oversize_check <- function(oversize, conf) {
+  if (oversize) {
+    shiny::HTML(conf$indicator$oversize_message)
+  } else {
+    NULL
+  }
+}
 
 #' @rdname mod_indicator
 #' @export
@@ -73,13 +138,6 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       new_ind_counter = 0
     )
 
-    # We would like the select_dg_id input to return NA,
-    # but shiny::selectInput turns NAs into strings.
-    # The input should therefore go through this function.
-    check_no_dg <- function(s) {
-      dplyr::case_when(s == "Ingen" ~ NA, .default = s)
-    }
-
     rv_return <- shiny::reactiveValues()
 
     level_limits <- shiny::reactive({
@@ -96,41 +154,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       }
     })
 
-    levels_consistent_check <- function() {
-      if (!is.na(input$level_green) && !is.na(input$level_yellow)) {
-        if (input$level_direction) {
-          if (input$level_green >= input$level_yellow) {
-            shinyjs::html("message", "")
-            return(TRUE)
-          } else {
-            shinyjs::html("message", "")
-            shinyjs::html(
-              "message",
-              conf$indicator$level_inconsistent_message
-            )
-            return(FALSE)
-          }
-        } else {
-          if (input$level_yellow >= input$level_green) {
-            shinyjs::html("message", "")
-            return(TRUE)
-          } else {
-            shinyjs::html("message", "")
-            shinyjs::html(
-              "message",
-              conf$indicator$level_inconsistent_message
-            )
-            return(FALSE)
-          }
-        }
-      } else {
-        shinyjs::html("message", "")
-        return(TRUE)
-      }
-    }
-
     level_consistent <- shiny::reactive({
-      levels_consistent_check()
+      levels_consistent_check(input, conf)
     })
 
     shiny::observeEvent(input$indicator_registry, {
@@ -216,8 +241,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         inputType = "text",
         showCancelButton = TRUE,
         callbackR = function(x) {
-
           ind_ids <- pool::dbGetQuery(pool, "SELECT id FROM ind")$id
+
           if (x == FALSE) {
             return(NULL)
           } else {
@@ -431,7 +456,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
             as.numeric(input$min_denominator),
             as.numeric(rv$ind_data$min_denominator)
           ),
-          identical(input$type, rv$ind_data$type),
+          identical(input$type, rv$ind_datfilter_fraction_indicatora$type),
           identical(input$format, rv$sformat$format),
           identical(
             as.numeric(input$digits),
@@ -464,16 +489,10 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
-    oversize_check <- function(oversize) {
-      if (oversize) {
-        shiny::HTML(conf$indicator$oversize_message)
-      } else {
-        NULL
-      }
-    }
+
 
     output$title_oversize <- shiny::renderUI({
-      oversize_check(rv$title_oversize)
+      oversize_check(rv$title_oversize, conf)
     })
 
     output$edit_ind_short <- shiny::renderUI({
@@ -485,7 +504,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     output$short_oversize <- shiny::renderUI({
-      oversize_check(rv$short_oversize)
+      oversize_check(rv$short_oversize, conf)
     })
 
     output$edit_ind_long <- shiny::renderUI({
@@ -497,7 +516,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     output$long_oversize <- shiny::renderUI({
-      oversize_check(rv$long_oversize)
+      oversize_check(rv$long_oversize, conf)
     })
 
     update_indicator_txt_check <- function() {
