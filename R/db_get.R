@@ -22,7 +22,7 @@
 #' Defaults to NA in which case all data is returned
 #' @return Data object from database
 #' @name db_get
-#' @aliases get_indicator get_user_data get_user_id get_user_registries
+#' @aliases get_user_data get_user_id get_user_registries
 #' get_user_registry_select get_registry_data
 #' get_indicators_registryget_registry_ind get_registry_name get_org_name
 #' get_flat_org get_all_orgnr get_user get_users
@@ -30,18 +30,6 @@
 #' get_registry_user get_user_registry get_aggdata_delivery
 #' get_dg_indicators
 NULL
-
-
-#' @rdname db_get
-#' @export
-get_indicator <- function(pool) {
-  lifecycle::deprecate_warn(
-    "0.12.0", "imongr::get_indicator()",
-    "imongr::get_table()"
-  )
-
-  get_table(pool, "ind")
-}
 
 
 #' @rdname db_get
