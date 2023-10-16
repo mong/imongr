@@ -391,7 +391,7 @@ indicator:
   - f
   level_inconsistent_message: >
       <i style='color:red;'>
-      Verdier for m\u00e5loppn\u00e5else er ikke konsistente!
+      Verdier for måloppnåelse er ikke konsistente!
       </i>
   oversize_message: >
       <i style='color:red;'>Teksten er for lang!</i><br><br>
@@ -400,7 +400,7 @@ medfield:
     heading: >
       Angi fagområder for
     body: >
-      Bruk menyen til venstre og velg ønskede medisinske fagoråder for hvert
+      Bruk menyen til venstre og velg ønskede medisinske fagområder for hvert
       enkelt register. Trykk deretter 'Oppdatér'.
     summary: >
       Alle eksisterende fagområder med tilhørende registre

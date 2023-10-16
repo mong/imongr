@@ -2,6 +2,7 @@
 #'
 #' @param id Character string module namespace
 #' @param pool A database pool object
+#' @param pool_verify A database pool object
 #' @param registry_tracker Integer defining registry id
 #'
 #' @return Shiny objects for the imongr app
@@ -32,7 +33,12 @@ indicator_ui <- function(id) {
         shiny::uiOutput(ns("set_format")),
         shiny::uiOutput(ns("set_digits")),
         shiny::uiOutput(ns("update_indicator_val")),
-        shiny::uiOutput(ns("message"))
+        shiny::uiOutput(ns("message")),
+        shiny::br(),
+        shiny::hr(),
+        shiny::br(),
+        shiny::uiOutput(ns("add_new_indicator"))
+
       ),
       shiny::mainPanel(
         shiny::uiOutput(ns("edit_ind_title")),
@@ -50,7 +56,7 @@ indicator_ui <- function(id) {
 
 #' @rdname mod_indicator
 #' @export
-indicator_server <- function(id, registry_tracker, pool) {
+indicator_server <- function(id, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -63,7 +69,8 @@ indicator_server <- function(id, registry_tracker, pool) {
       level_consistent = TRUE,
       title_oversize = FALSE,
       short_oversize = FALSE,
-      long_oversize = FALSE
+      long_oversize = FALSE,
+      new_ind_counter = 0
     )
 
     # We would like the select_dg_id input to return NA,
@@ -131,7 +138,7 @@ indicator_server <- function(id, registry_tracker, pool) {
     })
 
     shiny::observeEvent(input$indicator, {
-      rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
+      rv$ind_data <- get_registry_ind(pool_verify, input$indicator_registry)
       rv$ind_data <- rv$ind_data %>%
         dplyr::filter(.data$id == input$indicator) %>%
         dplyr::mutate(
@@ -174,8 +181,8 @@ indicator_server <- function(id, registry_tracker, pool) {
       rv$ind_data$min_denominator <- input$min_denominator
       rv$ind_data$type <- input$type
       rv$ind_data$sformat <- paste0(",.", input$digits, input$format)
-      update_ind_val(pool, rv$ind_data)
-      rv$ind_data <- get_registry_ind(pool, input$indicator_registry)
+      update_ind_val(pool_verify, rv$ind_data)
+      rv$ind_data <- get_registry_ind(pool_verify, input$indicator_registry)
       rv$ind_data <- rv$ind_data %>%
         dplyr::filter(.data$id == input$indicator)
     })
@@ -196,13 +203,60 @@ indicator_server <- function(id, registry_tracker, pool) {
       rv$ind_data$title <- input$ind_title
       rv$ind_data$short_description <- input$ind_short
       rv$ind_data$long_description <- input$ind_long
-      update_ind_text(pool, rv$ind_data)
-      rv$ind_data <- get_registry_ind(pool, input$indicator_registry) %>%
+      update_ind_text(pool_verify, rv$ind_data)
+      rv$ind_data <- get_registry_ind(pool_verify, input$indicator_registry) %>%
         dplyr::filter(.data$id == input$indicator)
     })
 
+    shiny::observeEvent(input$new_indicator, {
+      shinyalert::shinyalert(
+        title = "",
+        text = "Velg navn p\u00e5 ny indikator",
+        type = "input",
+        inputType = "text",
+        showCancelButton = TRUE,
+        callbackR = function(x) {
+
+          ind_ids <- pool::dbGetQuery(pool, "SELECT id FROM ind")$id
+          if (x == FALSE) {
+            return(NULL)
+          } else {
+            if (grepl("^[a-zA-Z0-9_]+$", x) && !(x %in% ind_ids)) {
+              rv$new_ind_name <- x
+            } else {
+              shinyalert::shinyalert(title = "Ugyldig input",
+                                     text = "Kan ikke inneholde mellomrom eller spesialtegn, 
+                                     eller v\u00e6re lik en eksisterende indikator.")
+            }
+          }
+        }
+      )
+    })
+
+    shiny::observeEvent(rv$new_ind_name, {
+      query <- paste0("INSERT INTO ind (id, registry_id) VALUES ( '",
+                      rv$new_ind_name, "', '", input$indicator_registry, "');")
+
+      new_ind_data <- rv$ind_data
+      new_ind_data$id <- rv$new_ind_name
+      new_ind_data$title <- "Indikatortittel"
+      new_ind_data$short_description <- "Kort indikatorbeskrivelse"
+      new_ind_data$long_description <- "Lang indikatorbeskrivelse"
+
+      pool::dbExecute(pool, query)
+      pool::dbExecute(pool_verify, query)
+
+      update_ind_val(pool, new_ind_data)
+      update_ind_val(pool_verify, new_ind_data)
+
+      update_ind_text(pool, new_ind_data)
+      update_ind_text(pool_verify, new_ind_data)
+
+      rv$new_ind_counter <- rv$new_ind_counter + 1
+    })
+
     output$select_indicator_registry <- shiny::renderUI({
-      select_registry_ui(pool, conf,
+      select_registry_ui(pool_verify, conf,
         input_id = ns("indicator_registry"),
         context = "verify",
         show_context = FALSE,
@@ -211,10 +265,12 @@ indicator_server <- function(id, registry_tracker, pool) {
     })
 
     output$select_indicator <- shiny::renderUI({
+      rv$new_ind_counter
       shiny::req(input$indicator_registry)
       shiny::selectInput(
         ns("indicator"), "Velg indikator:",
-        choices = get_registry_indicators(pool, input$indicator_registry)$id
+        choices = get_registry_indicators(pool, input$indicator_registry)$id,
+        selected = rv$new_ind_name
       )
     })
 
@@ -222,10 +278,15 @@ indicator_server <- function(id, registry_tracker, pool) {
       shiny::req(input$indicator_registry, rv$ind_data, !grepl("dg_", rv$ind_data$type))
 
       shiny::selectInput(
-        ns("dg_id"), "Tilhørende dekningsgradsindikator:",
+        ns("dg_id"), "Tilh\u00f8rende dekningsgradsindikator:",
         choices = c("Ingen", get_dg_indicators(pool, input$indicator_registry)$id),
         selected = check_no_dg(rv$ind_data$dg_id)
       )
+    })
+
+    output$add_new_indicator <- shiny::renderUI({
+      shiny::req(input$indicator_registry)
+      shiny::actionButton(ns("new_indicator"), "Lag helt ny indikator")
     })
 
     output$set_include <- shiny::renderUI({
@@ -466,13 +527,13 @@ indicator_server <- function(id, registry_tracker, pool) {
 
 #' @rdname mod_indicator
 #' @export
-indicator_app <- function(pool) {
+indicator_app <- function(pool_verify) {
   ui <- shiny::fluidPage(
     indicator_ui("ind")
   )
 
   server <- function(input, output, sessjon) {
-    indicator_server("ind", pool)
+    indicator_server("ind", pool_verify)
   }
 
   shiny::shinyApp(ui, server)

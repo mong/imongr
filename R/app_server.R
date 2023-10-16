@@ -8,6 +8,8 @@
 #' @export
 
 app_server <- function(input, output, session) {
+  message("Starting app")
+  message(Sys.getlocale())
   # set max size of uploaded file to 50 Mb
   options(shiny.maxRequestSize = 50 * 1024^2)
 
@@ -176,7 +178,7 @@ app_server <- function(input, output, session) {
 
 
   # indicator
-  rv_indicator <- indicator_server("ind", registry_tracker, pool_verify)
+  rv_indicator <- indicator_server("ind", registry_tracker, pool, pool_verify)
 
   shiny::observeEvent(rv_indicator$registry_id, {
     registry_tracker$current_registry <- rv_indicator$registry_id

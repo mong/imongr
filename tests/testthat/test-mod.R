@@ -183,7 +183,7 @@ test_that("indicator module server provides sensible output", {
   check_db()
   shiny::testServer(
     indicator_server,
-    args = list(pool = pool),
+    args = list(pool = pool, pool_verify = pool),
     {
       # use package data from imongr, relevant part looks like
       # imongr::ind[imongr::ind$id == "norgast_saarruptur",
@@ -304,7 +304,7 @@ test_that("indicator module has output...", {
   check_db()
   shiny::testServer(
     indicator_server,
-    args = list(pool = pool),
+    args = list(pool = pool, pool_verify = pool),
     {
       session$setInputs(
         indicator_registry = 10,
