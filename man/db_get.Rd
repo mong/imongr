@@ -2,7 +2,6 @@
 % Please edit documentation in R/db_get.R
 \name{db_get}
 \alias{db_get}
-\alias{get_indicator}
 \alias{get_user_data}
 \alias{get_user_id}
 \alias{get_user_registries}
@@ -21,16 +20,14 @@
 \alias{get_registry_user}
 \alias{get_user_registry}
 \alias{get_aggdata_delivery}
+\alias{get_dg_indicators}
 \alias{get_all_user_data}
 \alias{get_user_deliveries}
 \alias{get_indicators_registry}
 \alias{get_registry_ind}
-\alias{get_dg_indicators}
 \alias{get_aggdata}
 \title{Retreiv data from imongr database}
 \usage{
-get_indicator(pool)
-
 get_all_user_data(pool)
 
 get_user_data(pool)

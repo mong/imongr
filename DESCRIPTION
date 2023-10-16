@@ -29,7 +29,6 @@ Imports:
     DBI,
     dplyr,
     DT,
-    lifecycle,
     magrittr,
     pool,
     readr,
