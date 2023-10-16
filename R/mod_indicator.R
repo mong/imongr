@@ -55,22 +55,27 @@ indicator_ui <- function(id) {
 
 #' Replace "Ingen" with NA in a string
 #'
+#' This function is intended for use in indicator_server.
 #' We would like the select_dg_id input to return NA,
 #' but shiny::selectInput turns NAs into strings.
 #' The input should therefore go through this function.
 #'
 #' @param s string
-#' @rdname mod_indicator
 #' @export
 check_no_dg <- function(s) {
   dplyr::case_when(s == "Ingen" ~ NA, .default = s)
 }
 
-#' Check that the green threshold is lower than the yellow
+#' Check that the accomplishment thresholds are conistent
+#'
+#' This function is intended for use in indicator_server.
+#' Threshold are set for high accomplishment (green)
+#' and medium accomplihment (yellow). The green threshold
+#' should be higher than the yellow. If not, and error message
+#' is displayed.
 #'
 #' @param input Shiny input object
 #' @param conf get_config() output
-#' @rdname mod_indicator
 #' @export
 levels_consistent_check <- function(input, conf) {
   if (!is.na(input$level_green) && !is.na(input$level_yellow)) {
@@ -107,9 +112,13 @@ levels_consistent_check <- function(input, conf) {
 
 #' Display an oversize warning if there are too many characters in the input text
 #'
+#' This function is intended for use in indicator_server.
+#' If the input text for indicator title, short description
+#' or long description is too long according to the specification
+#' in the config file, then an error message is displayed.
+#'
 #' @param oversize Logical
 #' @param conf get_config() output
-#' @rdname mod_indicator
 #' @export
 oversize_check <- function(oversize, conf) {
   if (oversize) {
