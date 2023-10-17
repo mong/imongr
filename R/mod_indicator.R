@@ -61,7 +61,6 @@ indicator_ui <- function(id) {
 #' The input should therefore go through this function.
 #'
 #' @param s string
-#' @export
 check_no_dg <- function(s) {
   dplyr::case_when(s == "Ingen" ~ NA, .default = s)
 }
@@ -76,7 +75,6 @@ check_no_dg <- function(s) {
 #'
 #' @param input Shiny input object
 #' @param conf get_config() output
-#' @export
 levels_consistent_check <- function(input, conf) {
   if (!is.na(input$level_green) && !is.na(input$level_yellow)) {
     if (input$level_direction) {
@@ -119,7 +117,6 @@ levels_consistent_check <- function(input, conf) {
 #'
 #' @param oversize Logical
 #' @param conf get_config() output
-#' @export
 oversize_check <- function(oversize, conf) {
   if (oversize) {
     shiny::HTML(conf$indicator$oversize_message)
