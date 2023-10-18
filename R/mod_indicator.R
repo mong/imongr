@@ -53,6 +53,77 @@ indicator_ui <- function(id) {
   )
 }
 
+#' Replace "Ingen" with NA in a string
+#'
+#' This function is intended for use in indicator_server.
+#' We would like the select_dg_id input to return NA,
+#' but shiny::selectInput turns NAs into strings.
+#' The input should therefore go through this function.
+#'
+#' @param s string
+check_no_dg <- function(s) {
+  dplyr::case_when(s == "Ingen" ~ NA, .default = s)
+}
+
+#' Check that the accomplishment thresholds are conistent
+#'
+#' This function is intended for use in indicator_server.
+#' Threshold are set for high accomplishment (green)
+#' and medium accomplihment (yellow). The green threshold
+#' should be higher than the yellow. If not, and error message
+#' is displayed.
+#'
+#' @param input Shiny input object
+#' @param conf get_config() output
+levels_consistent_check <- function(input, conf) {
+  if (!is.na(input$level_green) && !is.na(input$level_yellow)) {
+    if (input$level_direction) {
+      if (input$level_green >= input$level_yellow) {
+        shinyjs::html("message", "")
+        return(TRUE)
+      } else {
+        shinyjs::html("message", "")
+        shinyjs::html(
+          "message",
+          conf$indicator$level_inconsistent_message
+        )
+        return(FALSE)
+      }
+    } else {
+      if (input$level_yellow >= input$level_green) {
+        shinyjs::html("message", "")
+        return(TRUE)
+      } else {
+        shinyjs::html("message", "")
+        shinyjs::html(
+          "message",
+          conf$indicator$level_inconsistent_message
+        )
+        return(FALSE)
+      }
+    }
+  } else {
+    shinyjs::html("message", "")
+    return(TRUE)
+  }
+}
+
+#' Display an oversize warning if there are too many characters in the input text
+#'
+#' This function is intended for use in indicator_server.
+#' If the input text for indicator title, short description
+#' or long description is too long according to the specification
+#' in the config file, then an error message is displayed.
+#'
+#' @param oversize Logical
+#' @param conf get_config() output
+oversize_check <- function(oversize, conf) {
+  if (oversize) {
+    shiny::HTML(conf$indicator$oversize_message)
+  } else {
+    NULL
+  }
+}
 
 #' @rdname mod_indicator
 #' @export
@@ -73,13 +144,6 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       new_ind_counter = 0
     )
 
-    # We would like the select_dg_id input to return NA,
-    # but shiny::selectInput turns NAs into strings.
-    # The input should therefore go through this function.
-    check_no_dg <- function(s) {
-      dplyr::case_when(s == "Ingen" ~ NA, .default = s)
-    }
-
     rv_return <- shiny::reactiveValues()
 
     level_limits <- shiny::reactive({
@@ -97,36 +161,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     level_consistent <- shiny::reactive({
-      if (!is.na(input$level_green) && !is.na(input$level_yellow)) {
-        if (input$level_direction) {
-          if (input$level_green >= input$level_yellow) {
-            shinyjs::html("message", "")
-            return(TRUE)
-          } else {
-            shinyjs::html("message", "")
-            shinyjs::html(
-              "message",
-              conf$indicator$level_inconsistent_message
-            )
-            return(FALSE)
-          }
-        } else {
-          if (input$level_yellow >= input$level_green) {
-            shinyjs::html("message", "")
-            return(TRUE)
-          } else {
-            shinyjs::html("message", "")
-            shinyjs::html(
-              "message",
-              conf$indicator$level_inconsistent_message
-            )
-            return(FALSE)
-          }
-        }
-      } else {
-        shinyjs::html("message", "")
-        return(TRUE)
-      }
+      levels_consistent_check(input, conf)
     })
 
     shiny::observeEvent(input$indicator_registry, {
@@ -164,11 +199,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     shiny::observeEvent(input$level_direction, {
-      if (input$level_direction) {
-        rv$level_logi <- "st\u00f8rre eller lik:"
-      } else {
-        rv$level_logi <- "mindre eller lik:"
-      }
+      rv$level_logi <- ifelse(input$level_direction, "st\u00f8rre eller lik:", "mindre eller lik:")
       level_consistent()
     })
 
@@ -188,27 +219,15 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     shiny::observeEvent(input$ind_title, {
-      if (nchar(input$ind_title) > 255) {
-        rv$title_oversize <- TRUE
-      } else {
-        rv$title_oversize <- FALSE
-      }
+      rv$title_oversize <- ifelse(nchar(input$ind_title) > 255, TRUE, FALSE)
     })
 
     shiny::observeEvent(input$ind_short, {
-      if (nchar(input$ind_short) > 1023) {
-        rv$short_oversize <- TRUE
-      } else {
-        rv$short_oversize <- FALSE
-      }
+      rv$short_oversize <- ifelse(nchar(input$ind_short) > 1023, TRUE, FALSE)
     })
 
     shiny::observeEvent(input$ind_long, {
-      if (nchar(input$ind_long) > 2047) {
-        rv$long_oversize <- TRUE
-      } else {
-        rv$long_oversize <- FALSE
-      }
+      rv$long_oversize <- ifelse(nchar(input$ind_long) > 2047, TRUE, FALSE)
     })
 
     shiny::observeEvent(input$update_txt, {
@@ -228,8 +247,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         inputType = "text",
         showCancelButton = TRUE,
         callbackR = function(x) {
-
           ind_ids <- pool::dbGetQuery(pool, "SELECT id FROM ind")$id
+
           if (x == FALSE) {
             return(NULL)
           } else {
@@ -287,11 +306,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     output$select_dg_id <- shiny::renderUI({
-      shiny::req(input$indicator_registry, rv$ind_data)
-
-      if (grepl("dg_", rv$ind_data$type)) {
-        return(NULL)
-      }
+      shiny::req(input$indicator_registry, rv$ind_data, !grepl("dg_", rv$ind_data$type))
 
       shiny::selectInput(
         ns("dg_id"), "Tilh\u00f8rende dekningsgradsindikator:",
@@ -420,7 +435,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
-    output$update_indicator_val <- shiny::renderUI({
+    update_check <- function() {
       if (any(c(
         is.null(input$indicator),
         is.null(input$include),
@@ -447,7 +462,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
             as.numeric(input$min_denominator),
             as.numeric(rv$ind_data$min_denominator)
           ),
-          identical(input$type, rv$ind_data$type),
+          identical(input$type, rv$ind_datfilter_fraction_indicatora$type),
           identical(input$format, rv$sformat$format),
           identical(
             as.numeric(input$digits),
@@ -466,6 +481,10 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
           }
         }
       }
+    }
+
+    output$update_indicator_val <- shiny::renderUI({
+      update_check()
     })
 
     output$edit_ind_title <- shiny::renderUI({
@@ -476,12 +495,10 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
+
+
     output$title_oversize <- shiny::renderUI({
-      if (rv$title_oversize) {
-        shiny::HTML(conf$indicator$oversize_message)
-      } else {
-        NULL
-      }
+      oversize_check(rv$title_oversize, conf)
     })
 
     output$edit_ind_short <- shiny::renderUI({
@@ -493,11 +510,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     output$short_oversize <- shiny::renderUI({
-      if (rv$short_oversize) {
-        shiny::HTML(conf$indicator$oversize_message)
-      } else {
-        NULL
-      }
+      oversize_check(rv$short_oversize, conf)
     })
 
     output$edit_ind_long <- shiny::renderUI({
@@ -509,14 +522,10 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     output$long_oversize <- shiny::renderUI({
-      if (rv$long_oversize) {
-        shiny::HTML(conf$indicator$oversize_message)
-      } else {
-        NULL
-      }
+      oversize_check(rv$long_oversize, conf)
     })
 
-    output$update_indicator_txt <- shiny::renderUI({
+    update_indicator_txt_check <- function() {
       if (any(c(rv$title_oversize, rv$short_oversize, rv$long_oversize))) {
         NULL
       } else {
@@ -531,6 +540,10 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
           shiny::actionButton(ns("update_txt"), "Oppdat\u00e9r tekster")
         }
       }
+    }
+
+    output$update_indicator_txt <- shiny::renderUI({
+      update_indicator_txt_check()
     })
 
     return(rv_return)

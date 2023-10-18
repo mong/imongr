@@ -173,3 +173,9 @@ reference:
     - get_table_raw
     - registry_status_report
 
+  - title: internal
+    contents:
+    - check_no_dg
+    - levels_consistent_check
+    - oversize_check
+
