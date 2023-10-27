@@ -71,7 +71,6 @@ services:
       << : *environment
       PASSWORD: password
       IMONGR_CONTEXT: DEV
-      R_LIBS_USER: /home/coder/R/library
 
   app:
     image: hnskde/imongr:latest
