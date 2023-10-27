@@ -1,43 +1,41 @@
 version: '3.6'
 
+x-db: &db
+  image: mariadb
+  restart: "no"
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: imongr
+    MYSQL_USER: imongr
+    MYSQL_PASSWORD: imongr
+  volumes:
+    - ./inst:/docker-entrypoint-initdb.d
+
+x-environment: &environment
+  IMONGR_DB_HOST: db
+  IMONGR_DB_HOST_VERIFY: db-verify
+  IMONGR_DB_HOST_QA: db-qa
+  IMONGR_DB_NAME: imongr
+  IMONGR_DB_USER: imongr
+  IMONGR_DB_PASS: imongr
+  IMONGR_ADMINER_URL: http://localhost:8888
+  SHINYPROXY_USERNAME: imongr@mongr.no
+  SHINYPROXY_USERGROUPS: PROVIDER,MANAGER
+
 services:
 
   db:
-    image: mariadb
-    restart: "no"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: imongr
-      MYSQL_USER: imongr
-      MYSQL_PASSWORD: imongr
-    volumes:
-      - ./inst:/docker-entrypoint-initdb.d
+    <<: *db
     ports:
       - 3331:3306
 
   db-verify:
-    image: mariadb
-    restart: "no"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: imongr
-      MYSQL_USER: imongr
-      MYSQL_PASSWORD: imongr
-    volumes:
-      - ./inst:/docker-entrypoint-initdb.d
+    <<: *db
     ports:
       - 3332:3306
 
   db-qa:
-    image: mariadb
-    restart: "no"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: imongr
-      MYSQL_USER: imongr
-      MYSQL_PASSWORD: imongr
-    volumes:
-      - ./inst:/docker-entrypoint-initdb.d
+    <<: *db
     ports:
       - 3333:3306
 
@@ -54,7 +52,9 @@ services:
     ports:
       - 8787:8787
     environment:
-      PASSWORD: password
+      << : *environment
+      DISABLE_AUTH: "true"
+      IMONGR_CONTEXT: DEV
 
   code-server:
     depends_on:
@@ -68,22 +68,17 @@ services:
     ports:
       - 8080:8080
     environment:
+      << : *environment
       PASSWORD: password
+      IMONGR_CONTEXT: DEV
+      R_LIBS_USER: /home/coder/R/library
 
   app:
     image: hnskde/imongr:latest
     ports:
       - 3838:3838
     environment:
-      IMONGR_DB_HOST: db
-      IMONGR_DB_HOST_VERIFY: db-verify
-      IMONGR_DB_HOST_QA: db-qa
-      IMONGR_DB_NAME: imongr
-      IMONGR_DB_USER: imongr
-      IMONGR_DB_PASS: imongr
-      IMONGR_ADMINER_URL: http://localhost:8888
-      SHINYPROXY_USERNAME: imongr@mongr.no
-      SHINYPROXY_USERGROUPS: PROVIDER,MANAGER
+      << : *environment
 
   adminer:
     depends_on:
