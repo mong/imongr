@@ -28,6 +28,9 @@
     <loc>/reference/app_ui.html</loc>
   </url>
   <url>
+    <loc>/reference/check_no_dg.html</loc>
+  </url>
+  <url>
     <loc>/reference/config.html</loc>
   </url>
   <url>
@@ -56,6 +59,9 @@
   </url>
   <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/levels_consistent_check.html</loc>
   </url>
   <url>
     <loc>/reference/medfield.html</loc>
@@ -95,6 +101,9 @@
   </url>
   <url>
     <loc>/reference/orgnr_shortname.html</loc>
+  </url>
+  <url>
+    <loc>/reference/oversize_check.html</loc>
   </url>
   <url>
     <loc>/reference/pipe.html</loc>
