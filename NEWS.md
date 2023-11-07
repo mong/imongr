@@ -1,3 +1,13 @@
+# imongr 1.3.0
+
+- Legg til indikator i UI ([#338](https://github.com/mong/imongr/pull/338))
+- Slettet 'get_indicator'-funksjon ([#346](https://github.com/mong/imongr/pull/346))
+- reduser syklisk kompleksitet ([#339](https://github.com/mong/imongr/pull/339))
+- Forenkling av docker-compose med yaml-merge ([#347](https://github.com/mong/imongr/pull/347))
+- Cache docker-bygging for github actions ([#348](https://github.com/mong/imongr/pull/348))
+- Update hnskde/imongr-base-r Docker tag to v2 ([#350](https://github.com/mong/imongr/pull/350))
+- Bygg og dytt opp docker-image for arm64 parallelt med amd64 ([#349](https://github.com/mong/imongr/pull/349))
+
 # imongr 1.2.0
 
 - Aggreger indikator og dekningsgrad basert på kortnavn istedenfor orgnummer ([#331](https://github.com/mong/imongr/pull/331))
