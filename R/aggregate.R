@@ -18,8 +18,6 @@
 #'   or patient residency}
 #'   \item{count}{Number of observations of the current record}
 #'   \item{var}{Summarised indicator value, for instance mean or median}
-#'   \item{level}{No longer in use}
-#'   \item{level_direction}{No longer in use}
 #'   \item{unit_level}{Code providing level of aggregation such as 'hospital',
 #'   'hf' (health trust), 'rhf' (regional health trust) and 'national'}
 #'   \item{unit_name}{Name of the organization unit}
@@ -150,12 +148,6 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
     aggs <- df_noagg
   }
 
-  # Previously a function calculated levels on data
-  # ("H", "M" or "L"). This is no longer done by imongr
-  # but directly in the browser (mongts/apps/skde).
-  # Dummy level and level_direction are defined here to avoid db error.
-  aggs <- aggs %>% dplyr::mutate(level = "", level_direction = NA)
-
   # add/update dg and all depending indicators
   aggs <- agg_dg(aggs, ind)
 
@@ -203,8 +195,7 @@ agg_dg <- function(aggs, ind) {
       dplyr::select(
         "ind_id", "dg_id", "unit_level",
         "unit_name", "orgnr", "year",
-        "denominator", "var", "level",
-        "level_direction", "dg", "context"
+        "denominator", "var", "dg", "context"
       )
 
     # update aggs from current year and newer with dg from current year

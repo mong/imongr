@@ -65,8 +65,6 @@ The aggregate consists of the following variables:
   or patient residency}
   \item{count}{Number of observations of the current record}
   \item{var}{Summarised indicator value, for instance mean or median}
-  \item{level}{No longer in use}
-  \item{level_direction}{No longer in use}
   \item{unit_level}{Code providing level of aggregation such as 'hospital',
   'hf' (health trust), 'rhf' (regional health trust) and 'national'}
   \item{unit_name}{Name of the organization unit}
