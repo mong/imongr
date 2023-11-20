@@ -1,3 +1,9 @@
+# imongr 2.0.0
+
+## Breaking change
+
+Removed the use of `level` and `level_direction` from `agg_data` table ([#326](https://github.com/mong/imongr/pull/326)).
+
 # imongr 1.3.0
 
 - Legg til indikator i UI ([#338](https://github.com/mong/imongr/pull/338))
