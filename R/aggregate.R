@@ -68,11 +68,8 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
     )
   df <- df %>%
     dplyr::filter(!.data$ind_id %in% ind_noagg)
-  message(paste(
-    "  removed", dim(df_noagg)[1], "rows for indicators that",
-    "should not be aggregated while leaving", dim(df)[1],
-    "rows for aggregation"
-  ))
+  message(paste("  Fjerner", dim(df_noagg)[1], "rader for indikatorer"))
+  message(paste("   ", dim(df)[1], "aggregerbare rader gjenstår"))
 
   if (dim(df)[1] > 0) {
     unit_levels <- unique(df$unit_level)
@@ -113,8 +110,8 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
     # DANGER! As of the Sep 15 2020 project meeting, pre-aggregate on short_name
     # DANGER! A less risky way of proper handling of 'groups' should be applied
     # DANGER! at a later stage
-    message("  pre-aggregating by short name")
-    message(paste("    rows before pre-aggregation:", dim(df)[1]))
+    message("  Pre-aggregerer etter kortnavn")
+    message(paste("    Rader f\u00f8r pre-aggregering:", dim(df)[1]))
     aggs <- aggs %>%
       dplyr::group_by(
         .data$context, .data$year, .data$ind_id, .data$unit_level,
@@ -125,7 +122,7 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
         denominator = sum(.data$denominator),
         orgnr = min(.data$orgnr)
       )
-    message(paste("    rows after pre-aggregation:", dim(df)[1]))
+    message(paste("    Rader etter pre-aggregering:", dim(df)[1]))
     # DANGER end!
 
 
@@ -144,7 +141,7 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
     # add data for indicators that is not aggregated
     aggs <- rbind(aggs, df_noagg)
   } else {
-    message("  got nothing to aggregate")
+    message("  Ingenting \u00e5 aggregere")
     aggs <- df_noagg
   }
 

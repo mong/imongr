@@ -174,7 +174,7 @@ test_that("a new user can be created", {
 
 test_that("indicator texts can be updated", {
   check_db()
-  expect_silent(
+  res <- testthat::evaluate_promise(
     update_ind_text(
       pool,
       data.frame(
@@ -185,11 +185,13 @@ test_that("indicator texts can be updated", {
       )
     )
   )
+  # Check that we get two messages (start and end of function)
+  expect_equal(length(res$messages), 2)
 })
 
 test_that("indicator values can be updated", {
   check_db()
-  expect_silent(
+  res <- testthat::evaluate_promise(
     update_ind_val(
       pool,
       data.frame(
@@ -205,6 +207,8 @@ test_that("indicator values can be updated", {
       )
     )
   )
+  # Check that we get two messages (start and end of function)
+  expect_equal(length(res$messages), 2)
 })
 
 # clean up

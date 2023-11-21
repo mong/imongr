@@ -338,28 +338,36 @@ app_server <- function(input, output, session) {
   # mine field
   shiny::observeEvent(input$agg_all, {
     withCallingHandlers(
-      {
-        shinyjs::html("sysMessage", "")
-        shinyjs::html("funMessage", "")
-        shinyjs::html("funMessage", agg_all_data(rv$pool))
-      },
+
+      tryCatch(
+        agg_all_data(rv$pool),
+        error = function(e) {
+          message(paste0("<font color=\"#FF0000\">", e$message, "</font><br>"))
+        }
+      ),
+
       message = function(m) {
         shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
       }
     )
   })
+
   shiny::observeEvent(input$clean_agg, {
     withCallingHandlers(
-      {
-        shinyjs::html("sysMessage", "")
-        shinyjs::html("funMessage", "")
-        shinyjs::html("funMessage", clean_agg_data(rv$pool))
-      },
+
+      tryCatch(
+        clean_agg_data(rv$pool),
+        error = function(e) {
+          message(paste0("<font color=\"#FF0000\">", e$message, "</font><br>"))
+        }
+      ),
+
       message = function(m) {
         shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
       }
     )
   })
+
   output$mine_field_uc <- shiny::renderUI({
     shiny::tagList(
       shiny::HTML(

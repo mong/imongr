@@ -229,9 +229,9 @@ publish:
     står ansvarlig for kvalitetsindikatorer med tilhørende beskrivelser når
     disse nå legges åpent ut. Det bekreftes herved at jeg er gitt fullmakt til å
     gjennomføre denne publiseringen og at registeret er kjent med og godtar
-  reciept:
+  reciept: 
     title: Kanon!
-    body: Dine data er nå publisert
+    body: Dine data er nå publisert (se etter røde feilmeldinger i loggen)
   doc:
     verify: >
       har en egen nettside som kan benyttes til gjennomgang og
