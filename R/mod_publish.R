@@ -251,13 +251,21 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
           df = publish_data(),
           terms_version = version_info(newline = "")
         ),
+
         message = function(m) {
           shinyjs::html(id = "sysMessagePublish", html = m$message, add = TRUE)
         }
       )
 
       withCallingHandlers(
-        insert_agg_data(pool, publish_data()), 
+        tryCatch(
+          insert_agg_data(pool, publish_data()),
+          error = function(e) {
+            message("\nF\u00f8lgende feil oppsto:\n")
+            message(e$message)
+          }
+        ),
+
         message = function(m) {
           shinyjs::html(id = "sysMessagePublish", html = m$message, add = TRUE)
         }
