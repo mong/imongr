@@ -112,7 +112,7 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
     # Main page text, heading "Kvalitetskontroll"
     output$publish_verify_doc <- shiny::renderText({
       verify_hypertext <- paste0(
-        "<a href='https://verify.skde.      <br>no/kvalitetsregistre/",
+        "<a href='https://verify.skde.no/kvalitetsregistre/",
         get_registry_name(pool_verify, shiny::req(input$publish_registry),
           full_name = FALSE
         ),
