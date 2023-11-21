@@ -287,7 +287,7 @@ test_that("indicator module server provides sensible output", {
       expect_false(rv$title_oversize)
       expect_false(rv$short_oversize)
       expect_false(rv$long_oversize)
-      expect_silent(session$setInputs(update_txt = 1))
+      expect_true(session$setInputs(update_txt = 1))
       session$setInputs(
         ind_title = paste0(rep("a", 256), collapse = ""),
         ind_short = paste0(rep("a", 1024), collapse = ""),
