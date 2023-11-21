@@ -97,7 +97,7 @@ insert_data_verify <- function(pool, df, update = NA, affirm = NA) {
 #' @export
 insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, terms_version = NA) {
   # Indicator data for the checksum
-  message("Publiserer data\n")
+  message("Publiserer data")
 
   ind <- get_table(pool_prod, table = "ind") %>%
     dplyr::filter(.data$id %in% unique(df$ind_id))
@@ -123,7 +123,7 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
   # To iterate over
   new_delivery_ids <- unique(filter_values$delivery_id)
 
-  message(paste0("Det er ", length(new_delivery_ids), " leveranse(r) klar til publisering\n"))
+  message(paste0("Det er ", length(new_delivery_ids), " leveranse(r) klar til publisering"))
 
   # New row in the publish table in prod
   new_publish <- data.frame(
@@ -136,7 +136,7 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
   # Orgnr for the data
   df <- dplyr::left_join(df, get_all_orgnr(pool_prod), by = "orgnr")
 
-  message("Oppdaterer publiseringstabeller\n")
+  message("Oppdaterer publiseringstabeller")
   # Insert new row in publish and get the row id
   insert_table(pool_prod, "publish", new_publish)
   new_publish_id_prod <- pool::dbGetQuery(pool_prod, "SELECT MAX(id) FROM publish")
@@ -148,6 +148,7 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
 
   # Iterate over deliveries and insert data into prod
   for (delivery_id_i in new_delivery_ids) {
+    message("")
     message(paste0("Publiserer leveranse nummer ", delivery_id_i))
 
     # Filter data to include only the lines uploaded in the delivery
@@ -178,17 +179,17 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
       published = 1
     )
 
-    message("Sletter tidligere indikatordata")
+    message("  Sletter tidligere indikatordata")
     delete_indicator_data(pool_prod, df_i)
 
-    message("Oppdaterer leveransetabell i prod")
+    message("  Oppdaterer leveransetabell i prod")
     insert_table(pool_prod, "delivery", delivery)
 
     df_id <- pool::dbGetQuery(pool_prod, "SELECT MAX(id) from delivery")
 
     colnames(df_id) <- "delivery_id"
 
-    message("Setter inn ny data i datatabellen")
+    message("  Setter inn ny data i datatabellen")
     insert_table(pool_prod, "data", cbind(df_i, df_id))
 
     ##### In verify #####
@@ -198,7 +199,7 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
       "WHERE id =", delivery_i$id
     )
 
-    message("Oppdaterer publiseringstabell i verify\n")
+    message("  Oppdaterer publiseringstabell i verify")
     pool::dbExecute(pool_verify, query)
   }
 
@@ -233,7 +234,7 @@ insert_agg_data <- function(pool, df) {
 
   reg <- unique(df$registry_id)
   for (i in seq_len(length(reg))) {
-    message(paste("Processing", get_registry_name(pool, reg[i])))
+    message(paste("Register:", get_registry_name(pool, reg[i])))
     dat <- dplyr::filter(df, .data$registry_id == reg[i]) %>%
       dplyr::select(-c("registry_id"))
     # if delivery is a subset of registry indicators AND dg is part of subset,
@@ -242,7 +243,7 @@ insert_agg_data <- function(pool, df) {
       get_registry_indicators(pool, reg[i])$id,
       unique(dat$ind_id)
     )) {
-      message("  subset of indicators provided, fetching a compleete data set")
+      message("  Henter alle indikatorer")
       dat <- get_registry_data(pool, reg[i])
       if (!"unit_level" %in% names(dat)) {
         dat <- dplyr::left_join(dat, all_orgnr, by = "orgnr")
@@ -252,19 +253,19 @@ insert_agg_data <- function(pool, df) {
     ind_noagg <- indicator_is_fraction(pool, dat, conf, return_ind = TRUE)
     ind_noagg <- ind_noagg$ind[!ind_noagg$is_fraction]
 
-    message("  aggregating")
+    message("  Aggregerer")
     dat <- agg(dat, org, ind, ind_noagg, orgnr_name_map)
-    message("  delete old agg data")
+    message("  Sletter gammel aggregert data")
     delete_agg_data(pool, dat)
-    message("  inserting fresh agg data")
+    message("  Henter ny aggregert data")
     insert_table(pool, "agg_data", dat)
   }
-  message("\nUpdating delivery timings")
+  message("\nOppdaterer leveransetidspunkt")
   # Get all indicator ids from delivered registries,
   # since all dates are removed from agg_data in the loop above.
   all_ind_id <- dplyr::filter(ind_reg, .data$registry_id %in% reg)$id
   update_aggdata_delivery(pool, all_ind_id)
-  message("Done!")
+  message("Ferdig\n")
 }
 
 #' @rdname ops
@@ -301,7 +302,7 @@ agg_all_data <- function(pool) {
 #' @export
 clean_agg_data <- function(pool) {
   message("Start cleaning agg_data")
-  
+
   # remove data for indicators not present in ind table
   global_indicator <- get_table(pool, "ind")$id
   agg_data_indicator <- unique(get_table(pool, "agg_data")$ind_id)
@@ -373,6 +374,9 @@ WHERE
 #' @rdname ops
 #' @export
 update_ind_text <- function(pool, df) {
+
+  message("Oppdaterer indikatortekst")
+
   query <- paste0("
 UPDATE
   ind
@@ -395,11 +399,16 @@ WHERE
   DBI::dbBind(rs, params)
   DBI::dbClearResult(rs)
   pool::poolReturn(con)
+
+  message("Ferdig\n")
 }
 
 #' @rdname ops
 #' @export
 update_ind_val <- function(pool, df) {
+
+  message("Oppdaterer indikatorverdier")
+
   query <- paste0("
 UPDATE
   ind
@@ -432,4 +441,6 @@ WHERE
   DBI::dbBind(rs, params)
   DBI::dbClearResult(rs)
   pool::poolReturn(con)
+
+  message("Ferdig\n")
 }

@@ -39,7 +39,7 @@ publish_ui <- function(id) {
         shiny::htmlOutput(ns("publish_verify_doc")),
         shiny::h3("Veiledning"),
         shiny::htmlOutput(ns("publish_main_doc")),
-        shiny::p(shiny::em("System message:")),
+        shiny::p(shiny::em("Logg:")),
         shiny::verbatimTextOutput(ns("sysMessagePublish"))
       )
     )
@@ -112,7 +112,7 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
     # Main page text, heading "Kvalitetskontroll"
     output$publish_verify_doc <- shiny::renderText({
       verify_hypertext <- paste0(
-        "<a href='https://verify.skde.no/kvalitetsregistre/",
+        "<a href='https://verify.skde.      <br>no/kvalitetsregistre/",
         get_registry_name(pool_verify, shiny::req(input$publish_registry),
           full_name = FALSE
         ),
@@ -241,15 +241,45 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
 
     # Publish new data
     shiny::observeEvent(input$publish, {
-      update_ind_text(pool, publish_ind())
-      update_ind_val(pool, publish_ind())
 
       withCallingHandlers(
-        insert_data_prod(
-          pool_verify = pool_verify,
-          pool_prod = pool,
-          df = publish_data(),
-          terms_version = version_info(newline = "")
+        tryCatch(
+          update_ind_text(pool, publish_ind()),
+          error = function(e) {
+            message(paste0("<font color=\"#FF0000\">", e$message, "</font><br>"))
+          }
+        ),
+
+        message = function(m) {
+          shinyjs::html(id = "sysMessagePublish", html = m$message, add = TRUE)
+        }
+      )
+
+      withCallingHandlers(
+        tryCatch(
+          update_ind_val(pool, publish_ind()),
+          error = function(e) {
+            message(paste0("<font color=\"#FF0000\">", e$message, "</font><br>"))
+          }
+        ),
+
+        message = function(m) {
+          shinyjs::html(id = "sysMessagePublish", html = m$message, add = TRUE)
+        }
+      )
+
+      withCallingHandlers(
+        tryCatch(
+          insert_data_prod(
+            pool_verify = pool_verify,
+            pool_prod = pool,
+            df = publish_data(),
+            terms_version = version_info(newline = "")
+          ),
+
+          error = function(e) {
+            message(paste0("<font color=\"#FF0000\">", e$message, "</font><br>"))
+          }
         ),
 
         message = function(m) {
@@ -261,8 +291,7 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
         tryCatch(
           insert_agg_data(pool, publish_data()),
           error = function(e) {
-            message("\nF\u00f8lgende feil oppsto:\n")
-            message(e$message)
+            message(paste0("<font color=\"#FF0000\">", e$message, "</font>"))
           }
         ),
 
