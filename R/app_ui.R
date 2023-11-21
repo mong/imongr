@@ -153,8 +153,6 @@ app_ui <- function() {
             shiny::mainPanel(
               shiny::p(shiny::em("System message:")),
               shiny::verbatimTextOutput("sysMessage"),
-              shiny::p(shiny::em("Function message:")),
-              shiny::verbatimTextOutput("funMessage")
             )
           )
         ),
