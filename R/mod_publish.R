@@ -38,7 +38,9 @@ publish_ui <- function(id) {
         shiny::h3("Kvalitetskontroll"),
         shiny::htmlOutput(ns("publish_verify_doc")),
         shiny::h3("Veiledning"),
-        shiny::htmlOutput(ns("publish_main_doc"))
+        shiny::htmlOutput(ns("publish_main_doc")),
+        shiny::p(shiny::em("System message:")),
+        shiny::verbatimTextOutput(ns("sysMessagePublish"))
       )
     )
   )
@@ -241,19 +243,34 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
     shiny::observeEvent(input$publish, {
       update_ind_text(pool, publish_ind())
       update_ind_val(pool, publish_ind())
-      insert_data_prod(
-        pool_verify = pool_verify,
-        pool_prod = pool,
-        df = publish_data(),
-        terms_version = version_info(newline = "")
+
+      withCallingHandlers(
+        insert_data_prod(
+          pool_verify = pool_verify,
+          pool_prod = pool,
+          df = publish_data(),
+          terms_version = version_info(newline = "")
+        ),
+        message = function(m) {
+          shinyjs::html(id = "sysMessagePublish", html = m$message, add = TRUE)
+        }
       )
-      insert_agg_data(pool, publish_data())
+
+      withCallingHandlers(
+        insert_agg_data(pool, publish_data()), 
+        message = function(m) {
+          shinyjs::html(id = "sysMessagePublish", html = m$message, add = TRUE)
+        }
+      )
+
       rv$inv_publish <- rv$inv_publish + 1
       shinyalert::shinyalert(
         conf$publish$reciept$title, conf$publish$reciept$body,
         type = "success",
         showConfirmButton = FALSE, timer = 7000
       )
+
+
     })
 
     return(rv_return)

@@ -261,6 +261,7 @@ publish:
       fint kan gjentas så ofte som man selv ønsker. Ved publisering vil alle
       indikatordata og indikatorbeskrivelser som fra før er publisert for valgt
       register erstattes av de data som kopieres fra kvalitetskontrollen.
+      <b>
 upload:
   file:
     vars:
