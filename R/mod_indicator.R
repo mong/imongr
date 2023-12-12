@@ -462,7 +462,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
             as.numeric(input$min_denominator),
             as.numeric(rv$ind_data$min_denominator)
           ),
-          identical(input$type, rv$ind_datfilter_fraction_indicatora$type),
+          identical(input$type, rv$ind_data$type),
           identical(input$format, rv$sformat$format),
           identical(
             as.numeric(input$digits),
