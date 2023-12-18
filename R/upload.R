@@ -246,7 +246,7 @@ check_natural_var <- function(registry, df, ind, conf, pool) {
 
   if ("var" %in% names(df) && is.numeric(df$var) && "ind_id" %in% names(df)) {
     # check only on indicator data that are true fractions
-    df <- filter_fraction_indicator(pool, df, conf)
+    df <- filter_fraction_indicator(pool, df, conf, ind = ind)
     if (dim(df)[1] < 1) {
       return(list(fail = FALSE, report = ""))
     }
@@ -271,7 +271,7 @@ check_overflow_var <- function(registry, df, ind, conf, pool) {
 
   if (is_fraction) {
     # check only on indicator data that are true fractions
-    df <- filter_fraction_indicator(pool, df, conf)
+    df <- filter_fraction_indicator(pool, df, conf, ind = ind)
     if (dim(df)[1] < 1) {
       return(list(fail = FALSE, report = ""))
     }
@@ -434,9 +434,11 @@ sample_df <- function(df, skip = c(""), n, random = FALSE) {
 
 #' @rdname upload
 #' @export
-indicator_is_fraction <- function(pool, df, conf, return_ind = FALSE) {
+indicator_is_fraction <- function(pool, df, conf, return_ind = FALSE, ind = NULL) {
   ind_id <- unique(df$ind_id)
-  ind <- imongr::get_table(pool, "ind")
+  if (is.null(ind)) {
+    ind <- imongr::get_table(pool, "ind")
+  }
   ind <- ind %>%
     dplyr::filter(.data$id %in% ind_id) %>%
     dplyr::select("id", "type")
@@ -450,8 +452,8 @@ indicator_is_fraction <- function(pool, df, conf, return_ind = FALSE) {
 
 #' @rdname upload
 #' @export
-filter_fraction_indicator <- function(pool, df, conf) {
-  frac <- indicator_is_fraction(pool, df, conf, return_ind = TRUE)
+filter_fraction_indicator <- function(pool, df, conf, ind) {
+  frac <- indicator_is_fraction(pool, df, conf, return_ind = TRUE, ind = ind)
 
   df %>%
     dplyr::left_join(frac, by = c("ind_id" = "ind")) %>%

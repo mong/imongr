@@ -367,7 +367,7 @@ test_that("true fractions can be detected", {
 test_that("true fractions can be filtered from mixing data", {
   check_db()
   expect_identical(
-    filter_fraction_indicator(pool, df_mix, conf),
+    filter_fraction_indicator(pool, df_mix, conf, ind),
     df
   )
 })
