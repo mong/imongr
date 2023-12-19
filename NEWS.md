@@ -1,4 +1,4 @@
-# imongr 2.1.0
+# imongr 2.0.1
 
 - Fremdriftslogg og feilhåndtering under publisering og aggregering ([#356] (https://github.com/mong/imongr/pull/356)). 
 - Fiks av bug i indikatormenyen hvor "Oppdater verdi"-knapp ikke forsvant ([#365] (https://github.com/mong/imongr/pull/365)). 
