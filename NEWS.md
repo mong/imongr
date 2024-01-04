@@ -1,3 +1,5 @@
+# Ikke publisert
+
 # imongr 2.0.1
 
 - Fremdriftslogg og feilhåndtering under publisering og aggregering ([#356] (https://github.com/mong/imongr/pull/356)). 
