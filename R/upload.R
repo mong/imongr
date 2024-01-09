@@ -381,6 +381,36 @@ check_values_exists <- function(registry, df, ind, conf, pool) {
 
 #' @rdname upload
 #' @export
+check_numeric_year <- function(registry, df, ind, conf, pool) {
+  fail <- TRUE
+  report <- ""
+  if ("year" %in% names(df)) {
+    if (is.numeric(df$year) && !any(is.na(df$year))) {
+      fail <- FALSE
+    }
+  } else {
+    report <- conf$upload$check_impossible
+  }
+  list(fail = fail, report = report)
+}
+
+#' @rdname upload
+#' @export
+check_natural_year <- function(registry, df, ind, conf, pool) {
+  fail <- TRUE
+  report <- ""
+  if ("year" %in% names(df) && is.numeric(df$year) && !any(is.na(df$year))) {
+    if (all(natural(df$year))) {
+      fail <- FALSE
+    }
+  } else {
+    report <- conf$upload$check_impossible
+  }
+  list(fail = fail, report = report)
+}
+
+#' @rdname upload
+#' @export
 csv_to_df <- function(path, sep = ",", dec, encoding = "UTF-8") {
   if (!file.exists(path)) {
     stop(paste("The file", path, "does not exist!"))

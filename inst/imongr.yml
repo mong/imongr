@@ -311,6 +311,10 @@ upload:
       En eller flere verdier i denominator er ikke naturlige tall
     zero_denominator: |-
       En eller flere verdier i denominator er lik 0
+    numeric_year: |-
+      En eller flere verdier i year er ikke numerisk
+    natural_year: |-
+      En eller flere verdier i year er ikke naturlige tall
     values_exists: |-
       En eller flere verdier mangler
     duplicated_inds: |-

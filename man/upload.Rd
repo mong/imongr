@@ -25,6 +25,8 @@
 \alias{check_zero_denominator}
 \alias{check_duplicated_inds}
 \alias{check_values_exists}
+\alias{check_numeric_year}
+\alias{check_natural_year}
 \title{Upload data to imongr}
 \usage{
 check_report(registry, df, ind, pool)
@@ -62,6 +64,10 @@ check_zero_denominator(registry, df, ind, conf, pool)
 check_duplicated_inds(registry, df, ind, conf, pool)
 
 check_values_exists(registry, df, ind, conf, pool)
+
+check_numeric_year(registry, df, ind, conf, pool)
+
+check_natural_year(registry, df, ind, conf, pool)
 
 csv_to_df(path, sep = ",", dec, encoding = "UTF-8")
 
