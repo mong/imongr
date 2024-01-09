@@ -321,7 +321,7 @@ check_natural_denominator <- function(registry, df, ind, conf, pool) {
 check_zero_denominator <- function(registry, df, ind, conf, pool) {
   fail <- TRUE
   report <- ""
-  if ("denominator" %in% names(df) && is.numeric(df$denominator)) {
+  if ("denominator" %in% names(df) && is.numeric(df$denominator) && !any(is.na(df$denominator))) {
     if (all(df$denominator > 0)) {
       fail <- FALSE
     }
