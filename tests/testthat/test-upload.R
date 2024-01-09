@@ -158,6 +158,25 @@ if (is.null(check_db(is_test_that = FALSE))) {
   ind <- get_registry_ind(pool, 10)
 }
 
+test_that("check_upload is working", {
+  check_db()
+  # No failed tests
+  expect_false(any(check_upload(registry, df, ind, pool)$fail))
+
+  df_missing <- rbind(
+    df,
+    data.frame(
+      context = "caregiver",
+      year = NA,
+      orgnr = 974633574,
+      ind_id = "norgast_dummy",
+      var = 0,
+      denominator = NA
+    )
+  )
+  expect_true(any(check_upload(registry, df_missing, ind, pool)$fail))
+})
+
 test_that("mixed indicator type check is working", {
   check_db()
   expect_true(check_mixing_ind(registry, df_mix, ind, conf, pool)$fail)
