@@ -172,7 +172,33 @@ test_that("check_upload is working", {
       orgnr = 974633574,
       ind_id = "norgast_dummy",
       var = 0,
+      denominator = 12
+    )
+  )
+  expect_true(any(check_upload(registry, df_missing, ind, pool)$fail))
+  expect_true("'Kolonne year mangler en eller flere verdier.'" %in%
+                check_upload(registry, df_missing, ind, pool)$report)
+  df_missing <- rbind(
+    df,
+    data.frame(
+      context = "caregiver",
+      year = 2000,
+      orgnr = 974633574,
+      ind_id = "norgast_dummy",
+      var = 0,
       denominator = NA
+    )
+  )
+  expect_true(any(check_upload(registry, df_missing, ind, pool)$fail))
+  df_missing <- rbind(
+    df,
+    data.frame(
+      context = "caregiver",
+      year = 2000,
+      orgnr = 974633574,
+      ind_id = "norgast_dummy",
+      var = NA,
+      denominator = 12
     )
   )
   expect_true(any(check_upload(registry, df_missing, ind, pool)$fail))
