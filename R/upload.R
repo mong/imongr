@@ -358,7 +358,23 @@ check_duplicated_inds <- function(registry, df, ind, conf, pool) {
       report <- unique(df_duplicated$ind_id)
     }
   } else {
-    report <- conf$upload$check_impossible
+    report <- conf$upload$check$values_exists
+  }
+  list(fail = fail, report = report)
+}
+
+#' Check if data delivered all have values
+#' @rdname upload
+#' @export
+check_values_exists <- function(registry, df, ind, conf, pool) {
+  fail <- TRUE
+  report <- ""
+  for (columns in names(df)) {
+    if (any(is.na(df[[columns]])) || any(df[[columns]] == "")) {
+      return(list(fail = TRUE, report = paste0("Kolonne ", columns, " mangler en eller flere verdier.")))
+    } else {
+      fail <- FALSE
+    }
   }
   list(fail = fail, report = report)
 }

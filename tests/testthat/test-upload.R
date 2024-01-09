@@ -163,6 +163,7 @@ test_that("check_upload is working", {
   # No failed tests
   expect_false(any(check_upload(registry, df, ind, pool)$fail))
 
+  # Fail without error, but with fail = TRUE if denominator = NA
   df_missing <- rbind(
     df,
     data.frame(
@@ -424,3 +425,34 @@ Sys.setenv(IMONGR_DB_NAME = env_name)
 Sys.setenv(IMONGR_DB_HOST = env_host)
 Sys.setenv(SHINYPROXY_USERNAME = env_user_name)
 Sys.setenv(SHINYPROXY_USERGROUPS = env_user_groups)
+
+# Tests where pool is not needed
+
+testthat::test_that("check_value_exists can find missing values", {
+  column1 <- c("value 1", "value 2", "value 3")
+  column2 <- c("", "value 2", "value 3")
+  column3 <- c(1234, 4321, NA)
+
+  testthat::expect_equal(check_values_exists(
+    conf = conf,
+    df = data.frame(column1)
+  )$fail, FALSE)
+
+  testthat::expect_equal(check_values_exists(
+    conf = conf,
+    df = data.frame(column1, column2)
+  ), list(
+    fail = TRUE,
+    report = "Kolonne column2 mangler en eller flere verdier."
+  )
+  )
+
+  testthat::expect_equal(check_values_exists(
+    conf = conf,
+    df = data.frame(column1, column3)
+  ), list(
+    fail = TRUE,
+    report = "Kolonne column3 mangler en eller flere verdier."
+  )
+  )
+})
