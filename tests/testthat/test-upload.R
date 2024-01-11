@@ -177,6 +177,9 @@ test_that("error message when column is missing", {
   expect_in(c(paste0("'", conf$upload$check_impossible, "'"),
               "'year'"),
             fail_list$report)
+  # without errors
+  fail_list <- check_upload(registry, df, ind, pool)
+  expect_false(TRUE %in% fail_list$fail)
 })
 
 test_that("mixed indicator type check is working", {

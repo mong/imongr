@@ -335,8 +335,8 @@ check_zero_denominator <- function(registry, df, ind, conf, pool) {
 #' @export
 check_duplicated_inds <- function(registry, df, ind, conf, pool) {
 
-  fail <- FALSE
-  report <- ""
+  fail <- TRUE
+  report <- conf$upload$check_impossible
 
   tryCatch(
     {
@@ -352,6 +352,9 @@ check_duplicated_inds <- function(registry, df, ind, conf, pool) {
         dplyr::count() %>%
         dplyr::filter(.data$n > 1)
 
+      # will pass test if everything above run without errors
+      fail <- FALSE
+      report <- ""
       if (nrow(df_duplicated) > 0) {
         fail <- TRUE
         report <- unique(df_duplicated$ind_id)
@@ -360,10 +363,6 @@ check_duplicated_inds <- function(registry, df, ind, conf, pool) {
     error = function(e) {
       # gracefully continue if error
       return(NULL)
-    },
-    finally = {
-      fail <- TRUE
-      report <- conf$upload$check_impossible
     }
   )
   list(fail = fail, report = report)
