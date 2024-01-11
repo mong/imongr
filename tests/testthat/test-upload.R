@@ -158,6 +158,27 @@ if (is.null(check_db(is_test_that = FALSE))) {
   ind <- get_registry_ind(pool, 10)
 }
 
+test_that("error message when column is missing", {
+  check_db()
+  # Remove context column
+  df_miss <- df |> dplyr::mutate(context = NULL)
+  fail_list <- check_upload(registry, df_miss, ind, pool)
+  expect_true(TRUE %in% fail_list$fail)
+  # The list is of length 1 if error
+  expect_true(length(fail_list$fail) > 1)
+  expect_in(c(paste0("'", conf$upload$check_impossible, "'"),
+              "'context'",
+              "'nødvendig definisjon, verdi eller format finnes ikke'"),
+            fail_list$report)
+  # Try with another missing column
+  df_miss <- df |> dplyr::mutate(year = NULL)
+  fail_list <- check_upload(registry, df_miss, ind, pool)
+  expect_true(length(fail_list$fail) > 1)
+  expect_in(c(paste0("'", conf$upload$check_impossible, "'"),
+              "'year'"),
+            fail_list$report)
+})
+
 test_that("mixed indicator type check is working", {
   check_db()
   expect_true(check_mixing_ind(registry, df_mix, ind, conf, pool)$fail)
