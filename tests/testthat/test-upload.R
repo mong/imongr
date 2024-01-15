@@ -355,6 +355,16 @@ test_that("zero check on denominator is working", {
   )
 })
 
+test_that("check_duplicated_inds is working", {
+  check_db()
+  expect_false(check_duplicated_inds(registry, df, ind, conf, pool)$fail)
+  # norgast_dummy is a indicator with type not equal andel/dg_andel
+  # (data$type is not in conf$var$fraction$type)
+  data <- data.frame(context = "tmp", var = 1, denominator = 1, orgnr = 1, year = 2000, ind_id = "norgast_dummy")
+  data_double <- rbind(data, data)
+  expect_true(check_duplicated_inds(registry, data_double, ind, conf, pool)$fail)
+  expect_equal(check_duplicated_inds(registry, data_double, ind, conf, pool)$report, "norgast_dummy")
+})
 
 test_that("check report (wrapper) function is working", {
   check_db()
