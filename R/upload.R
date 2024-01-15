@@ -335,31 +335,36 @@ check_zero_denominator <- function(registry, df, ind, conf, pool) {
 #' @export
 check_duplicated_inds <- function(registry, df, ind, conf, pool) {
 
-  fail <- FALSE
-  report <- ""
+  fail <- TRUE
+  report <- conf$upload$check_impossible
 
-  if ("ind_id" %in% names(df) && "orgnr" %in% names(df)) {
+  tryCatch(
+    {
+      ind_id_type <- data.frame(ind_id = ind$id, type = ind$type)
+      orgnr <- get_all_orgnr(pool)
 
-    ind_id_type <- data.frame(ind_id = ind$id, type = ind$type)
-    orgnr <- get_all_orgnr(pool)
+      df_duplicated <- df %>%
+        dplyr::left_join(ind_id_type, by = "ind_id") %>%
+        dplyr::left_join(orgnr, by = "orgnr") %>%
+        dplyr::filter(!.data$type %in% conf$var$fraction$type) %>%
+        dplyr::select("ind_id", "orgnr", "context", "unit_level", "year") %>%
+        dplyr::group_by_all() %>%
+        dplyr::count() %>%
+        dplyr::filter(.data$n > 1)
 
-
-    df_duplicated <- df %>%
-      dplyr::left_join(ind_id_type, by = "ind_id") %>%
-      dplyr::left_join(orgnr, by = "orgnr") %>%
-      dplyr::filter(!.data$type %in% conf$var$fraction$type) %>%
-      dplyr::select("ind_id", "orgnr", "context", "unit_level", "year") %>%
-      dplyr::group_by_all() %>%
-      dplyr::count() %>%
-      dplyr::filter(.data$n > 1)
-
-    if (nrow(df_duplicated) > 0) {
-      fail <- TRUE
-      report <- unique(df_duplicated$ind_id)
+      # will pass test if everything above run without errors
+      fail <- FALSE
+      report <- ""
+      if (nrow(df_duplicated) > 0) {
+        fail <- TRUE
+        report <- unique(df_duplicated$ind_id)
+      }
+    },
+    error = function(e) {
+      # gracefully continue if error
+      return(NULL)
     }
-  } else {
-    report <- conf$upload$check$values_exists
-  }
+  )
   list(fail = fail, report = report)
 }
 

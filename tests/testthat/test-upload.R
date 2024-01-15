@@ -204,6 +204,30 @@ test_that("check_upload is working", {
   expect_true(any(check_upload(registry, df_missing, ind, pool)$fail))
 })
 
+test_that("error message when column is missing", {
+  check_db()
+  # Remove context column
+  df_miss <- df |> dplyr::mutate(context = NULL)
+  fail_list <- check_upload(registry, df_miss, ind, pool)
+  expect_true(TRUE %in% fail_list$fail)
+  # The list is of length 1 if error
+  expect_true(length(fail_list$fail) > 1)
+  expect_in(c(paste0("'", conf$upload$check_impossible, "'"),
+              "'context'",
+              "'nødvendig definisjon, verdi eller format finnes ikke'"),
+            fail_list$report)
+  # Try with another missing column
+  df_miss <- df |> dplyr::mutate(year = NULL)
+  fail_list <- check_upload(registry, df_miss, ind, pool)
+  expect_true(length(fail_list$fail) > 1)
+  expect_in(c(paste0("'", conf$upload$check_impossible, "'"),
+              "'year'"),
+            fail_list$report)
+  # without errors
+  fail_list <- check_upload(registry, df, ind, pool)
+  expect_false(TRUE %in% fail_list$fail)
+})
+
 test_that("mixed indicator type check is working", {
   check_db()
   expect_true(check_mixing_ind(registry, df_mix, ind, conf, pool)$fail)
@@ -377,6 +401,16 @@ test_that("zero check on denominator is working", {
   )
 })
 
+test_that("check_duplicated_inds is working", {
+  check_db()
+  expect_false(check_duplicated_inds(registry, df, ind, conf, pool)$fail)
+  # norgast_dummy is a indicator with type not equal andel/dg_andel
+  # (data$type is not in conf$var$fraction$type)
+  data <- data.frame(context = "tmp", var = 1, denominator = 1, orgnr = 1, year = 2000, ind_id = "norgast_dummy")
+  data_double <- rbind(data, data)
+  expect_true(check_duplicated_inds(registry, data_double, ind, conf, pool)$fail)
+  expect_equal(check_duplicated_inds(registry, data_double, ind, conf, pool)$report, "norgast_dummy")
+})
 
 test_that("check report (wrapper) function is working", {
   check_db()
