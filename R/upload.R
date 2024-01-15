@@ -408,8 +408,6 @@ check_natural_year <- function(registry, df, ind, conf, pool) {
     if (all(natural(df$year))) {
       fail <- FALSE
     }
-  } else {
-    report <- conf$upload$check_impossible
   }
   list(fail = fail, report = report)
 }
