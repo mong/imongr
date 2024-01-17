@@ -1,4 +1,12 @@
-# Ikke publisert
+# imongr 2.0.2
+
+Ett par bug-fix i testing av om data som skal sendes inn er OK.
+
+- La `check_duplicated_inds` gå gjennom ved error ([#375] (https://github.com/mong/imongr/pull/375)). Hvis sjekk krasjer pga feil i dataene (manglende kolonne), vil ikke bruker få beskjed om hva som er feil.
+- Ikke krasj hvis verdier mangler ([#373] (https://github.com/mong/imongr/pull/373))
+  - `natural`-funksjon: ikke krasj ved `NULL` men returner `FALSE`
+  - Sjekker om data inneholder `NA` eller tom streng
+  - To `year`-sjekker: sjekk om numerisk og naturlige tall
 
 # imongr 2.0.1
 
