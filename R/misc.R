@@ -21,7 +21,9 @@ NULL
 #' @rdname misc
 #' @export
 natural <- function(vals, tolerance = .Machine$double.eps^0.5) {
-  stopifnot(is.numeric(vals))
+  if (any(is.na(vals)) || !is.numeric(vals)) {
+    return(FALSE)
+  }
   if (any(vals < 0)) {
     return(FALSE)
   }

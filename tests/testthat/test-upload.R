@@ -158,6 +158,52 @@ if (is.null(check_db(is_test_that = FALSE))) {
   ind <- get_registry_ind(pool, 10)
 }
 
+test_that("check_upload is working", {
+  check_db()
+  # No failed tests
+  expect_false(any(check_upload(registry, df, ind, pool)$fail))
+
+  # Fail without error, but with fail = TRUE if denominator = NA
+  df_missing <- rbind(
+    df,
+    data.frame(
+      context = "caregiver",
+      year = NA,
+      orgnr = 974633574,
+      ind_id = "norgast_dummy",
+      var = 0,
+      denominator = 12
+    )
+  )
+  expect_true(any(check_upload(registry, df_missing, ind, pool)$fail))
+  expect_true("'Kolonne year mangler en eller flere verdier.'" %in%
+                check_upload(registry, df_missing, ind, pool)$report)
+  df_missing <- rbind(
+    df,
+    data.frame(
+      context = "caregiver",
+      year = 2000,
+      orgnr = 974633574,
+      ind_id = "norgast_dummy",
+      var = 0,
+      denominator = NA
+    )
+  )
+  expect_true(any(check_upload(registry, df_missing, ind, pool)$fail))
+  df_missing <- rbind(
+    df,
+    data.frame(
+      context = "caregiver",
+      year = 2000,
+      orgnr = 974633574,
+      ind_id = "norgast_dummy",
+      var = NA,
+      denominator = 12
+    )
+  )
+  expect_true(any(check_upload(registry, df_missing, ind, pool)$fail))
+})
+
 test_that("error message when column is missing", {
   check_db()
   # Remove context column
@@ -439,3 +485,55 @@ Sys.setenv(IMONGR_DB_NAME = env_name)
 Sys.setenv(IMONGR_DB_HOST = env_host)
 Sys.setenv(SHINYPROXY_USERNAME = env_user_name)
 Sys.setenv(SHINYPROXY_USERGROUPS = env_user_groups)
+
+# Tests where pool is not needed
+
+testthat::test_that("check_value_exists can find missing values", {
+  column1 <- c("value 1", "value 2", "value 3")
+  column2 <- c("", "value 2", "value 3")
+  column3 <- c(1234, 4321, NA)
+
+  testthat::expect_equal(check_values_exists(
+    conf = conf,
+    df = data.frame(column1)
+  )$fail, FALSE)
+
+  testthat::expect_equal(check_values_exists(
+    conf = conf,
+    df = data.frame(column1, column2)
+  ), list(
+    fail = TRUE,
+    report = "Kolonne column2 mangler en eller flere verdier."
+  )
+  )
+
+  testthat::expect_equal(check_values_exists(
+    conf = conf,
+    df = data.frame(column1, column3)
+  ), list(
+    fail = TRUE,
+    report = "Kolonne column3 mangler en eller flere verdier."
+  )
+  )
+})
+
+testthat::test_that("year-sjekker er OK", {
+  df <- data.frame(year = c(2020, 2020, 2020, 2020))
+  expect_false(check_numeric_year(df = df)$fail)
+  expect_false(check_natural_year(df = df)$fail)
+  df <- data.frame(year = c(2020, NULL, 2020, 2020))
+  expect_false(check_numeric_year(df = df)$fail)
+  expect_false(check_natural_year(df = df)$fail)
+  df <- data.frame(year = c(2020, NA, 2020, 2020))
+  expect_true(check_numeric_year(df = df, conf = conf)$fail)
+  expect_true(check_natural_year(df = df, conf = conf)$fail)
+  df <- data.frame(year = c(2020, "2020", 2020, 2020))
+  expect_true(check_numeric_year(df = df, conf = conf)$fail)
+  expect_true(check_natural_year(df = df, conf = conf)$fail)
+  df <- data.frame(year = c(2020, -2020, 2020, 2020))
+  expect_false(check_numeric_year(df = df, conf = conf)$fail)
+  expect_true(check_natural_year(df = df, conf = conf)$fail)
+  df <- data.frame(year = c(2020, 20.20, 2020, 2020))
+  expect_false(check_numeric_year(df = df, conf = conf)$fail)
+  expect_true(check_natural_year(df = df, conf = conf)$fail)
+})

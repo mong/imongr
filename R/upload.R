@@ -321,7 +321,7 @@ check_natural_denominator <- function(registry, df, ind, conf, pool) {
 check_zero_denominator <- function(registry, df, ind, conf, pool) {
   fail <- TRUE
   report <- ""
-  if ("denominator" %in% names(df) && is.numeric(df$denominator)) {
+  if ("denominator" %in% names(df) && is.numeric(df$denominator) && !any(is.na(df$denominator))) {
     if (all(df$denominator > 0)) {
       fail <- FALSE
     }
@@ -365,6 +365,50 @@ check_duplicated_inds <- function(registry, df, ind, conf, pool) {
       return(NULL)
     }
   )
+  list(fail = fail, report = report)
+}
+
+#' Check if data delivered all have values
+#' @rdname upload
+#' @export
+check_values_exists <- function(registry, df, ind, conf, pool) {
+  fail <- TRUE
+  report <- ""
+  for (columns in names(df)) {
+    if (any(is.na(df[[columns]])) || any(df[[columns]] == "")) {
+      return(list(fail = TRUE, report = paste0("Kolonne ", columns, " mangler en eller flere verdier.")))
+    } else {
+      fail <- FALSE
+    }
+  }
+  list(fail = fail, report = report)
+}
+
+#' @rdname upload
+#' @export
+check_numeric_year <- function(registry, df, ind, conf, pool) {
+  fail <- TRUE
+  report <- ""
+  if ("year" %in% names(df)) {
+    if (is.numeric(df$year) && !any(is.na(df$year))) {
+      fail <- FALSE
+    }
+  } else {
+    report <- conf$upload$check_impossible
+  }
+  list(fail = fail, report = report)
+}
+
+#' @rdname upload
+#' @export
+check_natural_year <- function(registry, df, ind, conf, pool) {
+  fail <- TRUE
+  report <- ""
+  if ("year" %in% names(df) && is.numeric(df$year) && !any(is.na(df$year))) {
+    if (all(natural(df$year))) {
+      fail <- FALSE
+    }
+  }
   list(fail = fail, report = report)
 }
 
