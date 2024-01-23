@@ -300,7 +300,19 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
         }
       )
 
-      invalidate_cache()
+      withCallingHandlers(
+        tryCatch(
+          invalidate_cache(),
+          error = function(e) {
+            message(paste0("<font color=\"#FF0000\">", e$message, "</font>"))
+          }
+        ),
+
+        message = function(m) {
+          shinyjs::html(id = "sysMessagePublish", html = m$message, add = TRUE)
+        }
+      )
+
       rv$inv_publish <- rv$inv_publish + 1
       shinyalert::shinyalert(
         conf$publish$reciept$title, conf$publish$reciept$body,

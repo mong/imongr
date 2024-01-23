@@ -174,6 +174,17 @@ delete_all_data <- function(prompt = TRUE) {
   invisible()
 }
 
+#' @rdname misc
+#' @export
 invalidate_cache <- function() {
+  system("aws sts get-caller-identity")
+  login_info <- Sys.getenv(c("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"))
+  if (login_info[["AWS_ACCESS_KEY_ID"]] == "") {
+    return(NULL)
+  }
+  message("Invalidere cache")
+  message("  Ikke implementert enda!")
+  # run aws cloudfront create-invalidation --distribution-id E2ANX0NUJHAHCF --path "/*"
+#  system("aws cloudfront create-invalidation --distribution-id E2ANX0NUJHAHCF --path \"/*\"")
   NULL
 }
