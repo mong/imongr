@@ -1,7 +1,7 @@
 version: '3.6'
 
 x-db: &db
-  image: mariadb:10
+  image: mariadb:11
   restart: "no"
   environment:
     MYSQL_ROOT_PASSWORD: root
