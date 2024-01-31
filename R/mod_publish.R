@@ -91,13 +91,12 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
     # Download terms handler
     output$downloadTerms <- shiny::downloadHandler(
       filename = basename(
-        tempfile(pattern = "VilkaarPubliseringSKDE", fileext = ".pdf")
+        tempfile(pattern = "VilkaarPubliseringSKDE", fileext = ".html")
       ),
       content = function(file) {
         fn <- rmarkdown::render(
           input = system.file("terms.Rmd", package = "imongr"),
-          output_format = "pdf_document",
-          params = list(output = "pdf")
+          output_format = "html_document"
         )
         file.rename(fn, file)
       }
