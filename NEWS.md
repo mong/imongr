@@ -1,6 +1,6 @@
 # imongr 2.1.0
 
-- Kontainer kjører nå på Alpine-image ([#391] (https://github.com/mong/imongr/pull/391)). Størrelsen redusert fra over 1,5 GB til 300 MB.
+- Konteiner kjører nå på Alpine-image ([#391] (https://github.com/mong/imongr/pull/391)). Størrelsen redusert fra over 1,5 GB til 300 MB.
 - Vilkår lastes ned som HTML i stedet for pdf ([#385] (https://github.com/mong/imongr/pull/385))
 - Tvangsinstallerer eldre versjon av `bslib` siden applikasjon feiler på siste versjon ([#381] (https://github.com/mong/imongr/pull/381))
 
