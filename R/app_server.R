@@ -91,6 +91,7 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "adminer")
   shiny::hideTab("tabs", target = "mine_field")
   shiny::hideTab("tabs", target = "report")
+  shiny::hideTab("tabs", target = "ekspertgruppen")
   if (valid_user && conf$role$provider %in% igrs) {
     shiny::showTab("tabs", target = "upload")
     shiny::showTab("tabs", target = "publish")
@@ -99,6 +100,7 @@ app_server <- function(input, output, session) {
   }
   if (valid_user && conf$role$manager %in% igrs) {
     shiny::showTab("tabs", target = "Administrative verkt\u00f8y")
+    shiny::showTab("tabs", target = "ekspertgruppen")
   }
 
   # clean up when app ends
@@ -184,6 +186,11 @@ app_server <- function(input, output, session) {
     registry_tracker$current_registry <- rv_indicator$registry_id
   })
 
+  rv_ekspertgruppen <- ekspertgruppen_server("ekspertgruppen", registry_tracker, pool, pool_verify)
+
+  shiny::observeEvent(rv_ekspertgruppen$registry_id, {
+    registry_tracker$current_registry <- rv_ekspertgruppen$registry_id
+  })
 
   ##### Admin #####
 
