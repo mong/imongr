@@ -14,7 +14,7 @@ ekspertgruppen_ui <- function(id) {
         shiny::uiOutput(ns("select_year")),
         shiny::numericInput(
           ns("oppgitt_dg"),
-          "DG i % oppgitt av regionene utfra \u00e5rsrapporter", 
+          "DG i % oppgitt av regionene utfra \u00e5rsrapporter",
           value = 0,
           min = 0,
           max = 100,
@@ -27,11 +27,7 @@ ekspertgruppen_ui <- function(id) {
         shiny::br(),
         shiny::hr(),
         shiny::br(),
-        shiny::actionButton(
-          ns("send_inn"),
-          "Send inn vurdering",
-          shiny::icon("paper-plane")
-        )
+        shiny::uiOutput(ns("lagre"))
       ),
       shiny::mainPanel(
         shiny::h3("Stadium 2"),
@@ -76,11 +72,9 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
 
     rv <- shiny::reactiveValues(
       vurdering_fritekst = "",
-      stadium2 = FALSE,
-      stadium3 = FALSE,
-      stadium4 = FALSE,
-      level = "",
-      vurdering = ""
+      stadium = NA,
+      level = NA,
+      vurdering = (rep(FALSE, 18))
     )
 
     rv_return <- shiny::reactiveValues()
@@ -90,7 +84,7 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
       rv_return$registry_id <- input$indicator_registry
     })
 
-
+    ##### Sidemeny #####
     output$select_registry <- shiny::renderUI({
       select_registry_ui(pool_verify, conf,
         input_id = ns("selected_registry"),
@@ -104,12 +98,27 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::selectInput(
         ns("selected_year"),
         "Velg \u00e5r",
-        c(2022 : format(Sys.Date(), "%Y"))
+        c(2022L : as.numeric(format(Sys.Date(), "%Y")) - 1), 
+        selected = 2022
       )
     })
 
-    output$vurdert_stadium <- shiny::renderText("Registeret vurderes til: ")
+    output$vurdert_stadium <- shiny::renderText(paste0("Registeret vurderes til: ", rv$stadium, rv$level))
 
+    # Gjem knapp hvis årstall ikke er fjoråret
+    output$lagre <- shiny::renderUI({
+      if (input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1) {
+        shiny::actionButton(
+          ns("send_inn"),
+          "Lagre",
+          shiny::icon("floppy-disk")
+        )
+      } else {
+        NULL
+      }
+    })
+
+    ##### Tekstfelt ####
     output$vurdering <- shiny::renderUI({
       shiny::textAreaInput(
         ns("vurdering_fritekst"), "Vurdering av \u00e5rsrapporten",
@@ -131,7 +140,109 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
+    ##### Logikk for sjekkbokser #####
 
+    # Stadium 2
+    shiny::observeEvent(input$S2_1, {
+      rv$vurdering[1] <- input$S2_1
+    })
+
+    shiny::observeEvent(input$S2_2, {
+      rv$vurdering[2] <- input$S2_2
+    })
+
+    shiny::observeEvent(input$S2_3, {
+      rv$vurdering[3] <- input$S2_3
+    })
+
+    shiny::observeEvent(input$S2_4, {
+      rv$vurdering[4] <- input$S2_4
+    })
+
+    shiny::observeEvent(input$S2_5, {
+      rv$vurdering[5] <- input$S2_5
+    })
+
+    # Stadium 3
+    shiny::observeEvent(input$S3_1, {
+      rv$vurdering[6] <- input$S3_1
+    })
+
+    shiny::observeEvent(input$S3_2, {
+      rv$vurdering[7] <- input$S3_2
+    })
+
+    shiny::observeEvent(input$S3_3, {
+      rv$vurdering[8] <- input$S3_3
+    })
+
+    shiny::observeEvent(input$S3_4, {
+      rv$vurdering[9] <- input$S3_4
+    })
+
+    shiny::observeEvent(input$S3_5, {
+      rv$vurdering[10] <- input$S3_5
+    })
+
+    shiny::observeEvent(input$S3_6, {
+      rv$vurdering[11] <- input$S3_6
+    })
+
+    # Stadium 4
+    shiny::observeEvent(input$S4_1, {
+      rv$vurdering[12] <- input$S4_1
+    })
+
+    shiny::observeEvent(input$S4_2, {
+      rv$vurdering[13] <- input$S4_2
+    })
+
+    shiny::observeEvent(input$S4_3, {
+      rv$vurdering[14] <- input$S4_3
+    })
+
+    shiny::observeEvent(input$S4_4, {
+      rv$vurdering[15] <- input$S4_4
+    })
+
+    shiny::observeEvent(input$S4_5, {
+      rv$vurdering[16] <- input$S4_5
+    })
+
+    # Nivå A, B og C
+    shiny::observeEvent(input$N_A, {
+      rv$vurdering[17] <- input$N_A
+    })
+
+    shiny::observeEvent(input$N_B, {
+      rv$vurdering[18] <- input$N_B
+    })
+
+    shiny::observeEvent(rv$vurdering, {
+      rv$stadium <- 1
+
+      if (all(rv$vurdering[1:16])) {
+        rv$stadium <- 4
+      } else if (all(rv$vurdering[1:11])) {
+        rv$stadium <- 3
+      } else if (all(rv$vurdering[1:5])) {
+        rv$stadium <- 2
+      }
+
+      rv$level <- "C"
+
+      if (all(rv$vurdering[17:18])) {
+        rv$level <- "A"
+      } else if (rv$vurdering[18]) {
+        rv$level <- "B"
+      }
+
+    })
+
+    ##### Lagre #####
+    shiny::observeEvent(input$send_inn, {
+      print("lagre")
+    })
     return(rv_return)
   })
 }
