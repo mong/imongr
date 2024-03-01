@@ -203,3 +203,41 @@ CREATE TABLE IF NOT EXISTS `agg_data` (
   KEY `ind_id` (`ind_id`),
   KEY `unit_level` (`unit_level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `vurdering` (
+  `registry_id` smallint(5) unsigned NOT NULL,
+  `user_id` smallint(5) unsigned NOT NULL,
+  `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP() NOT NULL,
+  `oppgitt_dg` tinyint(5) NOT NULL,
+  `year` smallint(5) NOT NULL,
+  `stadium` char(2) NOT NULL,
+  `krav_01` tinyint(1) NOT NULL,
+  `krav_02` tinyint(1) NOT NULL,
+  `krav_03` tinyint(1) NOT NULL,
+  `krav_04` tinyint(1) NOT NULL,
+  `krav_05` tinyint(1) NOT NULL,
+  `krav_06` tinyint(1) NOT NULL,
+  `krav_07` tinyint(1) NOT NULL,
+  `krav_08` tinyint(1) NOT NULL,
+  `krav_09` tinyint(1) NOT NULL,
+  `krav_10` tinyint(1) NOT NULL,
+  `krav_11` tinyint(1) NOT NULL,
+  `krav_12` tinyint(1) NOT NULL,
+  `krav_13` tinyint(1) NOT NULL,
+  `krav_14` tinyint(1) NOT NULL,
+  `krav_15` tinyint(1) NOT NULL,
+  `krav_16` tinyint(1) NOT NULL,
+  `krav_17` tinyint(1) NOT NULL,
+  `krav_18` tinyint(1) NOT NULL,
+  `vurdering` mediumtext NOT NULL,
+  `fritekst_A` mediumtext NOT NULL,
+  `fritekst_B` mediumtext NOT NULL,
+  CONSTRAINT `fk_vurdering_registry`
+    FOREIGN KEY (registry_id) REFERENCES registry (id)
+      ON UPDATE CASCADE
+      ON DELETE RESTRICT,
+  CONSTRAINT `fk_vurdering_user`
+    FOREIGN KEY (user_id) REFERENCES user (id)
+      ON UPDATE CASCADE
+      ON DELETE RESTRICT
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
