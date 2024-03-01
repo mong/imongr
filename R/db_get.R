@@ -580,3 +580,8 @@ SELECT ", col_names, " FROM agg_data AS ad
 
   return(aggdata)
 }
+
+get_vurdering <- function(pool) {
+  return_data <- pool::dbGetQuery(pool, "SELECT * FROM vurdering")
+  return(return_data)
+}
