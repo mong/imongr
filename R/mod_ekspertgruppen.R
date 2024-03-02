@@ -79,12 +79,19 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
 
     rv_return <- shiny::reactiveValues()
 
-    # Track indicator and registry
+    update_form <- shiny::reactive({
+      list(input$selected_registry, input$selected_year)
+    })
+
+    # HOld oversikt over valgt register
     shiny::observeEvent(input$indicator_registry, {
       rv_return$registry_id <- input$indicator_registry
     })
 
-    ##### Sidemeny #####
+    #######################
+    ##### UI sidemeny #####
+    #######################
+
     output$select_registry <- shiny::renderUI({
       select_registry_ui(pool_verify, conf,
         input_id = ns("selected_registry"),
@@ -99,7 +106,7 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
         ns("selected_year"),
         "Velg \u00e5r",
         c(2022L : as.numeric(format(Sys.Date(), "%Y")) - 1),
-        selected = 2022
+        selected = 2023
       )
     })
 
@@ -119,7 +126,10 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
       }
     })
 
-    ##### Tekstfelt ####
+    #######################
+    ##### UI tekstfelt ####
+    #######################
+
     output$vurdering <- shiny::renderUI({
       shiny::textAreaInput(
         ns("vurdering_fritekst"), "Vurdering av \u00e5rsrapporten",
@@ -141,7 +151,10 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
-    # Oppdater register-id og årstall
+    ################################
+    ##### Reaktivitet sidemeny #####
+    ################################
+
     shiny::observeEvent(input$selected_registry, {
       rv$table_data$registry_id <- input$selected_registry
     })
@@ -166,7 +179,47 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
       rv$table_data$vurdering <- input$vurdering_fritekst
     })
 
-    ##### Logikk for sjekkbokser #####
+    shiny::observeEvent(rv$vurdering, {
+      rv$stadium <- 1
+
+      if (all(rv$vurdering[1:16])) {
+        rv$stadium <- 4
+        rv$table_data$stadium <- 1
+      } else if (all(rv$vurdering[1:11])) {
+        rv$stadium <- 3
+        rv$table_data$stadium <- 3
+      } else if (all(rv$vurdering[1:5])) {
+        rv$stadium <- 2
+        rv$table_data$stadium <- 2
+      }
+
+      rv$level <- "C"
+
+      if (all(rv$vurdering[17:18])) {
+        rv$level <- "A"
+      } else if (rv$vurdering[18]) {
+        rv$level <- "B"
+      }
+
+      rv$table_data$stadium <- paste0(rv$stadium, rv$level)
+    })
+
+    ##### Lagre #####
+    shiny::observeEvent(input$send_inn, {
+
+      update_vurdering(pool, rv$table_data, input$selected_registry, input$selected_year)
+
+      shinyalert::shinyalert("Ferdig",
+        "Dine data er n\u00e5 lagret",
+        type = "success",
+        showConfirmButton = FALSE,
+        timer = 2000
+      )
+    })
+
+    ##############################
+    ##### Reaktivitet skjema #####
+    ##############################
 
     # Stadium 2
     shiny::observeEvent(input$S2_1, {
@@ -262,44 +315,62 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
       rv$table_data$krav_18 <- as.numeric(input$N_B)
     })
 
-    shiny::observeEvent(rv$vurdering, {
-      rv$stadium <- 1
+    # Oppdater skjema ved valg av år og register
+    shiny::observeEvent(update_form(), {
 
-      if (all(rv$vurdering[1:16])) {
-        rv$stadium <- 4
-        rv$table_data$stadium <- 1
-      } else if (all(rv$vurdering[1:11])) {
-        rv$stadium <- 3
-        rv$table_data$stadium <- 3
-      } else if (all(rv$vurdering[1:5])) {
-        rv$stadium <- 2
-        rv$table_data$stadium <- 2
+      dat <- pool::dbGetQuery(pool, "SELECT * FROM vurdering")
+      dat <- dat[(dat$year == input$selected_year) & (dat$registry_id == input$selected_registry), ]
+
+      if (nrow(dat) == 1) {
+        shiny::updateCheckboxInput(session, "S2_1", value = dat$krav_01[1])
+        shiny::updateCheckboxInput(session, "S2_2", value = dat$krav_02[1])
+        shiny::updateCheckboxInput(session, "S2_3", value = dat$krav_03[1])
+        shiny::updateCheckboxInput(session, "S2_4", value = dat$krav_04[1])
+        shiny::updateCheckboxInput(session, "S2_5", value = dat$krav_05[1])
+        shiny::updateCheckboxInput(session, "S2_6", value = dat$krav_06[1])
+        shiny::updateCheckboxInput(session, "S2_7", value = dat$krav_07[1])
+        shiny::updateCheckboxInput(session, "S2_8", value = dat$krav_08[1])
+        shiny::updateCheckboxInput(session, "S2_9", value = dat$krav_09[1])
+        shiny::updateCheckboxInput(session, "S2_10", value = dat$krav_10[1])
+        shiny::updateCheckboxInput(session, "S2_11", value = dat$krav_11[1])
+        shiny::updateCheckboxInput(session, "S2_12", value = dat$krav_12[1])
+        shiny::updateCheckboxInput(session, "S2_13", value = dat$krav_13[1])
+        shiny::updateCheckboxInput(session, "S2_14", value = dat$krav_14[1])
+        shiny::updateCheckboxInput(session, "S2_15", value = dat$krav_15[1])
+        shiny::updateCheckboxInput(session, "S2_16", value = dat$krav_16[1])
+        shiny::updateCheckboxInput(session, "S2_17", value = dat$krav_17[1])
+        shiny::updateCheckboxInput(session, "S2_18", value = dat$krav_18[1])
+
+        shiny::updateTextInput(session, "N_A_fritekst", value = dat$fritekst_A)
+        shiny::updateTextInput(session, "N_B_fritekst", value = dat$fritekst_B)
+
+        shiny::updateNumericInput(session, "oppgitt_dg", value = dat$oppgitt_dg)
+
+      } else {
+        shiny::updateCheckboxInput(session, "S2_1", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_2", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_3", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_4", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_5", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_6", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_7", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_8", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_9", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_10", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_11", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_12", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_13", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_14", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_15", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_16", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_17", value = FALSE)
+        shiny::updateCheckboxInput(session, "S2_18", value = FALSE)
+
+        shiny::updateTextInput(session, "N_A_fritekst", value = dat$fritekst_A)
+        shiny::updateTextInput(session, "N_B_fritekst", value = dat$fritekst_B)
+
+        shiny::updateNumericInput(session, "oppgitt_dg", value = 0)
       }
-
-      rv$level <- "C"
-
-      if (all(rv$vurdering[17:18])) {
-        rv$level <- "A"
-        rv$table_data$level <- "A"
-      } else if (rv$vurdering[18]) {
-        rv$level <- "B"
-        rv$table_data$level <- "B"
-      }
-
-      rv$table_data$stadium <- paste0(rv$stadium, rv$level)
-    })
-
-    ##### Lagre #####
-    shiny::observeEvent(input$send_inn, {
-
-      update_vurdering(pool, rv$table_data, input$selected_registry, input$selected_year)
-
-      shinyalert::shinyalert(conf$upload$reciept$title,
-        conf$upload$reciept$body,
-        type = "success",
-        showConfirmButton = FALSE,
-        timer = 7000
-      )
     })
 
     return(rv_return)
