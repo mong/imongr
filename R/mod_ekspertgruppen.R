@@ -83,7 +83,7 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
       list(input$selected_registry, input$selected_year)
     })
 
-    # HOld oversikt over valgt register
+    # Hold oversikt over valgt register
     shiny::observeEvent(input$indicator_registry, {
       rv_return$registry_id <- input$indicator_registry
     })
@@ -115,15 +115,16 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
     # Gjem knapp hvis årstall ikke er fjoråret
     output$lagre <- shiny::renderUI({
       shiny::req(input$selected_registry)
-      if (input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1) {
-        shiny::actionButton(
-          ns("send_inn"),
-          "Lagre",
-          shiny::icon("floppy-disk")
-        )
-      } else {
-        NULL
-      }
+      shiny::validate(
+        shiny::need(dplyr::between(input$oppgitt_dg, 0, 100), "Dekningsgrad må være fra 0 til 100\n"),
+        shiny::need(input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1,
+                    "Redigering tillates kun på aktuelt rapporteringsår")
+      )
+      shiny::actionButton(
+        ns("send_inn"),
+        "Lagre",
+        shiny::icon("floppy-disk")
+      )
     })
 
     #######################
