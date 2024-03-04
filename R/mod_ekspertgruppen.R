@@ -11,6 +11,8 @@ ekspertgruppen_ui <- function(id) {
     shiny::sidebarLayout(
       shiny::sidebarPanel(
         shiny::uiOutput(ns("select_registry")),
+        shiny::uiOutput(ns("registry_url")),
+        shiny::br(),
         shiny::uiOutput(ns("select_year")),
         shiny::numericInput(
           ns("oppgitt_dg"),
@@ -75,6 +77,7 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
       level = NA,
       vurdering = (rep(FALSE, 18)),
       table_data = data.frame(user_id = get_user_id(pool)),
+      registry_url = NULL
     )
 
     rv_return <- shiny::reactiveValues()
@@ -99,6 +102,21 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
         show_context = FALSE,
         current_reg = registry_tracker$current_registry
       )
+    })
+
+    shiny::observeEvent(input$selected_registry, {
+      query <- paste0("SELECT url FROM registry WHERE id = ", input$selected_registry)
+      dat <- pool::dbGetQuery(pool, query)
+      
+      if (!is.na(dat$url)) {
+        rv$registry_url <- shiny::a("Hjemmeside til registeret", href = dat$url, target = "_blank")
+      } else {
+        rv$registry_url <- NULL
+      }
+    })
+
+    output$registry_url <- shiny::renderUI({
+      shiny::tagList(rv$registry_url)
     })
 
     output$select_year <- shiny::renderUI({
