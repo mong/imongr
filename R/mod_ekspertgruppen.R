@@ -57,8 +57,7 @@ ekspertgruppen_ui <- function(id) {
         shiny::h3("Niv\u00e5 B"),
         shiny::checkboxInput(ns("N_B"), conf$vurdering$nivaa_B, width = "100%"),
         shiny::uiOutput(ns("N_B_kommentar")),
-        shiny::h3("Niv\u00e5 C"),
-        shiny::h3("Vurdering"),
+        shiny::h3("Ekspertgruppens vurdering"),
         shiny::uiOutput(ns("vurdering")),
       )
     )
@@ -107,7 +106,7 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$selected_registry, {
       query <- paste0("SELECT url FROM registry WHERE id = ", input$selected_registry)
       dat <- pool::dbGetQuery(pool, query)
-      
+
       if (!is.na(dat$url)) {
         rv$registry_url <- shiny::a("Hjemmeside til registeret", href = dat$url, target = "_blank")
       } else {
