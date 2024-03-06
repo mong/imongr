@@ -241,3 +241,11 @@ CREATE TABLE IF NOT EXISTS `vurdering` (
       ON UPDATE CASCADE
       ON DELETE RESTRICT
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `krav` (
+  `id` tinyint(5) NOT NULL PRIMARY KEY,
+  `stage_or_level` char(1) NOT NULL,
+  `criteria` mediumtext NOT NULL,
+  `guide` mediumtext NOT NULL,
+  `introduction_year` smallint(5) NOT NULL
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
