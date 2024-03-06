@@ -251,7 +251,7 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
 
         shiny::tags$div(
           title = paste0(krav_tabell$guide[i], "\n\n", krav_tabell$section[i]),
-          shiny::checkboxInput(ns(paste0("krav_", i)), krav_tabell$criteria[i], width = "100%")
+          shiny::checkboxInput(ns(paste0("krav_", i)), shiny::HTML(krav_tabell$criteria[i]), width = "100%")
         )
       })
     }
