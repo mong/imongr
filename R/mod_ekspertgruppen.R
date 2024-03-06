@@ -3,7 +3,6 @@
 ekspertgruppen_ui <- function(id) {
 
   ns <- shiny::NS(id)
-  conf <- get_config()
 
   shiny::tagList(
     shinyjs::useShinyjs(),
@@ -33,29 +32,28 @@ ekspertgruppen_ui <- function(id) {
       ),
       shiny::mainPanel(
         shiny::h3("Stadium 2"),
-        shiny::checkboxInput(ns("S2_1"), conf$vurdering$stadium_2$krav_01, width = "100%"),
-        shiny::checkboxInput(ns("S2_2"), conf$vurdering$stadium_2$krav_02, width = "100%"),
-        shiny::checkboxInput(ns("S2_3"), conf$vurdering$stadium_2$krav_03, width = "100%"),
-        shiny::checkboxInput(ns("S2_4"), conf$vurdering$stadium_2$krav_04, width = "100%"),
-        shiny::checkboxInput(ns("S2_5"), conf$vurdering$stadium_2$krav_05, width = "100%"),
+        shiny::uiOutput(ns("radio1")),
+        shiny::uiOutput(ns("radio2")),
+        shiny::uiOutput(ns("radio3")),
+        shiny::uiOutput(ns("radio4")),
+        shiny::uiOutput(ns("radio5")),
         shiny::h3("Stadium 3"),
-        shiny::checkboxInput(ns("S3_1"), conf$vurdering$stadium_3$krav_06, width = "100%"),
-        shiny::checkboxInput(ns("S3_2"), conf$vurdering$stadium_3$krav_07, width = "100%"),
-        shiny::checkboxInput(ns("S3_3"), conf$vurdering$stadium_3$krav_08, width = "100%"),
-        shiny::checkboxInput(ns("S3_4"), conf$vurdering$stadium_3$krav_09, width = "100%"),
-        shiny::checkboxInput(ns("S3_5"), conf$vurdering$stadium_3$krav_10, width = "100%"),
-        shiny::checkboxInput(ns("S3_6"), conf$vurdering$stadium_3$krav_11, width = "100%"),
+        shiny::uiOutput(ns("radio6")),
+        shiny::uiOutput(ns("radio7")),
+        shiny::uiOutput(ns("radio8")),
+        shiny::uiOutput(ns("radio9")),
+        shiny::uiOutput(ns("radio10")),
         shiny::h3("Stadium 4"),
-        shiny::checkboxInput(ns("S4_1"), conf$vurdering$stadium_4$krav_12, width = "100%"),
-        shiny::checkboxInput(ns("S4_2"), conf$vurdering$stadium_4$krav_13, width = "100%"),
-        shiny::checkboxInput(ns("S4_3"), conf$vurdering$stadium_4$krav_14, width = "100%"),
-        shiny::checkboxInput(ns("S4_4"), conf$vurdering$stadium_4$krav_15, width = "100%"),
-        shiny::checkboxInput(ns("S4_5"), conf$vurdering$stadium_4$krav_16, width = "100%"),
+        shiny::uiOutput(ns("radio11")),
+        shiny::uiOutput(ns("radio12")),
+        shiny::uiOutput(ns("radio13")),
+        shiny::uiOutput(ns("radio14")),
+        shiny::uiOutput(ns("radio15")),
         shiny::h3("Niv\u00e5 A"),
-        shiny::checkboxInput(ns("N_A"), conf$vurdering$nivaa_A, width = "100%"),
+        shiny::uiOutput(ns("radio17")),
         shiny::uiOutput(ns("N_A_kommentar")),
         shiny::h3("Niv\u00e5 B"),
-        shiny::checkboxInput(ns("N_B"), conf$vurdering$nivaa_B, width = "100%"),
+        shiny::uiOutput(ns("radio18")),
         shiny::uiOutput(ns("N_B_kommentar")),
         shiny::h3("Ekspertgruppens vurdering"),
         shiny::uiOutput(ns("vurdering")),
@@ -233,6 +231,86 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
         showConfirmButton = FALSE,
         timer = 2000
       )
+    })
+
+    #####################
+    ##### UI skjema #####
+    #####################
+
+    # Stadium 2
+    output$radio1 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S2_1"), conf$vurdering$stadium_2$krav_01, width = "100%")
+    })
+
+    output$radio2 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S2_2"), conf$vurdering$stadium_2$krav_02, width = "100%")
+    })
+
+    output$radio3 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S2_3"), conf$vurdering$stadium_2$krav_03, width = "100%")
+    })
+
+    output$radio4 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S2_4"), conf$vurdering$stadium_2$krav_04, width = "100%")
+    })
+
+    output$radio5 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S2_5"), conf$vurdering$stadium_2$krav_05, width = "100%")
+    })
+
+    # Stadium 3
+    output$radio6 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S3_1"), conf$vurdering$stadium_3$krav_06, width = "100%")
+    })
+
+    output$radio7 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S3_2"), conf$vurdering$stadium_3$krav_07, width = "100%")
+    })
+
+    output$radio8 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S3_3"), conf$vurdering$stadium_3$krav_08, width = "100%")
+    })
+
+    output$radio9 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S3_4"), conf$vurdering$stadium_3$krav_09, width = "100%")
+    })
+
+    output$radio10 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S3_5"), conf$vurdering$stadium_3$krav_10, width = "100%")
+    })
+
+    output$radio11 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S3_6"), conf$vurdering$stadium_3$krav_11, width = "100%")
+    })
+
+    # Stadium 4
+    output$radio12 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S4_1"), conf$vurdering$stadium_4$krav_12, width = "100%")
+    })
+
+    output$radio13 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S4_2"), conf$vurdering$stadium_4$krav_13, width = "100%")
+    })
+
+    output$radio14 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S4_3"), conf$vurdering$stadium_4$krav_14, width = "100%")
+    })
+
+    output$radio15 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S4_4"), conf$vurdering$stadium_4$krav_15, width = "100%")
+    })
+
+    output$radio16 <- shiny::renderUI({
+      shiny::checkboxInput(ns("S4_5"), conf$vurdering$stadium_4$krav_16, width = "100%")
+    })
+
+    # Nivåer
+    output$radio17 <- shiny::renderUI({
+      shiny::checkboxInput(ns("N_A"), conf$vurdering$nivaa_A, width = "100%")
+    })
+
+    output$radio18 <- shiny::renderUI({
+      shiny::checkboxInput(ns("N_B"), conf$vurdering$nivaa_B, width = "100%")
     })
 
     ##############################
