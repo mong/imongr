@@ -71,7 +71,13 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
     conf <- get_config()
 
     krav_tabell <- pool::dbGetQuery(pool, "SELECT * FROM krav")
-    print(krav_tabell)
+
+    # Vis avkrysningsfelt kun hvis de er aktuelle for valgt år
+    check_year_range <- function(ind) {
+      return(shiny::req((as.numeric(input$selected_year) %>%
+                           dplyr::between(krav_tabell[ind, ]$introduction_year, krav_tabell[ind, ]$last_year)))
+      )
+    }
 
     rv <- shiny::reactiveValues(
       stadium = NA,
@@ -243,78 +249,96 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # Stadium 2
     output$radio1 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_1"), conf$vurdering$stadium_2$krav_01, width = "100%")
+      check_year_range(1)
+      shiny::checkboxInput(ns("krav_1"), krav_tabell[1, ]$criteria, width = "100%")
     })
 
     output$radio2 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_2"), conf$vurdering$stadium_2$krav_02, width = "100%")
+      check_year_range(2)
+      shiny::checkboxInput(ns("krav_2"), krav_tabell[2, ]$criteria, width = "100%")
     })
 
     output$radio3 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_3"), conf$vurdering$stadium_2$krav_03, width = "100%")
+      check_year_range(3)
+      shiny::checkboxInput(ns("krav_3"), krav_tabell[3, ]$criteria, width = "100%")
     })
 
     output$radio4 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_4"), conf$vurdering$stadium_2$krav_04, width = "100%")
+      check_year_range(4)
+      shiny::checkboxInput(ns("krav_4"), krav_tabell[4, ]$criteria, width = "100%")
     })
 
     output$radio5 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_5"), conf$vurdering$stadium_2$krav_05, width = "100%")
+      check_year_range(5)
+      shiny::checkboxInput(ns("krav_5"), krav_tabell[5, ]$criteria, width = "100%")
     })
 
     # Stadium 3
     output$radio6 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_6"), conf$vurdering$stadium_3$krav_06, width = "100%")
+      check_year_range(6)
+      shiny::checkboxInput(ns("krav_6"), krav_tabell[6, ]$criteria, width = "100%")
     })
 
     output$radio7 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_7"), conf$vurdering$stadium_3$krav_07, width = "100%")
+      check_year_range(7)
+      shiny::checkboxInput(ns("krav_7"), krav_tabell[7, ]$criteria, width = "100%")
     })
 
     output$radio8 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_8"), conf$vurdering$stadium_3$krav_08, width = "100%")
+      check_year_range(8)
+      shiny::checkboxInput(ns("krav_8"), krav_tabell[8, ]$criteria, width = "100%")
     })
 
     output$radio9 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_9"), conf$vurdering$stadium_3$krav_09, width = "100%")
+      check_year_range(9)
+      shiny::checkboxInput(ns("krav_9"), krav_tabell[9, ]$criteria, width = "100%")
     })
 
     output$radio10 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_10"), conf$vurdering$stadium_3$krav_10, width = "100%")
+      check_year_range(10)
+      shiny::checkboxInput(ns("krav_10"), krav_tabell[10, ]$criteria, width = "100%")
     })
 
     output$radio11 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_11"), conf$vurdering$stadium_3$krav_11, width = "100%")
+      check_year_range(11)
+      shiny::checkboxInput(ns("krav_11"), krav_tabell[11, ]$criteria, width = "100%")
     })
 
     # Stadium 4
     output$radio12 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_12"), conf$vurdering$stadium_4$krav_12, width = "100%")
+      check_year_range(12)
+      shiny::checkboxInput(ns("krav_12"), krav_tabell[12, ]$criteria, width = "100%")
     })
 
     output$radio13 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_13"), conf$vurdering$stadium_4$krav_13, width = "100%")
+      check_year_range(13)
+      shiny::checkboxInput(ns("krav_13"), krav_tabell[13, ]$criteria, width = "100%")
     })
 
     output$radio14 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_14"), conf$vurdering$stadium_4$krav_14, width = "100%")
+      check_year_range(14)
+      shiny::checkboxInput(ns("krav_14"), krav_tabell[14, ]$criteria, width = "100%")
     })
 
     output$radio15 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_15"), conf$vurdering$stadium_4$krav_15, width = "100%")
+      check_year_range(15)
+      shiny::checkboxInput(ns("krav_15"), krav_tabell[15, ]$criteria, width = "100%")
     })
 
     output$radio16 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_16"), conf$vurdering$stadium_4$krav_16, width = "100%")
+      check_year_range(16)
+      shiny::checkboxInput(ns("krav_16"), krav_tabell[16, ]$criteria, width = "100%")
     })
 
     # Nivåer
     output$radio17 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_17"), conf$vurdering$nivaa_A, width = "100%")
+      check_year_range(17)
+      shiny::checkboxInput(ns("krav_17"), krav_tabell[17, ]$criteria, width = "100%")
     })
 
     output$radio18 <- shiny::renderUI({
-      shiny::checkboxInput(ns("krav_18"), conf$vurdering$nivaa_B, width = "100%")
+      check_year_range(18)
+      shiny::checkboxInput(ns("krav_18"), krav_tabell[18, ]$criteria, width = "100%")
     })
 
     ##############################

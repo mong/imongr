@@ -247,5 +247,6 @@ CREATE TABLE IF NOT EXISTS `krav` (
   `stage_or_level` char(1) NOT NULL,
   `criteria` mediumtext NOT NULL,
   `guide` mediumtext NOT NULL,
-  `introduction_year` smallint(5) NOT NULL
+  `introduction_year` smallint(5) NOT NULL,
+  `last_year` smallint(5) NOT NULL,
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
