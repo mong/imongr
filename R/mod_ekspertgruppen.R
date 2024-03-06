@@ -43,12 +43,13 @@ ekspertgruppen_ui <- function(id) {
         shiny::uiOutput(ns("radio8")),
         shiny::uiOutput(ns("radio9")),
         shiny::uiOutput(ns("radio10")),
-        shiny::h3("Stadium 4"),
         shiny::uiOutput(ns("radio11")),
+        shiny::h3("Stadium 4"),
         shiny::uiOutput(ns("radio12")),
         shiny::uiOutput(ns("radio13")),
         shiny::uiOutput(ns("radio14")),
         shiny::uiOutput(ns("radio15")),
+        shiny::uiOutput(ns("radio16")),
         shiny::h3("Niv\u00e5 A"),
         shiny::uiOutput(ns("radio17")),
         shiny::uiOutput(ns("N_A_kommentar")),
@@ -68,6 +69,9 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
     conf <- get_config()
+
+    krav_tabell <- pool::dbGetQuery(pool, "SELECT * FROM krav")
+    print(krav_tabell)
 
     rv <- shiny::reactiveValues(
       stadium = NA,
@@ -239,78 +243,78 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # Stadium 2
     output$radio1 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S2_1"), conf$vurdering$stadium_2$krav_01, width = "100%")
+      shiny::checkboxInput(ns("krav_1"), conf$vurdering$stadium_2$krav_01, width = "100%")
     })
 
     output$radio2 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S2_2"), conf$vurdering$stadium_2$krav_02, width = "100%")
+      shiny::checkboxInput(ns("krav_2"), conf$vurdering$stadium_2$krav_02, width = "100%")
     })
 
     output$radio3 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S2_3"), conf$vurdering$stadium_2$krav_03, width = "100%")
+      shiny::checkboxInput(ns("krav_3"), conf$vurdering$stadium_2$krav_03, width = "100%")
     })
 
     output$radio4 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S2_4"), conf$vurdering$stadium_2$krav_04, width = "100%")
+      shiny::checkboxInput(ns("krav_4"), conf$vurdering$stadium_2$krav_04, width = "100%")
     })
 
     output$radio5 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S2_5"), conf$vurdering$stadium_2$krav_05, width = "100%")
+      shiny::checkboxInput(ns("krav_5"), conf$vurdering$stadium_2$krav_05, width = "100%")
     })
 
     # Stadium 3
     output$radio6 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S3_1"), conf$vurdering$stadium_3$krav_06, width = "100%")
+      shiny::checkboxInput(ns("krav_6"), conf$vurdering$stadium_3$krav_06, width = "100%")
     })
 
     output$radio7 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S3_2"), conf$vurdering$stadium_3$krav_07, width = "100%")
+      shiny::checkboxInput(ns("krav_7"), conf$vurdering$stadium_3$krav_07, width = "100%")
     })
 
     output$radio8 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S3_3"), conf$vurdering$stadium_3$krav_08, width = "100%")
+      shiny::checkboxInput(ns("krav_8"), conf$vurdering$stadium_3$krav_08, width = "100%")
     })
 
     output$radio9 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S3_4"), conf$vurdering$stadium_3$krav_09, width = "100%")
+      shiny::checkboxInput(ns("krav_9"), conf$vurdering$stadium_3$krav_09, width = "100%")
     })
 
     output$radio10 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S3_5"), conf$vurdering$stadium_3$krav_10, width = "100%")
+      shiny::checkboxInput(ns("krav_10"), conf$vurdering$stadium_3$krav_10, width = "100%")
     })
 
     output$radio11 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S3_6"), conf$vurdering$stadium_3$krav_11, width = "100%")
+      shiny::checkboxInput(ns("krav_11"), conf$vurdering$stadium_3$krav_11, width = "100%")
     })
 
     # Stadium 4
     output$radio12 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S4_1"), conf$vurdering$stadium_4$krav_12, width = "100%")
+      shiny::checkboxInput(ns("krav_12"), conf$vurdering$stadium_4$krav_12, width = "100%")
     })
 
     output$radio13 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S4_2"), conf$vurdering$stadium_4$krav_13, width = "100%")
+      shiny::checkboxInput(ns("krav_13"), conf$vurdering$stadium_4$krav_13, width = "100%")
     })
 
     output$radio14 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S4_3"), conf$vurdering$stadium_4$krav_14, width = "100%")
+      shiny::checkboxInput(ns("krav_14"), conf$vurdering$stadium_4$krav_14, width = "100%")
     })
 
     output$radio15 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S4_4"), conf$vurdering$stadium_4$krav_15, width = "100%")
+      shiny::checkboxInput(ns("krav_15"), conf$vurdering$stadium_4$krav_15, width = "100%")
     })
 
     output$radio16 <- shiny::renderUI({
-      shiny::checkboxInput(ns("S4_5"), conf$vurdering$stadium_4$krav_16, width = "100%")
+      shiny::checkboxInput(ns("krav_16"), conf$vurdering$stadium_4$krav_16, width = "100%")
     })
 
     # Nivåer
     output$radio17 <- shiny::renderUI({
-      shiny::checkboxInput(ns("N_A"), conf$vurdering$nivaa_A, width = "100%")
+      shiny::checkboxInput(ns("krav_17"), conf$vurdering$nivaa_A, width = "100%")
     })
 
     output$radio18 <- shiny::renderUI({
-      shiny::checkboxInput(ns("N_B"), conf$vurdering$nivaa_B, width = "100%")
+      shiny::checkboxInput(ns("krav_18"), conf$vurdering$nivaa_B, width = "100%")
     })
 
     ##############################
@@ -318,97 +322,97 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
     ##############################
 
     # Stadium 2
-    shiny::observeEvent(input$S2_1, {
-      rv$vurdering[1] <- input$S2_1
-      rv$table_data$krav_01 <- as.numeric(input$S2_1)
+    shiny::observeEvent(input$krav_1, {
+      rv$vurdering[1] <- input$krav_1
+      rv$table_data$krav_01 <- as.numeric(input$krav_1)
     })
 
-    shiny::observeEvent(input$S2_2, {
-      rv$vurdering[2] <- input$S2_2
-      rv$table_data$krav_02 <- as.numeric(input$S2_2)
+    shiny::observeEvent(input$krav_2, {
+      rv$vurdering[2] <- input$krav_2
+      rv$table_data$krav_02 <- as.numeric(input$krav_2)
     })
 
-    shiny::observeEvent(input$S2_3, {
-      rv$vurdering[3] <- input$S2_3
-      rv$table_data$krav_03 <- as.numeric(input$S2_3)
+    shiny::observeEvent(input$krav_3, {
+      rv$vurdering[3] <- input$krav_3
+      rv$table_data$krav_03 <- as.numeric(input$krav_3)
     })
 
-    shiny::observeEvent(input$S2_4, {
-      rv$vurdering[4] <- input$S2_4
-      rv$table_data$krav_04 <- as.numeric(input$S2_4)
+    shiny::observeEvent(input$krav_4, {
+      rv$vurdering[4] <- input$krav_4
+      rv$table_data$krav_04 <- as.numeric(input$krav_4)
     })
 
-    shiny::observeEvent(input$S2_5, {
-      rv$vurdering[5] <- input$S2_5
-      rv$table_data$krav_05 <- as.numeric(input$S2_5)
+    shiny::observeEvent(input$krav_5, {
+      rv$vurdering[5] <- input$krav_5
+      rv$table_data$krav_05 <- as.numeric(input$krav_5)
     })
 
     # Stadium 3
-    shiny::observeEvent(input$S3_1, {
-      rv$vurdering[6] <- input$S3_1
-      rv$table_data$krav_06 <- as.numeric(input$S3_1)
+    shiny::observeEvent(input$krav_6, {
+      rv$vurdering[6] <- input$krav_6
+      rv$table_data$krav_06 <- as.numeric(input$krav_6)
     })
 
-    shiny::observeEvent(input$S3_2, {
-      rv$vurdering[7] <- input$S3_2
-      rv$table_data$krav_07 <- as.numeric(input$S3_2)
+    shiny::observeEvent(input$krav_7, {
+      rv$vurdering[7] <- input$krav_7
+      rv$table_data$krav_07 <- as.numeric(input$krav_7)
     })
 
-    shiny::observeEvent(input$S3_3, {
-      rv$vurdering[8] <- input$S3_3
-      rv$table_data$krav_08 <- as.numeric(input$S3_3)
+    shiny::observeEvent(input$krav_8, {
+      rv$vurdering[8] <- input$krav_8
+      rv$table_data$krav_08 <- as.numeric(input$krav_8)
     })
 
-    shiny::observeEvent(input$S3_4, {
-      rv$vurdering[9] <- input$S3_4
-      rv$table_data$krav_09 <- as.numeric(input$S3_4)
+    shiny::observeEvent(input$krav_9, {
+      rv$vurdering[9] <- input$krav_9
+      rv$table_data$krav_09 <- as.numeric(input$krav_9)
     })
 
-    shiny::observeEvent(input$S3_5, {
-      rv$vurdering[10] <- input$S3_5
-      rv$table_data$krav_10 <- as.numeric(input$S3_5)
+    shiny::observeEvent(input$krav_10, {
+      rv$vurdering[10] <- input$krav_10
+      rv$table_data$krav_10 <- as.numeric(input$krav_10)
     })
 
-    shiny::observeEvent(input$S3_6, {
-      rv$vurdering[11] <- input$S3_6
-      rv$table_data$krav_11 <- as.numeric(input$S3_6)
+    shiny::observeEvent(input$krav_11, {
+      rv$vurdering[11] <- input$krav_11
+      rv$table_data$krav_11 <- as.numeric(input$krav_11)
     })
 
     # Stadium 4
-    shiny::observeEvent(input$S4_1, {
-      rv$vurdering[12] <- input$S4_1
-      rv$table_data$krav_12 <- as.numeric(input$S4_1)
+    shiny::observeEvent(input$krav_12, {
+      rv$vurdering[12] <- input$krav_12
+      rv$table_data$krav_12 <- as.numeric(input$krav_12)
     })
 
-    shiny::observeEvent(input$S4_2, {
-      rv$vurdering[13] <- input$S4_2
-      rv$table_data$krav_13 <- as.numeric(input$S4_2)
+    shiny::observeEvent(input$krav_13, {
+      rv$vurdering[13] <- input$krav_13
+      rv$table_data$krav_13 <- as.numeric(input$krav_13)
     })
 
-    shiny::observeEvent(input$S4_3, {
-      rv$vurdering[14] <- input$S4_3
-      rv$table_data$krav_14 <- as.numeric(input$S4_3)
+    shiny::observeEvent(input$krav_14, {
+      rv$vurdering[14] <- input$krav_14
+      rv$table_data$krav_14 <- as.numeric(input$krav_14)
     })
 
-    shiny::observeEvent(input$S4_4, {
-      rv$vurdering[15] <- input$S4_4
-      rv$table_data$krav_15 <- as.numeric(input$S4_4)
+    shiny::observeEvent(input$krav_15, {
+      rv$vurdering[15] <- input$krav_15
+      rv$table_data$krav_15 <- as.numeric(input$krav_15)
     })
 
-    shiny::observeEvent(input$S4_5, {
-      rv$vurdering[16] <- input$S4_5
-      rv$table_data$krav_16 <- as.numeric(input$S4_5)
+    shiny::observeEvent(input$krav_16, {
+      rv$vurdering[16] <- input$krav_16
+      rv$table_data$krav_16 <- as.numeric(input$krav_16)
     })
 
     # Nivå A, B og C
-    shiny::observeEvent(input$N_A, {
-      rv$vurdering[17] <- input$N_A
-      rv$table_data$krav_17 <- as.numeric(input$N_A)
+    shiny::observeEvent(input$krav_17, {
+      rv$vurdering[17] <- input$krav_17
+      rv$table_data$krav_17 <- as.numeric(input$krav_17)
     })
 
-    shiny::observeEvent(input$N_B, {
-      rv$vurdering[18] <- input$N_B
-      rv$table_data$krav_18 <- as.numeric(input$N_B)
+    shiny::observeEvent(input$krav_18, {
+      rv$vurdering[18] <- input$krav_18
+      rv$table_data$krav_18 <- as.numeric(input$krav_18)
     })
 
     # Oppdater skjema ved valg av år og register
@@ -418,24 +422,24 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
       dat <- dat[(dat$year == input$selected_year) & (dat$registry_id == input$selected_registry), ]
 
       if (nrow(dat) == 1) {
-        shiny::updateCheckboxInput(session, "S2_1", value = dat$krav_01[1])
-        shiny::updateCheckboxInput(session, "S2_2", value = dat$krav_02[1])
-        shiny::updateCheckboxInput(session, "S2_3", value = dat$krav_03[1])
-        shiny::updateCheckboxInput(session, "S2_4", value = dat$krav_04[1])
-        shiny::updateCheckboxInput(session, "S2_5", value = dat$krav_05[1])
-        shiny::updateCheckboxInput(session, "S2_6", value = dat$krav_06[1])
-        shiny::updateCheckboxInput(session, "S2_7", value = dat$krav_07[1])
-        shiny::updateCheckboxInput(session, "S2_8", value = dat$krav_08[1])
-        shiny::updateCheckboxInput(session, "S2_9", value = dat$krav_09[1])
-        shiny::updateCheckboxInput(session, "S2_10", value = dat$krav_10[1])
-        shiny::updateCheckboxInput(session, "S2_11", value = dat$krav_11[1])
-        shiny::updateCheckboxInput(session, "S2_12", value = dat$krav_12[1])
-        shiny::updateCheckboxInput(session, "S2_13", value = dat$krav_13[1])
-        shiny::updateCheckboxInput(session, "S2_14", value = dat$krav_14[1])
-        shiny::updateCheckboxInput(session, "S2_15", value = dat$krav_15[1])
-        shiny::updateCheckboxInput(session, "S2_16", value = dat$krav_16[1])
-        shiny::updateCheckboxInput(session, "S2_17", value = dat$krav_17[1])
-        shiny::updateCheckboxInput(session, "S2_18", value = dat$krav_18[1])
+        shiny::updateCheckboxInput(session, "krav_1", value = dat$krav_01[1])
+        shiny::updateCheckboxInput(session, "krav_2", value = dat$krav_02[1])
+        shiny::updateCheckboxInput(session, "krav_3", value = dat$krav_03[1])
+        shiny::updateCheckboxInput(session, "krav_4", value = dat$krav_04[1])
+        shiny::updateCheckboxInput(session, "krav_5", value = dat$krav_05[1])
+        shiny::updateCheckboxInput(session, "krav_6", value = dat$krav_06[1])
+        shiny::updateCheckboxInput(session, "krav_7", value = dat$krav_07[1])
+        shiny::updateCheckboxInput(session, "krav_8", value = dat$krav_08[1])
+        shiny::updateCheckboxInput(session, "krav_9", value = dat$krav_09[1])
+        shiny::updateCheckboxInput(session, "krav_10", value = dat$krav_10[1])
+        shiny::updateCheckboxInput(session, "krav_11", value = dat$krav_11[1])
+        shiny::updateCheckboxInput(session, "krav_12", value = dat$krav_12[1])
+        shiny::updateCheckboxInput(session, "krav_13", value = dat$krav_13[1])
+        shiny::updateCheckboxInput(session, "krav_14", value = dat$krav_14[1])
+        shiny::updateCheckboxInput(session, "krav_15", value = dat$krav_15[1])
+        shiny::updateCheckboxInput(session, "krav_16", value = dat$krav_16[1])
+        shiny::updateCheckboxInput(session, "krav_17", value = dat$krav_17[1])
+        shiny::updateCheckboxInput(session, "krav_18", value = dat$krav_18[1])
 
         shiny::updateTextInput(session, "N_A_fritekst", value = dat$fritekst_A)
         shiny::updateTextInput(session, "N_B_fritekst", value = dat$fritekst_B)
@@ -443,27 +447,27 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
         shiny::updateNumericInput(session, "oppgitt_dg", value = dat$oppgitt_dg)
 
       } else {
-        shiny::updateCheckboxInput(session, "S2_1", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_2", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_3", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_4", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_5", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_6", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_7", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_8", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_9", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_10", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_11", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_12", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_13", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_14", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_15", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_16", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_17", value = FALSE)
-        shiny::updateCheckboxInput(session, "S2_18", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_1", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_2", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_3", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_4", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_5", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_6", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_7", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_8", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_9", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_10", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_11", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_12", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_13", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_14", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_15", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_16", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_17", value = FALSE)
+        shiny::updateCheckboxInput(session, "krav_18", value = FALSE)
 
         shiny::updateTextInput(session, "N_A_fritekst", value = dat$fritekst_A)
-        shiny::updateTextInput(session, "N_B_fritekst", value = dat$fritekst_B)
+        shiny::updateTextInput(session, "N_send_innB_fritekst", value = dat$fritekst_B)
 
         shiny::updateNumericInput(session, "oppgitt_dg", value = 0)
       }
