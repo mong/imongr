@@ -70,7 +70,7 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
     ns <- session$ns
     conf <- get_config()
 
-    krav_tabell <- pool::dbGetQuery(pool, "SELECT * FROM krav")
+    krav_tabell <- pool::dbGetQuery(pool_verify, "SELECT * FROM krav")
 
     n_krav <- 18
 
@@ -78,7 +78,7 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
       stadium = NA,
       level = NA,
       vurdering = (rep(FALSE, n_krav)),
-      table_data = data.frame(user_id = get_user_id(pool)),
+      table_data = data.frame(user_id = get_user_id(pool_verify)),
       registry_url = NULL
     )
 
@@ -108,7 +108,7 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
 
     shiny::observeEvent(input$selected_registry, {
       query <- paste0("SELECT url FROM registry WHERE id = ", input$selected_registry)
-      dat <- pool::dbGetQuery(pool, query)
+      dat <- pool::dbGetQuery(pool_verify, query)
 
       if (!is.na(dat$url)) {
         rv$registry_url <- shiny::a("Hjemmeside til registeret", href = dat$url, target = "_blank")
@@ -229,7 +229,7 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
     ##### Lagre #####
     shiny::observeEvent(input$send_inn, {
 
-      update_vurdering(pool, rv$table_data, input$selected_registry, input$selected_year)
+      update_vurdering(pool_verify, rv$table_data, input$selected_registry, input$selected_year)
 
       shinyalert::shinyalert("Ferdig",
         "Dine data er n\u00e5 lagret",
@@ -275,7 +275,7 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
     # Oppdater skjema ved valg av år og register
     shiny::observeEvent(update_form(), {
 
-      dat <- pool::dbGetQuery(pool, "SELECT * FROM vurdering")
+      dat <- pool::dbGetQuery(pool_verify, "SELECT * FROM vurdering")
       dat <- dat[(dat$year == input$selected_year) & (dat$registry_id == input$selected_registry), ]
 
       if (nrow(dat) == 1) {
