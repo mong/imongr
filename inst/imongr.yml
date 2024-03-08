@@ -121,6 +121,44 @@ db:
       - user_id
       - publish_id
       - published
+    krav:
+      insert:
+      - id
+      - stage_or_level
+      - crieteria
+      - guide
+      - section
+      - introduction_year
+      - last_year
+    vurdering:
+      insert:
+      - registry_id
+      - user_id
+      - time
+      - oppgitt_dg
+      - year
+      - stadium
+      - krav_1
+      - krav_2
+      - krav_3
+      - krav_4
+      - krav_5
+      - krav_6
+      - krav_7
+      - krav_8
+      - krav_9
+      - krav_10
+      - krav_11
+      - krav_12
+      - krav_13
+      - krav_14
+      - krav_15
+      - krav_16
+      - krav_17
+      - krav_18
+      - vurdering
+      - fritekst_A
+      - fritekst_B
     user:
       insert:
       - user_name

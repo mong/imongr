@@ -240,7 +240,7 @@ CREATE TABLE IF NOT EXISTS `vurdering` (
     FOREIGN KEY (user_id) REFERENCES user (id)
       ON UPDATE CASCADE
       ON DELETE RESTRICT
-) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `krav` (
   `id` tinyint(5) NOT NULL PRIMARY KEY,
@@ -248,5 +248,5 @@ CREATE TABLE IF NOT EXISTS `krav` (
   `criteria` mediumtext NOT NULL,
   `guide` mediumtext NOT NULL,
   `introduction_year` smallint(5) NOT NULL,
-  `last_year` smallint(5) NOT NULL,
-) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+  `last_year` smallint(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
