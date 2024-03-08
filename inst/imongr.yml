@@ -186,6 +186,7 @@ role:
   none: ""
   provider: PROVIDER
   manager: MANAGER
+  reviewer: REVIEWER
 profile:
   greeting: >
     Hei

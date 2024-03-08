@@ -102,6 +102,9 @@ app_server <- function(input, output, session) {
     shiny::showTab("tabs", target = "Administrative verkt\u00f8y")
     shiny::showTab("tabs", target = "ekspertgruppen")
   }
+  if (valid_user && conf$role$reviewer %in% igrs) {
+    shiny::showTab("tabs", target = "ekspertgruppen")
+  }
 
   # clean up when app ends
   shiny::onStop(
