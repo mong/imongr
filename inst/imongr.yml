@@ -206,6 +206,8 @@ profile:
     none: >
       Det finnes ingen registrerte dataleveranser fra deg.
   howto: >
+    <h4> Her kan man laste opp indikatordata og sende inn vurdering av årsrapporter </h4>
+    <br>
     For å laste opp indikatordata for kvalitetskontroll velg
     fanen "Last opp data" og følg instruksjonene der. Under "Indikator"-fanen
     kan man i prosessen med kvalitetskontroll også endre på
@@ -214,8 +216,14 @@ profile:
     fanen "Publiser indikatorer". Under fanen "Last ned data" kan du hente ulike
     datasett og du velger selv om disse skal hentes fra data som ligger til
     kvalitetskontroll eller data som allerede er publisert.
-    Når du er ferdig kan du logge ut ved å bruke lenken oppe i høyre hjørne. Om
-    du har spørsmål eller plages kan du alltids ta kontakt med
+    Når du er ferdig kan du logge ut ved å bruke lenken oppe i høyre hjørne. 
+    <br>
+    <br>
+    For å sende inn vurdering av årsrapporter, velg fanen "Ekspertgruppen". 
+    Veiledning til hvert punkt dukker opp nå man plasserer musepekeren over teksten. 
+    <br>
+    <br>
+    Om du har spørsmål eller plages kan du alltids ta kontakt med
     <a href="https://helse-nord.no/skde">SKDE</a> på <a href="mailto:mong@skde.no">e-post</a>,
     eventuelt direkte e-post til
     <a href="mailto:arnfinn.hykkerud.steindal@helse-nord.no">Arnfinn</a> eller
