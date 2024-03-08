@@ -447,7 +447,7 @@ WHERE
 
 #' @rdname ops
 #' @export
-update_vurdering <- function(pool, df, registry_id, year) {
+update_review <- function(pool, df, registry_id, year) {
 
   message("Oppdaterer vurdering")
 

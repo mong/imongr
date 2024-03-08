@@ -72,7 +72,7 @@ app_text:
       Angi bruker(e) for registrene
     indicator: |-
       Se og endre på indikatortekster
-    ekspertgruppen: |-
+    review: |-
       Send inn vurdering av årsrapporter
     adminer: |-
       Administrer data

@@ -1,6 +1,6 @@
-#' @rdname mod_ekspertgruppen
+#' @rdname mod_review
 #' @eksport
-ekspertgruppen_ui <- function(id) {
+review_ui <- function(id) {
 
   ns <- shiny::NS(id)
 
@@ -63,9 +63,9 @@ ekspertgruppen_ui <- function(id) {
   )
 }
 
-#' @rdname mod_ekspertgruppen
+#' @rdname mod_review
 #' @eksport
-ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
+review_server <- function(id, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
     conf <- get_config()
@@ -229,7 +229,7 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
     ##### Lagre #####
     shiny::observeEvent(input$send_inn, {
 
-      update_vurdering(pool_verify, rv$table_data, input$selected_registry, input$selected_year)
+      update_review(pool_verify, rv$table_data, input$selected_registry, input$selected_year)
 
       shinyalert::shinyalert("Ferdig",
         "Dine data er n\u00e5 lagret",
@@ -305,15 +305,15 @@ ekspertgruppen_server <- function(id, registry_tracker, pool, pool_verify) {
   })
 }
 
-#' @rdname mod_ekspertgruppen
+#' @rdname mod_review
 #' @eksport
-ekspertgruppen_app <- function(pool_verify) {
+review_app <- function(pool_verify) {
   ui <- shiny::fluidPage(
-    ekspertgruppen_ui("ekspertgruppen")
+    review_ui("review")
   )
 
   server <- function(input, output, session) {
-    ekspertgruppen_server("ekspertgruppen", pool_verify)
+    review_server("review", pool_verify)
   }
 
   shiny::shinyApp(ui, server)

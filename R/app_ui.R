@@ -76,11 +76,11 @@ app_ui <- function() {
         indicator_ui("ind")
       ),
       shiny::tabPanel(
-        value = "ekspertgrupen",
+        value = "review",
         shiny::span("Ekspertgruppen",
-          title = conf$app_text$tooltip$ekspertgruppen
+          title = conf$app_text$tooltip$review
         ),
-        ekspertgruppen_ui("ekspertgruppen")
+        review_ui("review")
       ),
       shiny::navbarMenu(
         "Administrative verkt\u00f8y",
