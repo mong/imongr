@@ -170,14 +170,14 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
 
     output$save_override <- shiny::renderUI({
       shiny::req(input$selected_registry, input$selected_year)
-      if (is_manager) {
+      if (is_manager & !(input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1)) {
         shiny::validate(
           shiny::need(dplyr::between(input$reported_dg, 0, 100), "Dekningsgrad må være fra 0 til 100\n")
         )
 
         shiny::actionButton(
           ns("save_override"),
-          "Lagre",
+          "Lagre likevel",
           shiny::icon("user-secret")
         )
       }
@@ -278,7 +278,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
 
       update_review(pool_verify, rv$table_data, input$selected_registry, input$selected_year)
 
-      shinyalert::shinyalert("Sperring overstyrt",
+      shinyalert::shinyalert("Ferdig",
         "Dine data er n\u00e5 lagret",
         type = "success",
         showConfirmButton = FALSE,
