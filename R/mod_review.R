@@ -73,7 +73,13 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
 
     df_requirements <- pool::dbGetQuery(pool_verify, "SELECT * FROM requirements")
 
+    # Hvilke krav må være oppfylt for ulike stadier og nivå?
     n_requirements <- 18
+    stage_4 <- 1:16
+    stage_3 <- 1:11
+    stage_2 <- 1:5
+    level_a <- 17:18
+    level_b <- 18
 
     rv <- shiny::reactiveValues(
       stage = NA,
@@ -208,26 +214,23 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(rv$evaluation, {
       rv$stage <- 1
 
-      if (all(rv$evaluation[1:16])) {
+      if (all(rv$evaluation[stage_4])) {
         rv$stage <- 4
-        rv$table_data$stage <- 1
-      } else if (all(rv$evaluation[1:11])) {
+      } else if (all(rv$evaluation[stage_3])) {
         rv$stage <- 3
-        rv$table_data$stage <- 3
-      } else if (all(rv$evaluation[1:5])) {
+      } else if (all(rv$evaluation[stage_2])) {
         rv$stage <- 2
-        rv$table_data$stage <- 2
       }
 
       rv$level <- "C"
 
-      if (all(rv$evaluation[17:18])) {
+      if (all(rv$evaluation[level_a])) {
         rv$level <- "A"
-      } else if (rv$evaluation[18]) {
+      } else if (rv$evaluation[level_b]) {
         rv$level <- "B"
       }
 
-      rv$table_data$stage <- paste0(rv$stage, rv$level)
+      rv$table_data$verdict <- paste0(rv$stage, rv$level)
     })
 
     ##### Lagre #####

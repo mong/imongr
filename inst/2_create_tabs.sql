@@ -210,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
   `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP() NOT NULL,
   `reported_dg` tinyint(5) NOT NULL,
   `year` smallint(5) NOT NULL,
-  `stage` char(2) NOT NULL,
+  `verdict` char(2) NOT NULL,
   `requirement_1` tinyint(1) NOT NULL,
   `requirement_2` tinyint(1) NOT NULL,
   `requirement_3` tinyint(1) NOT NULL,
