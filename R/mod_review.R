@@ -233,7 +233,9 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
       } else if (rv$evaluation[level_b]) {
         rv$level <- "B"
       }
+    })
 
+    shiny::observeEvent(verdict(), {
       rv$table_data$verdict <- verdict()
     })
 
