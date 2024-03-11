@@ -413,11 +413,7 @@ test_that("review module has output...", {
     review_server,
     args = list(pool = pool, pool_verify = pool),
     {
-      session$setInputs(
-        selected_registry = 1,
-        selected_year = 2023
-      )
-
+      session$setInputs(selected_registry = "", url = "", year = "")
       expect_equal(verdict(), "1C")
 
       session$setInputs(
@@ -429,6 +425,12 @@ test_that("review module has output...", {
       )
 
       expect_equal(verdict(), "2C")
+
+      session$setInputs(
+        requirement_18 = TRUE
+      )
+
+      expect_equal(verdict(), "2B")
     }
   )
 })
