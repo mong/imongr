@@ -155,7 +155,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
                     "Redigering tillates kun på aktuelt rapporteringsår")
       )
       shiny::actionButton(
-        ns("send_inn"),
+        ns("save"),
         "Lagre",
         shiny::icon("floppy-disk")
       )
@@ -238,7 +238,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     ##### Lagre #####
-    shiny::observeEvent(input$send_inn, {
+    shiny::observeEvent(input$save, {
 
       update_review(pool_verify, rv$table_data, input$selected_registry, input$selected_year)
 
