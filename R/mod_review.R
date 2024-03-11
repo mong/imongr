@@ -142,7 +142,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::selectInput(
         ns("selected_year"),
         "Velg \u00e5r",
-        c(2022L : as.numeric(format(Sys.Date(), "%Y")) - 1),
+        c(2021L : (as.numeric(format(Sys.Date(), "%Y")) - 1)),
         selected = 2023
       )
     })
@@ -301,8 +301,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
           shiny::checkboxInput(ns(paste0("requirement_", i)), shiny::HTML(df_requirements$criteria[i]), width = "100%")
         )
       })
-    }
-    )
+    })
 
     ##############################
     ##### Reaktivitet skjema #####
