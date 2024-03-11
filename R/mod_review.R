@@ -24,7 +24,8 @@ review_ui <- function(id) {
         shiny::br(),
         shiny::hr(),
         shiny::br(),
-        shiny::textOutput(ns("verdict")),
+        shiny::h5(style = "text-align: center;", "Registeret vurderes til:"),
+        shiny::uiOutput(ns("verdict")),
         shiny::br(),
         shiny::hr(),
         shiny::br(),
@@ -130,7 +131,9 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
-    output$verdict <- shiny::renderText(paste0("Registeret vurderes til: ", rv$stage, rv$level))
+    output$verdict <- shiny::renderUI(
+      shiny::div(style = "font-size: 200%; text-align: center", paste0(rv$stage, rv$level))
+    )
 
     # Gjem knapp hvis årstall ikke er fjoråret
     output$save <- shiny::renderUI({
