@@ -29,7 +29,10 @@ review_ui <- function(id) {
         shiny::br(),
         shiny::hr(),
         shiny::br(),
-        shiny::uiOutput(ns("save"))
+        shiny::uiOutput(ns("save")),
+        shiny::br(),
+        shiny::br(),
+        shiny::uiOutput(ns("save_override"))
       ),
       shiny::mainPanel(
         shiny::h3("Stadium 2"),
@@ -70,6 +73,8 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
     conf <- get_config()
+
+    is_manager <- conf$role$manager %in% get_user_groups()
 
     df_requirements <- pool::dbGetQuery(pool_verify, "SELECT * FROM requirements")
 
@@ -149,16 +154,33 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     # Gjem knapp hvis årstall ikke er fjoråret
     output$save <- shiny::renderUI({
       shiny::req(input$selected_registry)
+
       shiny::validate(
         shiny::need(dplyr::between(input$reported_dg, 0, 100), "Dekningsgrad må være fra 0 til 100\n"),
         shiny::need(input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1,
                     "Redigering tillates kun på aktuelt rapporteringsår")
       )
+
       shiny::actionButton(
         ns("save"),
         "Lagre",
         shiny::icon("floppy-disk")
       )
+    })
+
+    output$save_override <- shiny::renderUI({
+      shiny::req(input$selected_registry, input$selected_year)
+      if (is_manager) {
+        shiny::validate(
+          shiny::need(dplyr::between(input$reported_dg, 0, 100), "Dekningsgrad må være fra 0 til 100\n")
+        )
+
+        shiny::actionButton(
+          ns("save_override"),
+          "Lagre",
+          shiny::icon("user-secret")
+        )
+      }
     })
 
     #######################
@@ -245,6 +267,18 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
       update_review(pool_verify, rv$table_data, input$selected_registry, input$selected_year)
 
       shinyalert::shinyalert("Ferdig",
+        "Dine data er n\u00e5 lagret",
+        type = "success",
+        showConfirmButton = FALSE,
+        timer = 2000
+      )
+    })
+
+    shiny::observeEvent(input$save_override, {
+
+      update_review(pool_verify, rv$table_data, input$selected_registry, input$selected_year)
+
+      shinyalert::shinyalert("Sperring overstyrt",
         "Dine data er n\u00e5 lagret",
         type = "success",
         showConfirmButton = FALSE,
