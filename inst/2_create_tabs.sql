@@ -232,11 +232,11 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
   `evaluation_text` mediumtext NOT NULL,
   `level_A_comment` mediumtext NOT NULL,
   `level_B_comment` mediumtext NOT NULL,
-  CONSTRAINT `fk_vurdering_registry`
+  CONSTRAINT `fk_evaluation_registry`
     FOREIGN KEY (registry_id) REFERENCES registry (id)
       ON UPDATE CASCADE
       ON DELETE RESTRICT,
-  CONSTRAINT `fk_vurdering_user`
+  CONSTRAINT `fk_evaluation_user`
     FOREIGN KEY (user_id) REFERENCES user (id)
       ON UPDATE CASCADE
       ON DELETE RESTRICT

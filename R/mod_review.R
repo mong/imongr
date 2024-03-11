@@ -108,6 +108,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     shiny::observeEvent(input$selected_registry, {
+      shiny::req(input$selected_registry)
       query <- paste0("SELECT url FROM registry WHERE id = ", input$selected_registry)
       dat <- pool::dbGetQuery(pool_verify, query)
 
