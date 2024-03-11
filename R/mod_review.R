@@ -14,7 +14,7 @@ review_ui <- function(id) {
         shiny::br(),
         shiny::uiOutput(ns("select_year")),
         shiny::numericInput(
-          ns("oppgitt_dg"),
+          ns("reported_dg"),
           "DG i % oppgitt av regionene utfra \u00e5rsrapporter",
           value = 0,
           min = 0,
@@ -24,11 +24,11 @@ review_ui <- function(id) {
         shiny::br(),
         shiny::hr(),
         shiny::br(),
-        shiny::textOutput(ns("vurdert_stadium")),
+        shiny::textOutput(ns("verdict")),
         shiny::br(),
         shiny::hr(),
         shiny::br(),
-        shiny::uiOutput(ns("lagre"))
+        shiny::uiOutput(ns("save"))
       ),
       shiny::mainPanel(
         shiny::h3("Stadium 2"),
@@ -52,12 +52,12 @@ review_ui <- function(id) {
         shiny::uiOutput(ns("checkbox16")),
         shiny::h3("Niv\u00e5 A"),
         shiny::uiOutput(ns("checkbox17")),
-        shiny::uiOutput(ns("N_A_kommentar")),
+        shiny::uiOutput(ns("level_A_comment")),
         shiny::h3("Niv\u00e5 B"),
         shiny::uiOutput(ns("checkbox18")),
-        shiny::uiOutput(ns("N_B_kommentar")),
+        shiny::uiOutput(ns("level_B_comment")),
         shiny::h3("Ekspertgruppens vurdering"),
-        shiny::uiOutput(ns("vurdering")),
+        shiny::uiOutput(ns("evaluation_text")),
       )
     )
   )
@@ -70,14 +70,14 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     ns <- session$ns
     conf <- get_config()
 
-    krav_tabell <- pool::dbGetQuery(pool_verify, "SELECT * FROM krav")
+    df_requirements <- pool::dbGetQuery(pool_verify, "SELECT * FROM requirements")
 
-    n_krav <- 18
+    n_requirements <- 18
 
     rv <- shiny::reactiveValues(
-      stadium = NA,
+      stage = NA,
       level = NA,
-      vurdering = (rep(FALSE, n_krav)),
+      evaluation = (rep(FALSE, n_requirements)),
       table_data = data.frame(user_id = get_user_id(pool_verify)),
       registry_url = NULL
     )
@@ -130,13 +130,13 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
-    output$vurdert_stadium <- shiny::renderText(paste0("Registeret vurderes til: ", rv$stadium, rv$level))
+    output$verdict <- shiny::renderText(paste0("Registeret vurderes til: ", rv$stage, rv$level))
 
     # Gjem knapp hvis årstall ikke er fjoråret
-    output$lagre <- shiny::renderUI({
+    output$save <- shiny::renderUI({
       shiny::req(input$selected_registry)
       shiny::validate(
-        shiny::need(dplyr::between(input$oppgitt_dg, 0, 100), "Dekningsgrad må være fra 0 til 100\n"),
+        shiny::need(dplyr::between(input$reported_dg, 0, 100), "Dekningsgrad må være fra 0 til 100\n"),
         shiny::need(input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1,
                     "Redigering tillates kun på aktuelt rapporteringsår")
       )
@@ -151,23 +151,23 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     ##### UI tekstfelt ####
     #######################
 
-    output$vurdering <- shiny::renderUI({
+    output$evaluation_text <- shiny::renderUI({
       shiny::textAreaInput(
-        ns("vurdering_fritekst"), "Vurdering av \u00e5rsrapporten",
+        ns("evaluation_text"), "Vurdering av \u00e5rsrapporten",
         value = "", width = "90%", rows = 8
       )
     })
 
-    output$N_A_kommentar <- shiny::renderUI({
+    output$level_A_comment <- shiny::renderUI({
       shiny::textAreaInput(
-        ns("N_A_fritekst"), "Kommentarer til niv\u00e5 A",
+        ns("level_A_comment"), "Kommentarer til niv\u00e5 A",
         value = "", width = "90%", rows = 4
       )
     })
 
-    output$N_B_kommentar <- shiny::renderUI({
+    output$level_B_comment <- shiny::renderUI({
       shiny::textAreaInput(
-        ns("N_B_fritekst"), "Kommentarer til niv\u00e5 B",
+        ns("level_B_comment"), "Kommentarer til niv\u00e5 B",
         value = "", width = "90%", rows = 4
       )
     })
@@ -184,46 +184,46 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
       rv$table_data$year <- input$selected_year
     })
 
-    shiny::observeEvent(input$oppgitt_dg, {
-      rv$table_data$oppgitt_dg <- input$oppgitt_dg
+    shiny::observeEvent(input$reported_dg, {
+      rv$table_data$reported_dg <- input$reported_dg
     })
 
-    shiny::observeEvent(input$N_A_fritekst, {
-      rv$table_data$fritekst_A <- input$N_A_fritekst
+    shiny::observeEvent(input$level_A_comment, {
+      rv$table_data$level_A_comment <- input$level_A_comment
     })
 
-    shiny::observeEvent(input$N_B_fritekst, {
-      rv$table_data$fritekst_B <- input$N_B_fritekst
+    shiny::observeEvent(input$level_B_comment, {
+      rv$table_data$level_B_comment <- input$level_B_comment
     })
 
-    shiny::observeEvent(input$vurdering_fritekst, {
-      rv$table_data$vurdering <- input$vurdering_fritekst
+    shiny::observeEvent(input$evaluation_text, {
+      rv$table_data$evaluation_text <- input$evaluation_text
     })
 
     # Regn ut stadium og nivå
-    shiny::observeEvent(rv$vurdering, {
-      rv$stadium <- 1
+    shiny::observeEvent(rv$evaluation, {
+      rv$stage <- 1
 
-      if (all(rv$vurdering[1:16])) {
-        rv$stadium <- 4
-        rv$table_data$stadium <- 1
-      } else if (all(rv$vurdering[1:11])) {
-        rv$stadium <- 3
-        rv$table_data$stadium <- 3
-      } else if (all(rv$vurdering[1:5])) {
-        rv$stadium <- 2
-        rv$table_data$stadium <- 2
+      if (all(rv$evaluation[1:16])) {
+        rv$stage <- 4
+        rv$table_data$stage <- 1
+      } else if (all(rv$evaluation[1:11])) {
+        rv$stage <- 3
+        rv$table_data$stage <- 3
+      } else if (all(rv$evaluation[1:5])) {
+        rv$stage <- 2
+        rv$table_data$stage <- 2
       }
 
       rv$level <- "C"
 
-      if (all(rv$vurdering[17:18])) {
+      if (all(rv$evaluation[17:18])) {
         rv$level <- "A"
-      } else if (rv$vurdering[18]) {
+      } else if (rv$evaluation[18]) {
         rv$level <- "B"
       }
 
-      rv$table_data$stadium <- paste0(rv$stadium, rv$level)
+      rv$table_data$stage <- paste0(rv$stage, rv$level)
     })
 
     ##### Lagre #####
@@ -243,15 +243,15 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     ##### UI skjema #####
     #####################
 
-    lapply(X = 1:n_krav, FUN = function(i) {
+    lapply(X = 1:n_requirements, FUN = function(i) {
       output[[paste0("checkbox", i)]] <- shiny::renderUI({
 
         shiny::req((as.numeric(input$selected_year) %>%
-                      dplyr::between(krav_tabell$introduction_year[i], krav_tabell$last_year[i])))
+                      dplyr::between(df_requirements$introduction_year[i], df_requirements$last_year[i])))
 
         shiny::tags$div(
-          title = paste0(krav_tabell$guide[i], "\n\n", krav_tabell$section[i]),
-          shiny::checkboxInput(ns(paste0("krav_", i)), shiny::HTML(krav_tabell$criteria[i]), width = "100%")
+          title = paste0(df_requirements$guide[i], "\n\n", df_requirements$section[i]),
+          shiny::checkboxInput(ns(paste0("requirement_", i)), shiny::HTML(df_requirements$criteria[i]), width = "100%")
         )
       })
     }
@@ -261,12 +261,12 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     ##### Reaktivitet skjema #####
     ##############################
 
-    lapply(X = 1:n_krav, FUN = function(i) {
+    lapply(X = 1:n_requirements, FUN = function(i) {
 
-      col_name <- paste0("krav_", i)
+      col_name <- paste0("requirement_", i)
 
       shiny::observeEvent(input[[col_name]], {
-        rv$vurdering[i] <- input[[col_name]]
+        rv$evaluation[i] <- input[[col_name]]
         rv$table_data[[col_name]] <- as.numeric(input[[col_name]])
       })
     }
@@ -275,29 +275,29 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     # Oppdater skjema ved valg av år og register
     shiny::observeEvent(update_form(), {
 
-      dat <- pool::dbGetQuery(pool_verify, "SELECT * FROM vurdering")
+      dat <- pool::dbGetQuery(pool_verify, "SELECT * FROM evaluation")
       dat <- dat[(dat$year == input$selected_year) & (dat$registry_id == input$selected_registry), ]
 
       if (nrow(dat) == 1) {
-        lapply(X = 1:n_krav, FUN = function(i) {
-          col_name <- paste0("krav_", i)
+        lapply(X = 1:n_requirements, FUN = function(i) {
+          col_name <- paste0("requirement_", i)
           shiny::updateCheckboxInput(session, col_name, value = dat[[col_name]][1])
         })
 
-        shiny::updateTextInput(session, "N_A_fritekst", value = dat$fritekst_A)
-        shiny::updateTextInput(session, "N_B_fritekst", value = dat$fritekst_B)
+        shiny::updateTextInput(session, "level_A_comment", value = dat$level_A_comment)
+        shiny::updateTextInput(session, "level_B_comment", value = dat$level_B_comment)
 
-        shiny::updateNumericInput(session, "oppgitt_dg", value = dat$oppgitt_dg)
+        shiny::updateNumericInput(session, "reported_dg", value = dat$reported_dg)
 
       } else {
-        lapply(X = 1:n_krav, FUN = function(i) {
-          shiny::updateCheckboxInput(session, paste0("krav_", i), value = FALSE)
+        lapply(X = 1:n_requirements, FUN = function(i) {
+          shiny::updateCheckboxInput(session, paste0("requirement_", i), value = FALSE)
         })
 
-        shiny::updateTextInput(session, "N_A_fritekst", value = dat$fritekst_A)
-        shiny::updateTextInput(session, "N_send_innB_fritekst", value = dat$fritekst_B)
+        shiny::updateTextInput(session, "level_A_comment", value = dat$level_A_comment)
+        shiny::updateTextInput(session, "level_B_comment", value = dat$level_B_comment)
 
-        shiny::updateNumericInput(session, "oppgitt_dg", value = 0)
+        shiny::updateNumericInput(session, "reported_dg", value = 0)
       }
     })
 

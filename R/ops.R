@@ -453,13 +453,13 @@ update_review <- function(pool, df, registry_id, year) {
 
   query <- paste0("
     DELETE FROM
-      vurdering
+      evaluation
     WHERE
       registry_id = ", registry_id, " AND year = ", year, ";")
 
   pool::dbExecute(pool, query)
 
-  pool::dbWriteTable(pool, "vurdering", df,
+  pool::dbWriteTable(pool, "evaluation", df,
     append = TRUE,
     row.names = FALSE
   )
