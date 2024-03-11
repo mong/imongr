@@ -65,7 +65,7 @@ review_ui <- function(id) {
 }
 
 #' @rdname mod_review
-#' @eksport
+#' @export
 review_server <- function(id, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -88,6 +88,10 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
       table_data = data.frame(user_id = get_user_id(pool_verify)),
       registry_url = NULL
     )
+
+    verdict <- shiny::reactive({
+      paste0(rv$stage, rv$level)
+    })
 
     rv_return <- shiny::reactiveValues()
 
@@ -139,7 +143,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     output$verdict <- shiny::renderUI(
-      shiny::div(style = "font-size: 200%; text-align: center", paste0(rv$stage, rv$level))
+      shiny::div(style = "font-size: 200%; text-align: center", verdict())
     )
 
     # Gjem knapp hvis årstall ikke er fjoråret
@@ -230,7 +234,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
         rv$level <- "B"
       }
 
-      rv$table_data$verdict <- paste0(rv$stage, rv$level)
+      rv$table_data$verdict <- verdict()
     })
 
     ##### Lagre #####
@@ -314,7 +318,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
 
 #' @rdname mod_review
 #' @eksport
-review_app <- function(pool_verify) {
+review_app <- function(pool, pool_verify) {
   ui <- shiny::fluidPage(
     review_ui("review")
   )

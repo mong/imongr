@@ -407,11 +407,27 @@ test_that("download module has output...", {
   )
 })
 
+test_that("review module has output...", {
+  check_db()
+  shiny::testServer(
+    review_server,
+    args = list(pool = pool, pool_verify = pool),
+    {
+      session$setInputs(
+        selected_registry <- 1
+      )
+      expect_equal(verdict(), "1C")
+    }
+  )
+})
+
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
   conf <- get_config()
   pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
+  pool::dbExecute(pool, "ALTER TABLE `evaluation` DROP FOREIGN KEY `fk_evaluation_user`;")
+  pool::dbExecute(pool, "ALTER TABLE `evaluation` DROP FOREIGN KEY `fk_evaluation_registry`;")
   pool::dbExecute(
     pool,
     paste(
