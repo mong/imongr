@@ -121,7 +121,7 @@ db:
       - user_id
       - publish_id
       - published
-    krav:
+    requirements:
       insert:
       - id
       - stage_or_level
@@ -130,35 +130,35 @@ db:
       - section
       - introduction_year
       - last_year
-    vurdering:
+    evaluation:
       insert:
       - registry_id
       - user_id
       - time
-      - oppgitt_dg
+      - reported_dg
       - year
-      - stadium
-      - krav_1
-      - krav_2
-      - krav_3
-      - krav_4
-      - krav_5
-      - krav_6
-      - krav_7
-      - krav_8
-      - krav_9
-      - krav_10
-      - krav_11
-      - krav_12
-      - krav_13
-      - krav_14
-      - krav_15
-      - krav_16
-      - krav_17
-      - krav_18
-      - vurdering
-      - fritekst_A
-      - fritekst_B
+      - stage
+      - requirement_1
+      - requirement_2
+      - requirement_3
+      - requirement_4
+      - requirement_5
+      - requirement_6
+      - requirement_7
+      - requirement_8
+      - requirement_9
+      - requirement_10
+      - requirement_11
+      - requirement_12
+      - requirement_13
+      - requirement_14
+      - requirement_15
+      - requirement_16
+      - requirement_17
+      - requirement_18
+      - evaluation_text
+      - level_A_comment
+      - level_B_comment
     user:
       insert:
       - user_name
