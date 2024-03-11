@@ -431,6 +431,33 @@ test_that("review module has output...", {
       )
 
       expect_equal(verdict(), "2B")
+
+      session$setInputs(
+        requirement_6 = TRUE,
+        requirement_7 = TRUE,
+        requirement_8 = TRUE,
+        requirement_9 = TRUE,
+        requirement_10 = TRUE,
+        requirement_11 = TRUE
+      )
+
+      expect_equal(verdict(), "3B")
+
+      session$setInputs(
+        requirement_17 = TRUE
+      )
+
+      expect_equal(verdict(), "3A")
+
+      session$setInputs(
+        requirement_12 = TRUE,
+        requirement_13 = TRUE,
+        requirement_14 = TRUE,
+        requirement_15 = TRUE,
+        requirement_16 = TRUE
+      )
+
+      expect_equal(verdict(), "4A")
     }
   )
 })
