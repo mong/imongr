@@ -239,7 +239,9 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
   CONSTRAINT `fk_evaluation_user`
     FOREIGN KEY (user_id) REFERENCES user (id)
       ON UPDATE CASCADE
-      ON DELETE RESTRICT
+      ON DELETE RESTRICT,
+  CONSTRAINT `registry_id_year`
+    UNIQUE (registry_id, year)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `requirements` (
