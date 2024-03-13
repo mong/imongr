@@ -72,28 +72,35 @@ profile_server <- function(id, pool, pool_verify) {
             delivery_history <- conf$profile$delivery$none
           }
 
-          profile_howto <- ""
+          is_provider <- conf$role$provider %in% get_user_groups()
+          is_reviewer <- conf$role$reviewer %in% get_user_groups()
 
-          if (conf$role$provider %in% get_user_groups()) {
-            profile_howto <- paste0(profile_howto, conf$profile$provider_howto)
-          }
-
-          if (conf$role$reviewer %in% get_user_groups()) {
-            profile_howto <- paste0(profile_howto, "<br><br>", conf$profile$reviewer)
-          }
-
-          paste(
+          welcome_text <- paste(
             conf$profile$greeting, "<b>", get_user_name(), "</b>", "<br>",
             conf$profile$userinfo, "<br>",
             "Navn:", df$name, "<br>",
             "Telefon:", df$phone, "<br>",
-            "e-post:", df$email, "<br><br>",
-            profile_howto, "<br><br>",
-            conf$profile$support_howto,
-            "<br><br>",
-            delivery_history,
-            "<br><br>"
+            "e-post:", df$email, "<br><br>"
           )
+
+          if (is_provider) {
+            welcome_text <- paste(welcome_text, conf$profile$provider_howto)
+          }
+
+          if (is_provider & is_reviewer) {
+            welcome_text <- paste(welcome_text,"<br><br>")
+          }
+
+          if (is_reviewer) {
+            welcome_text <- paste(welcome_text, conf$profile$reviewer_howto)
+          }
+
+          if (is_provider) {
+            welcome_text <- paste(welcome_text, "<br><br>", delivery_history, "<br><br>")
+          }
+
+          welcome_text
+
         }
       })
 
