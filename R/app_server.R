@@ -206,7 +206,7 @@ app_server <- function(input, output, session) {
     registry_tracker$current_registry <- rv_indicator$registry_id
   })
 
-  rv_review <- review_server("review", registry_tracker, pool, pool_verify)
+  rv_review <- review_server("review", registry_tracker, pool)
 
   shiny::observeEvent(rv_review$registry_id, {
     registry_tracker$current_registry <- rv_review$registry_id

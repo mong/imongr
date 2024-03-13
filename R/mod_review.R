@@ -69,7 +69,7 @@ review_ui <- function(id) {
 
 #' @rdname mod_review
 #' @export
-review_server <- function(id, registry_tracker, pool, pool_verify) {
+review_server <- function(id, registry_tracker, pool) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
     conf <- get_config()
@@ -353,13 +353,13 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
 
 #' @rdname mod_review
 #' @eksport
-review_app <- function(pool, pool_verify) {
+review_app <- function(pool) {
   ui <- shiny::fluidPage(
     review_ui("review")
   )
 
   server <- function(input, output, session) {
-    review_server("review", NA, pool, pool_verify)
+    review_server("review", NA, pool)
   }
 
   shiny::shinyApp(ui, server)
