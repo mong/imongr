@@ -411,7 +411,7 @@ test_that("review module has output...", {
   check_db()
   shiny::testServer(
     review_server,
-    args = list(pool = pool, pool_verify = pool),
+    args = list(pool = pool),
     {
       session$setInputs(selected_registry = "", url = "", year = "")
       expect_equal(verdict(), "1C")
