@@ -76,7 +76,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
 
     is_manager <- conf$role$manager %in% get_user_groups()
 
-    df_requirements <- pool::dbGetQuery(pool_verify, "SELECT * FROM requirements")
+    df_requirements <- pool::dbGetQuery(pool, "SELECT * FROM requirements")
 
     # Hvilke krav må være oppfylt for ulike stadier og nivå?
     n_requirements <- 18
@@ -90,7 +90,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
       stage = NA,
       level = NA,
       evaluation = (rep(FALSE, n_requirements)),
-      table_data = data.frame(user_id = get_user_id(pool_verify)),
+      table_data = data.frame(user_id = get_user_id(pool)),
       registry_url = NULL
     )
 
@@ -114,7 +114,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     #######################
 
     output$select_registry <- shiny::renderUI({
-      select_registry_ui(pool_verify, conf,
+      select_registry_ui(pool, conf,
         input_id = ns("selected_registry"),
         context = "verify",
         show_context = FALSE,
@@ -125,7 +125,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$selected_registry, {
       shiny::req(input$selected_registry)
       query <- paste0("SELECT url FROM registry WHERE id = ", input$selected_registry)
-      dat <- pool::dbGetQuery(pool_verify, query)
+      dat <- pool::dbGetQuery(pool, query)
 
       if (!is.na(dat$url)) {
         rv$registry_url <- shiny::a("Hjemmeside til registeret", href = dat$url, target = "_blank")
@@ -264,7 +264,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     ##### Lagre #####
     shiny::observeEvent(input$save, {
 
-      update_review(pool_verify, rv$table_data, input$selected_registry, input$selected_year)
+      update_review(pool, rv$table_data, input$selected_registry, input$selected_year)
 
       shinyalert::shinyalert("Ferdig",
         "Dine data er n\u00e5 lagret",
@@ -276,7 +276,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
 
     shiny::observeEvent(input$save_override, {
 
-      update_review(pool_verify, rv$table_data, input$selected_registry, input$selected_year)
+      update_review(pool, rv$table_data, input$selected_registry, input$selected_year)
 
       shinyalert::shinyalert("Ferdig",
         "Dine data er n\u00e5 lagret",
@@ -321,7 +321,7 @@ review_server <- function(id, registry_tracker, pool, pool_verify) {
     # Oppdater skjema ved valg av år og register
     shiny::observeEvent(update_form(), {
 
-      dat <- pool::dbGetQuery(pool_verify, "SELECT * FROM evaluation")
+      dat <- pool::dbGetQuery(pool, "SELECT * FROM evaluation")
       dat <- dat[(dat$year == input$selected_year) & (dat$registry_id == input$selected_registry), ]
 
       if (nrow(dat) == 1) {
@@ -359,7 +359,7 @@ review_app <- function(pool, pool_verify) {
   )
 
   server <- function(input, output, session) {
-    review_server("review", pool_verify)
+    review_server("review", NA, pool, pool_verify)
   }
 
   shiny::shinyApp(ui, server)
