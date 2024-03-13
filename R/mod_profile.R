@@ -15,13 +15,11 @@ NULL
 profile_ui <- function(id) {
   ns <- shiny::NS(id)
 
-  conf <- get_config()
-
   shiny::tagList(
     shiny::htmlOutput(ns("profile")),
     shiny::uiOutput(ns("upload_history")),
     shiny::uiOutput(ns("ui_upload_table")),
-    shiny::uiOutput(ns("publish_history"),),
+    shiny::uiOutput(ns("publish_history")),
     shiny::uiOutput(ns("ui_publish_table"))
   )
 }
@@ -88,7 +86,7 @@ profile_server <- function(id, pool, pool_verify) {
           }
 
           if (is_provider & is_reviewer) {
-            welcome_text <- paste(welcome_text,"<br><br>")
+            welcome_text <- paste(welcome_text, "<br><br>")
           }
 
           if (is_reviewer) {
