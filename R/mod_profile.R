@@ -93,6 +93,8 @@ profile_server <- function(id, pool, pool_verify) {
             welcome_text <- paste(welcome_text, conf$profile$reviewer_howto)
           }
 
+          welcome_text <- paste(welcome_text, conf$profile$support_howto)
+
           if (is_provider) {
             welcome_text <- paste(welcome_text, "<br><br>", delivery_history, "<br><br>")
           }
