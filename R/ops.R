@@ -444,3 +444,25 @@ WHERE
 
   message("Ferdig\n")
 }
+
+#' @rdname ops
+#' @export
+update_review <- function(pool, df, registry_id, year) {
+
+  message("Oppdaterer vurdering")
+
+  query <- paste0("
+    DELETE FROM
+      evaluation
+    WHERE
+      registry_id = ", registry_id, " AND year = ", year, ";")
+
+  pool::dbExecute(pool, query)
+
+  pool::dbWriteTable(pool, "evaluation", df,
+    append = TRUE,
+    row.names = FALSE
+  )
+
+  message("Ferdig\n")
+}

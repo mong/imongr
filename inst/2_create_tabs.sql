@@ -203,3 +203,52 @@ CREATE TABLE IF NOT EXISTS `agg_data` (
   KEY `ind_id` (`ind_id`),
   KEY `unit_level` (`unit_level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `evaluation` (
+  `registry_id` smallint(5) unsigned NOT NULL,
+  `user_id` smallint(5) unsigned NOT NULL,
+  `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP() NOT NULL,
+  `reported_dg` tinyint(5) NOT NULL,
+  `year` smallint(5) NOT NULL,
+  `verdict` char(2) NOT NULL,
+  `requirement_1` tinyint(1) NOT NULL,
+  `requirement_2` tinyint(1) NOT NULL,
+  `requirement_3` tinyint(1) NOT NULL,
+  `requirement_4` tinyint(1) NOT NULL,
+  `requirement_5` tinyint(1) NOT NULL,
+  `requirement_6` tinyint(1) NOT NULL,
+  `requirement_7` tinyint(1) NOT NULL,
+  `requirement_8` tinyint(1) NOT NULL,
+  `requirement_9` tinyint(1) NOT NULL,
+  `requirement_10` tinyint(1) NOT NULL,
+  `requirement_11` tinyint(1) NOT NULL,
+  `requirement_12` tinyint(1) NOT NULL,
+  `requirement_13` tinyint(1) NOT NULL,
+  `requirement_14` tinyint(1) NOT NULL,
+  `requirement_15` tinyint(1) NOT NULL,
+  `requirement_16` tinyint(1) NOT NULL,
+  `requirement_17` tinyint(1) NOT NULL,
+  `requirement_18` tinyint(1) NOT NULL,
+  `evaluation_text` mediumtext NOT NULL,
+  `level_A_comment` mediumtext NOT NULL,
+  `level_B_comment` mediumtext NOT NULL,
+  CONSTRAINT `fk_evaluation_registry`
+    FOREIGN KEY (registry_id) REFERENCES registry (id)
+      ON UPDATE CASCADE
+      ON DELETE RESTRICT,
+  CONSTRAINT `fk_evaluation_user`
+    FOREIGN KEY (user_id) REFERENCES user (id)
+      ON UPDATE CASCADE
+      ON DELETE RESTRICT,
+  CONSTRAINT `registry_id_year`
+    UNIQUE (registry_id, year)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `requirements` (
+  `id` tinyint(5) NOT NULL PRIMARY KEY,
+  `stage_or_level` char(1) NOT NULL,
+  `criteria` mediumtext NOT NULL,
+  `guide` mediumtext NOT NULL,
+  `introduction_year` smallint(5) NOT NULL,
+  `last_year` smallint(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
