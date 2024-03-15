@@ -23,6 +23,11 @@ review_ui <- function(id) {
         ),
         shiny::br(),
         shiny::hr(),
+        shiny::h5("Hovedansvarlig:"),
+        shiny::uiOutput(ns("collaborators_main")),
+        shiny::h5("Leseansvarlige:"),
+        shiny::uiOutput(ns("collaborators_read")),
+        shiny::hr(),
         shiny::br(),
         shiny::h5(style = "text-align: center;", "Registeret vurderes til:"),
         shiny::uiOutput(ns("verdict")),
@@ -91,7 +96,8 @@ review_server <- function(id, registry_tracker, pool) {
       level = NA,
       evaluation = (rep(FALSE, n_requirements)),
       table_data = data.frame(user_id = get_user_id(pool)),
-      registry_url = NULL
+      registry_url = NULL,
+      collaborators = NULL
     )
 
     verdict <- shiny::reactive({
@@ -132,6 +138,8 @@ review_server <- function(id, registry_tracker, pool) {
       } else {
         rv$registry_url <- NULL
       }
+
+      rv$collaborators <- get_review_collaborators(pool, input$selected_registry)
     })
 
     output$registry_url <- shiny::renderUI({
@@ -147,9 +155,25 @@ review_server <- function(id, registry_tracker, pool) {
       )
     })
 
-    output$verdict <- shiny::renderUI(
+    output$collaborators_main <- shiny::renderUI({
+      collaborators <- rv$collaborators[rv$collaborators$role == "main", ]$name
+
+      lapply(collaborators, FUN = function(s) {
+        shiny::div(style = "font-size: 100%;", s)
+      })
+    })
+
+    output$collaborators_read <- shiny::renderUI({
+      collaborators <- rv$collaborators[rv$collaborators$role == "read", ]$name
+
+      lapply(collaborators, FUN = function(s) {
+        shiny::div(style = "font-size: 100%;", s)
+      })
+    })
+
+    output$verdict <- shiny::renderUI({
       shiny::div(style = "font-size: 200%; text-align: center", verdict())
-    )
+    })
 
     # Gjem knapp hvis årstall ikke er fjoråret
     output$save <- shiny::renderUI({

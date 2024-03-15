@@ -580,3 +580,22 @@ SELECT ", col_names, " FROM agg_data AS ad
 
   return(aggdata)
 }
+
+#' @rdname db_get
+#' @export
+get_review_collaborators <- function(pool, registry) {
+  query <- paste0("
+  SELECT
+    user_registry.user_id,
+    user.name,
+    user_registry.role
+  FROM
+    user_registry
+  LEFT JOIN user ON
+    user_registry.user_id=user.id
+  WHERE
+    user_registry.registry_id=", registry, " AND role IS NOT NULL;"
+  )
+
+  pool::dbGetQuery(pool, query)
+}
