@@ -332,6 +332,7 @@ review_server <- function(id, registry_tracker, pool) {
 
         shiny::updateTextInput(session, "level_A_comment", value = dat$level_A_comment)
         shiny::updateTextInput(session, "level_B_comment", value = dat$level_B_comment)
+        shiny::updateTextInput(session, "evaluation_text", value = dat$evaluation_text)
 
         shiny::updateNumericInput(session, "reported_dg", value = dat$reported_dg)
 
@@ -340,8 +341,9 @@ review_server <- function(id, registry_tracker, pool) {
           shiny::updateCheckboxInput(session, paste0("requirement_", i), value = FALSE)
         })
 
-        shiny::updateTextInput(session, "level_A_comment", value = dat$level_A_comment)
-        shiny::updateTextInput(session, "level_B_comment", value = dat$level_B_comment)
+        shiny::updateTextInput(session, "level_A_comment", value = "")
+        shiny::updateTextInput(session, "level_B_comment", value = "")
+        shiny::updateTextInput(session, "evaluation_text", value = "")
 
         shiny::updateNumericInput(session, "reported_dg", value = 0)
       }
