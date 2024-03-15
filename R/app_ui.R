@@ -19,24 +19,6 @@ app_ui <- function() {
       )
     ),
     shiny::navbarPage(
-      theme = bslib::bs_theme(
-        version = 4,
-        bg = "#FFFFFF",
-        fg = "#1E1E1E",
-        primary = "#007bff",
-        secondary = "#D5D3D3",
-        base_font = bslib::font_collection(
-          "Arial", "Helvetica",
-          "sans-serif"
-        ),
-        heading_font = bslib::font_collection(
-          "Arial",
-          "Helvetica", "sans-serif"
-        ),
-        font_scale = 0.95,
-        spacer = "0.5rem",
-        `enable-shadows` = TRUE
-      ),
       title = shiny::div(app_title),
       windowTitle = app_title,
       id = "tabs",

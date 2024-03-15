@@ -58,17 +58,19 @@ md5_checksum <- function(df, ind = "") {
 user_widget <- function() {
   conf <- get_config()
 
-  bslib::nav_menu(
+  shiny::navbarMenu(
     get_user_name(),
     align = "right",
-    bslib::nav_item(
+    shiny::tabPanel(
       shiny::tags$a(
         shiny::icon("info-circle"),
         id = "app_info",
         href = "#",
         class = "action-button",
         "Informasjon",
-      ),
+      )
+    ),
+    shiny::tabPanel(
       shiny::tags$a(
         shiny::icon("sign-out-alt"),
         conf$profile$logout$text,
