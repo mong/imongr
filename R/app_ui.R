@@ -20,7 +20,6 @@ app_ui <- function() {
     ),
     shiny::navbarPage(
       theme = bslib::bs_theme(
-        version = 4,
         bg = "#FFFFFF",
         fg = "#1E1E1E",
         primary = "#007bff",
@@ -37,7 +36,7 @@ app_ui <- function() {
         spacer = "0.5rem",
         `enable-shadows` = TRUE
       ),
-      title = shiny::div(app_title),
+      title = app_title,
       windowTitle = app_title,
       id = "tabs",
       shiny::tabPanel(
