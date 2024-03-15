@@ -142,7 +142,7 @@ review_server <- function(id, registry_tracker, pool) {
       shiny::selectInput(
         ns("selected_year"),
         "Velg \u00e5r",
-        c(2021L : (as.numeric(format(Sys.Date(), "%Y")) - 1)),
+        c(2013L : (as.numeric(format(Sys.Date(), "%Y")) - 1)),
         selected = 2023
       )
     })
