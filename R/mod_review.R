@@ -431,7 +431,14 @@ review_server <- function(id, registry_tracker, pool) {
       shiny::req(rv$graph_data)
       shiny::req(nrow(rv$graph_data) > 0)
 
-      shiny::checkboxInput(ns("show_dg_plot"), label = "Vis oppgitt dekningsgrad istedenfor stadium", value = FALSE)
+      if (!is.null(input$show_dg_plot)) {
+        current_choice <- input$show_dg_plot
+      } else {
+        current_choice <- FALSE
+      }
+      shiny::checkboxInput(ns("show_dg_plot"),
+                           label = "Vis oppgitt dekningsgrad istedenfor stadium", 
+                           value = current_choice)
     })
 
     output$graph <- shiny::renderUI({
