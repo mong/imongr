@@ -25,6 +25,7 @@ review_ui <- function(id) {
         shiny::hr(),
         shiny::h5("Hovedansvarlig:"),
         shiny::uiOutput(ns("collaborators_main")),
+        shiny::br(),
         shiny::h5("Leseansvarlige:"),
         shiny::uiOutput(ns("collaborators_read")),
         shiny::hr(),
