@@ -388,12 +388,12 @@ review_server <- function(id, registry_tracker, pool) {
       shiny::req(table_data)
       if (nrow(table_data) > 0) {
         shiny::renderTable({
-
           colnames(table_data) <- c("År", "Stadium", "Dekningsgrad")
           table_data
-        }, width = "100%", align = "c") } else {
-          shiny::h3("Ingen data registrert")
-        }
+        }, width = "100%", align = "c")
+      } else {
+        shiny::h3("Ingen data registrert")
+      }
     })
 
     output$graph <- shiny::renderUI({
