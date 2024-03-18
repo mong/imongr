@@ -69,7 +69,9 @@ review_ui <- function(id) {
             shiny::uiOutput(ns("table")),
             shiny::br(),
             shiny::br(),
-            shiny::uiOutput(ns("graph"))
+            shiny::uiOutput(ns("graph")),
+            shiny::br(),
+            shiny::uiOutput(ns("plotcontrol"))
           )
         )
       )
@@ -396,10 +398,18 @@ review_server <- function(id, registry_tracker, pool) {
       }
     })
 
+    output$plotcontrol <- shiny::renderUI({
+      shiny::req(rv$graph_data)
+      shiny::req(nrow(rv$graph_data) > 0)
+
+      shiny::checkboxInput(ns("show_dg_plot"), label = "Vis oppgitt dekningsgrad istedenfor stadium", value = FALSE)
+    })
+
     output$graph <- shiny::renderUI({
       plot_data <- rv$graph_data
       shiny::req(plot_data)
       shiny::req(nrow(plot_data) > 0)
+      shiny::req(!is.null(input$show_dg_plot))
 
       shiny::renderPlot({
 
@@ -420,15 +430,27 @@ review_server <- function(id, registry_tracker, pool) {
         colour_map <- c("#648FFF", "#DC267F", "#FE6100", "#AAAAAA")
         names(colour_map) <- c("A", "B", "C", NA)
 
-        ggplot2::ggplot(data = plot_data, ggplot2::aes(x = year, y = stage)) +
-          ggplot2::geom_line() +
-          ggplot2::geom_point(ggplot2::aes(colour = factor(level)), size = 3) +
-          ggplot2::scale_x_continuous("År", 2013:get_last_year(), limits = c(2013, get_last_year())) +
-          ggplot2::scale_y_continuous("Stadium", 1:4, limits = c(1, 4)) +
-          ggplot2::scale_colour_manual(values = colour_map, limits = c("A", "B", "C", NA)) +
-          ggplot2::theme_classic() +
-          ggplot2::theme(text = ggplot2::element_text(size = 14)) +
-          ggplot2::guides(colour = ggplot2::guide_legend(title = "Niv\u00e5"))
+        if (!input$show_dg_plot) {
+          ggplot2::ggplot(data = plot_data, ggplot2::aes(x = year, y = stage)) +
+            ggplot2::geom_line() +
+            ggplot2::geom_point(ggplot2::aes(colour = factor(level)), size = 3) +
+            ggplot2::scale_x_continuous("År", 2013:get_last_year(), limits = c(2013, get_last_year())) +
+            ggplot2::scale_y_continuous("Stadium", 1:4, limits = c(1, 4)) +
+            ggplot2::scale_colour_manual(values = colour_map, limits = c("A", "B", "C", NA)) +
+            ggplot2::theme_classic() +
+            ggplot2::theme(text = ggplot2::element_text(size = 14)) +
+            ggplot2::guides(colour = ggplot2::guide_legend(title = "Niv\u00e5"))
+        } else {
+          ggplot2::ggplot(data = plot_data, ggplot2::aes(x = year, y = reported_dg)) +
+            ggplot2::geom_line() +
+            ggplot2::geom_point(ggplot2::aes(colour = factor(level)), size = 3) +
+            ggplot2::scale_x_continuous("År", 2013:get_last_year(), limits = c(2013, get_last_year())) +
+            ggplot2::scale_y_continuous("Oppgitt dekningsgrad", limits = c(0, 100)) +
+            ggplot2::scale_colour_manual(values = colour_map, limits = c("A", "B", "C", NA)) +
+            ggplot2::theme_classic() +
+            ggplot2::theme(text = ggplot2::element_text(size = 14)) +
+            ggplot2::guides(colour = ggplot2::guide_legend(title = "Niv\u00e5"))
+        }
       })
     })
 
