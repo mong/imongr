@@ -43,6 +43,7 @@ review_ui <- function(id) {
             shiny::uiOutput(ns("checkbox3")),
             shiny::uiOutput(ns("checkbox4")),
             shiny::uiOutput(ns("checkbox5")),
+            shiny::actionButton(ns("togglestadium2"), "Stadium 2 oppfylt"),
             shiny::h3("Stadium 3"),
             shiny::uiOutput(ns("checkbox6")),
             shiny::uiOutput(ns("checkbox7")),
@@ -50,12 +51,14 @@ review_ui <- function(id) {
             shiny::uiOutput(ns("checkbox9")),
             shiny::uiOutput(ns("checkbox10")),
             shiny::uiOutput(ns("checkbox11")),
+            shiny::actionButton(ns("togglestadium3"), "Stadium 3 oppfylt"),
             shiny::h3("Stadium 4"),
             shiny::uiOutput(ns("checkbox12")),
             shiny::uiOutput(ns("checkbox13")),
             shiny::uiOutput(ns("checkbox14")),
             shiny::uiOutput(ns("checkbox15")),
             shiny::uiOutput(ns("checkbox16")),
+            shiny::actionButton(ns("togglestadium4"), "Stadium 4 oppfylt"),
             shiny::h3("Niv\u00e5 A"),
             shiny::uiOutput(ns("checkbox17")),
             shiny::uiOutput(ns("level_A_comment")),
@@ -94,6 +97,27 @@ update_graph_data <- function(input, pool, rv) {
 }
 
 #' @rdname mod_review
+toggle_button <- function(input, session, rv, event, requirements) {
+  shiny::observeEvent(input[[event]], {
+    shiny::req(input$selected_registry)
+
+    toggled <- rv$evaluation[requirements]
+
+    if (all(toggled) | all(!toggled)) {
+      lapply(X = requirements, FUN = function(i) {
+        col_name <- paste0("requirement_", i)
+        shiny::updateCheckboxInput(session, col_name, value = !(input[[col_name]]))
+      })
+    } else {
+      lapply(X = requirements, FUN = function(i) {
+        col_name <- paste0("requirement_", i)
+        shiny::updateCheckboxInput(session, col_name, value = TRUE)
+      })
+    }
+  })
+}
+
+#' @rdname mod_review
 #' @export
 review_server <- function(id, registry_tracker, pool) {
   shiny::moduleServer(id, function(input, output, session) {
@@ -106,8 +130,8 @@ review_server <- function(id, registry_tracker, pool) {
 
     # Hvilke krav må være oppfylt for ulike stadier og nivå?
     n_requirements <- 18
-    stage_4 <- 1:16
-    stage_3 <- 1:11
+    stage_4 <- 12:16
+    stage_3 <- 6:11
     stage_2 <- 1:5
     level_a <- 17:18
     level_b <- 18
@@ -269,9 +293,9 @@ review_server <- function(id, registry_tracker, pool) {
     shiny::observeEvent(rv$evaluation, {
       rv$stage <- 1
 
-      if (all(rv$evaluation[stage_4])) {
+      if (all(rv$evaluation[c(stage_2, stage_3, stage_4)])) {
         rv$stage <- 4
-      } else if (all(rv$evaluation[stage_3])) {
+      } else if (all(rv$evaluation[c(stage_2, stage_3)])) {
         rv$stage <- 3
       } else if (all(rv$evaluation[stage_2])) {
         rv$stage <- 2
@@ -350,6 +374,11 @@ review_server <- function(id, registry_tracker, pool) {
       })
     }
     )
+
+    # Knapper for sjekking av alle bokser i et stadium
+    toggle_button(input, session, rv, "togglestadium2", stage_2)
+    toggle_button(input, session, rv, "togglestadium3", c(stage_2, stage_3))
+    toggle_button(input, session, rv, "togglestadium4", c(stage_2, stage_3, stage_4))
 
     # Oppdater skjema ved valg av år og register
     shiny::observeEvent(update_form(), {
