@@ -50,6 +50,9 @@ review_ui <- function(id) {
             shiny::uiOutput(ns("checkbox4")),
             shiny::uiOutput(ns("checkbox5")),
             shiny::actionButton(ns("togglestadium2"), "Stadium 2 oppfylt"),
+            shiny::br(),
+            shiny::br(),
+            shiny::br(),
             shiny::h3("Stadium 3"),
             shiny::uiOutput(ns("checkbox6")),
             shiny::uiOutput(ns("checkbox7")),
@@ -58,6 +61,9 @@ review_ui <- function(id) {
             shiny::uiOutput(ns("checkbox10")),
             shiny::uiOutput(ns("checkbox11")),
             shiny::actionButton(ns("togglestadium3"), "Stadium 3 oppfylt"),
+            shiny::br(),
+            shiny::br(),
+            shiny::br(),
             shiny::h3("Stadium 4"),
             shiny::uiOutput(ns("checkbox12")),
             shiny::uiOutput(ns("checkbox13")),
@@ -65,12 +71,19 @@ review_ui <- function(id) {
             shiny::uiOutput(ns("checkbox15")),
             shiny::uiOutput(ns("checkbox16")),
             shiny::actionButton(ns("togglestadium4"), "Stadium 4 oppfylt"),
+            shiny::br(),
+            shiny::br(),
+            shiny::br(),
             shiny::h3("Niv\u00e5 A"),
             shiny::uiOutput(ns("checkbox17")),
             shiny::uiOutput(ns("level_A_comment")),
+            shiny::br(),
+            shiny::br(),
             shiny::h3("Niv\u00e5 B"),
             shiny::uiOutput(ns("checkbox18")),
             shiny::uiOutput(ns("level_B_comment")),
+            shiny::br(),
+            shiny::br(),
             shiny::h3("Ekspertgruppens vurdering"),
             shiny::uiOutput(ns("evaluation_text")),
           ),
@@ -88,14 +101,15 @@ review_ui <- function(id) {
   )
 }
 
+#'@rdname mod_review
 get_last_year <- function() {
   (as.numeric(format(Sys.Date(), "%Y")) - 1)
 }
 
+#'@rdname mod_review
 update_graph_data <- function(input, pool, rv) {
   dat <- pool::dbGetQuery(pool, "SELECT * FROM evaluation")
 
-  # Data til graf og tabell
   graph_data <- dat[dat$registry_id == input$selected_registry, ] %>%
     dplyr::select("year", "verdict", "reported_dg")
 
