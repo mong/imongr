@@ -31,6 +31,7 @@ review_ui <- function(id) {
           max = 100,
           step = 1
         ),
+        shiny::downloadButton(ns("download"), "Last ned data"),
         shiny::br(),
         shiny::hr(),
         shiny::h5("Hovedansvarlig:"),
@@ -362,6 +363,14 @@ review_server <- function(id, registry_tracker, pool) {
     shiny::observeEvent(verdict(), {
       rv$table_data$verdict <- verdict()
     })
+
+    ##### Last ned data #####
+    output$download <- shiny::downloadHandler(
+      filename = "Test.csv",
+      content = function(file_name) {
+        write.csv(data.frame(a = c(1,2,3), b = c(4,5,6)), file_name)
+      }
+    )
 
     ##### Lagre #####
     shiny::observeEvent(input$save, {
