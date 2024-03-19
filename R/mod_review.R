@@ -415,8 +415,8 @@ review_server <- function(id, registry_tracker, pool) {
 
     # Knapper for sjekking av alle bokser i et stadium
     toggle_button(input, session, rv, "togglestadium2", stage_2)
-    toggle_button(input, session, rv, "togglestadium3", c(stage_2, stage_3))
-    toggle_button(input, session, rv, "togglestadium4", c(stage_2, stage_3, stage_4))
+    toggle_button(input, session, rv, "togglestadium3", stage_3)
+    toggle_button(input, session, rv, "togglestadium4", stage_4)
 
     # Oppdater skjema ved valg av år og register
     shiny::observeEvent(update_form(), {
