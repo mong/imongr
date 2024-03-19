@@ -38,42 +38,83 @@ review_ui <- function(id) {
         shiny::uiOutput(ns("save")),
         shiny::br(),
         shiny::br(),
-        shiny::uiOutput(ns("save_override"))
+        shiny::uiOutput(ns("save_override")),
+        width = 3
       ),
       shiny::mainPanel(
-        shiny::h3("Stadium 2"),
-        shiny::uiOutput(ns("checkbox1")),
-        shiny::uiOutput(ns("checkbox2")),
-        shiny::uiOutput(ns("checkbox3")),
-        shiny::uiOutput(ns("checkbox4")),
-        shiny::uiOutput(ns("checkbox5")),
-        shiny::actionButton(ns("togglestadium2"), "Stadium 2 oppfylt"),
-        shiny::h3("Stadium 3"),
-        shiny::uiOutput(ns("checkbox6")),
-        shiny::uiOutput(ns("checkbox7")),
-        shiny::uiOutput(ns("checkbox8")),
-        shiny::uiOutput(ns("checkbox9")),
-        shiny::uiOutput(ns("checkbox10")),
-        shiny::uiOutput(ns("checkbox11")),
-        shiny::actionButton(ns("togglestadium3"), "Stadium 3 oppfylt"),
-        shiny::h3("Stadium 4"),
-        shiny::uiOutput(ns("checkbox12")),
-        shiny::uiOutput(ns("checkbox13")),
-        shiny::uiOutput(ns("checkbox14")),
-        shiny::uiOutput(ns("checkbox15")),
-        shiny::uiOutput(ns("checkbox16")),
-        shiny::actionButton(ns("togglestadium4"), "Stadium 4 oppfylt"),
-        shiny::h3("Niv\u00e5 A"),
-        shiny::uiOutput(ns("checkbox17")),
-        shiny::uiOutput(ns("level_A_comment")),
-        shiny::h3("Niv\u00e5 B"),
-        shiny::uiOutput(ns("checkbox18")),
-        shiny::uiOutput(ns("level_B_comment")),
-        shiny::h3("Ekspertgruppens vurdering"),
-        shiny::uiOutput(ns("evaluation_text")),
+        shiny::fluidRow(
+          shiny::column(6,
+            shiny::h3("Stadium 2"),
+            shiny::uiOutput(ns("checkbox1")),
+            shiny::uiOutput(ns("checkbox2")),
+            shiny::uiOutput(ns("checkbox3")),
+            shiny::uiOutput(ns("checkbox4")),
+            shiny::uiOutput(ns("checkbox5")),
+            shiny::actionButton(ns("togglestadium2"), "Stadium 2 oppfylt"),
+            shiny::br(),
+            shiny::br(),
+            shiny::br(),
+            shiny::h3("Stadium 3"),
+            shiny::uiOutput(ns("checkbox6")),
+            shiny::uiOutput(ns("checkbox7")),
+            shiny::uiOutput(ns("checkbox8")),
+            shiny::uiOutput(ns("checkbox9")),
+            shiny::uiOutput(ns("checkbox10")),
+            shiny::uiOutput(ns("checkbox11")),
+            shiny::actionButton(ns("togglestadium3"), "Stadium 3 oppfylt"),
+            shiny::br(),
+            shiny::br(),
+            shiny::br(),
+            shiny::h3("Stadium 4"),
+            shiny::uiOutput(ns("checkbox12")),
+            shiny::uiOutput(ns("checkbox13")),
+            shiny::uiOutput(ns("checkbox14")),
+            shiny::uiOutput(ns("checkbox15")),
+            shiny::uiOutput(ns("checkbox16")),
+            shiny::actionButton(ns("togglestadium4"), "Stadium 4 oppfylt"),
+            shiny::br(),
+            shiny::br(),
+            shiny::br(),
+            shiny::h3("Niv\u00e5 A"),
+            shiny::uiOutput(ns("checkbox17")),
+            shiny::uiOutput(ns("level_A_comment")),
+            shiny::br(),
+            shiny::br(),
+            shiny::h3("Niv\u00e5 B"),
+            shiny::uiOutput(ns("checkbox18")),
+            shiny::uiOutput(ns("level_B_comment")),
+            shiny::br(),
+            shiny::br(),
+            shiny::h3("Ekspertgruppens vurdering"),
+            shiny::uiOutput(ns("evaluation_text")),
+          ),
+          shiny::column(6,
+            shiny::uiOutput(ns("table")),
+            shiny::br(),
+            shiny::br(),
+            shiny::uiOutput(ns("graph")),
+            shiny::br(),
+            shiny::uiOutput(ns("plotcontrol"))
+          )
+        )
       )
     )
   )
+}
+
+#'@rdname mod_review
+get_last_year <- function() {
+  (as.numeric(format(Sys.Date(), "%Y")) - 1)
+}
+
+#'@rdname mod_review
+update_graph_data <- function(input, pool, rv) {
+  dat <- pool::dbGetQuery(pool, "SELECT * FROM evaluation")
+
+  graph_data <- dat[dat$registry_id == input$selected_registry, ] %>%
+    dplyr::select("year", "verdict", "reported_dg")
+
+  return(graph_data)
 }
 
 #' @rdname mod_review
@@ -122,6 +163,7 @@ review_server <- function(id, registry_tracker, pool) {
       evaluation = (rep(FALSE, n_requirements)),
       table_data = data.frame(user_id = get_user_id(pool)),
       registry_url = NULL,
+      graph_data = NULL,
       collaborators = NULL
     )
 
@@ -164,6 +206,7 @@ review_server <- function(id, registry_tracker, pool) {
         rv$registry_url <- NULL
       }
 
+      rv$graph_data <- update_graph_data(input, pool, rv)
       rv$collaborators <- get_review_collaborators(pool, input$selected_registry)
     })
 
@@ -321,6 +364,8 @@ review_server <- function(id, registry_tracker, pool) {
         showConfirmButton = FALSE,
         timer = 2000
       )
+
+      rv$graph_data <- update_graph_data(input, pool, rv)
     })
 
     shiny::observeEvent(input$save_override, {
@@ -333,6 +378,8 @@ review_server <- function(id, registry_tracker, pool) {
         showConfirmButton = FALSE,
         timer = 2000
       )
+
+      rv$graph_data <- update_graph_data(input, pool, rv)
     })
 
     #####################
@@ -369,13 +416,15 @@ review_server <- function(id, registry_tracker, pool) {
 
     # Knapper for sjekking av alle bokser i et stadium
     toggle_button(input, session, rv, "togglestadium2", stage_2)
-    toggle_button(input, session, rv, "togglestadium3", c(stage_2, stage_3))
-    toggle_button(input, session, rv, "togglestadium4", c(stage_2, stage_3, stage_4))
+    toggle_button(input, session, rv, "togglestadium3", stage_3)
+    toggle_button(input, session, rv, "togglestadium4", stage_4)
 
     # Oppdater skjema ved valg av år og register
     shiny::observeEvent(update_form(), {
 
       dat <- pool::dbGetQuery(pool, "SELECT * FROM evaluation")
+
+      # Filtrer på år og register og oppdater skjema
       dat <- dat[(dat$year == input$selected_year) & (dat$registry_id == input$selected_registry), ]
 
       if (nrow(dat) == 1) {
@@ -401,6 +450,83 @@ review_server <- function(id, registry_tracker, pool) {
 
         shiny::updateNumericInput(session, "reported_dg", value = 0)
       }
+    })
+
+    # Tabell og graf på høyre side
+    output$table <- shiny::renderUI({
+      table_data <- rv$graph_data
+      shiny::req(table_data)
+      if (nrow(table_data) > 0) {
+        shiny::renderTable({
+          colnames(table_data) <- c("År", "Stadium", "Dekningsgrad")
+          table_data
+        }, width = "100%", align = "c")
+      } else {
+        shiny::h3("Ingen data registrert")
+      }
+    })
+
+    output$plotcontrol <- shiny::renderUI({
+      shiny::req(rv$graph_data)
+      shiny::req(nrow(rv$graph_data) > 0)
+
+      if (!is.null(input$show_dg_plot)) {
+        current_choice <- input$show_dg_plot
+      } else {
+        current_choice <- FALSE
+      }
+      shiny::checkboxInput(ns("show_dg_plot"),
+                           label = "Vis oppgitt dekningsgrad istedenfor stadium",
+                           value = current_choice)
+    })
+
+    output$graph <- shiny::renderUI({
+      plot_data <- rv$graph_data
+      shiny::req(plot_data)
+      shiny::req(nrow(plot_data) > 0)
+      shiny::req(!is.null(input$show_dg_plot))
+
+      shiny::renderPlot({
+
+        stage_level <- strsplit(plot_data$verdict, split = "")
+
+        plot_data$stage <- as.numeric(lapply(stage_level, FUN = function(x) {
+          return(x[1])
+        }))
+
+        plot_data$level <- unlist(lapply(stage_level, FUN = function(x) {
+          if (length(x) < 2) {
+            return(NA)
+          } else {
+            return(x[2])
+          }
+        }))
+
+        colour_map <- c("#648FFF", "#DC267F", "#FE6100", "#AAAAAA")
+        names(colour_map) <- c("A", "B", "C", NA)
+
+        if (!input$show_dg_plot) {
+          ggplot2::ggplot(data = plot_data, ggplot2::aes(x = year, y = stage)) +
+            ggplot2::geom_line() +
+            ggplot2::geom_point(ggplot2::aes(colour = factor(level)), size = 3) +
+            ggplot2::scale_x_continuous("År", 2013:get_last_year(), limits = c(2013, get_last_year())) +
+            ggplot2::scale_y_continuous("Stadium", 1:4, limits = c(1, 4)) +
+            ggplot2::scale_colour_manual(values = colour_map, limits = c("A", "B", "C", NA)) +
+            ggplot2::theme_classic() +
+            ggplot2::theme(text = ggplot2::element_text(size = 14)) +
+            ggplot2::guides(colour = ggplot2::guide_legend(title = "Niv\u00e5"))
+        } else {
+          ggplot2::ggplot(data = plot_data, ggplot2::aes(x = year, y = reported_dg)) +
+            ggplot2::geom_line() +
+            ggplot2::geom_point(ggplot2::aes(colour = factor(level)), size = 3) +
+            ggplot2::scale_x_continuous("År", 2013:get_last_year(), limits = c(2013, get_last_year())) +
+            ggplot2::scale_y_continuous("Oppgitt dekningsgrad", limits = c(0, 100)) +
+            ggplot2::scale_colour_manual(values = colour_map, limits = c("A", "B", "C", NA)) +
+            ggplot2::theme_classic() +
+            ggplot2::theme(text = ggplot2::element_text(size = 14)) +
+            ggplot2::guides(colour = ggplot2::guide_legend(title = "Niv\u00e5"))
+        }
+      })
     })
 
     return(rv_return)
