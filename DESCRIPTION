@@ -29,6 +29,7 @@ Imports:
     DBI,
     dplyr,
     DT,
+    ggplot2,
     magrittr,
     pool,
     readr,
