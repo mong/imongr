@@ -40,7 +40,8 @@ Imports:
     shinycssloaders,
     shinyjs,
     tibble,
-    yaml
+    yaml,
+    ggplot2
 RoxygenNote: 7.2.3
 Suggests: 
     testthat (>= 2.1.0),
