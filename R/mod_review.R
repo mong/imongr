@@ -476,7 +476,7 @@ review_server <- function(id, registry_tracker, pool) {
         current_choice <- FALSE
       }
       shiny::checkboxInput(ns("show_dg_plot"),
-                           label = "Vis oppgitt dekningsgrad istedenfor stadium", 
+                           label = "Vis oppgitt dekningsgrad istedenfor stadium",
                            value = current_choice)
     })
 
