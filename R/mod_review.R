@@ -5,6 +5,16 @@ review_ui <- function(id) {
   ns <- shiny::NS(id)
 
   shiny::tagList(
+    shiny::tags$head(
+      shiny::tags$style(shiny::HTML("
+        .tooltip > .tooltip-inner {
+          font-size: 20px;
+          text-align: left;
+          max-width: 1000px;
+          background-color: #003087;
+        }
+      "))
+    ),
     shinyjs::useShinyjs(),
     shiny::titlePanel("Vurdering av \u00e5rsrapporter"),
     shiny::sidebarLayout(
@@ -345,10 +355,11 @@ review_server <- function(id, registry_tracker, pool) {
         shiny::req((as.numeric(input$selected_year) %>%
                       dplyr::between(df_requirements$introduction_year[i], df_requirements$last_year[i])))
 
-        shiny::tags$div(
-          title = paste0(df_requirements$guide[i], "\n\n", df_requirements$section[i]),
-          shiny::checkboxInput(ns(paste0("requirement_", i)), shiny::HTML(df_requirements$criteria[i]), width = "100%")
-        )
+        shiny::checkboxInput(ns(paste0("requirement_", i)), shiny::HTML(df_requirements$criteria[i]), width = "100%") |>
+          bslib::tooltip(
+            shiny::HTML(paste0(df_requirements$guide[i], "<br><br>", df_requirements$section[i])),
+            options = list(html = TRUE, delay = 100, trigger = "hover")
+          )
       })
     })
 
