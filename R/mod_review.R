@@ -368,7 +368,7 @@ review_server <- function(id, registry_tracker, pool) {
     output$download <- shiny::downloadHandler(
       filename = "Test.csv",
       content = function(file_name) {
-        browser()
+
         dat <- pool::dbGetQuery(pool, paste0("SELECT * FROM evaluation WHERE registry_id = ", input$selected_registry))
         write.csv(dat, file_name)
       }
