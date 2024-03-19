@@ -38,7 +38,8 @@ review_ui <- function(id) {
         shiny::uiOutput(ns("save")),
         shiny::br(),
         shiny::br(),
-        shiny::uiOutput(ns("save_override"))
+        shiny::uiOutput(ns("save_override")),
+        width = 3
       ),
       shiny::mainPanel(
         shiny::fluidRow(
