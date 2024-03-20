@@ -1,3 +1,26 @@
+# imongr 2.2.0
+
+## Ny fane for årsrapporter
+
+* Ny fane for vurdering av årsrapporter by @Stein-Kato in https://github.com/mong/imongr/pull/395
+* Bugfiks i profiltab by @Stein-Kato in https://github.com/mong/imongr/pull/398
+* Endret tidligste valgbare år i ekspertgruppefanen by @Stein-Kato in https://github.com/mong/imongr/pull/399
+* Knapper for å sjekke alle bokser by @Stein-Kato in https://github.com/mong/imongr/pull/407
+* Vis navn på hoved- og leseansvarlige i ekspertgruppefanen by @Stein-Kato in https://github.com/mong/imongr/pull/402
+* Tabell og graf på høyre side av vinduet by @Stein-Kato in https://github.com/mong/imongr/pull/409
+* Ny tooltip med bslib by @Stein-Kato in https://github.com/mong/imongr/pull/411
+* Ignorer noen lintr-feil by @arnfinn in https://github.com/mong/imongr/pull/418
+* ggplot2 i DESCRIPTION by @arnfinn in https://github.com/mong/imongr/pull/416
+* Fiks tegnforklaring i graf by @Stein-Kato in https://github.com/mong/imongr/pull/420
+* Update hnskde/imongr-base-r Docker tag to v4.1.0 by @renovate in https://github.com/mong/imongr/pull/419
+
+## Annet
+
+* Angi versjon av docker image i docker-compose by @arnfinn in https://github.com/mong/imongr/pull/410
+* Bruk bootstrap 5 i stedet for 4 by @arnfinn in https://github.com/mong/imongr/pull/401
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.1.0...v2.2.0
+
 # imongr 2.1.0
 
 - Konteiner kjører nå på Alpine-image ([#391] (https://github.com/mong/imongr/pull/391)). Størrelsen redusert fra over 1,5 GB til 300 MB.
