@@ -528,13 +528,14 @@ review_server <- function(id, registry_tracker, pool) {
             ggplot2::geom_line(ggplot2::aes(y = stage)) + # nolint: object_usage_linter.
             ggplot2::geom_point(ggplot2::aes(y = stage, colour = factor(level)), # nolint: object_usage_linter.
                                 size = 3,
-                                show.legend = c(colour = TRUE)) + # nolint: object_usage_linter.
+                                show.legend = c(colour = TRUE)) +
             ggplot2::scale_y_continuous("Stadium", 1:4, limits = c(1, 4))
         } else {
           output_plot <- base_plot +
             ggplot2::geom_line(ggplot2::aes(y = reported_dg)) + # nolint: object_usage_linter.
             ggplot2::geom_point(ggplot2::aes(y = reported_dg, colour = factor(level)), # nolint: object_usage_linter.
-                                size = 3) + # nolint: object_usage_linter.
+                                size = 3,
+                                show.legend = c(colour = TRUE)) +
             ggplot2::scale_y_continuous("Oppgitt dekningsgrad", limits = c(0, 100))
         }
 
