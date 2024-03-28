@@ -149,6 +149,23 @@ toggle_button <- function(input, session, rv, event, requirements) {
 }
 
 #' @rdname mod_review
+render_checkboxes <- function(input, output, df_requirements, ns, id_numbers) {
+  lapply(X = id_numbers, FUN = function(i) {
+    output[[paste0("checkbox", i)]] <- shiny::renderUI({
+
+      shiny::req((as.numeric(input$selected_year) %>%
+                    dplyr::between(df_requirements$introduction_year[i], df_requirements$last_year[i])))
+
+      shiny::checkboxInput(ns(paste0("requirement_", i)), shiny::HTML(df_requirements$criteria[i]), width = "100%") |>
+        bslib::tooltip(
+          shiny::HTML(paste0(df_requirements$guide[i], "<br><br>", df_requirements$section[i])),
+          options = list(html = TRUE, delay = 100, trigger = "hover")
+        )
+    })
+  })
+}
+
+#' @rdname mod_review
 #' @export
 review_server <- function(id, registry_tracker, pool) {
   shiny::moduleServer(id, function(input, output, session) {
@@ -178,7 +195,13 @@ review_server <- function(id, registry_tracker, pool) {
     )
 
     verdict <- shiny::reactive({
-      paste0(rv$stage, rv$level)
+      # Nivåer ble introdusert i 2019
+      shiny::req(input$selected_year)
+      if (input$selected_year >= 2019) {
+        paste0(rv$stage, rv$level)
+      } else {
+        rv$stage
+      }
     })
 
     rv_return <- shiny::reactiveValues()
@@ -297,6 +320,7 @@ review_server <- function(id, registry_tracker, pool) {
     })
 
     output$level_A_comment <- shiny::renderUI({
+      shiny::req(input$selected_year >= 2019)
       shiny::textAreaInput(
         ns("level_A_comment"), "Kommentarer til niv\u00e5 A",
         value = "", width = "90%", rows = 4
@@ -304,6 +328,7 @@ review_server <- function(id, registry_tracker, pool) {
     })
 
     output$level_B_comment <- shiny::renderUI({
+      shiny::req(input$selected_year >= 2019)
       shiny::textAreaInput(
         ns("level_B_comment"), "Kommentarer til niv\u00e5 B",
         value = "", width = "90%", rows = 4
@@ -396,18 +421,16 @@ review_server <- function(id, registry_tracker, pool) {
     ##### UI skjema #####
     #####################
 
-    lapply(X = 1:n_requirements, FUN = function(i) {
-      output[[paste0("checkbox", i)]] <- shiny::renderUI({
+    render_checkboxes(input, output, df_requirements, ns, c(stage_2, stage_3, stage_4))
 
-        shiny::req((as.numeric(input$selected_year) %>%
-                      dplyr::between(df_requirements$introduction_year[i], df_requirements$last_year[i])))
-
-        shiny::checkboxInput(ns(paste0("requirement_", i)), shiny::HTML(df_requirements$criteria[i]), width = "100%") |>
-          bslib::tooltip(
-            shiny::HTML(paste0(df_requirements$guide[i], "<br><br>", df_requirements$section[i])),
-            options = list(html = TRUE, delay = 100, trigger = "hover")
-          )
-      })
+    shiny::observeEvent(input$selected_year, {
+      if (input$selected_year >= 2019) {
+        render_checkboxes(input, output, df_requirements, ns, level_a)
+      } else {
+        lapply(X = level_a, FUN = function(i) {
+          output[[paste0("checkbox", i)]] <- NULL
+        })
+      }
     })
 
     ##############################
