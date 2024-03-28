@@ -489,6 +489,8 @@ review_server <- function(id, registry_tracker, pool) {
     # Tabell og graf på høyre side
     output$table <- shiny::renderUI({
       table_data <- rv$graph_data
+      table_data$reported_dg[table_data$reported_dg == 0] <- NA
+
       shiny::req(table_data)
       if (nrow(table_data) > 0) {
         shiny::renderTable({
@@ -516,6 +518,8 @@ review_server <- function(id, registry_tracker, pool) {
 
     output$graph <- shiny::renderUI({
       plot_data <- rv$graph_data
+      plot_data$reported_dg[plot_data$reported_dg == 0] <- NA
+
       shiny::req(plot_data)
       shiny::req(nrow(plot_data) > 0)
       shiny::req(!is.null(input$show_dg_plot))
