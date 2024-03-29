@@ -31,6 +31,7 @@ review_ui <- function(id) {
           max = 100,
           step = 1
         ),
+        shiny::uiOutput(ns("get_previous_year")),
         shiny::br(),
         shiny::hr(),
         shiny::h5("Hovedansvarlig:"),
@@ -166,6 +167,43 @@ render_checkboxes <- function(input, output, df_requirements, ns, id_numbers) {
 }
 
 #' @rdname mod_review
+on_update_form <- function(session, input, pool, n_requirements, fetch_previous_year = FALSE) {
+  dat <- pool::dbGetQuery(pool, "SELECT * FROM evaluation")
+  # Filtrer på år og register og oppdater skjema
+  if (!fetch_previous_year) {
+    selected_year <- input$selected_year
+  } else {
+    selected_year <- as.numeric(input$selected_year) - 1
+  }
+
+  dat <- dat[(dat$year == selected_year) & (dat$registry_id == input$selected_registry), ]
+
+  if (nrow(dat) == 1) {
+    lapply(X = 1:n_requirements, FUN = function(i) {
+      col_name <- paste0("requirement_", i)
+      shiny::updateCheckboxInput(session, col_name, value = dat[[col_name]][1])
+    })
+
+    shiny::updateTextInput(session, "level_A_comment", value = dat$level_A_comment)
+    shiny::updateTextInput(session, "level_B_comment", value = dat$level_B_comment)
+    shiny::updateTextInput(session, "evaluation_text", value = dat$evaluation_text)
+
+    shiny::updateNumericInput(session, "reported_dg", value = dat$reported_dg)
+
+  } else {
+    lapply(X = 1:n_requirements, FUN = function(i) {
+      shiny::updateCheckboxInput(session, paste0("requirement_", i), value = FALSE)
+    })
+
+    shiny::updateTextInput(session, "level_A_comment", value = "")
+    shiny::updateTextInput(session, "level_B_comment", value = "")
+    shiny::updateTextInput(session, "evaluation_text", value = "")
+
+    shiny::updateNumericInput(session, "reported_dg", value = 0)
+  }
+}
+
+#' @rdname mod_review
 #' @export
 review_server <- function(id, registry_tracker, pool) {
   shiny::moduleServer(id, function(input, output, session) {
@@ -276,7 +314,16 @@ review_server <- function(id, registry_tracker, pool) {
       shiny::div(style = "font-size: 200%; text-align: center", verdict())
     })
 
-    # Gjem knapp hvis årstall ikke er fjoråret
+    # Gjem knapper hvis årstall ikke er fjoråret
+    output$get_previous_year <- shiny::renderUI({
+      shiny::req(input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1)
+
+      shiny::actionButton(
+        ns("get_previous_year"),
+        "Hent forrige års registreringer"
+      )
+    })
+
     output$save <- shiny::renderUI({
       shiny::req(input$selected_registry)
 
@@ -455,35 +502,11 @@ review_server <- function(id, registry_tracker, pool) {
 
     # Oppdater skjema ved valg av år og register
     shiny::observeEvent(update_form(), {
+      on_update_form(session, input, pool, n_requirements)
+    })
 
-      dat <- pool::dbGetQuery(pool, "SELECT * FROM evaluation")
-
-      # Filtrer på år og register og oppdater skjema
-      dat <- dat[(dat$year == input$selected_year) & (dat$registry_id == input$selected_registry), ]
-
-      if (nrow(dat) == 1) {
-        lapply(X = 1:n_requirements, FUN = function(i) {
-          col_name <- paste0("requirement_", i)
-          shiny::updateCheckboxInput(session, col_name, value = dat[[col_name]][1])
-        })
-
-        shiny::updateTextInput(session, "level_A_comment", value = dat$level_A_comment)
-        shiny::updateTextInput(session, "level_B_comment", value = dat$level_B_comment)
-        shiny::updateTextInput(session, "evaluation_text", value = dat$evaluation_text)
-
-        shiny::updateNumericInput(session, "reported_dg", value = dat$reported_dg)
-
-      } else {
-        lapply(X = 1:n_requirements, FUN = function(i) {
-          shiny::updateCheckboxInput(session, paste0("requirement_", i), value = FALSE)
-        })
-
-        shiny::updateTextInput(session, "level_A_comment", value = "")
-        shiny::updateTextInput(session, "level_B_comment", value = "")
-        shiny::updateTextInput(session, "evaluation_text", value = "")
-
-        shiny::updateNumericInput(session, "reported_dg", value = 0)
-      }
+    shiny::observeEvent(input$get_previous_year, {
+      on_update_form(session, input, pool, n_requirements, fetch_previous_year = TRUE)
     })
 
     # Tabell og graf på høyre side
