@@ -45,6 +45,11 @@ review_ui <- function(id) {
         shiny::br(),
         shiny::hr(),
         shiny::br(),
+        shiny::uiOutput(ns("notice_checkbox")),
+        shiny::uiOutput(ns("notice_text")),
+        shiny::br(),
+        shiny::hr(),
+        shiny::br(),
         shiny::uiOutput(ns("save")),
         shiny::br(),
         shiny::br(),
@@ -251,6 +256,20 @@ review_server <- function(id, registry_tracker, pool) {
 
     output$verdict <- shiny::renderUI({
       shiny::div(style = "font-size: 200%; text-align: center", verdict())
+    })
+
+    # UI for varsel
+    output$notice_checkbox <- shiny::renderUI({
+      shiny::req(input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1)
+      shiny::checkboxInput(ns("toggle_notice"), "Registrer varsel")
+    })
+
+    output$notice_text <- shiny::renderUI({
+      shiny::req(input$toggle_notice)
+      shiny::textAreaInput(
+        ns("notice_text"), "Stikkord til varsel",
+        value = "", width = "90%", rows = 4
+      )
     })
 
     # Gjem knapp hvis årstall ikke er fjoråret
