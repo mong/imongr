@@ -59,7 +59,7 @@ upload_ui <- function(id) {
           language = "no"
         ),
         shiny::dateInput(ns("latest_affirm"),
-          "Merk alle indikatorer som forel\u00f8pig etter:",
+          "Dataene er komplette til:",
           value = paste0(format(Sys.Date(), "%Y"), "-01-01"),
           weekstart = 1,
           language = "no"
