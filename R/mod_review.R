@@ -238,7 +238,7 @@ review_server <- function(id, registry_tracker, pool) {
       if (input$selected_year >= 2019) {
         paste0(rv$stage, rv$level)
       } else {
-        rv$stage
+        paste0(rv$stage)
       }
     })
 
