@@ -1,3 +1,21 @@
+# imongr 2.3.0
+
+## Endringer
+
+* Nye features i ekspertruppefanen by @Stein-Kato in https://github.com/mong/imongr/pull/435
+* Dropp å printe locale til logg by @arnfinn in https://github.com/mong/imongr/pull/427
+* Endret tekst over latest_affirm-dato by @arnfinn in https://github.com/mong/imongr/pull/425
+* Add REVIEWER to docker compose setup by @arnfinn in https://github.com/mong/imongr/pull/441
+
+## Oppdateringer
+
+* Update hnskde/imongr Docker tag to v2.2.0 by @renovate in https://github.com/mong/imongr/pull/421
+* Update hnskde/mongr-dev-rstudio Docker tag to v2.2.0 by @renovate in https://github.com/mong/imongr/pull/429
+* Update hnskde/mongr-dev-code-server Docker tag to v2.2.0 - autoclosed by @renovate in https://github.com/mong/imongr/pull/428
+* Update JamesIves/github-pages-deploy-action action to v4.6.0 by @renovate in https://github.com/mong/imongr/pull/440
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.2.0...v2.3.0
+
 # imongr 2.2.0
 
 ## Ny fane for årsrapporter
