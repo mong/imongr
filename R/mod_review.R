@@ -86,18 +86,6 @@ review_ui <- function(id) {
             shiny::br(),
             shiny::br(),
             shiny::br(),
-            shiny::h3("Niv\u00e5 A"),
-            shiny::uiOutput(ns("checkbox17")),
-            shiny::uiOutput(ns("level_A_comment")),
-            shiny::br(),
-            shiny::br(),
-            shiny::h3("Niv\u00e5 B"),
-            shiny::uiOutput(ns("checkbox18")),
-            shiny::uiOutput(ns("level_B_comment")),
-            shiny::br(),
-            shiny::br(),
-            shiny::h3("Ekspertgruppens vurdering"),
-            shiny::uiOutput(ns("evaluation_text")),
           ),
           shiny::column(6,
             shiny::uiOutput(ns("table")),
@@ -107,7 +95,19 @@ review_ui <- function(id) {
             shiny::br(),
             shiny::uiOutput(ns("plotcontrol"))
           )
-        )
+        ),
+        shiny::h3("Niv\u00e5 A"),
+        shiny::uiOutput(ns("checkbox17")),
+        shiny::uiOutput(ns("level_A_comment")),
+        shiny::br(),
+        shiny::br(),
+        shiny::h3("Niv\u00e5 B"),
+        shiny::uiOutput(ns("checkbox18")),
+        shiny::uiOutput(ns("level_B_comment")),
+        shiny::br(),
+        shiny::br(),
+        shiny::h3("Ekspertgruppens vurdering"),
+        shiny::uiOutput(ns("evaluation_text")),
       )
     )
   )
@@ -362,7 +362,7 @@ review_server <- function(id, registry_tracker, pool) {
     output$evaluation_text <- shiny::renderUI({
       shiny::textAreaInput(
         ns("evaluation_text"), "Vurdering av \u00e5rsrapporten",
-        value = "", width = "90%", rows = 8
+        value = "", width = "90%", rows = 16
       )
     })
 
