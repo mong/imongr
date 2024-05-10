@@ -363,7 +363,18 @@ review_server <- function(id, registry_tracker, pool) {
       shiny::textAreaInput(
         ns("evaluation_text"), "Vurdering av \u00e5rsrapporten",
         value = "", width = "90%", rows = 16
-      )
+      ) |>
+        bslib::tooltip(
+          shiny::HTML("
+            <ul>
+              <li>Overordnet vurdering av registeret</li>
+              <li>Registerets utvikling siste år</li>
+              <li>Registerets planlagte tiltak for videre utvikling/forbedring</li>
+              <li>Ekspertgruppens vurdering av stadium og nivå</li>
+            </ul>
+          "),
+          options = list(html = TRUE, delay = 100, trigger = "hover")
+        )
     })
 
     output$level_A_comment <- shiny::renderUI({
