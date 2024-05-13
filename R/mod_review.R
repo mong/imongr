@@ -86,18 +86,6 @@ review_ui <- function(id) {
             shiny::br(),
             shiny::br(),
             shiny::br(),
-            shiny::h3("Niv\u00e5 A"),
-            shiny::uiOutput(ns("checkbox17")),
-            shiny::uiOutput(ns("level_A_comment")),
-            shiny::br(),
-            shiny::br(),
-            shiny::h3("Niv\u00e5 B"),
-            shiny::uiOutput(ns("checkbox18")),
-            shiny::uiOutput(ns("level_B_comment")),
-            shiny::br(),
-            shiny::br(),
-            shiny::h3("Ekspertgruppens vurdering"),
-            shiny::uiOutput(ns("evaluation_text")),
           ),
           shiny::column(6,
             shiny::uiOutput(ns("table")),
@@ -107,7 +95,19 @@ review_ui <- function(id) {
             shiny::br(),
             shiny::uiOutput(ns("plotcontrol"))
           )
-        )
+        ),
+        shiny::h3("Niv\u00e5 A"),
+        shiny::uiOutput(ns("checkbox17")),
+        shiny::uiOutput(ns("level_A_comment")),
+        shiny::br(),
+        shiny::br(),
+        shiny::h3("Niv\u00e5 B"),
+        shiny::uiOutput(ns("checkbox18")),
+        shiny::uiOutput(ns("level_B_comment")),
+        shiny::br(),
+        shiny::br(),
+        shiny::h3("Ekspertgruppens vurdering"),
+        shiny::uiOutput(ns("evaluation_text")),
       )
     )
   )
@@ -362,8 +362,19 @@ review_server <- function(id, registry_tracker, pool) {
     output$evaluation_text <- shiny::renderUI({
       shiny::textAreaInput(
         ns("evaluation_text"), "Vurdering av \u00e5rsrapporten",
-        value = "", width = "90%", rows = 8
-      )
+        value = "", width = "90%", rows = 16
+      ) |>
+        bslib::tooltip(
+          shiny::HTML("
+            <ul>
+              <li>Overordnet vurdering av registeret</li>
+              <li>Registerets utvikling siste år</li>
+              <li>Registerets planlagte tiltak for videre utvikling/forbedring</li>
+              <li>Ekspertgruppens vurdering av stadium og nivå</li>
+            </ul>
+          "),
+          options = list(html = TRUE, delay = 100, trigger = "hover")
+        )
     })
 
     output$level_A_comment <- shiny::renderUI({
@@ -586,7 +597,10 @@ review_server <- function(id, registry_tracker, pool) {
             ggplot2::geom_point(ggplot2::aes(y = reported_dg, colour = factor(level)), # nolint: object_usage_linter.
                                 size = 3,
                                 show.legend = c(colour = TRUE)) +
-            ggplot2::scale_y_continuous("Oppgitt dekningsgrad", limits = c(0, 100))
+            ggplot2::geom_hline(ggplot2::aes(yintercept = 80), colour = "#0b26be", linetype = "dashed") +
+            ggplot2::geom_hline(ggplot2::aes(yintercept = 60), colour = "#be260b", linetype = "dashed") +
+            ggplot2::scale_y_continuous("Oppgitt dekningsgrad", limits = c(0, 100), breaks = seq(0, 100, by = 20)) +
+            ggplot2::theme(panel.grid.major.y = ggplot2::element_line(color = "blue", size = 0.5, linetype = 2))
         }
 
         return(output_plot)
