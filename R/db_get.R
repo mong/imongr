@@ -414,11 +414,7 @@ get_dg_indicators <- function(pool, registry) {
     ind
   WHERE
     registry_id = ", registry, "
-  AND (
-    type = 'dg_andel'
-  OR
-    type = 'dg_beregnet_andel'
-    )
+  AND type = 'dg_andel'
   "
   )
 
