@@ -1,3 +1,9 @@
+# imongr 2.3.1
+
+* Forbedring av vurderingsfanen by @Stein-Kato in https://github.com/mong/imongr/pull/450
+* FIX: WARN[0000] docker-compose.yml: 'version' is obsolete by @arnfinn in https://github.com/mong/imongr/pull/446
+* Fjernet type dg_beregnet_andel by @arnfinn in https://github.com/mong/imongr/pull/444
+
 # imongr 2.3.0
 
 ## Endringer
