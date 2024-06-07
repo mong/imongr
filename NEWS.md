@@ -1,3 +1,8 @@
+# imongr 2.3.2
+
+* Vis navn på bruker i Brukere-siden by @arnfinn in https://github.com/mong/imongr/pull/458
+* Modernisering av github actions by @arnfinn in https://github.com/mong/imongr/pull/459
+
 # imongr 2.3.1
 
 * Forbedring av vurderingsfanen by @Stein-Kato in https://github.com/mong/imongr/pull/450
