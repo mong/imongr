@@ -22,7 +22,7 @@ Description: Primarily a tool to update data used by the mongts application.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.5.0)
+Depends: R (>= 4.1.0)
 Imports:
     bslib,
     digest,
@@ -30,7 +30,6 @@ Imports:
     dplyr,
     DT,
     ggplot2,
-    magrittr,
     pool,
     readr,
     rlang,
@@ -42,7 +41,7 @@ Imports:
     shinyjs,
     tibble,
     yaml
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Suggests: 
     testthat (>= 2.1.0),
     covr,
