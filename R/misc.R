@@ -182,12 +182,7 @@ invalidate_cache <- function() {
   if (login_info == "" || which_aws != 0) {
     return(NULL)
   }
-  tryCatch({
-    system("aws sts get-caller-identity")
-    system("aws cloudfront create-invalidation --distribution-id ${distribution_id} --path \"/*\"")
-    message("Invaliderte cache")
-  }, error = function(e) {
-    message(paste0("<font color=\"#FF0000\">", e$message, "</font><br>"))
-  }
-  )
+  system("aws sts get-caller-identity")
+  system("aws cloudfront create-invalidation --distribution-id ${distribution_id} --path \"/*\"")
+  message("Invaliderte cache")
 }
