@@ -1,3 +1,61 @@
+# imongr 2.3.2
+
+* Vis navn på bruker i Brukere-siden by @arnfinn in https://github.com/mong/imongr/pull/458
+* Modernisering av github actions by @arnfinn in https://github.com/mong/imongr/pull/459
+
+# imongr 2.3.1
+
+* Forbedring av vurderingsfanen by @Stein-Kato in https://github.com/mong/imongr/pull/450
+* FIX: WARN[0000] docker-compose.yml: 'version' is obsolete by @arnfinn in https://github.com/mong/imongr/pull/446
+* Fjernet type dg_beregnet_andel by @arnfinn in https://github.com/mong/imongr/pull/444
+
+# imongr 2.3.0
+
+## Endringer
+
+* Nye features i ekspertruppefanen by @Stein-Kato in https://github.com/mong/imongr/pull/435
+* Dropp å printe locale til logg by @arnfinn in https://github.com/mong/imongr/pull/427
+* Endret tekst over latest_affirm-dato by @arnfinn in https://github.com/mong/imongr/pull/425
+* Add REVIEWER to docker compose setup by @arnfinn in https://github.com/mong/imongr/pull/441
+
+## Oppdateringer
+
+* Update hnskde/imongr Docker tag to v2.2.0 by @renovate in https://github.com/mong/imongr/pull/421
+* Update hnskde/mongr-dev-rstudio Docker tag to v2.2.0 by @renovate in https://github.com/mong/imongr/pull/429
+* Update hnskde/mongr-dev-code-server Docker tag to v2.2.0 - autoclosed by @renovate in https://github.com/mong/imongr/pull/428
+* Update JamesIves/github-pages-deploy-action action to v4.6.0 by @renovate in https://github.com/mong/imongr/pull/440
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.2.0...v2.3.0
+
+# imongr 2.2.0
+
+## Ny fane for årsrapporter
+
+* Ny fane for vurdering av årsrapporter by @Stein-Kato in https://github.com/mong/imongr/pull/395
+* Bugfiks i profiltab by @Stein-Kato in https://github.com/mong/imongr/pull/398
+* Endret tidligste valgbare år i ekspertgruppefanen by @Stein-Kato in https://github.com/mong/imongr/pull/399
+* Knapper for å sjekke alle bokser by @Stein-Kato in https://github.com/mong/imongr/pull/407
+* Vis navn på hoved- og leseansvarlige i ekspertgruppefanen by @Stein-Kato in https://github.com/mong/imongr/pull/402
+* Tabell og graf på høyre side av vinduet by @Stein-Kato in https://github.com/mong/imongr/pull/409
+* Ny tooltip med bslib by @Stein-Kato in https://github.com/mong/imongr/pull/411
+* Ignorer noen lintr-feil by @arnfinn in https://github.com/mong/imongr/pull/418
+* ggplot2 i DESCRIPTION by @arnfinn in https://github.com/mong/imongr/pull/416
+* Fiks tegnforklaring i graf by @Stein-Kato in https://github.com/mong/imongr/pull/420
+* Update hnskde/imongr-base-r Docker tag to v4.1.0 by @renovate in https://github.com/mong/imongr/pull/419
+
+## Annet
+
+* Angi versjon av docker image i docker-compose by @arnfinn in https://github.com/mong/imongr/pull/410
+* Bruk bootstrap 5 i stedet for 4 by @arnfinn in https://github.com/mong/imongr/pull/401
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.1.0...v2.2.0
+
+# imongr 2.1.0
+
+- Konteiner kjører nå på Alpine-image ([#391] (https://github.com/mong/imongr/pull/391)). Størrelsen redusert fra over 1,5 GB til 300 MB.
+- Vilkår lastes ned som HTML i stedet for pdf ([#385] (https://github.com/mong/imongr/pull/385))
+- Tvangsinstallerer eldre versjon av `bslib` siden applikasjon feiler på siste versjon ([#381] (https://github.com/mong/imongr/pull/381))
+
 # imongr 2.0.2
 
 Ett par bug-fix i testing av om data som skal sendes inn er OK.

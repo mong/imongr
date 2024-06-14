@@ -1,4 +1,4 @@
-FROM hnskde/imongr-base-r:2.0.0
+FROM hnskde/imongr-base-r:4.1.0
 
 LABEL maintainer "Arnfinn Hykkerud Steindal <arnfinn.hykkerud.steindal@helse-nord.no>"
 LABEL no.mongr.cd.enable="true"
@@ -9,10 +9,10 @@ WORKDIR /app/R
 # hadolint ignore=DL3010
 COPY *.tar.gz .
 
-## install package, clean up and make sure sufficient latex tools exists in base image
+## install package, clean up and make sure sufficient pandoc tools exists in base image
 RUN R CMD INSTALL --clean ./*.tar.gz \
     && rm ./*.tar.gz \
-    && R -e "rmarkdown::render(input = system.file('terms.Rmd', package = 'imongr'), output_format = 'pdf_document')"
+    && R -e "rmarkdown::render(input = system.file('terms.Rmd', package = 'imongr'), output_format = 'html_fragment')"
 
 EXPOSE 3838
 

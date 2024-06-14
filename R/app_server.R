@@ -9,7 +9,6 @@
 
 app_server <- function(input, output, session) {
   message("Starting app")
-  message(Sys.getlocale())
   # set max size of uploaded file to 50 Mb
   options(shiny.maxRequestSize = 50 * 1024^2)
 
@@ -79,7 +78,32 @@ app_server <- function(input, output, session) {
     )
   }
 
-  # show/hide tabs by user profile
+  # Find out which roles the user has
+  is_provider <- valid_user && conf$role$provider %in% igrs
+  is_manager <- valid_user && conf$role$manager %in% igrs
+  is_reviewer <- valid_user && conf$role$reviewer %in% igrs
+
+  roles <- c(is_provider, is_reviewer, is_manager)
+
+  # Make a vector of functions to display tabs based on roles
+  show_provider <- function() {
+    shiny::showTab("tabs", target = "upload")
+    shiny::showTab("tabs", target = "publish")
+    shiny::showTab("tabs", target = "download")
+    shiny::showTab("tabs", target = "indicator")
+  }
+
+  show_reviewer <- function() {
+    shiny::showTab("tabs", target = "review")
+  }
+
+  show_manager <- function() {
+    shiny::showTab("tabs", target = "Administrative verkt\u00f8y")
+  }
+
+  show_tabs <- c(show_provider, show_reviewer, show_manager)
+
+  # Hide all tabs
   shiny::hideTab("tabs", target = "upload")
   shiny::hideTab("tabs", target = "publish")
   shiny::hideTab("tabs", target = "download")
@@ -91,15 +115,12 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "adminer")
   shiny::hideTab("tabs", target = "mine_field")
   shiny::hideTab("tabs", target = "report")
-  if (valid_user && conf$role$provider %in% igrs) {
-    shiny::showTab("tabs", target = "upload")
-    shiny::showTab("tabs", target = "publish")
-    shiny::showTab("tabs", target = "download")
-    shiny::showTab("tabs", target = "indicator")
-  }
-  if (valid_user && conf$role$manager %in% igrs) {
-    shiny::showTab("tabs", target = "Administrative verkt\u00f8y")
-  }
+  shiny::hideTab("tabs", target = "review")
+
+  # Show the tabs that are appropriate for the user's roles
+  lapply(show_tabs[which(roles)], FUN = function(fun) {
+    fun()
+  })
 
   # clean up when app ends
   shiny::onStop(
@@ -184,6 +205,11 @@ app_server <- function(input, output, session) {
     registry_tracker$current_registry <- rv_indicator$registry_id
   })
 
+  rv_review <- review_server("review", registry_tracker, pool)
+
+  shiny::observeEvent(rv_review$registry_id, {
+    registry_tracker$current_registry <- rv_review$registry_id
+  })
 
   ##### Admin #####
 

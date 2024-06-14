@@ -52,7 +52,7 @@ The data can then be seen at [localhost:3000/kvalitetsregistre/alle/sykehus/](ht
 ```bash
 R CMD build .
 docker build -t hnskde/imongr:latest .
-docker-compose up
+docker compose up
 ```
 
 Navigate a browser to [localhost:3838/](http://localhost:3838/).

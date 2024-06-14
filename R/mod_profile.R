@@ -15,19 +15,11 @@ NULL
 profile_ui <- function(id) {
   ns <- shiny::NS(id)
 
-  conf <- get_config()
-
   shiny::tagList(
     shiny::htmlOutput(ns("profile")),
-    shiny::checkboxInput(
-      ns("upload_history"),
-      conf$profile$delivery$status$upload
-    ),
+    shiny::uiOutput(ns("upload_history")),
     shiny::uiOutput(ns("ui_upload_table")),
-    shiny::checkboxInput(
-      ns("publish_history"),
-      conf$profile$delivery$status$publish
-    ),
+    shiny::uiOutput(ns("publish_history")),
     shiny::uiOutput(ns("ui_publish_table"))
   )
 }
@@ -43,6 +35,30 @@ profile_server <- function(id, pool, pool_verify) {
 
       conf <- get_config()
 
+      is_provider <- conf$role$provider %in% get_user_groups()
+
+      output$upload_history <- shiny::renderUI({
+        if (is_provider) {
+          shiny::checkboxInput(
+            ns("upload_history"),
+            conf$profile$delivery$status$upload
+          )
+        } else {
+          NULL
+        }
+      })
+
+      output$publish_history <- shiny::renderUI({
+        if (is_provider) {
+          shiny::checkboxInput(
+            ns("publish_history"),
+            conf$profile$delivery$status$publish
+          )
+        } else {
+          NULL
+        }
+      })
+
       profile <- shiny::reactive({
         if (!nrow(get_user_data(pool)) > 0 || conf$role$none %in% get_user_groups()) {
           conf$profile$pending
@@ -53,20 +69,43 @@ profile_server <- function(id, pool, pool_verify) {
           } else {
             delivery_history <- conf$profile$delivery$none
           }
-          paste(
+
+          is_provider <- conf$role$provider %in% get_user_groups()
+          is_reviewer <- conf$role$reviewer %in% get_user_groups()
+
+          welcome_text <- paste(
             conf$profile$greeting, "<b>", get_user_name(), "</b>", "<br>",
             conf$profile$userinfo, "<br>",
             "Navn:", df$name, "<br>",
             "Telefon:", df$phone, "<br>",
-            "e-post:", df$email, "<br><br>",
-            conf$profile$howto, "<br><br>",
-            delivery_history
+            "e-post:", df$email, "<br><br>"
           )
+
+          if (is_provider) {
+            welcome_text <- paste(welcome_text, conf$profile$provider_howto)
+          }
+
+          if (is_provider & is_reviewer) {
+            welcome_text <- paste(welcome_text, "<br><br>")
+          }
+
+          if (is_reviewer) {
+            welcome_text <- paste(welcome_text, conf$profile$reviewer_howto)
+          }
+
+          welcome_text <- paste(welcome_text, conf$profile$support_howto)
+
+          if (is_provider) {
+            welcome_text <- paste(welcome_text, "<br><br>", delivery_history, "<br><br>")
+          }
+
+          welcome_text
+
         }
       })
 
       upload_history <- shiny::reactive({
-        if (input$upload_history) {
+        if (is_provider & input$upload_history) {
           DT::datatable(
             get_user_deliveries(pool_verify),
             rownames = FALSE,
@@ -87,7 +126,7 @@ profile_server <- function(id, pool, pool_verify) {
       })
 
       publish_history <- shiny::reactive({
-        if (input$publish_history) {
+        if (is_provider & input$publish_history) {
           DT::datatable(
             get_user_deliveries(pool),
             rownames = FALSE,
@@ -112,11 +151,19 @@ profile_server <- function(id, pool, pool_verify) {
       })
 
       output$upload_table <- DT::renderDataTable(
-        upload_history()
+        if (is_provider) {
+          upload_history()
+        } else {
+          NULL
+        }
       )
 
       output$publish_table <- DT::renderDataTable(
-        publish_history()
+        if (is_provider) {
+          publish_history()
+        } else {
+          NULL
+        }
       )
 
       output$ui_upload_table <- shiny::renderUI(

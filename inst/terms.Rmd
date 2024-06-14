@@ -15,15 +15,6 @@ fontsize: 10pt
 links-as-notes: true
 ---
 
-```{r printlayout, results = "asis", echo = FALSE, eval = (params$output == "pdf")}
-cat(
-  paste(
-    "\n\n\\hyphenation{kvalitets-registre opplys-ninger identi-fiserbar",
-    "hend-elser hand-linger}\n\n"
-  )
-)
-```
-
 ## 1. Formål
 Formålet med dette dokumentet er å regulere vilkår for å publisere anonyme opplysninger fra nasjonale medisinske kvalitetsregistre på Senter for klinisk dokumentasjon og evaluering (SKDE) sine nettsider.
 

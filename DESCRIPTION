@@ -1,6 +1,6 @@
 Package: imongr
 Title: I Handle the Data for mongts 
-Version: 2.0.2
+Version: 2.3.2.9000
 Authors@R: c(
     person(given = "Are",
            family = "Edvardsen",
@@ -29,6 +29,7 @@ Imports:
     DBI,
     dplyr,
     DT,
+    ggplot2,
     magrittr,
     pool,
     readr,

@@ -20,24 +20,9 @@ app_ui <- function() {
     ),
     shiny::navbarPage(
       theme = bslib::bs_theme(
-        version = 4,
-        bg = "#FFFFFF",
-        fg = "#1E1E1E",
-        primary = "#007bff",
-        secondary = "#D5D3D3",
-        base_font = bslib::font_collection(
-          "Arial", "Helvetica",
-          "sans-serif"
-        ),
-        heading_font = bslib::font_collection(
-          "Arial",
-          "Helvetica", "sans-serif"
-        ),
-        font_scale = 0.95,
-        spacer = "0.5rem",
-        `enable-shadows` = TRUE
+        version = 5
       ),
-      title = shiny::div(app_title),
+      title = app_title,
       windowTitle = app_title,
       id = "tabs",
       shiny::tabPanel(
@@ -74,6 +59,13 @@ app_ui <- function() {
           id = "indicator"
         ),
         indicator_ui("ind")
+      ),
+      shiny::tabPanel(
+        value = "review",
+        shiny::span("Ekspertgruppen",
+          title = conf$app_text$tooltip$review
+        ),
+        review_ui("review")
       ),
       shiny::navbarMenu(
         "Administrative verkt\u00f8y",
