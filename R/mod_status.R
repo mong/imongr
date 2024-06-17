@@ -15,7 +15,6 @@ NULL
 status_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::fluidPage(
-    shiny::selectInput(ns("test"), "Test", c("a", "b", "c")),
     DT::dataTableOutput(ns("status_table"))
   )
 }
@@ -26,9 +25,9 @@ status_server <- function(id, pool, pool_verify) {
   shiny::moduleServer(
     id,
     function(input, output, session) {
-      ns <- session$ns
+      dat <- pool::dbGetQuery(pool, "SELECT registry_id, year, verdict FROM evaluation")
 
-      output$status_table <- DT::renderDataTable(iris)
+      output$status_table <- DT::renderDataTable(dat)
     }
   )
 }
