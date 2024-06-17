@@ -1,4 +1,4 @@
-#' Shiny module providing UI and server functions for regiry status overview
+#' Shiny module providing UI and server functions for registry status overview
 #'
 #' @param id Character string module namespace
 #' @param pool A database pool object connecting to production data
@@ -13,13 +13,24 @@ NULL
 #' @rdname mod_status
 #' @export
 status_ui <- function(id) {
-  
+  ns <- shiny::NS(id)
+  shiny::fluidPage(
+    shiny::selectInput(ns("test"), "Test", c("a", "b", "c")),
+    DT::dataTableOutput(ns("status_table"))
+  )
 }
 
 #' @rdname mod_status
 #' @export
 status_server <- function(id, pool, pool_verify) {
+  shiny::moduleServer(
+    id,
+    function(input, output, session) {
+      ns <- session$ns
 
+      output$status_table <- DT::renderDataTable(iris)
+    }
+  )
 }
 
 #' @rdname mod_status

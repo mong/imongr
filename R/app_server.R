@@ -115,6 +115,7 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "adminer")
   shiny::hideTab("tabs", target = "mine_field")
   shiny::hideTab("tabs", target = "report")
+  shiny::hideTab("tabs", target = "status")
   shiny::hideTab("tabs", target = "review")
 
   # Show the tabs that are appropriate for the user's roles
@@ -417,6 +418,8 @@ app_server <- function(input, output, session) {
 
   # reports
   report_server("report", pool, pool_verify)
+
+  status_server("status", pool, pool_verify)
 
   # Heartbeat every 5 seconds, to avoid app to die when user is inactive.
   output$clock <- shiny::renderText({
