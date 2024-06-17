@@ -154,6 +154,11 @@ app_ui <- function() {
           report_ui("report")
         )
       ),
+      shiny::tabPanel(
+        value = "status",
+        shiy::span("Registerstatus"),
+        status_ui("status")
+      ),
       bslib::nav_spacer(),
       user_widget()
     )
