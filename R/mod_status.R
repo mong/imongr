@@ -19,7 +19,10 @@ format_data <- function(dat) {
 
   dat_format$Register <- registries
 
+  arrow_up <- "\U2197"
+  arrow_down <- "\U2198"
 
+  # Pass 1: assign values
   for (i in seq_along(registries)) {
     for (j in seq_along(years)) {
       verdict <- dat[dat$registry_id == registries[i] & dat$year == years[j], ]
@@ -29,6 +32,13 @@ format_data <- function(dat) {
       } else {
         dat_format[i, j + 1] <- NA
       }
+    }
+  }
+
+  # Pass 2: mark changes
+  for (i in seq_along(nrow(dat_format))) {
+    for (j in seq_along(ncol(dat_format))) {
+      # TODO: Check if the stage changes and add arrows
     }
   }
 
@@ -52,7 +62,7 @@ status_server <- function(id, pool, pool_verify) {
     function(input, output, session) {
       dat <- pool::dbGetQuery(pool, "SELECT registry_id, year, verdict FROM evaluation")
 
-      rv = shiny::reactiveValues(
+      rv <- shiny::reactiveValues(
         dat_format = format_data(dat)
       )
 
