@@ -10,7 +10,7 @@ indicator$registry_id <-
 
 # select whatever vars to bring
 indicator <- indicator |>
-  dplyr::select(., id, name, title, name, level_green, level_yellow,
+  dplyr::select(id, name, title, name, level_green, level_yellow,
                 level_direction, short_description, long_description,
                 type, registry_id)
 
