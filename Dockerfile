@@ -5,6 +5,9 @@ LABEL no.mongr.cd.enable="true"
 
 WORKDIR /app/R
 
+# hadolint ignore=DL3018
+RUN apk add --no-cache --update-cache aws-cli
+
 ## add package tarball
 # hadolint ignore=DL3010
 COPY *.tar.gz .
