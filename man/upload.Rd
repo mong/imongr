@@ -73,9 +73,9 @@ csv_to_df(path, sep = ",", dec, encoding = "UTF-8")
 
 sample_df(df, skip = c(""), n, random = FALSE)
 
-indicator_is_fraction(pool, df, conf, return_ind = FALSE)
+indicator_is_fraction(pool, df, conf, return_ind = FALSE, ind = NULL)
 
-filter_fraction_indicator(pool, df, conf)
+filter_fraction_indicator(pool, df, conf, ind)
 }
 \arguments{
 \item{registry}{Integer registry id}

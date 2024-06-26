@@ -1,5 +1,8 @@
+#' Shiny module providing GUI and server logic for the expert group tab
+#'
+#' @name mod_review
 #' @rdname mod_review
-#' @eksport
+#' @export
 review_ui <- function(id) {
 
   ns <- shiny::NS(id)
@@ -154,7 +157,7 @@ render_checkboxes <- function(input, output, df_requirements, ns, id_numbers) {
   lapply(X = id_numbers, FUN = function(i) {
     output[[paste0("checkbox", i)]] <- shiny::renderUI({
 
-      shiny::req((as.numeric(input$selected_year) %>%
+      shiny::req((as.numeric(input$selected_year) |>
                     dplyr::between(df_requirements$introduction_year[i], df_requirements$last_year[i])))
 
       shiny::checkboxInput(ns(paste0("requirement_", i)), shiny::HTML(df_requirements$criteria[i]), width = "100%") |>
@@ -613,7 +616,7 @@ review_server <- function(id, registry_tracker, pool) {
 }
 
 #' @rdname mod_review
-#' @eksport
+#' @export
 review_app <- function(pool) {
   ui <- shiny::fluidPage(
     review_ui("review")
