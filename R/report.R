@@ -16,28 +16,28 @@ NULL
   delivery <- get_table_raw(pool, "delivery")
 
   # pick relevant vars and if possible, aggregate
-  reg <- reg %>%
+  reg <- reg |>
     dplyr::select("id", "name")
-  data <- data %>%
+  data <- data |>
     dplyr::select("delivery_id", "year", "ind_id")
-  ind <- ind %>%
+  ind <- ind |>
     dplyr::select("id", "registry_id")
-  delivery <- delivery %>%
+  delivery <- delivery |>
     dplyr::select("id", "time")
 
   # join sets
-  data %>%
-    dplyr::left_join(ind, by = c("ind_id" = "id")) %>%
-    dplyr::left_join(reg, by = c("registry_id" = "id")) %>%
+  data |>
+    dplyr::left_join(ind, by = c("ind_id" = "id")) |>
+    dplyr::left_join(reg, by = c("registry_id" = "id")) |>
     dplyr::left_join(delivery, by = c("delivery_id" = "id"))
 }
 
 #' @rdname report
 #' @export
 registry_status_report <- function(pool, pool_verify) {
-  rdf <- .registry_status_data(pool) %>%
-    dplyr::select("name", "year", "time") %>%
-    dplyr::group_by(.data$name) %>%
+  rdf <- .registry_status_data(pool) |>
+    dplyr::select("name", "year", "time") |>
+    dplyr::group_by(.data$name) |>
     dplyr::summarise(
       min_year = min(.data$year),
       max_year = max(.data$year),
@@ -45,12 +45,12 @@ registry_status_report <- function(pool, pool_verify) {
       unique_years = length(unique(.data$year))
     )
 
-  vrdf <- .registry_status_data(pool_verify) %>%
-    dplyr::select("name", "time") %>%
-    dplyr::group_by(.data$name) %>%
+  vrdf <- .registry_status_data(pool_verify) |>
+    dplyr::select("name", "time") |>
+    dplyr::group_by(.data$name) |>
     dplyr::summarise(last_upload = max(.data$time))
 
-  dplyr::left_join(rdf, vrdf, by = "name") %>%
+  dplyr::left_join(rdf, vrdf, by = "name") |>
     dplyr::transmute(
       Register = .data$name,
       `Fra og med` = .data$min_year,

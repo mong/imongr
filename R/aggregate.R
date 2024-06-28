@@ -60,13 +60,13 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
   }
 
   # split by data that are not for aggregation (none-fraction indicators)
-  df_noagg <- dplyr::filter(df, .data$ind_id %in% ind_noagg) %>%
-    dplyr::left_join(orgnr_name_map, by = "orgnr") %>%
+  df_noagg <- dplyr::filter(df, .data$ind_id %in% ind_noagg) |>
+    dplyr::left_join(orgnr_name_map, by = "orgnr") |>
     dplyr::select(
       "context", "year", "ind_id", "unit_level",
       "unit_name", "var", "denominator", "orgnr"
     )
-  df <- df %>%
+  df <- df |>
     dplyr::filter(!.data$ind_id %in% ind_noagg)
   message(paste("  Fjerner", dim(df_noagg)[1], "rader for indikatorer"))
   message(paste("   ", dim(df)[1], "aggregerbare rader gjenstår"))
@@ -86,12 +86,12 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
     }
 
     # sum over levels (i.e. organizations)
-    aggs <- aggs %>%
-      dplyr::group_by(.data$year, .data$ind_id, .data$orgnr, .data$context) %>%
+    aggs <- aggs |>
+      dplyr::group_by(.data$year, .data$ind_id, .data$orgnr, .data$context) |>
       dplyr::reframe(var = sum(.data$var),
                      denominator = sum(.data$denominator),
                      unit_level = unique(.data$unit_level),
-                     unit_name = unique(.data$unit_name)) %>%
+                     unit_name = unique(.data$unit_name)) |>
       as.data.frame()
 
     # find diffs between levels (if any, to be placed in undefined orgs)
@@ -112,11 +112,11 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
     # DANGER! at a later stage
     message("  Pre-aggregerer etter kortnavn")
     message(paste("    Rader f\u00f8r pre-aggregering:", dim(df)[1]))
-    aggs <- aggs %>%
+    aggs <- aggs |>
       dplyr::group_by(
         .data$context, .data$year, .data$ind_id, .data$unit_level,
         .data$unit_name
-      ) %>%
+      ) |>
       dplyr::summarise(
         var = sum(.data$var),
         denominator = sum(.data$denominator),
@@ -129,13 +129,13 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
     # make parts
     aggs$var <- aggs$var / aggs$denominator
 
-    aggs <- aggs %>%
+    aggs <- aggs |>
       dplyr::arrange(
         .data$context,
         .data$ind_id,
         .data$year,
         .data$unit_level
-      ) %>%
+      ) |>
       dplyr::ungroup()
 
     # add data for indicators that is not aggregated
@@ -159,7 +159,7 @@ agg_dg <- function(aggs, ind) {
 
   # map data set ind ids to corresponding dg, new column named 'dg_id'
   ind_id_dg_id <- dplyr::select(ind, "id", "dg_id")
-  aggs <- aggs %>%
+  aggs <- aggs |>
     dplyr::left_join(ind_id_dg_id, by = c("ind_id" = "id"))
 
   # dgs from current data that we will work on
@@ -169,9 +169,9 @@ agg_dg <- function(aggs, ind) {
   dg_data <- dplyr::filter(aggs, .data$ind_id %in% dgs)
 
   # unique years represented by dgs in data, ascending order
-  years <- dplyr::select(dg_data, "year") %>%
-    dplyr::distinct() %>%
-    dplyr::arrange() %>%
+  years <- dplyr::select(dg_data, "year") |>
+    dplyr::distinct() |>
+    dplyr::arrange() |>
     dplyr::pull()
 
   # dg might not be present for every year, hence start filling in oldest
@@ -180,15 +180,15 @@ agg_dg <- function(aggs, ind) {
   # at: temporary aggs for each iteration
   # dt: temporary dg_data for each iteration
   for (i in seq_len(length(years))) {
-    at <- dplyr::filter(aggs, .data$year >= years[i]) %>%
+    at <- dplyr::filter(aggs, .data$year >= years[i]) |>
       dplyr::select(-c("dg"))
-    dt <- dplyr::filter(dg_data, .data$year == years[i]) %>%
-      dplyr::select("ind_id", "unit_name", "var", "context") %>%
+    dt <- dplyr::filter(dg_data, .data$year == years[i]) |>
+      dplyr::select("ind_id", "unit_name", "var", "context") |>
       dplyr::rename(dg_id = "ind_id", dg = "var")
     # join current year dg into data from current year and newer. Then, move on
     # with only those vars needed for updating aggs
-    at <- at %>%
-      dplyr::left_join(dt, by = c("dg_id", "unit_name", "context")) %>%
+    at <- at |>
+      dplyr::left_join(dt, by = c("dg_id", "unit_name", "context")) |>
       dplyr::select(
         "ind_id", "dg_id", "unit_level",
         "unit_name", "orgnr", "year",
@@ -196,12 +196,12 @@ agg_dg <- function(aggs, ind) {
       )
 
     # update aggs from current year and newer with dg from current year
-    aggs <- aggs %>%
-      dplyr::filter(.data$year < years[i]) %>%
+    aggs <- aggs |>
+      dplyr::filter(.data$year < years[i]) |>
       dplyr::bind_rows(at)
   }
 
-  aggs %>% dplyr::select(-c("dg_id"))
+  aggs |> dplyr::select(-c("dg_id"))
 }
 
 #' @rdname aggregate
@@ -228,7 +228,7 @@ agg_from_level <- function(df, org, ind, conf, from_level) {
   agg <- data.frame()
 
   for (i in seq_len(length(groups))) {
-    idf <- df %>%
+    idf <- df |>
       dplyr::group_by(
         .data[["year"]], .data[["ind_id"]], .data[["context"]],
         .data[[groups[i]]]
@@ -238,14 +238,14 @@ agg_from_level <- function(df, org, ind, conf, from_level) {
       denominator = sum(.data$denominator)
     )
     idf$unit_level <- rep(unit_levels[i], dim(idf)[1])
-    this_org <- org %>%
-      dplyr::select(dplyr::all_of(groups[i]), dplyr::all_of(unit_levels[i])) %>%
+    this_org <- org |>
+      dplyr::select(dplyr::all_of(groups[i]), dplyr::all_of(unit_levels[i])) |>
       dplyr::distinct()
     idf <- dplyr::left_join(idf, this_org, by = groups[i])
     names(idf)[names(idf) == groups[i]] <- "orgnr"
     names(idf)[names(idf) == unit_levels[i]] <- "unit_name"
-    idf <- idf %>%
-      dplyr::ungroup() %>%
+    idf <- idf |>
+      dplyr::ungroup() |>
       as.data.frame()
     agg <- rbind(agg, idf)
   }
@@ -258,11 +258,11 @@ agg_from_level <- function(df, org, ind, conf, from_level) {
 #' @export
 agg_residual <- function(aggs, conf) {
   # diff sum levels
-  sum_unit_level <- aggs %>%
+  sum_unit_level <- aggs |>
     dplyr::group_by(
       .data$context, .data$year, .data$ind_id,
       .data$unit_level
-    ) %>%
+    ) |>
     dplyr::summarise(
       var = sum(.data$var),
       denominator = sum(.data$denominator)
@@ -287,8 +287,8 @@ agg_residual <- function(aggs, conf) {
   set0 <- unique(paste(aggs$context, aggs$year, aggs$ind_id, sep = ";"))
 
   # prep initial set
-  l0 <- sum_unit_level %>%
-    dplyr::filter(.data$unit_level == desc$name[1]) %>%
+  l0 <- sum_unit_level |>
+    dplyr::filter(.data$unit_level == desc$name[1]) |>
     dplyr::arrange(.data$context, .data$year, .data$ind_id)
   set1 <- paste(l0$context, l0$year, l0$ind_id, sep = ";")
   setd <- setdiff(set0, set1)
@@ -301,15 +301,15 @@ agg_residual <- function(aggs, conf) {
       var = 0,
       denominator = 0
     )
-    l0 <- l0 %>%
-      dplyr::bind_rows(lt) %>%
+    l0 <- l0 |>
+      dplyr::bind_rows(lt) |>
       dplyr::arrange(.data$context, .data$year, .data$ind_id)
   }
 
   diff <- data.frame()
   for (i in seq_len(dim(desc)[1] - 1)) {
-    l1 <- sum_unit_level %>%
-      dplyr::filter(.data$unit_level == desc$name[i + 1]) %>%
+    l1 <- sum_unit_level |>
+      dplyr::filter(.data$unit_level == desc$name[i + 1]) |>
       dplyr::arrange(.data$context, .data$year, .data$ind_id)
     # pad missing context-year-indicator combinations with 0, if any
     set1 <- paste(l1$context, l1$year, l1$ind_id, sep = ";")
@@ -323,8 +323,8 @@ agg_residual <- function(aggs, conf) {
         var = 0,
         denominator = 0
       )
-      l1 <- l1 %>%
-        dplyr::bind_rows(lt) %>%
+      l1 <- l1 |>
+        dplyr::bind_rows(lt) |>
         dplyr::arrange(.data$context, .data$year, .data$ind_id)
     }
 
@@ -376,9 +376,9 @@ agg_udef <- function(diff, conf) {
 
   for (i in seq_len(dim(unit)[1] - 1)) {
     idiff <- diff[diff$unit_level == unit$name[i], ]
-    u0 <- idiff %>%
+    u0 <- idiff |>
       dplyr::filter(.data$denominator_diff > 0)
-    u1 <- idiff %>%
+    u1 <- idiff |>
       dplyr::filter(.data$denominator_diff < 0)
     if (length(u0$orgnr) > 0) {
       u0$orgnr <- conf$aggregate$orgnr$undefined[[unit$name[i]]]
@@ -406,7 +406,7 @@ agg_udef <- function(diff, conf) {
   set0 <- unique(paste(diff$context, diff$year, diff$ind_id, sep = ";"))
 
   # downwards inherit for each level and combination of year and indicator
-  l0 <- dplyr::filter(diff, .data$unit_level == unit$name[1]) %>%
+  l0 <- dplyr::filter(diff, .data$unit_level == unit$name[1]) |>
     dplyr::arrange(.data$context, .data$year, .data$ind_id)
   set1 <- paste(l0$context, l0$year, l0$ind_id, sep = ";")
   setd <- setdiff(set0, set1)
@@ -425,14 +425,14 @@ agg_udef <- function(diff, conf) {
       unit_name =
         conf$aggregate$udef_unit_level[[unit$name[1]]]$name
     )
-    l0 <- l0 %>%
-      dplyr::bind_rows(lt) %>%
+    l0 <- l0 |>
+      dplyr::bind_rows(lt) |>
       dplyr::arrange(.data$context, .data$year, .data$ind_id)
   }
 
   l <- l0
   for (i in seq_len(dim(unit)[1] - 1)) {
-    l1 <- dplyr::filter(diff, .data$unit_level == unit$name[i + 1]) %>%
+    l1 <- dplyr::filter(diff, .data$unit_level == unit$name[i + 1]) |>
       dplyr::arrange(.data$context, .data$year, .data$ind_id)
     # pad missing context-year-indicator combinations with 0, if any
     set1 <- paste(l1$context, l1$year, l1$ind_id, sep = ";")
@@ -451,8 +451,8 @@ agg_udef <- function(diff, conf) {
           orgnr = conf$aggregate$orgnr$undefined[[unit$name[i + 1]]],
           unit_name = conf$aggregate$udef_unit_level[[unit$name[i + 1]]]$name
         )
-      l1 <- l1 %>%
-        dplyr::bind_rows(lt) %>%
+      l1 <- l1 |>
+        dplyr::bind_rows(lt) |>
         dplyr::arrange(.data$context, .data$year, .data$ind_id)
     }
     l1$var_diff <- l1$var_diff + l0$var_diff

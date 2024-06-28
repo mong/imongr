@@ -29,7 +29,7 @@ delete_indicator_data <- function(pool, df) {
     stop("Data frame has no notion of 'indicator' (id). Cannot delete!")
   }
 
-  ind_context_year <- df %>% dplyr::select("ind_id", "context", "year") %>% unique()
+  ind_context_year <- df |> dplyr::select("ind_id", "context", "year") |> unique()
 
   for (i in seq_len(nrow(ind_context_year))) {
     query <- paste0("
@@ -99,7 +99,7 @@ insert_data_prod <- function(pool_verify, pool_prod, df, registry_delivery_ids, 
   # Indicator data for the checksum
   message("Publiserer data")
 
-  ind <- get_table(pool_prod, table = "ind") %>%
+  ind <- get_table(pool_prod, table = "ind") |>
     dplyr::filter(.data$id %in% unique(df$ind_id))
 
   # Find the registry id
@@ -217,8 +217,8 @@ insert_agg_data <- function(pool, df) {
   conf <- get_config()
   ## obtain unit name-number mapping needed for none-fraction data when added to
   ## the aggregate
-  orgnr_name_map <- get_all_orgnr(pool, include_short_name = TRUE) %>%
-    dplyr::select("orgnr", "short_name") %>%
+  orgnr_name_map <- get_all_orgnr(pool, include_short_name = TRUE) |>
+    dplyr::select("orgnr", "short_name") |>
     dplyr::rename(unit_name = "short_name")
 
 
@@ -229,13 +229,13 @@ insert_agg_data <- function(pool, df) {
 
   # add registry_id to data
   ind_reg <- dplyr::select(get_table(pool, "ind"), "id", "registry_id")
-  df <- df %>%
+  df <- df |>
     dplyr::left_join(ind_reg, by = c("ind_id" = "id"))
 
   reg <- unique(df$registry_id)
   for (i in seq_len(length(reg))) {
     message(paste("Register:", get_registry_name(pool, reg[i])))
-    dat <- dplyr::filter(df, .data$registry_id == reg[i]) %>%
+    dat <- dplyr::filter(df, .data$registry_id == reg[i]) |>
       dplyr::select(-c("registry_id"))
     # if delivery is a subset of registry indicators AND dg is part of subset,
     # agg_data for all indicators of the current registry must be updated.
