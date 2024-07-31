@@ -173,3 +173,16 @@ delete_all_data <- function(prompt = TRUE) {
 
   invisible()
 }
+
+#' @rdname misc
+#' @export
+invalidate_cache <- function() {
+  login_info <- Sys.getenv("AWS_ACCESS_KEY_ID")
+  which_aws <- system("which aws")
+  if (login_info == "" || which_aws != 0) {
+    return(NULL)
+  }
+  system("aws sts get-caller-identity")
+  system("aws cloudfront create-invalidation --distribution-id ${distribution_id} --path \"/*\"")
+  message("Invaliderte cache")
+}

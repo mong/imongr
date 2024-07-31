@@ -71,7 +71,7 @@ services:
       IMONGR_CONTEXT: DEV
 
   app:
-    image: hnskde/imongr:2.3.2
+    image: hnskde/imongr:2.4.0
     ports:
       - 3838:3838
     environment:
