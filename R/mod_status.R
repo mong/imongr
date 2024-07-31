@@ -19,8 +19,7 @@ format_data <- function(dat) {
 
   dat_format$Register <- registries
 
-  arrow_up <- "\U2197"
-  arrow_down <- "\U2198"
+
 
   # Pass 1: assign values
   for (i in seq_along(registries)) {
@@ -36,9 +35,31 @@ format_data <- function(dat) {
   }
 
   # Pass 2: mark changes
-  for (i in seq_along(nrow(dat_format))) {
-    for (j in seq_along(ncol(dat_format))) {
-      # TODO: Check if the stage changes and add arrows
+
+  return(dat_format)
+}
+
+add_arrows <- function(dat_format) {
+  arrow_up <- "\U2197"
+  arrow_down <- "\U2198"
+
+  for (i in seq_len(nrow(dat_format))) {
+    for (j in 3:ncol(dat_format)) {
+
+
+      # No score, move on
+      if (is.na(dat_format[i, j]) || is.na(dat_format[i, j - 1])) {
+        next
+      }
+
+      current_score <- strsplit(dat_format[i, j], "") |> unlist()
+      previous_score <- strsplit(dat_format[i, j - 1], "") |> unlist()
+
+      if (current_score[1] > previous_score[1]) {
+        dat_format[i, j] <- paste(dat_format[i, j], arrow_up)
+      } else if (current_score[1] < previous_score[1]) {
+        dat_format[i, j] <- paste(dat_format[i, j], arrow_down)
+      }
     }
   }
 
@@ -63,10 +84,11 @@ status_server <- function(id, pool, pool_verify) {
       dat <- pool::dbGetQuery(pool, "SELECT registry_id, year, verdict FROM evaluation")
 
       rv <- shiny::reactiveValues(
-        dat_format = format_data(dat)
+        dat_format = dat |> format_data() |> add_arrows()
       )
 
       output$status_table <- DT::renderDataTable(rv$dat_format)
+
     }
   )
 }
