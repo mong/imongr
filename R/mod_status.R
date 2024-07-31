@@ -13,7 +13,7 @@ NULL
 format_data <- function(dat) {
   # Initialise data frame with column names
   years <- sort(unique(dat$year))
-  registries <- sort(unique(dat$registry_id))
+  registries <- sort(unique(dat$short_name))
   dat_format <- data.frame(matrix(ncol = length(years) + 1, nrow = length(registries)))
   colnames(dat_format) <- c("Register", years)
 
@@ -24,7 +24,7 @@ format_data <- function(dat) {
   # Pass 1: assign values
   for (i in seq_along(registries)) {
     for (j in seq_along(years)) {
-      verdict <- dat[dat$registry_id == registries[i] & dat$year == years[j], ]
+      verdict <- dat[dat$short_name == registries[i] & dat$year == years[j], ]
 
       if (ncol(verdict) > 0 && nrow(verdict) > 0) {
         dat_format[i, j + 1] <- verdict$verdict
@@ -84,7 +84,18 @@ status_server <- function(id, pool, pool_verify) {
   shiny::moduleServer(
     id,
     function(input, output, session) {
-      dat <- pool::dbGetQuery(pool, "SELECT registry_id, year, verdict FROM evaluation")
+
+      query <-
+        "SELECT 
+          evaluation.registry_id, evaluation.year, evaluation.verdict, registry.short_name
+         FROM
+           evaluation
+         LEFT JOIN
+           registry
+         ON
+           evaluation.registry_id = registry.id"
+
+      dat <- pool::dbGetQuery(pool, query)
 
       rv <- shiny::reactiveValues(
         dat_format = dat |> format_data() |> add_arrows()
