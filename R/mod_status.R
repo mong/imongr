@@ -39,13 +39,14 @@ format_data <- function(dat) {
   return(dat_format)
 }
 
+#' @rdname mod_status
+#' @export
 add_arrows <- function(dat_format) {
   arrow_up <- "\U2197"
   arrow_down <- "\U2198"
 
   for (i in seq_len(nrow(dat_format))) {
     for (j in 3:ncol(dat_format)) {
-
 
       # No score, move on
       if (is.na(dat_format[i, j]) || is.na(dat_format[i, j - 1])) {
@@ -57,7 +58,9 @@ add_arrows <- function(dat_format) {
 
       if (current_score[1] > previous_score[1]) {
         dat_format[i, j] <- paste(dat_format[i, j], arrow_up)
-      } else if (current_score[1] < previous_score[1]) {
+      }
+
+      if (current_score[1] < previous_score[1]) {
         dat_format[i, j] <- paste(dat_format[i, j], arrow_down)
       }
     }
@@ -87,8 +90,13 @@ status_server <- function(id, pool, pool_verify) {
         dat_format = dat |> format_data() |> add_arrows()
       )
 
-      output$status_table <- DT::renderDataTable(rv$dat_format)
-
+      output$status_table <- DT::renderDataTable(
+        DT::datatable(
+                      rv$dat_format) |> DT::formatStyle(
+          3:ncol(rv$dat_format),
+          backgroundColor = DT::JS("(/\U2197/).test(value) ? 'green' : (/\U2198/).test(value) ? 'red' : 'white'")
+        )
+      )
     }
   )
 }
