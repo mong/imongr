@@ -22,6 +22,9 @@ review_ui <- function(id) {
     shiny::titlePanel("Vurdering av \u00e5rsrapporter"),
     shiny::sidebarLayout(
       shiny::sidebarPanel(
+        shiny::uiOutput(ns("save")),
+        shiny::uiOutput(ns("save_override")),
+        shiny::hr(),
         shiny::uiOutput(ns("select_registry")),
         shiny::uiOutput(ns("registry_url")),
         shiny::br(),
@@ -46,13 +49,6 @@ review_ui <- function(id) {
         shiny::br(),
         shiny::h5(style = "text-align: center;", "Registeret vurderes til:"),
         shiny::uiOutput(ns("verdict")),
-        shiny::br(),
-        shiny::hr(),
-        shiny::br(),
-        shiny::uiOutput(ns("save")),
-        shiny::br(),
-        shiny::br(),
-        shiny::uiOutput(ns("save_override")),
         width = 3
       ),
       shiny::mainPanel(
@@ -339,7 +335,8 @@ review_server <- function(id, registry_tracker, pool) {
       shiny::actionButton(
         ns("save"),
         "Lagre",
-        shiny::icon("floppy-disk")
+        shiny::icon("floppy-disk"),
+        style = "background-color: #6BBD57; border-color: #6BBD57; color: white;"
       )
     })
 
