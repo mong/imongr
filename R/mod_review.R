@@ -522,10 +522,10 @@ review_server <- function(id, registry_tracker, pool) {
 
     # Tabell og graf på høyre side
     output$table <- shiny::renderUI({
+      shiny::req(rv$graph_data)
       table_data <- rv$graph_data
       table_data$reported_dg[table_data$reported_dg == 0] <- NA
 
-      shiny::req(table_data)
       if (nrow(table_data) > 0) {
         shiny::renderTable({
           colnames(table_data) <- c("År", "Stadium", "Dekningsgrad")
