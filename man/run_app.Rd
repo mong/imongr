@@ -7,7 +7,7 @@
 run_app()
 }
 \value{
-An object representeing the imongr app
+An object representing the imongr app
 }
 \description{
 Run the imongr Shiny Application
