@@ -31,12 +31,12 @@ select_registry_ui <- function(pool, conf, input_id, context,
                                current_reg = character(), show_context = TRUE,
                                pool0 = NULL) {
   if (conf$role$manager %in% get_user_groups()) {
-    regs <- get_table(pool, "registry") %>%
-      dplyr::transmute(.data$name, .data$id) %>%
+    regs <- get_table(pool, "registry") |>
+      dplyr::transmute(.data$name, .data$id) |>
       tibble::deframe()
     if (!is.null(pool0)) {
-      regs0 <- get_table(pool0, "registry") %>%
-        dplyr::transmute(.data$name, .data$id) %>%
+      regs0 <- get_table(pool0, "registry") |>
+        dplyr::transmute(.data$name, .data$id) |>
         tibble::deframe()
     }
   } else {
@@ -145,10 +145,10 @@ warning_report_ui <- function(pool, df, upload_file, registry) {
       df_users <- pool::dbGetQuery(pool, "SELECT id, user_name FROM user")
       colnames(df_users) <- c("user_id", "user_name")
 
-      same_data_deliveries <- df_delivery[which(current_checksum == checksums), ] %>%
+      same_data_deliveries <- df_delivery[which(current_checksum == checksums), ] |>
         dplyr::left_join(df_users, by = "user_id")
 
-      msg_dates <- paste0(same_data_deliveries$time, " av ", same_data_deliveries$user_name) %>%
+      msg_dates <- paste0(same_data_deliveries$time, " av ", same_data_deliveries$user_name) |>
         paste(collapse = "<br/>")
 
       paste(

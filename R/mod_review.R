@@ -125,7 +125,7 @@ get_last_year <- function() {
 update_graph_data <- function(input, pool, rv) {
   dat <- pool::dbGetQuery(pool, "SELECT * FROM evaluation")
 
-  graph_data <- dat[dat$registry_id == input$selected_registry, ] %>%
+  graph_data <- dat[dat$registry_id == input$selected_registry, ] |>
     dplyr::select("year", "verdict", "reported_dg")
 
   return(graph_data)
