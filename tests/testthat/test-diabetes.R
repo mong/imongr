@@ -19,7 +19,7 @@ test_that("agg() is working with realistic input", {
   testthat::expect_equal_to_reference(diabetes, "data/diabetes_ref.rds")
   diabetes_agg <- agg(diabetes, org_structure, ind_descr,
     orgnr_name_map = onm
-  ) %>%
+  ) |>
     dplyr::arrange(orgnr, var) # arrange to get the same result on all OS
   testthat::expect_equal_to_reference(diabetes_agg, "data/diabetes_agg.rds")
 })

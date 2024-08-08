@@ -122,7 +122,7 @@ get_last_year <- function() {
 update_graph_data <- function(input, pool, rv) {
   dat <- pool::dbGetQuery(pool, "SELECT * FROM evaluation")
 
-  graph_data <- dat[dat$registry_id == input$selected_registry, ] %>%
+  graph_data <- dat[dat$registry_id == input$selected_registry, ] |>
     dplyr::select("year", "verdict", "reported_dg")
 
   return(graph_data)
@@ -154,7 +154,7 @@ render_checkboxes <- function(input, output, df_requirements, ns, id_numbers) {
   lapply(X = id_numbers, FUN = function(i) {
     output[[paste0("checkbox", i)]] <- shiny::renderUI({
 
-      shiny::req((as.numeric(input$selected_year) %>%
+      shiny::req((as.numeric(input$selected_year) |>
                     dplyr::between(df_requirements$introduction_year[i], df_requirements$last_year[i])))
 
       shiny::checkboxInput(ns(paste0("requirement_", i)), shiny::HTML(df_requirements$criteria[i]), width = "100%") |>

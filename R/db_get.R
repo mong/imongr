@@ -345,7 +345,7 @@ FROM
   dat <- pool::dbGetQuery(pool, query)
 
   if (!include_short_name) {
-    dat <- dat %>%
+    dat <- dat |>
       dplyr::select(-c("short_name"))
   }
 
@@ -521,8 +521,8 @@ FROM
   delivery <- pool::dbGetQuery(pool, query)
 
   # add times to data
-  dat <- dat %>%
-    dplyr::left_join(delivery, by = "id") %>%
+  dat <- dat |>
+    dplyr::left_join(delivery, by = "id") |>
     dplyr::select(-c("id"))
 
   # get aggdata
@@ -537,8 +537,8 @@ FROM
 
   agg <- pool::dbGetQuery(pool, query)
 
-  aggdata_delivery <- agg %>%
-    dplyr::left_join(dat, by = c("ind_id", "context", "year")) %>%
+  aggdata_delivery <- agg |>
+    dplyr::left_join(dat, by = c("ind_id", "context", "year")) |>
     dplyr::select(
       "id",
       "delivery_time",
@@ -554,10 +554,10 @@ FROM
 #' @rdname db_get
 #' @export
 get_aggdata <- function(pool, registry) {
-  col_names <- pool::dbGetQuery(pool, "SELECT * FROM agg_data WHERE 1 = 0") %>%
+  col_names <- pool::dbGetQuery(pool, "SELECT * FROM agg_data WHERE 1 = 0") |>
     colnames()
 
-  col_names <- paste0("ad.", col_names) %>% paste(collapse = ", ")
+  col_names <- paste0("ad.", col_names) |> paste(collapse = ", ")
 
   query <- paste0("
 SELECT ", col_names, " FROM agg_data AS ad
