@@ -6,6 +6,10 @@ env_name <- Sys.getenv("IMONGR_DB_NAME")
 env_host <- Sys.getenv("IMONGR_DB_HOST")
 env_user_name <- Sys.getenv("SHINYPROXY_USERNAME")
 env_user_groups <- Sys.getenv("SHINYPROXY_USERGROUPS")
+env_aws_key <- Sys.getenv("AWS_ACCESS_KEY_ID")
+env_aws_secret <- Sys.getenv("AWS_SECRET_ACCESS_KEY")
+env_aws_id <- Sys.getenv("distribution_id")
+
 
 # create a local config for testing
 create_config()
@@ -125,6 +129,13 @@ if (is.null(check_db(is_test_that = FALSE))) {
 ## and finally, remove local config
 file.remove("_imongr.yml")
 
+test_that("invalidate_cache is (not) working", {
+  # Needs aws-cli installed to test. Not installed, I guess
+  Sys.setenv(AWS_ACCESS_KEY_ID = "")
+  expect_null(invalidate_cache())
+  Sys.setenv(AWS_ACCESS_KEY_ID = "qwerty")
+  expect_null(invalidate_cache())
+})
 
 # recreate initial state
 Sys.setenv(IMONGR_CONTEXT = env_context)
@@ -134,3 +145,6 @@ Sys.setenv(IMONGR_DB_NAME = env_name)
 Sys.setenv(IMONGR_DB_HOST = env_host)
 Sys.setenv(SHINYPROXY_USERNAME = env_user_name)
 Sys.setenv(SHINYPROXY_USERGROUPS = env_user_groups)
+Sys.setenv(AWS_ACCESS_KEY_ID = env_aws_key)
+Sys.setenv(AWS_SECRET_ACCESS_KEY = env_aws_secret)
+Sys.setenv(distribution_id = env_aws_id)

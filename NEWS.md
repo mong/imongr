@@ -1,3 +1,14 @@
+# imongr 2.4.0
+
+## Endringer
+
+* Invalidiser cache ved publisering. by @arnfinn in https://github.com/mong/imongr/pull/285
+
+## Oppdateringer
+
+* Update JamesIves/github-pages-deploy-action action to v4.6.1 by @renovate in https://github.com/mong/imongr/pull/455
+* Update hnskde/imongr Docker tag to v2.3.2 by @renovate in https://github.com/mong/imongr/pull/454
+
 # imongr 2.3.2
 
 * Vis navn på bruker i Brukere-siden by @arnfinn in https://github.com/mong/imongr/pull/458
