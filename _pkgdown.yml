@@ -142,6 +142,7 @@ reference:
     - mod_publish
     - mod_upload
     - mod_download
+    - mod_review
 
   - title: Data
     desc: >
