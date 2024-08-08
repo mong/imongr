@@ -17,6 +17,7 @@
 \alias{update_ind_val}
 \alias{insert_data_verify}
 \alias{insert_data_prod}
+\alias{update_review}
 \title{Functions for data operations in imongr}
 \usage{
 delete_indicator_data(pool, df)
@@ -50,6 +51,8 @@ update_registry_user(pool, df)
 update_ind_text(pool, df)
 
 update_ind_val(pool, df)
+
+update_review(pool, df, registry_id, year)
 }
 \arguments{
 \item{pool}{Database connection pool object}

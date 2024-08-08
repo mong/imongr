@@ -1,5 +1,8 @@
+#' Shiny module providing GUI and server logic for the expert group tab
+#'
+#' @name mod_review
 #' @rdname mod_review
-#' @eksport
+#' @export
 review_ui <- function(id) {
 
   ns <- shiny::NS(id)
@@ -613,7 +616,7 @@ review_server <- function(id, registry_tracker, pool) {
 }
 
 #' @rdname mod_review
-#' @eksport
+#' @export
 review_app <- function(pool) {
   ui <- shiny::fluidPage(
     review_ui("review")
