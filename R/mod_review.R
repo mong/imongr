@@ -1,5 +1,8 @@
+#' Shiny module providing GUI and server logic for the expert group tab
+#'
+#' @name mod_review
 #' @rdname mod_review
-#' @eksport
+#' @export
 review_ui <- function(id) {
 
   ns <- shiny::NS(id)
@@ -19,6 +22,9 @@ review_ui <- function(id) {
     shiny::titlePanel("Vurdering av \u00e5rsrapporter"),
     shiny::sidebarLayout(
       shiny::sidebarPanel(
+        shiny::uiOutput(ns("save")),
+        shiny::uiOutput(ns("save_override")),
+        shiny::hr(),
         shiny::uiOutput(ns("select_registry")),
         shiny::uiOutput(ns("registry_url")),
         shiny::br(),
@@ -43,13 +49,6 @@ review_ui <- function(id) {
         shiny::br(),
         shiny::h5(style = "text-align: center;", "Registeret vurderes til:"),
         shiny::uiOutput(ns("verdict")),
-        shiny::br(),
-        shiny::hr(),
-        shiny::br(),
-        shiny::uiOutput(ns("save")),
-        shiny::br(),
-        shiny::br(),
-        shiny::uiOutput(ns("save_override")),
         width = 3
       ),
       shiny::mainPanel(
@@ -122,7 +121,7 @@ get_last_year <- function() {
 update_graph_data <- function(input, pool, rv) {
   dat <- pool::dbGetQuery(pool, "SELECT * FROM evaluation")
 
-  graph_data <- dat[dat$registry_id == input$selected_registry, ] %>%
+  graph_data <- dat[dat$registry_id == input$selected_registry, ] |>
     dplyr::select("year", "verdict", "reported_dg")
 
   return(graph_data)
@@ -154,7 +153,7 @@ render_checkboxes <- function(input, output, df_requirements, ns, id_numbers) {
   lapply(X = id_numbers, FUN = function(i) {
     output[[paste0("checkbox", i)]] <- shiny::renderUI({
 
-      shiny::req((as.numeric(input$selected_year) %>%
+      shiny::req((as.numeric(input$selected_year) |>
                     dplyr::between(df_requirements$introduction_year[i], df_requirements$last_year[i])))
 
       shiny::checkboxInput(ns(paste0("requirement_", i)), shiny::HTML(df_requirements$criteria[i]), width = "100%") |>
@@ -336,7 +335,8 @@ review_server <- function(id, registry_tracker, pool) {
       shiny::actionButton(
         ns("save"),
         "Lagre",
-        shiny::icon("floppy-disk")
+        shiny::icon("floppy-disk"),
+        style = "background-color: #6BBD57; border-color: #6BBD57; color: white;"
       )
     })
 
@@ -522,10 +522,10 @@ review_server <- function(id, registry_tracker, pool) {
 
     # Tabell og graf på høyre side
     output$table <- shiny::renderUI({
+      shiny::req(rv$graph_data)
       table_data <- rv$graph_data
       table_data$reported_dg[table_data$reported_dg == 0] <- NA
 
-      shiny::req(table_data)
       if (nrow(table_data) > 0) {
         shiny::renderTable({
           colnames(table_data) <- c("År", "Stadium", "Dekningsgrad")
@@ -613,7 +613,7 @@ review_server <- function(id, registry_tracker, pool) {
 }
 
 #' @rdname mod_review
-#' @eksport
+#' @export
 review_app <- function(pool) {
   ui <- shiny::fluidPage(
     review_ui("review")

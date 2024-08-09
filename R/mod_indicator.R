@@ -170,8 +170,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
 
     shiny::observeEvent(input$indicator, {
       rv$ind_data <- get_registry_ind(pool_verify, input$indicator_registry)
-      rv$ind_data <- rv$ind_data %>%
-        dplyr::filter(.data$id == input$indicator) %>%
+      rv$ind_data <- rv$ind_data |>
+        dplyr::filter(.data$id == input$indicator) |>
         dplyr::mutate(
           title = dplyr::case_when(
             is.na(title) ~ "",
@@ -190,11 +190,11 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     shiny::observeEvent(rv$ind_data, {
-      rv$sformat <- rv$ind_data %>%
+      rv$sformat <- rv$ind_data |>
         dplyr::mutate(
           format = substr(.data$sformat, nchar(.data$sformat), nchar(.data$sformat)),
           digits = substr(.data$sformat, 3, nchar(.data$sformat) - 1)
-        ) %>%
+        ) |>
         dplyr::select("format", "digits")
     })
 
@@ -214,7 +214,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       rv$ind_data$sformat <- paste0(",.", input$digits, input$format)
       update_ind_val(pool_verify, rv$ind_data)
       rv$ind_data <- get_registry_ind(pool_verify, input$indicator_registry)
-      rv$ind_data <- rv$ind_data %>%
+      rv$ind_data <- rv$ind_data |>
         dplyr::filter(.data$id == input$indicator)
     })
 
@@ -235,7 +235,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       rv$ind_data$short_description <- input$ind_short
       rv$ind_data$long_description <- input$ind_long
       update_ind_text(pool_verify, rv$ind_data)
-      rv$ind_data <- get_registry_ind(pool_verify, input$indicator_registry) %>%
+      rv$ind_data <- get_registry_ind(pool_verify, input$indicator_registry) |>
         dplyr::filter(.data$id == input$indicator)
     })
 
