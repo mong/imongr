@@ -209,12 +209,18 @@ db:
       - full_name
       - short_name
       - rhf_orgnr
+      - sorting
+      - shortest_name
+      - url
     rhf:
       insert:
       - orgnr
       - full_name
       - short_name
       - nation_orgnr
+      - sorting
+      - shortest_name
+      - url
     nation:
       insert:
       - orgnr
