@@ -10,6 +10,9 @@ CREATE TABLE IF NOT EXISTS `rhf` (
   `full_name` varchar(255) COLLATE utf8_danish_ci NOT NULL,
   `short_name` varchar(128) COLLATE utf8_danish_ci NOT NULL,
   `nation_orgnr` int(10) unsigned NOT NULL,
+  `sorting` int(10) unsigned NOT NULL,
+  `shortest_name` varchar(20) NOT NULL,
+  `url` varchar(128),
   PRIMARY KEY (`orgnr`),
   CONSTRAINT `fk_nation_orgnr`
     FOREIGN KEY (nation_orgnr) REFERENCES nation (orgnr)
@@ -22,6 +25,9 @@ CREATE TABLE IF NOT EXISTS `hf` (
   `full_name` varchar(255) COLLATE utf8_danish_ci NOT NULL,
   `short_name` varchar(128) COLLATE utf8_danish_ci NOT NULL,
   `rhf_orgnr` int(10) unsigned NOT NULL,
+  `sorting` int(10) unsigned NOT NULL,
+  `shortest_name` varchar(20) NOT NULL,
+  `url` varchar(128),
   PRIMARY KEY (`orgnr`),
   CONSTRAINT `fk_rhf_orgnr`
     FOREIGN KEY (rhf_orgnr) REFERENCES rhf (orgnr)
