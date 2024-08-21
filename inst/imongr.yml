@@ -448,6 +448,9 @@ indicator:
   formats: 
   - '%'
   - f
+  format_labels:
+  - prosent
+  - desimaltall
   level_inconsistent_message: >
       <i style='color:red;'>
       Verdier for måloppnåelse er ikke konsistente!
