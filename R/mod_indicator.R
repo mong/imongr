@@ -417,7 +417,9 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         ),
         shiny::selectInput(
           ns("format"), "Indikatorformat:",
-          choices = conf$indicator$formats, selected = rv$sformat$format
+          choices = setNames(
+            as.list(conf$indicator$formats), conf$indicator$format_labels
+          ), selected = rv$sformat$format
         )
       )
     })
