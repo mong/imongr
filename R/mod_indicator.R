@@ -413,7 +413,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$indicator)
       shiny::tags$div(
         title = paste(
-          "Angir om indikatoren er oppgitt i prosent (%) eller siffer (f)"
+          "Angir om indikatoren er oppgitt i prosent eller desimaltall"
         ),
         shiny::selectInput(
           ns("format"), "Indikatorformat:",
