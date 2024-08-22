@@ -90,7 +90,7 @@ services:
   api:
     depends_on:
       - db
-    image: hnskde/mong-api:latest
+    image: hnskde/mong-api:develop
     restart: "no"
     environment:
       DB_HOST: db
