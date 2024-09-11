@@ -10,7 +10,7 @@ are reflected by configuration."><meta property="og:image" content="/logo.png"><
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -24,7 +24,7 @@ are reflected by configuration."><meta property="og:image" content="/logo.png"><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.0</span>
       </span>
     </div>
 
@@ -38,20 +38,20 @@ are reflected by configuration."><meta property="og:image" content="/logo.png"><
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/mong/imongr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Low level database functions for imongr</h1>
-    <small class="dont-index">Source: <a href="https://github.com/mong/imongr/blob/HEAD/R/db.R" class="external-link"><code>R/db.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/mong/imongr/blob/v2.5.0/R/db.R" class="external-link"><code>R/db.R</code></a></small>
     <div class="hidden name"><code>db.Rd</code></div>
     </div>
 
@@ -80,24 +80,26 @@ are reflected by configuration.</p>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>context</dt>
+
+
+<dl><dt id="arg-context">context<a class="anchor" aria-label="anchor" href="#arg-context"></a></dt>
 <dd><p>Character string defining the environment context. Must be
 one of <code>c("prod", "verify", "qa")</code>. Default value is <code>"prod"</code>.</p></dd>
 
 
-<dt>pool</dt>
+<dt id="arg-pool">pool<a class="anchor" aria-label="anchor" href="#arg-pool"></a></dt>
 <dd><p>a database connection pool object</p></dd>
 
 
-<dt>table</dt>
+<dt id="arg-table">table<a class="anchor" aria-label="anchor" href="#arg-table"></a></dt>
 <dd><p>string defining target database table</p></dd>
 
 
-<dt>df</dt>
+<dt id="arg-df">df<a class="anchor" aria-label="anchor" href="#arg-df"></a></dt>
 <dd><p>data frame containing data to be inserted into a database</p></dd>
 
 
-<dt>sample</dt>
+<dt id="arg-sample">sample<a class="anchor" aria-label="anchor" href="#arg-sample"></a></dt>
 <dd><p>Numeric in the range 0 to 1 defining the relative sub-sample
 size, <em>e.g.</em> when <code>sample = 0.1</code> approximately 10% of
 observations are returned. Default is <code>NA</code> which will return all data</p></dd>
@@ -105,9 +107,7 @@ observations are returned. Default is <code>NA</code> which will return all data
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>Database pool object, data frame or status message</p>
+    <p>Database pool object, data frame or status message</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -129,15 +129,15 @@ kept in order.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 

@@ -10,7 +10,7 @@ are reflected by configuration."><meta property="og:image" content="/logo.png"><
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -24,7 +24,7 @@ are reflected by configuration."><meta property="og:image" content="/logo.png"><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">imongr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.0</span>
       </span>
     </div>
 
@@ -38,20 +38,20 @@ are reflected by configuration."><meta property="og:image" content="/logo.png"><
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/mong/imongr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Retreiv data from imongr database</h1>
-    <small class="dont-index">Source: <a href="https://github.com/mong/imongr/blob/HEAD/R/db_get.R" class="external-link"><code>R/db_get.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/mong/imongr/blob/v2.5.0/R/db_get.R" class="external-link"><code>R/db_get.R</code></a></small>
     <div class="hidden name"><code>db_get.Rd</code></div>
     </div>
 
@@ -111,57 +111,59 @@ are reflected by configuration.</p>
 <span></span>
 <span><span class="fu">get_aggdata_delivery</span><span class="op">(</span><span class="va">pool</span>, <span class="va">indicator</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">get_aggdata</span><span class="op">(</span><span class="va">pool</span>, <span class="va">registry</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">get_aggdata</span><span class="op">(</span><span class="va">pool</span>, <span class="va">registry</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">get_review_collaborators</span><span class="op">(</span><span class="va">pool</span>, <span class="va">registry</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>pool</dt>
+
+
+<dl><dt id="arg-pool">pool<a class="anchor" aria-label="anchor" href="#arg-pool"></a></dt>
 <dd><p>a database connection pool object</p></dd>
 
 
-<dt>registry</dt>
+<dt id="arg-registry">registry<a class="anchor" aria-label="anchor" href="#arg-registry"></a></dt>
 <dd><p>Integer defining registry id</p></dd>
 
 
-<dt>indicator</dt>
+<dt id="arg-indicator">indicator<a class="anchor" aria-label="anchor" href="#arg-indicator"></a></dt>
 <dd><p>Character vector of indicator ids</p></dd>
 
 
-<dt>full_name</dt>
+<dt id="arg-full-name">full_name<a class="anchor" aria-label="anchor" href="#arg-full-name"></a></dt>
 <dd><p>Logical defining if full names is to be returned</p></dd>
 
 
-<dt>orgnr</dt>
+<dt id="arg-orgnr">orgnr<a class="anchor" aria-label="anchor" href="#arg-orgnr"></a></dt>
 <dd><p>Integer id of organization</p></dd>
 
 
-<dt>include_short_name</dt>
+<dt id="arg-include-short-name">include_short_name<a class="anchor" aria-label="anchor" href="#arg-include-short-name"></a></dt>
 <dd><p>Logical if variable 'short_name' is to be returned</p></dd>
 
 
-<dt>sample</dt>
+<dt id="arg-sample">sample<a class="anchor" aria-label="anchor" href="#arg-sample"></a></dt>
 <dd><p>Integer in range \[0, 1\] defining data set subsample size.
 Defaults to NA in which case all data is returned</p></dd>
 
 
-<dt>valid</dt>
+<dt id="arg-valid">valid<a class="anchor" aria-label="anchor" href="#arg-valid"></a></dt>
 <dd><p>Logical if to select valid user only. TRUE by default</p></dd>
 
 
-<dt>medfield</dt>
+<dt id="arg-medfield">medfield<a class="anchor" aria-label="anchor" href="#arg-medfield"></a></dt>
 <dd><p>Integer defining medfield id</p></dd>
 
 
-<dt>user</dt>
+<dt id="arg-user">user<a class="anchor" aria-label="anchor" href="#arg-user"></a></dt>
 <dd><p>Integer defining user id</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>Data object from database</p>
+    <p>Data object from database</p>
     </div>
 
   </div>
@@ -176,15 +178,15 @@ Defaults to NA in which case all data is returned</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 
