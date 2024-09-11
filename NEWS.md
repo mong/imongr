@@ -1,3 +1,32 @@
+# imongr 2.5.0
+
+## Endringer
+
+* Bruk native pipe-operator fra R base by @arnfinn in https://github.com/mong/imongr/pull/464
+* Farge på lagre-knapp i ekspertgruppeskjema by @Stein-Kato in https://github.com/mong/imongr/pull/472
+* Rapport om endring i registerstatus by @Stein-Kato in https://github.com/mong/imongr/pull/476
+* Navn på valg av format i indikatorfane by @Stein-Kato in https://github.com/mong/imongr/pull/481
+
+
+## Andre mindre endringer
+
+* Fjerning av  feilmelding i ekspersgruppefane by @arnfinn in https://github.com/mong/imongr/pull/477
+* Fiks dokumentasjon by @arnfinn in https://github.com/mong/imongr/pull/465
+* Fjernet advarsel om 'legacy key/value format' i docker-fil by @arnfinn in https://github.com/mong/imongr/pull/478
+* Open in browser by @arnfinn in https://github.com/mong/imongr/pull/479
+* Lagt til nye kolonner i databasen by @Stein-Kato in https://github.com/mong/imongr/pull/471
+
+## Oppdateringer
+
+* Update hnskde/imongr Docker tag to v2.4.0 by @renovate in https://github.com/mong/imongr/pull/470
+* Update docker/build-push-action action to v6 by @renovate in https://github.com/mong/imongr/pull/466
+* Update JamesIves/github-pages-deploy-action action to v4.6.3 by @renovate in https://github.com/mong/imongr/pull/475
+* Update docker/setup-qemu-action action to v3.2.0 by @renovate in https://github.com/mong/imongr/pull/474
+* Update JamesIves/github-pages-deploy-action action to v4.6.4 by @renovate in https://github.com/mong/imongr/pull/483
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.4.0...v2.5.0
+
 # imongr 2.4.0
 
 ## Endringer
