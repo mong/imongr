@@ -476,7 +476,11 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         } else {
           if (level_consistent()) {
             return(
-              shiny::actionButton(ns("update_val"), "Oppdat\u00e9r verdier")
+              shiny::actionButton(
+                ns("update_val"),
+                "Oppdat\u00e9r verdier",
+                style = conf$profile$action_button_style
+              )
             )
           } else {
             return(NULL)
@@ -539,7 +543,11 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         if (all(no_new_text)) {
           return(NULL)
         } else {
-          shiny::actionButton(ns("update_txt"), "Oppdat\u00e9r tekster")
+          shiny::actionButton(
+            ns("update_txt"),
+            "Oppdat\u00e9r tekster",
+            style = conf$profile$action_button_style
+          )
         }
       }
     }

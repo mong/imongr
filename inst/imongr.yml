@@ -280,6 +280,8 @@ profile:
   logout:
     text: Logg ut
     url: https://imongr.skde.no/logout
+  action_button_style:
+    "background-color: #6BBD57; border-color: #6BBD57; color: white;"
 publish:
   liability: >
     står ansvarlig for kvalitetsindikatorer med tilhørende beskrivelser når

@@ -336,7 +336,7 @@ review_server <- function(id, registry_tracker, pool) {
         ns("save"),
         "Lagre",
         shiny::icon("floppy-disk"),
-        style = "background-color: #6BBD57; border-color: #6BBD57; color: white;"
+        style = conf$profile$action_button_style
       )
     })
 
