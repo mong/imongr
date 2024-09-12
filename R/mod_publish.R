@@ -226,7 +226,8 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
           shiny::actionButton(
             ns("publish"),
             "Publiser",
-            shiny::icon("paper-plane")
+            shiny::icon("paper-plane"),
+            style = conf$profile$action_button_style
           ),
           shiny::p(paste(
             conf$upload$doc$submit$warning,

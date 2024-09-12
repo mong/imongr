@@ -106,7 +106,8 @@ submit_ui <- function(input_id, conf, pool, upload_file,
             qa = "QA-server"
           )
         ),
-        shiny::icon("paper-plane")
+        shiny::icon("paper-plane"),
+        style = conf$profile$action_button_style
       ),
       shiny::p(paste(
         conf$upload$doc$submit$warning,
