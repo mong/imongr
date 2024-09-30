@@ -1,3 +1,12 @@
+# imongr 2.5.1
+
+## Endringer
+
+* Grønn farge på publiser-knapper by @arnfinn in https://github.com/mong/imongr/pull/486
+* Verifiseringslenke til behandlingskvalitet-side by @arnfinn in https://github.com/mong/imongr/pull/487
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.5.0...v2.5.1
+
 # imongr 2.5.0
 
 ## Endringer
