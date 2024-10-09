@@ -87,3 +87,16 @@ services:
     ports:
       - 8888:8080
 
+  api:
+    depends_on:
+      - db
+    image: hnskde/mong-api:develop
+    restart: "no"
+    environment:
+      DB_HOST: db
+      DB_NAME: imongr
+      DB_PWD: imongr
+      DB_USR: imongr
+      ORIGIN: blablabla
+    ports:
+      - 8000:80
