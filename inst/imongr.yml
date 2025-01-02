@@ -438,7 +438,7 @@ upload:
       lastes opp
     submit:
       warning: >
-        Merk: nye data vil overskrive alle eksisterende indikatorer for
+        Merk: nye data vil overskrive tilsvarende eksisterende indikatorer for
 indicator:
   types:
   - andel
