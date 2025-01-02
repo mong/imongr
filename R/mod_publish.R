@@ -231,7 +231,9 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
           ),
           shiny::p(paste(
             conf$upload$doc$submit$warning,
-            get_registry_name(pool, input$publish_registry)
+            get_registry_name(pool, input$publish_registry), 
+            "for", 
+            paste(sort(unique(publish_data()$year)), collapse = ", ")
           ))
         )
       } else {

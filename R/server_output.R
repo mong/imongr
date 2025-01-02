@@ -111,7 +111,9 @@ submit_ui <- function(input_id, conf, pool, upload_file,
       ),
       shiny::p(paste(
         conf$upload$doc$submit$warning,
-        get_registry_name(pool, registry)
+        get_registry_name(pool, registry), 
+        "for", 
+        paste(sort(unique(df$year)), collapse = ", ")
       ))
     )
   } else {
