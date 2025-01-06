@@ -325,7 +325,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::tags$div(
         title = "Angi om indikatoren skal vises frem eller ikke",
         shiny::checkboxInput(
-          ns("include"), "Vis i Sykehusviseren",
+          ns("include"), "Vis på behandlingskvalitet/sykehusprofil",
           value = as.logical(rv$ind_data$include)
         )
       )
@@ -399,8 +399,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
           "totalt antall hendelser (denominator) og da skal indikatortype",
           "settes til 'andel' eller 'dg_andel'. Alternativt kan grad av",
           "m\u00e5loppn\u00e5else beregnes f\u00f8r opplasting til",
-          "Sykehusviseren og da skal indikatortype settes til en av de andre",
-          "kategoriene."
+          "behandlingskvalitet/sykehusprofil, og da skal indikatortype",
+          "settes til en av de andre kategoriene."
         ),
         shiny::selectInput(
           ns("type"), "Indikatortype:",

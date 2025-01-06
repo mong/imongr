@@ -59,11 +59,11 @@ app_text:
     profile: |-
       Informasjon om din bruker
     upload: |-
-      Last opp nye data til sykehusviseren
+      Last opp nye data til behandlingskvalitet/sykehusprofil
     publish: |-
       Publiser registerindikatorer
     download: |-
-      Se på og last ned data fra Sykehusviseren
+      Se på og last ned data fra behandlingskvalitet/sykehusprofil
     settings: |-
       Angi felles innstillinger for alle verktøy
     medfield: |-
