@@ -1,4 +1,3 @@
-name: Build and deploy documentation
 on:
   release:
     types: [published]
@@ -6,6 +5,12 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+
+name: Build and deploy documentation
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-deploy:
