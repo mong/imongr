@@ -128,8 +128,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `phone` varchar(15) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `valid` tinyint(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`id`),
-  KEY `index_user_user_name` (`user_name`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `user_registry` (
@@ -203,7 +202,6 @@ CREATE TABLE IF NOT EXISTS `data` (
   PRIMARY KEY (`id`),
   KEY `fk_data_delivery` (`delivery_id`),
   KEY `fk_data_ind` (`ind_id`),
-  KEY `index_data_context` (`context`),
   CONSTRAINT `fk_data_delivery`
     FOREIGN KEY (`delivery_id`) REFERENCES `delivery` (`id`)
     ON DELETE CASCADE,
@@ -231,8 +229,7 @@ CREATE TABLE IF NOT EXISTS `agg_data` (
   PRIMARY KEY (`id`),
   KEY `year` (`year`),
   KEY `ind_id` (`ind_id`),
-  KEY `unit_level` (`unit_level`),
-  KEY `index_agg_data_context` (`context`)
+  KEY `unit_level` (`unit_level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `evaluation` (
