@@ -1,4 +1,3 @@
-name: Publish Docker image
 on:
   release:
     types: [published]
@@ -8,6 +7,8 @@ on:
   pull_request:
     branches:
       - main
+            
+name: Publish Docker image
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
