@@ -285,8 +285,8 @@ test_that("users registries can be fetched", {
 
 test_that("users registries can be updated", {
   check_db()
-  df <- imongr::user_registry
-  expect_invisible(update_registry_user(pool, df))
+  df <- data.frame(registry_id = 1, user_id = 1)
+  expect_invisible(update_registry_user(pool, 1, df))
 })
 
 test_that("aggdata delivery timings can be provided", {
