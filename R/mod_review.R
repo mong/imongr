@@ -228,7 +228,8 @@ review_server <- function(id, registry_tracker, pool) {
       table_data = data.frame(user_id = get_user_id(pool)),
       registry_url = NULL,
       graph_data = NULL,
-      collaborators = NULL
+      collaborators = NULL,
+      allow_get_previous_year = TRUE,
     )
 
     verdict <- shiny::reactive({
@@ -318,9 +319,9 @@ review_server <- function(id, registry_tracker, pool) {
       shiny::req(input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1)
 
       dat_this_year <- pool::dbGetQuery(pool, "SELECT * FROM evaluation") |>
-        dplyr::filter(.data$registry_id == input$selected_registry, .data$year == input$selected_year)
+        dplyr::filter(.data$registry_id == .env$input$selected_registry, .data$year == .env$input$selected_year)
 
-      if (nrow(dat_this_year) == 0) {
+      if (nrow(dat_this_year) == 0 & rv$allow_get_previous_year) {
         shiny::actionButton(
           ns("get_previous_year"),
           "Hent forrige års registreringer"
@@ -404,6 +405,7 @@ review_server <- function(id, registry_tracker, pool) {
 
     shiny::observeEvent(input$selected_registry, {
       rv$table_data$registry_id <- input$selected_registry
+      rv$allow_get_previous_year <- TRUE
     })
 
     shiny::observeEvent(input$selected_year, {
@@ -523,6 +525,7 @@ review_server <- function(id, registry_tracker, pool) {
 
     shiny::observeEvent(input$get_previous_year, {
       on_update_form(session, input, pool, n_requirements, fetch_previous_year = TRUE)
+      rv$allow_get_previous_year <- FALSE
     })
 
     # Tabell og graf på høyre side
