@@ -365,7 +365,7 @@ update_registry_user <- function(pool, registry_id, df) {
 DELETE FROM
   user_registry
 WHERE
-  registry_id IN (", paste0(registry_id, collapse = ", "), ");")
+  registry_id=", registry_id, ";")
 
   pool::dbExecute(pool, query)
 
