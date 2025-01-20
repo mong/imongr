@@ -355,20 +355,27 @@ WHERE
 }
 
 #' @rdname ops
+#' @param pool Database pool object
+#' @param registry_id The numeric id of the selected registry
+#' @param df A data frame with new user data for overwriting the old user list
 #' @export
-update_registry_user <- function(pool, df) {
+update_registry_user <- function(pool, registry_id, df) {
+  # Delete all users from the selected registry
   query <- paste0("
 DELETE FROM
   user_registry
 WHERE
-  registry_id IN (", paste0(df$registry_id, collapse = ", "), ");")
+  registry_id IN (", paste0(registry_id, collapse = ", "), ");")
 
   pool::dbExecute(pool, query)
 
-  pool::dbWriteTable(pool, "user_registry", df,
-    append = TRUE,
-    row.names = FALSE
-  )
+  # Add new users if available
+  if (nrow(df) > 0) {
+    pool::dbWriteTable(pool, "user_registry", df,
+      append = TRUE,
+      row.names = FALSE
+    )
+  }
 }
 
 #' @rdname ops
