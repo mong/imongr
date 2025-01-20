@@ -317,10 +317,15 @@ review_server <- function(id, registry_tracker, pool) {
     output$get_previous_year <- shiny::renderUI({
       shiny::req(input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1)
 
-      shiny::actionButton(
-        ns("get_previous_year"),
-        "Hent forrige års registreringer"
-      )
+      dat_this_year <- pool::dbGetQuery(pool, "SELECT * FROM evaluation") |>
+        dplyr::filter(.data$registry_id == input$selected_registry, .data$year == input$selected_year)
+
+      if (nrow(dat_this_year) == 0) {
+        shiny::actionButton(
+          ns("get_previous_year"),
+          "Hent forrige års registreringer"
+        )
+      }
     })
 
     output$save <- shiny::renderUI({
