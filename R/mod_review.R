@@ -466,6 +466,8 @@ review_server <- function(id, registry_tracker, pool) {
       )
 
       rv$graph_data <- update_graph_data(input, pool, rv)
+
+      rv$allow_get_previous_year <- FALSE
     })
 
     shiny::observeEvent(input$save_override, {
