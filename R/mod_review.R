@@ -95,12 +95,15 @@ review_ui <- function(id) {
             shiny::uiOutput(ns("plotcontrol"))
           )
         ),
-        shiny::h3("Niv\u00e5 A"),
+        shiny::h3("Krav til niv\u00e5",
+          bslib::tooltip(
+            bsicons::bs_icon("info-circle", title = "Forklaring til krav"),
+            "For \u00e5 oppn\u00e5 niv\u00e5 A må begge kravene være oppfylt.
+              Niv\u00e5 B forutsetter at kun krav nummer 2 er oppfylt."
+          )
+        ),
         shiny::uiOutput(ns("checkbox17")),
         shiny::uiOutput(ns("level_A_comment")),
-        shiny::br(),
-        shiny::br(),
-        shiny::h3("Niv\u00e5 B"),
         shiny::uiOutput(ns("checkbox18")),
         shiny::uiOutput(ns("level_B_comment")),
         shiny::br(),
@@ -386,7 +389,7 @@ review_server <- function(id, registry_tracker, pool) {
     output$level_A_comment <- shiny::renderUI({
       shiny::req(input$selected_year >= 2019)
       shiny::textAreaInput(
-        ns("level_A_comment"), "Kommentarer til niv\u00e5 A",
+        ns("level_A_comment"), "Kommentarer til kravet",
         value = "", width = "90%", rows = 4
       )
     })
@@ -394,7 +397,7 @@ review_server <- function(id, registry_tracker, pool) {
     output$level_B_comment <- shiny::renderUI({
       shiny::req(input$selected_year >= 2019)
       shiny::textAreaInput(
-        ns("level_B_comment"), "Kommentarer til niv\u00e5 B",
+        ns("level_B_comment"), "Kommentarer til kravet",
         value = "", width = "90%", rows = 4
       )
     })
