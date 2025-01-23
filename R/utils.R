@@ -6,6 +6,6 @@
 #' @rdname pronoun
 #' @keywords internal
 #' @export
-#' @importFrom rlang .data
+#' @importFrom rlang .data .env
 #' @usage .data
 NULL
