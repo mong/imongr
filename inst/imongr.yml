@@ -197,6 +197,7 @@ db:
       - id
       - name
       - full_name
+      - short_name
     hospital:
       insert:
       - orgnr
