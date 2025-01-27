@@ -197,7 +197,11 @@ db:
       - id
       - name
       - full_name
+      - url
+      - description
       - short_name
+      - RHF
+      - first_year
     hospital:
       insert:
       - orgnr
