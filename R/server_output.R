@@ -248,34 +248,3 @@ medfield_summary_text_ui <- function(pool, conf, df) {
     NULL
   }
 }
-
-#' @rdname server_output
-#' @export
-reguser_summary_text_ui <- function(pool, conf, df) {
-  if (dim(df)[1] > 0) {
-    txt <- paste0("<h2>", conf$reguser$text$summary, "</h2>\n")
-    for (i in seq_len(length(df$id))) {
-      txt <- paste0(txt, "<h3>", df$name[i], " (", df$user_name[i], ") </h3>\n")
-      regs <- get_user_registry(pool, df$id[i])
-      if (dim(regs)[1] > 0) {
-        regtxt <- paste0(
-          "<ul>\n\t<li>",
-          paste(
-            get_registry_name(pool,
-              registry = regs$registry_id,
-              full_name = FALSE
-            ),
-            collapse = "</li>\n\t<li>"
-          ),
-          "</li>\n</ul>"
-        )
-      } else {
-        regtxt <- conf$reguser$text$missing
-      }
-      txt <- paste0(txt, regtxt)
-    }
-    txt
-  } else {
-    NULL
-  }
-}

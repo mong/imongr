@@ -25,8 +25,6 @@ app_server <- function(input, output, session) {
       get_table(pool, "medfield")
     ),
     user_data = get_users(pool),
-    user_summary =
-      reguser_summary_text_ui(pool, conf, get_users(pool)),
     user_registry_data = get_users_per_registry(pool),
     publish_reg = character(),
     download_reg = character(),
@@ -165,8 +163,6 @@ app_server <- function(input, output, session) {
     rv$medfield_summary <-
       medfield_summary_text_ui(rv$pool, conf, get_table(rv$pool, "medfield"))
     rv$user_data <- get_users(rv$pool)
-    rv$user_summary <-
-      reguser_summary_text_ui(rv$pool, conf, get_users(rv$pool))
     rv$user_registry_data <- get_users_per_registry(rv$pool)
   })
 
@@ -305,8 +301,6 @@ app_server <- function(input, output, session) {
       user_id = input$select_user
     )
     update_registry_user(rv$pool, registry_user_update)
-    rv$user_summary <-
-      reguser_summary_text_ui(rv$pool, conf, rv$user_data)
   })
 
   output$select_user_registry <- shiny::renderUI({
