@@ -27,6 +27,7 @@ app_server <- function(input, output, session) {
     user_data = get_users(pool),
     user_summary =
       reguser_summary_text_ui(pool, conf, get_users(pool)),
+    user_registry_data = get_users_per_registry(pool),
     publish_reg = character(),
     download_reg = character(),
     indicator_data = data.frame(),
@@ -166,6 +167,7 @@ app_server <- function(input, output, session) {
     rv$user_data <- get_users(rv$pool)
     rv$user_summary <-
       reguser_summary_text_ui(rv$pool, conf, get_users(rv$pool))
+    rv$user_registry_data <- get_users_per_registry(rv$pool)
   })
 
 
@@ -346,8 +348,19 @@ app_server <- function(input, output, session) {
       "</i>:</h2><br>", conf$reguser$text$body
     )
   })
-  output$registry_user_summary <- shiny::renderText({
-    rv$user_summary
+
+  output$user_table <- DT::renderDataTable(
+    DT::datatable(rv$user_registry_data,
+      options = list(search = list(
+        search = get_registry_name(rv$pool, input$user_registry),
+        regex = FALSE
+      )
+      )
+    )
+  )
+
+  output$registry_user_summary <- shiny::renderUI({
+    DT::dataTableOutput("user_table")
   })
 
   shiny::observeEvent(input$user_registry, {
