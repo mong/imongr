@@ -149,8 +149,7 @@ app_server <- function(input, output, session) {
     )
   )
 
-  shiny::observeEvent(input$context, {
-    rv$context <- input$context
+  shiny::observeEvent(rv$context, {
     drain_pool(rv$pool)
     rv$download_reg <- input$download_registry
     rv$admin_url <- paste0(
@@ -223,11 +222,15 @@ app_server <- function(input, output, session) {
           Kvalitetskontroll = "verify",
           QA = "qa"
         ),
-        selected = "verify"
+        selected = rv$context
       )
     } else {
       NULL
     }
+  })
+
+  shiny::observeEvent(input$context, {
+    rv$context <- input$context
   })
 
   # registry medfields
@@ -242,6 +245,21 @@ app_server <- function(input, output, session) {
     update_registry_medfield(rv$pool, registry_medfield_update)
     rv$medfield_summary <-
       medfield_summary_text_ui(rv$pool, conf, rv$medfield_data)
+  })
+
+  output$select_medfield_context <- shiny::renderUI({
+    shiny::selectInput("medfield_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$medfield_context, {
+    rv$context <- input$medfield_context
   })
 
   output$select_medfield_registry <- shiny::renderUI({
@@ -305,6 +323,21 @@ app_server <- function(input, output, session) {
     update_registry_user(rv$pool, registry_user_update)
     rv$user_summary <-
       reguser_summary_text_ui(rv$pool, conf, rv$user_data)
+  })
+
+  output$select_user_context <- shiny::renderUI({
+    shiny::selectInput("user_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$user_context, {
+    rv$context <- input$user_context
   })
 
   output$select_user_registry <- shiny::renderUI({
@@ -393,6 +426,21 @@ app_server <- function(input, output, session) {
         shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
       }
     )
+  })
+
+  output$select_minefield_context <- shiny::renderUI({
+    shiny::selectInput("minefield_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$minefield_context, {
+    rv$context <- input$minefield_context
   })
 
   output$mine_field_uc <- shiny::renderUI({
