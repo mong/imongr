@@ -403,9 +403,23 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
           "settes til en av de andre kategoriene."
         ),
         shiny::selectInput(
-          ns("type"), "Indikatortype:",
+          ns("type"), shiny::tags$div("Indikatortype:",
+            bslib::tooltip(
+              bsicons::bs_icon("info-circle"),
+              shiny::HTML("
+                <ul>
+                <li>andel: </li>
+                <li>beregnet_andel: </li>
+                <li>antall: </li>
+                <li>gjennomsnitt: </li>
+                <li>median: </li>
+                <li>dg_andel: </li>
+                </ul>
+              ")
+            )
+          ),
           choices = conf$indicator$types, selected = rv$ind_data$type
-        )
+        ),
       )
     })
 
