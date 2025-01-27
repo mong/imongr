@@ -97,9 +97,14 @@ review_ui <- function(id) {
         ),
         shiny::h3("Krav til niv\u00e5",
           bslib::tooltip(
-            bsicons::bs_icon("info-circle", title = "Forklaring til krav"),
-            "For \u00e5 oppn\u00e5 niv\u00e5 A må begge kravene være oppfylt.
-              Niv\u00e5 B forutsetter at kun krav nummer 2 er oppfylt."
+            bsicons::bs_icon("info-circle"),
+            shiny::HTML("
+              <ul>
+              <li>Niv\u00e5 A: begge kravene må være oppfylt.</li>
+              <li>Niv\u00e5 B: kun krav nummer 2 er oppfylt.</li>
+              </ul>
+            "),
+            options = list(html = TRUE, delay = 100, trigger = "hover")
           )
         ),
         shiny::uiOutput(ns("checkbox17")),
