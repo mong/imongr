@@ -365,7 +365,9 @@ app_server <- function(input, output, session) {
         search = get_registry_name(rv$pool, input$user_registry),
         regex = FALSE
       )
-      )
+      ),
+      colnames = c("Brukernavn", "Register"),
+      rownames = FALSE
     )
   )
 
