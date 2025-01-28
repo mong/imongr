@@ -503,6 +503,8 @@ LEFT JOIN
   registry
 ON
   user_registry.registry_id = registry.id
+WHERE
+  user.valid = 1
   "
   pool::dbGetQuery(pool, query)
 }
