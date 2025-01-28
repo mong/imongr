@@ -305,7 +305,8 @@ app_server <- function(input, output, session) {
       ),
       user_id = input$select_user
     )
-    update_registry_user(rv$pool, registry_user_update)
+
+    update_registry_user(rv$pool, input$user_registry, registry_user_update)
     rv$user_registry_data <- get_users_per_registry(pool)
     rv$user_data <- get_users(pool)
   })
