@@ -147,16 +147,18 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     rv_return <- shiny::reactiveValues()
 
     level_limits <- shiny::reactive({
-      if (rv$ind_data$level_direction == 1) {
-        rv$level_green_min <- rv$ind_data$level_yellow
-        rv$level_green_max <- 1
-        rv$level_yellow_min <- 0
-        rv$level_yellow_max <- rv$ind_data$level_yellow
-      } else {
-        rv$level_green_min <- 0
-        rv$level_green_max <- rv$ind_data$level_yellow
-        rv$level_yellow_min <- rv$ind_data$level_yellow
-        rv$level_yellow_max <- 1
+      if (nrow(rv$ind_data) != 0) {
+        if (rv$ind_data$level_direction == 1) {
+          rv$level_green_min <- rv$ind_data$level_yellow
+          rv$level_green_max <- 1
+          rv$level_yellow_min <- 0
+          rv$level_yellow_max <- rv$ind_data$level_yellow
+        } else {
+          rv$level_green_min <- 0
+          rv$level_green_max <- rv$ind_data$level_yellow
+          rv$level_yellow_min <- rv$ind_data$level_yellow
+          rv$level_yellow_max <- 1
+        }
       }
     })
 
@@ -441,7 +443,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       if (any(c(
         is.null(input$indicator),
         is.null(input$include),
-        is.null(input$level_direction)
+        is.null(input$level_direction),
+        nrow(rv$ind_data) == 0
       ))) {
         NULL
       } else {
@@ -542,7 +545,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         )
         if (all(no_new_text)) {
           return(NULL)
-        } else {
+        } else if (nrow(rv$ind_data != 0)) {
           shiny::actionButton(
             ns("update_txt"),
             "Oppdat\u00e9r tekster",
