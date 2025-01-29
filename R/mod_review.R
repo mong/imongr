@@ -249,8 +249,8 @@ review_server <- function(id, registry_tracker, pool) {
     })
 
     # Hold oversikt over valgt register
-    shiny::observeEvent(input$indicator_registry, {
-      rv_return$registry_id <- input$indicator_registry
+    shiny::observeEvent(input$selected_registry, {
+      rv_return$registry_id <- input$selected_registry
     })
 
     #######################
