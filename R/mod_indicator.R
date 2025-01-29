@@ -22,6 +22,7 @@ indicator_ui <- function(id) {
       shiny::sidebarPanel(
         shiny::uiOutput(ns("select_indicator_registry")),
         shiny::uiOutput(ns("select_indicator")),
+        shiny::uiOutput(ns("add_new_indicator")),
         shiny::hr(),
         shiny::uiOutput(ns("select_dg_id")),
         shiny::uiOutput(ns("set_include")),
@@ -33,12 +34,7 @@ indicator_ui <- function(id) {
         shiny::uiOutput(ns("set_format")),
         shiny::uiOutput(ns("set_digits")),
         shiny::uiOutput(ns("update_indicator_val")),
-        shiny::uiOutput(ns("message")),
-        shiny::br(),
-        shiny::hr(),
-        shiny::br(),
-        shiny::uiOutput(ns("add_new_indicator"))
-
+        shiny::uiOutput(ns("message"))
       ),
       shiny::mainPanel(
         shiny::uiOutput(ns("edit_ind_title")),
