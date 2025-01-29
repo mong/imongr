@@ -267,6 +267,10 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         shiny::modalDialog(
           shiny::tags$h3("Velg navn p\u00e5 ny indikator"),
           shiny::textInput(ns("new_ind_name"), "Indikatornavn"),
+          shiny::selectInput(
+            ns("new_ind_type"), "Indikatortype:",
+            choices = conf$indicator$types, selected = rv$ind_data$type
+          ),
           footer = shiny::tagList(
             shiny::actionButton(ns("new_ind_submit"), "OK"),
             shiny::modalButton("Avbryt")
@@ -289,18 +293,28 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$new_ind_submit, {
       shiny::removeModal()
       rv$new_ind_name <- input$new_ind_name
-      print(rv$new_ind_name)
     })
 
     shiny::observeEvent(rv$new_ind_name, {
       query <- paste0("INSERT INTO ind (id, registry_id) VALUES ( '",
                       rv$new_ind_name, "', '", input$indicator_registry, "');")
 
-      new_ind_data <- rv$ind_data
-      new_ind_data$id <- rv$new_ind_name
-      new_ind_data$title <- "Indikatortittel"
-      new_ind_data$short_description <- "Kort indikatorbeskrivelse"
-      new_ind_data$long_description <- "Lang indikatorbeskrivelse"
+      new_ind_data <- data.frame(
+        id = rv$new_ind_name,
+        dg_id = NA,
+        include = 0,
+        title = "Indikatortittel",
+        name = "a",
+        type = input$new_ind_type,
+        sformat = ifelse(grepl("andel", input$new_ind_type), ",.0%", ",.0f"),
+        min_denominator = NA,
+        level_green = NA,
+        level_yellow = NA,
+        level_direction = 1,
+        short_description = "Kort indikatorbeskrivelse",
+        long_description = "Lang indikatorbeskrivelse",
+        registry_id = input$indicator_registry
+      )
 
       pool::dbExecute(pool, query)
       pool::dbExecute(pool_verify, query)
