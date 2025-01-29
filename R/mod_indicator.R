@@ -130,8 +130,29 @@ oversize_check <- function(oversize, conf) {
 indicator_server <- function(id, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
-
+    shinyjs::useShinyjs()
     conf <- get_config()
+
+    validateIndName <- function(x) {
+      ind_ids <- pool::dbGetQuery(pool, "SELECT id FROM ind")$id
+
+      if (is.null(x)) {
+        return(NULL)
+      } else {
+        if (grepl("^[a-zA-Z0-9_]+$", x) && !(x %in% ind_ids)) {
+          return(NULL)
+        } else {
+          return(
+            "Kan ikke inneholde mellomrom eller spesialtegn, 
+            eller v\u00e6re lik en eksisterende indikator."
+          )
+        }
+      }
+    }
+
+    inputValidator <- shinyvalidate::InputValidator$new(session = session)
+    inputValidator$add_rule("new_ind_name", validateIndName)
+    inputValidator$enable()
 
     rv <- shiny::reactiveValues(
       level_logi = "st\u00f8rre eller lik:",
@@ -242,28 +263,33 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     shiny::observeEvent(input$new_indicator, {
-      shinyalert::shinyalert(
-        title = "",
-        text = "Velg navn p\u00e5 ny indikator",
-        type = "input",
-        inputType = "text",
-        showCancelButton = TRUE,
-        callbackR = function(x) {
-          ind_ids <- pool::dbGetQuery(pool, "SELECT id FROM ind")$id
-
-          if (x == FALSE) {
-            return(NULL)
-          } else {
-            if (grepl("^[a-zA-Z0-9_]+$", x) && !(x %in% ind_ids)) {
-              rv$new_ind_name <- x
-            } else {
-              shinyalert::shinyalert(title = "Ugyldig input",
-                                     text = "Kan ikke inneholde mellomrom eller spesialtegn, 
-                                     eller v\u00e6re lik en eksisterende indikator.")
-            }
-          }
-        }
+      shiny::showModal(
+        shiny::modalDialog(
+          shiny::tags$h3("Velg navn p\u00e5 ny indikator"),
+          shiny::textInput(ns("new_ind_name"), "Indikatornavn"),
+          footer = shiny::tagList(
+            shiny::actionButton(ns("new_ind_submit"), "OK"),
+            shiny::modalButton("Avbryt")
+          )
+        )
       )
+      shinyjs::disable("new_ind_submit")
+    })
+
+    shiny::observeEvent(input$new_ind_name, {
+      if (nchar(input$new_ind_name) > 0) {
+        if (is.null(validateIndName(input$new_ind_name))) {
+          shinyjs::enable("new_ind_submit")
+        } else {
+          shinyjs::disable("new_ind_submit")
+        }
+      }
+    })
+
+    shiny::observeEvent(input$new_ind_submit, {
+      shiny::removeModal()
+      rv$new_ind_name <- input$new_ind_name
+      print(rv$new_ind_name)
     })
 
     shiny::observeEvent(rv$new_ind_name, {
