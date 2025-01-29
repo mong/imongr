@@ -323,9 +323,9 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     output$set_include <- shiny::renderUI({
       shiny::req(input$indicator, rv$ind_data$include)
       shiny::tags$div(
-        title = "Angi om indikatoren skal vises frem eller ikke",
-        shiny::checkboxInput(
-          ns("include"), "Vis på behandlingskvalitet/sykehusprofil",
+        title = "Angi om indikatoren skal vises på apps.skde.no/behandlingskvalitet",
+        bslib::input_switch(
+          ns("include"), "Vis på Behandlingskvalitet",
           value = as.logical(rv$ind_data$include)
         )
       )
