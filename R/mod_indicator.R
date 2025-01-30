@@ -130,7 +130,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     conf <- get_config()
 
     validateIndName <- function(x) {
-      ind_ids <- pool::dbGetQuery(pool, "SELECT id FROM ind")$id
+      ind_ids <- pool::dbGetQuery(pool_verify, "SELECT id FROM ind")$id
 
       if (is.null(x)) {
         return(NULL)
@@ -338,7 +338,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$indicator_registry)
       shiny::selectInput(
         ns("indicator"), "Velg indikator:",
-        choices = get_registry_indicators(pool, input$indicator_registry)$id,
+        choices = get_registry_indicators(pool_verify, input$indicator_registry)$id,
         selected = rv$new_ind_name
       )
     })
@@ -348,7 +348,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
 
       shiny::selectInput(
         ns("dg_id"), "Tilh\u00f8rende dekningsgradsindikator:",
-        choices = c("Ingen", get_dg_indicators(pool, input$indicator_registry)$id),
+        choices = c("Ingen", get_dg_indicators(pool_verify, input$indicator_registry)$id),
         selected = check_no_dg(rv$ind_data$dg_id)
       )
     })
