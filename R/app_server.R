@@ -307,8 +307,8 @@ app_server <- function(input, output, session) {
     )
 
     update_registry_user(rv$pool, input$user_registry, registry_user_update)
-    rv$user_registry_data <- get_users_per_registry(pool)
-    rv$user_data <- get_users(pool)
+    rv$user_registry_data <- get_users_per_registry(rv$pool)
+    rv$user_data <- get_users(rv$pool)
   })
 
   # Select registry drop down menu
