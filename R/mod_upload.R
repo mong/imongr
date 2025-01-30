@@ -94,7 +94,6 @@ upload_ui <- function(id) {
   )
 }
 
-
 #' @rdname mod_upload
 #' @export
 upload_server <- function(id, registry_tracker, pool_verify) {
@@ -109,21 +108,23 @@ upload_server <- function(id, registry_tracker, pool_verify) {
 
     rv_return <- shiny::reactiveValues()
 
-    ## observers
+    # Whe you choose a registry
     shiny::observeEvent(input$registry, {
       rv_return$registry_id <- input$registry
       if (!is.null(input$upload_file)) {
         rv$inv_data <- rv$inv_data + 1
       }
     })
+
+    # When you click on the submit button
     shiny::observeEvent(input$submit, {
       insert_data_verify(
         pool = pool_verify,
-        df = df(),
+        df = input_data(),
         update = input$latest_update,
         affirm = input$latest_affirm
       )
-      insert_agg_data(pool_verify, df())
+      insert_agg_data(pool_verify, input_data())
       rv$inv_data <- rv$inv_data + 1
       shinyalert::shinyalert(conf$upload$reciept$title,
         conf$upload$reciept$body,
@@ -133,15 +134,17 @@ upload_server <- function(id, registry_tracker, pool_verify) {
       )
     })
 
-    ## reactives
-    df <- shiny::reactive({
+    # The indicator data
+    input_data <- shiny::reactive({
       if (is.null(input$upload_file)) {
         data.frame()
       } else {
-        csv_to_df(input$upload_file$datapath, input$sep, input$dec_sep)
+        csv_to_df(input$upload_file$datapath, input$sep, input$dec_sep) |>
+          remove_empty_rows()
       }
     })
 
+    # Indicator parameters and descriptions
     ind <- shiny::reactive({
       if (is.null(input$registry)) {
         data.frame()
@@ -150,7 +153,11 @@ upload_server <- function(id, registry_tracker, pool_verify) {
       }
     })
 
-    ## ui sidebar panel
+    ###########################
+    ##### On the side bar #####
+    ###########################
+
+    # The registry drop down menu
     output$select_registry <- shiny::renderUI({
       select_registry_ui(pool_verify, conf,
         input_id = ns("registry"),
@@ -159,6 +166,7 @@ upload_server <- function(id, registry_tracker, pool_verify) {
       )
     })
 
+    # The file upload menu
     output$upload_file <- shiny::renderUI({
       shiny::fileInput(
         ns("upload_file"),
@@ -174,34 +182,40 @@ upload_server <- function(id, registry_tracker, pool_verify) {
       )
     })
 
+    # The submit button
     output$submit <- shiny::renderUI({
       rv$inv_data
       submit_ui(
         ns("submit"), conf, pool_verify, input$upload_file,
-        input$registry, df(), ind(), "verify"
+        input$registry, input_data(), ind(), "verify"
       )
     })
 
+    # The wait spinner
     output$spinner <- shiny::renderText({
       input$submit
       paste("")
     })
 
+    #############################
+    ##### On the main panel #####
+    #############################
 
-    ## ui main panel
+    # The error and warning messages
     output$error_report <- shiny::renderText({
       rv$inv_data
       error_report_ui(
-        pool_verify, df(), ind(),
+        pool_verify, input_data(), ind(),
         input$upload_file, input$registry
       )
     })
 
     output$warning_report <- shiny::renderText({
       rv$inv_data
-      warning_report_ui(pool_verify, df(), input$upload_file, input$registry)
+      warning_report_ui(pool_verify, input_data(), input$upload_file, input$registry)
     })
 
+    # The instructions
     output$upload_sample_text <- shiny::renderText({
       shiny::req(input$registry)
       if (input$registry == "") {
@@ -209,25 +223,29 @@ upload_server <- function(id, registry_tracker, pool_verify) {
       } else {
         upload_sample_text_ui(pool_verify, conf, input$upload_file,
           input$registry,
-          indicators = unique(df()$ind_id)
+          indicators = unique(input_data()$ind_id)
         )
       }
     })
 
+    # A sample of the selected data file
     output$upload_sample <- shiny::renderTable({
       rv$inv_data
       upload_sample_ui(
-        df(), input$upload_file, input$registry,
+        input_data(), input$upload_file, input$registry,
         input$sample_size, input$sample_type
       )
     })
 
+    # More instructions
     output$main_doc <- shiny::renderText(conf$upload$doc$main)
 
+    # Bullet points with valid column names
     output$var_doc <- shiny::renderText({
       var_doc_ui(conf)
     })
 
+    # Numbered list with valid indicator ids
     output$valid_ind <- shiny::renderText({
       paste0(
         "<h4>", conf$upload$doc$valid_ind, " <i>",
@@ -244,6 +262,7 @@ upload_server <- function(id, registry_tracker, pool_verify) {
       colnames = FALSE
     )
 
+    # A table with example data
     output$sample_data <- shiny::renderTable(
       get_table(pool_verify, "data",
         sample = 0.00001
