@@ -20,10 +20,10 @@ app_server <- function(input, output, session) {
 
   rv <- shiny::reactiveValues(
     context = "verify",
-    medfield_data = get_table(pool, "medfield"),
+    medfield_data = get_table(pool_verify, "medfield"),
     medfield_summary = medfield_summary_text_ui(
-      pool, conf,
-      get_table(pool, "medfield")
+      pool_verify, conf,
+      get_table(pool_verify, "medfield")
     ),
     user_data = get_users(pool_verify),
     user_registry_data = get_users_per_registry(pool_verify),
@@ -238,7 +238,7 @@ app_server <- function(input, output, session) {
       ),
       medfield_id = input$select_medfield
     )
-    update_registry_medfield(rv$pool, registry_medfield_update)
+    update_registry_medfield(rv$pool, input$medfield_registry, registry_medfield_update)
     rv$medfield_summary <-
       medfield_summary_text_ui(rv$pool, conf, rv$medfield_data)
   })

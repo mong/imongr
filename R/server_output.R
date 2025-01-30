@@ -32,11 +32,11 @@ select_registry_ui <- function(pool, conf, input_id, context,
                                pool0 = NULL) {
   if (conf$role$manager %in% get_user_groups()) {
     regs <- get_table(pool, "registry") |>
-      dplyr::transmute(.data$name, .data$id) |>
+      dplyr::transmute(.data$short_name, .data$id) |>
       tibble::deframe()
     if (!is.null(pool0)) {
       regs0 <- get_table(pool0, "registry") |>
-        dplyr::transmute(.data$name, .data$id) |>
+        dplyr::transmute(.data$short_name, .data$id) |>
         tibble::deframe()
     }
   } else {
@@ -62,9 +62,9 @@ select_registry_ui <- function(pool, conf, input_id, context,
     }
   }
 
-  contex_ui <- NULL
+  context_ui <- NULL
   if (show_context) {
-    contex_ui <- shiny::HTML(
+    context_ui <- shiny::HTML(
       paste0(
         "<h3 style='color:",
         switch(context,
@@ -77,7 +77,7 @@ select_registry_ui <- function(pool, conf, input_id, context,
   }
 
   shiny::tagList(
-    contex_ui,
+    context_ui,
     shiny::selectInput(input_id, label, regs, selected = reg)
   )
 }
