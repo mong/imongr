@@ -339,12 +339,17 @@ app_server <- function(input, output, session) {
       current_reguser <- NULL
     }
 
-    shiny::selectInput(
-      inputId = "select_user",
-      label = "Velg bruker(e):",
-      choices = all_user,
-      selected = current_reguser,
-      multiple = TRUE
+    shiny::tagList(
+      shiny::selectInput(
+        inputId = "select_user",
+        label = "Velg bruker(e):",
+        choices = all_user,
+        selected = current_reguser,
+        multiple = TRUE
+      ),
+      shiny::tags$style(type = "text/css",
+        ".selectize-input { word-break : break-word;}"
+      )
     )
   })
 
