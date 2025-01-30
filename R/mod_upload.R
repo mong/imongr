@@ -108,7 +108,7 @@ upload_server <- function(id, registry_tracker, pool_verify) {
 
     rv_return <- shiny::reactiveValues()
 
-    # Whe you choose a registry
+    # When you choose a registry
     shiny::observeEvent(input$registry, {
       rv_return$registry_id <- input$registry
       if (!is.null(input$upload_file)) {
