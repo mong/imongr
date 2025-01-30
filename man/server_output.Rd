@@ -36,8 +36,6 @@ upload_sample_ui(df, upload_file, registry, sample_size, sample_type)
 var_doc_ui(conf)
 
 medfield_summary_text_ui(pool, conf, df)
-
-reguser_summary_text_ui(pool, conf, df)
 }
 \arguments{
 \item{pool}{Database pool object}
