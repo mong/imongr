@@ -31,7 +31,7 @@ review_ui <- function(id) {
         shiny::uiOutput(ns("select_year")),
         shiny::numericInput(
           ns("reported_dg"),
-          "DG i % oppgitt av regionene utfra \u00e5rsrapporter",
+          "Total oppgitt dekningsgrad (%) for registeret i rapporterings\u00e5ret",
           value = 0,
           min = 0,
           max = 100,

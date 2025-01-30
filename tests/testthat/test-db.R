@@ -274,8 +274,8 @@ test_that("registries medfields can be fetched", {
 
 test_that("registry-medfield tab can be updated", {
   check_db()
-  df <- imongr::registry_medfield
-  expect_invisible(update_registry_medfield(pool, df))
+  df <- data.frame(registry_id = c(1, 1), medfield_id = c(1, 2))
+  expect_invisible(update_registry_medfield(pool, 1, df))
 })
 
 test_that("users registries can be fetched", {
