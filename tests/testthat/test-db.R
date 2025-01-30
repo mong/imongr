@@ -215,9 +215,9 @@ test_that("users per registry can be fetched", {
   expected_output <- users |>
     dplyr::left_join(user_registry, by = "user_id") |>
     dplyr::left_join(registry, by = dplyr::join_by(registry_id == id)) |>
-    dplyr::select(user_name, name.y)
+    dplyr::select(user_name, short_name)
 
-  colnames(expected_output) <- c("user_name", "name")
+  colnames(expected_output) <- c("user_name", "short_name")
 
   expect_equal(get_users_per_registry(pool), expected_output)
 })
