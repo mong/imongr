@@ -19,14 +19,14 @@ app_server <- function(input, output, session) {
   pool_verify <- make_pool(context = "verify")
   rv <- shiny::reactiveValues(
     context = "verify",
-    medfield_data = get_table(pool, "medfield"),
+    medfield_data = get_table(pool_verify, "medfield"),
     medfield_summary = medfield_summary_text_ui(
-      pool, conf,
-      get_table(pool, "medfield")
+      pool_verify, conf,
+      get_table(pool_verify, "medfield")
     ),
-    user_data = get_users(pool),
+    user_data = get_users(pool_verify),
     user_summary =
-      reguser_summary_text_ui(pool, conf, get_users(pool)),
+      reguser_summary_text_ui(pool_verify, conf, get_users(pool_verify)),
     publish_reg = character(),
     download_reg = character(),
     indicator_data = data.frame(),
