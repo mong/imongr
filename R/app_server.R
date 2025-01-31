@@ -424,6 +424,21 @@ app_server <- function(input, output, session) {
   ##### Our db admin interface #####
   ##################################
 
+  output$select_admin_context <- shiny::renderUI({
+    shiny::selectInput("user_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$admin_context, {
+    rv$context <- input$admin_context
+  })
+
   output$admin_frame <- shiny::renderUI({
     shiny::tags$iframe(
       src = rv$admin_url, width = "100%", height = 1024,

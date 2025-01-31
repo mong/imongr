@@ -135,7 +135,16 @@ app_ui <- function() {
             title = conf$app_text$tooltip$adminer,
             id = "adminer"
           ),
-          shiny::mainPanel(width = 12, shiny::htmlOutput("admin_frame"))
+          shiny::sidebarLayout(
+            shiny::sidebarPanel(
+              width = 2,
+              shiny::uiOutput("select_admin_context")
+            ),
+            shiny::mainPanel(
+              width = 10,
+              shiny::htmlOutput("admin_frame")
+            )
+          )
         ),
         shiny::tabPanel(
           value = "mine_field",
