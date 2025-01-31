@@ -149,8 +149,7 @@ app_server <- function(input, output, session) {
     )
   )
 
-  shiny::observeEvent(input$context, {
-    rv$context <- input$context
+  shiny::observeEvent(rv$context, {
     drain_pool(rv$pool)
     rv$download_reg <- input$download_registry
     rv$admin_url <- paste0(
@@ -222,11 +221,15 @@ app_server <- function(input, output, session) {
           Kvalitetskontroll = "verify",
           QA = "qa"
         ),
-        selected = "verify"
+        selected = rv$context
       )
     } else {
       NULL
     }
+  })
+
+  shiny::observeEvent(input$context, {
+    rv$context <- input$context
   })
 
   # registry medfields
@@ -241,6 +244,21 @@ app_server <- function(input, output, session) {
     update_registry_medfield(rv$pool, input$medfield_registry, registry_medfield_update)
     rv$medfield_summary <-
       medfield_summary_text_ui(rv$pool, conf, rv$medfield_data)
+  })
+
+  output$select_medfield_context <- shiny::renderUI({
+    shiny::selectInput("medfield_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$medfield_context, {
+    rv$context <- input$medfield_context
   })
 
   output$select_medfield_registry <- shiny::renderUI({
@@ -310,6 +328,21 @@ app_server <- function(input, output, session) {
 
     rv$user_registry_data <- get_users_per_registry(rv$pool)
     rv$user_data <- get_users(rv$pool)
+  })
+
+  output$select_user_context <- shiny::renderUI({
+    shiny::selectInput("user_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$user_context, {
+    rv$context <- input$user_context
   })
 
   # Select registry drop down menu
@@ -391,6 +424,21 @@ app_server <- function(input, output, session) {
   ##### Our db admin interface #####
   ##################################
 
+  output$select_admin_context <- shiny::renderUI({
+    shiny::selectInput("user_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$admin_context, {
+    rv$context <- input$admin_context
+  })
+
   output$admin_frame <- shiny::renderUI({
     shiny::tags$iframe(
       src = rv$admin_url, width = "100%", height = 1024,
@@ -429,6 +477,21 @@ app_server <- function(input, output, session) {
         shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
       }
     )
+  })
+
+  output$select_minefield_context <- shiny::renderUI({
+    shiny::selectInput("minefield_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$minefield_context, {
+    rv$context <- input$minefield_context
   })
 
   output$mine_field_uc <- shiny::renderUI({

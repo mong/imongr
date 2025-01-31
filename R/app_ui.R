@@ -92,6 +92,7 @@ app_ui <- function() {
           shiny::sidebarLayout(
             shiny::sidebarPanel(
               width = 3,
+              shiny::uiOutput("select_medfield_context"),
               shiny::uiOutput("select_medfield_registry"),
               shiny::uiOutput("select_registry_medfield"),
               shiny::actionButton("update_medfield",
@@ -114,6 +115,7 @@ app_ui <- function() {
           shiny::sidebarLayout(
             shiny::sidebarPanel(
               width = 3,
+              shiny::uiOutput("select_user_context"),
               shiny::uiOutput("select_user_registry"),
               shiny::uiOutput("select_registry_user"),
               shiny::actionButton("update_reguser",
@@ -133,13 +135,23 @@ app_ui <- function() {
             title = conf$app_text$tooltip$adminer,
             id = "adminer"
           ),
-          shiny::mainPanel(width = 12, shiny::htmlOutput("admin_frame"))
+          shiny::sidebarLayout(
+            shiny::sidebarPanel(
+              width = 2,
+              shiny::uiOutput("select_admin_context")
+            ),
+            shiny::mainPanel(
+              width = 10,
+              shiny::htmlOutput("admin_frame")
+            )
+          )
         ),
         shiny::tabPanel(
           value = "mine_field",
           shiny::span("Minefelt!", title = conf$app_text$tooltip$mine_field),
           shiny::sidebarLayout(
             shiny::sidebarPanel(
+              shiny::uiOutput("select_minefield_context"),
               shiny::uiOutput("mine_field_uc")
             ),
             shiny::mainPanel(
