@@ -338,37 +338,51 @@ create_imongr_user <- function(pool, df) {
 }
 
 #' @rdname ops
+#' @param pool Database pool object
+#' @param registry_id The numeric id of the selected registry
+#' @param df A data frame with new user medfield for overwriting the old medfield list
 #' @export
-update_registry_medfield <- function(pool, df) {
+update_registry_medfield <- function(pool, registry_id, df) {
+  # Delete all medfields from the selected registry
   query <- paste0("
 DELETE FROM
   registry_medfield
 WHERE
-  registry_id IN (", paste0(df$registry_id, collapse = ", "), ");")
+  registry_id=", registry_id, ";")
 
   pool::dbExecute(pool, query)
 
-  pool::dbWriteTable(pool, "registry_medfield", df,
-    append = TRUE,
-    row.names = FALSE
-  )
+  # Add medfields to the registry if available
+  if (nrow(df) > 0) {
+    pool::dbWriteTable(pool, "registry_medfield", df,
+      append = TRUE,
+      row.names = FALSE
+    )
+  }
 }
 
 #' @rdname ops
+#' @param pool Database pool object
+#' @param registry_id The numeric id of the selected registry
+#' @param df A data frame with new user data for overwriting the old user list
 #' @export
-update_registry_user <- function(pool, df) {
+update_registry_user <- function(pool, registry_id, df) {
+  # Delete all users from the selected registry
   query <- paste0("
 DELETE FROM
   user_registry
 WHERE
-  registry_id IN (", paste0(df$registry_id, collapse = ", "), ");")
+  registry_id=", registry_id, ";")
 
   pool::dbExecute(pool, query)
 
-  pool::dbWriteTable(pool, "user_registry", df,
-    append = TRUE,
-    row.names = FALSE
-  )
+  # Add new users if available
+  if (nrow(df) > 0) {
+    pool::dbWriteTable(pool, "user_registry", df,
+      append = TRUE,
+      row.names = FALSE
+    )
+  }
 }
 
 #' @rdname ops

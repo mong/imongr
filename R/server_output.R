@@ -32,11 +32,11 @@ select_registry_ui <- function(pool, conf, input_id, context,
                                pool0 = NULL) {
   if (conf$role$manager %in% get_user_groups()) {
     regs <- get_table(pool, "registry") |>
-      dplyr::transmute(.data$name, .data$id) |>
+      dplyr::transmute(.data$short_name, .data$id) |>
       tibble::deframe()
     if (!is.null(pool0)) {
       regs0 <- get_table(pool0, "registry") |>
-        dplyr::transmute(.data$name, .data$id) |>
+        dplyr::transmute(.data$short_name, .data$id) |>
         tibble::deframe()
     }
   } else {
@@ -62,9 +62,9 @@ select_registry_ui <- function(pool, conf, input_id, context,
     }
   }
 
-  contex_ui <- NULL
+  context_ui <- NULL
   if (show_context) {
-    contex_ui <- shiny::HTML(
+    context_ui <- shiny::HTML(
       paste0(
         "<h3 style='color:",
         switch(context,
@@ -77,7 +77,7 @@ select_registry_ui <- function(pool, conf, input_id, context,
   }
 
   shiny::tagList(
-    contex_ui,
+    context_ui,
     shiny::selectInput(input_id, label, regs, selected = reg)
   )
 }
@@ -240,37 +240,6 @@ medfield_summary_text_ui <- function(pool, conf, df) {
         )
       } else {
         regtxt <- conf$medfield$text$missing
-      }
-      txt <- paste0(txt, regtxt)
-    }
-    txt
-  } else {
-    NULL
-  }
-}
-
-#' @rdname server_output
-#' @export
-reguser_summary_text_ui <- function(pool, conf, df) {
-  if (dim(df)[1] > 0) {
-    txt <- paste0("<h2>", conf$reguser$text$summary, "</h2>\n")
-    for (i in seq_len(length(df$id))) {
-      txt <- paste0(txt, "<h3>", df$name[i], " (", df$user_name[i], ") </h3>\n")
-      regs <- get_user_registry(pool, df$id[i])
-      if (dim(regs)[1] > 0) {
-        regtxt <- paste0(
-          "<ul>\n\t<li>",
-          paste(
-            get_registry_name(pool,
-              registry = regs$registry_id,
-              full_name = FALSE
-            ),
-            collapse = "</li>\n\t<li>"
-          ),
-          "</li>\n</ul>"
-        )
-      } else {
-        regtxt <- conf$reguser$text$missing
       }
       txt <- paste0(txt, regtxt)
     }
