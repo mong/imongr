@@ -67,6 +67,13 @@ app_ui <- function() {
         ),
         review_ui("review")
       ),
+      shiny::tabPanel(
+        value = "project",
+        shiny::span("Kvalitetsforbedring",
+          title = conf$app_text$tooltip$project
+        ),
+        project_ui("project")
+      ),
       shiny::navbarMenu(
         "Administrative verkt\u00f8y",
         shiny::tabPanel(

@@ -91,6 +91,7 @@ app_server <- function(input, output, session) {
     shiny::showTab("tabs", target = "publish")
     shiny::showTab("tabs", target = "download")
     shiny::showTab("tabs", target = "indicator")
+    shiny::showTab("tabs", target = "project")
   }
 
   show_reviewer <- function() {
@@ -117,6 +118,7 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "report")
   shiny::hideTab("tabs", target = "status")
   shiny::hideTab("tabs", target = "review")
+  shiny::hideTab("tabs", target = "project")
 
   # Show the tabs that are appropriate for the user's roles
   lapply(show_tabs[which(roles)], FUN = function(fun) {
@@ -205,11 +207,20 @@ app_server <- function(input, output, session) {
     registry_tracker$current_registry <- rv_indicator$registry_id
   })
 
+  # review
   rv_review <- review_server("review", registry_tracker, pool)
 
   shiny::observeEvent(rv_review$registry_id, {
     registry_tracker$current_registry <- rv_review$registry_id
   })
+
+  # project
+  rv_project <- project_server("project", registry_tracker, pool, pool_verify)
+
+  shiny::observeEvent(rv_project$registry_id, {
+    registry_tracker$current_registry <- rv_project$registry_id
+  })
+
 
   ##### Admin #####
 

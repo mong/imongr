@@ -74,6 +74,8 @@ app_text:
       Se og endre på indikatortekster
     review: |-
       Send inn vurdering av årsrapporter
+    project: |-
+      Se og endre på kvalitetsforbedringsprosjekter
     adminer: |-
       Administrer data
 db:
