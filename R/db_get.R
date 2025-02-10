@@ -281,6 +281,19 @@ FROM
   dplyr::left_join(orgnr, orgs, by = "orgnr")$short_name
 }
 
+#' @rdname db_get
+#' @export
+get_hospitals <- function(pool) {
+  query <- paste0("
+SELECT
+  orgnr,
+  short_name
+FROM
+  hospital;
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
 
 #' @rdname db_get
 #' @export

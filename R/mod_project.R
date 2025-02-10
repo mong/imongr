@@ -45,6 +45,17 @@ project_ui <- function(id) {
 }
 
 #' @rdname mod_project
+#' @return A named list of hospital organization numbers with their short names as names
+#' @export
+get_hospitals_orgnr <- function(pool) {
+  hospitals_df <- get_hospitals(pool)
+  hospitals_orgnr <- hospitals_df$orgnr
+  names(hospitals_orgnr) <- hospitals_df$short_name
+
+  return(hospitals_orgnr)
+}
+
+#' @rdname mod_project
 #' @export
 project_server <- function(id, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {
@@ -54,6 +65,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     rv_return <- shiny::reactiveValues()
     rv <- shiny::reactiveValues()
 
+    hospitals_orgnr <- get_hospitals_orgnr(pool_verify)
 
     ########################
     ##### Sidebar menu #####
@@ -99,6 +111,16 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         ns("end_year"),
         "Sluttår",
         value = rv$project_data$end_year,
+      )
+    })
+
+    output$add_hospitals <- shiny::renderUI({
+      shiny::selectInput(
+        inputId = ns("hospitals"),
+        label = "Velg sykehus",
+        choices = hospitals_orgnr,
+        selected = c(), # TODO: fetch selected hospitals from db
+        multiple = TRUE
       )
     })
 
