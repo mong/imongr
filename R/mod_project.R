@@ -25,6 +25,11 @@ project_ui <- function(id) {
         shiny::uiOutput(ns("select_project")),
         shiny::uiOutput(ns("add_new_project")),
         shiny::hr(),
+        bslib::layout_columns(
+          shiny::uiOutput(ns("enter_start_year")),
+          shiny::uiOutput(ns("enter_end_year")),
+        ),
+        shiny::uiOutput(ns("add_hospitals"))
       ),
       shiny::mainPanel(
         shiny::uiOutput(ns("edit_title")),
@@ -75,7 +80,25 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$project_registry, input$project_indicator, input$project_indicator)
       shiny::selectInput(
         ns("project"), "Velg prosjekt:",
-        choices = rv$project_data$id,
+        choices = rv$indicator_projects_data$id,
+      )
+    })
+
+    output$enter_start_year <- shiny::renderUI({
+      shiny::req(input$project)
+      shiny::numericInput(
+        ns("start_year"),
+        "Startår",
+        value = rv$project_data$start_year,
+      )
+    })
+
+    output$enter_end_year <- shiny::renderUI({
+      shiny::req(input$project)
+      shiny::numericInput(
+        ns("end_year"),
+        "Sluttår",
+        value = rv$project_data$end_year,
       )
     })
 
@@ -84,8 +107,15 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       rv_return$registry_id <- input$indicator_registry
     })
 
+    # When you select an indicator
     shiny::observeEvent(input$project_indicator, {
-      rv$project_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
+      rv$indicator_projects_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
+    })
+
+    # When you select a project
+    shiny::observeEvent(input$project, {
+      rv$project_data <- rv$indicator_projects_data |>
+        dplyr::filter(.data$id == input$project)
     })
 
     output$add_new_project <- shiny::renderUI({
@@ -101,9 +131,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$project)
       shiny::textAreaInput(
         ns("title"), "Prosjekttittel (maks 255 tegn)",
-        value = rv$project_data |>
-          dplyr::filter(.data$id == input$project) |>
-          dplyr::pull(.data$title), width = "90%", rows = 2
+        value = rv$project_data$title, width = "90%", rows = 2
       )
     })
 
@@ -111,9 +139,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$project)
       shiny::textAreaInput(
         ns("short_description"), "Kort indikatorbeskrivelse (maks 1023 tegn)",
-        value = rv$project_data |>
-          dplyr::filter(.data$id == input$project) |>
-          dplyr::pull(.data$short_description), width = "90%", rows = 8
+        value = rv$project_data$short_description, width = "90%", rows = 8
       )
     })
 
@@ -121,9 +147,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$project)
       shiny::textAreaInput(
         ns("long_description"), "Lang indikatorbeskrivelse (maks 2047 tegn)",
-        value = rv$project_data |>
-          dplyr::filter(.data$id == input$project) |>
-          dplyr::pull(.data$long_description), width = "90%", rows = 16
+        value = rv$project_data$long_description, width = "90%", rows = 16
       )
     })
 
