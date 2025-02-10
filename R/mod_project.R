@@ -71,6 +71,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     ##### Sidebar menu #####
     ########################
 
+    # Select registry UI
     output$select_project_registry <- shiny::renderUI({
       select_registry_ui(pool_verify, conf,
         input_id = ns("project_registry"),
@@ -80,6 +81,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
+    # Select indicator UI
     output$select_project_indicator <- shiny::renderUI({
       shiny::req(input$project_registry)
       shiny::selectInput(
@@ -88,6 +90,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
+    # Select project UI
     output$select_project <- shiny::renderUI({
       shiny::req(input$project_registry, input$project_indicator, input$project_indicator)
       shiny::selectInput(
@@ -96,6 +99,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
+    # Set start year UI
     output$enter_start_year <- shiny::renderUI({
       shiny::req(input$project)
       shiny::numericInput(
@@ -105,6 +109,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
+    # Set end year UI
     output$enter_end_year <- shiny::renderUI({
       shiny::req(input$project)
       shiny::numericInput(
@@ -114,12 +119,13 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
+    # Add hospitals UI
     output$add_hospitals <- shiny::renderUI({
       shiny::selectInput(
         inputId = ns("hospitals"),
         label = "Velg sykehus",
         choices = hospitals_orgnr,
-        selected = c(), # TODO: fetch selected hospitals from db
+        selected = rv$selected_hospitals,
         multiple = TRUE
       )
     })
@@ -138,6 +144,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$project, {
       rv$project_data <- rv$indicator_projects_data |>
         dplyr::filter(.data$id == input$project)
+      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
     })
 
     output$add_new_project <- shiny::renderUI({

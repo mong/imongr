@@ -654,3 +654,18 @@ get_registry_projects <- function(pool, registry, indicator) {
 
   pool::dbGetQuery(pool, query)
 }
+
+#' @rdname db_get
+#' @export
+get_project_hospitals <- function(pool, project) {
+  query <- paste0("
+    SELECT
+      hospital_orgnr
+    FROM
+      project_hospital
+    WHERE
+      project_id='", project, "';
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
