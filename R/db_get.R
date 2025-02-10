@@ -617,3 +617,22 @@ get_review_collaborators <- function(pool, registry) {
 
   pool::dbGetQuery(pool, query)
 }
+
+#' @rdname db_get
+#' @export
+get_registry_projects <- function(pool, registry) {
+  query <- paste0("
+    SELECT
+      id,
+      start_year,
+      end_year,
+      title,
+      short_description,
+      long_description
+    FROM
+      project
+    WHERE
+      registry_id=", registry, ";")
+
+  pool::dbGetQuery(pool, query)
+}
