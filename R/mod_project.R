@@ -45,8 +45,14 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
     conf <- get_config()
+
     rv_return <- shiny::reactiveValues()
     rv <- shiny::reactiveValues()
+
+
+    ########################
+    ##### Sidebar menu #####
+    ########################
 
     output$select_project_registry <- shiny::renderUI({
       select_registry_ui(pool_verify, conf,
@@ -66,11 +72,20 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     output$select_project <- shiny::renderUI({
-      shiny::req(input$project_registry, input$project_indicator)
+      shiny::req(input$project_registry, input$project_indicator, input$project_indicator)
       shiny::selectInput(
         ns("project"), "Velg prosjekt:",
-        choices = get_registry_projects(pool_verify, input$project_registry)$id,
+        choices = rv$project_data$id,
       )
+    })
+
+    # When you select a registry
+    shiny::observeEvent(input$project_registry, {
+      rv_return$registry_id <- input$indicator_registry
+    })
+
+    shiny::observeEvent(input$project_indicator, {
+      rv$project_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
     })
 
     output$add_new_project <- shiny::renderUI({
@@ -78,31 +93,37 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::actionButton(ns("new_project"), "Lag helt nytt prosjekt")
     })
 
-    shiny::observeEvent(input$indicator_registry, {
-      rv_return$registry_id <- input$indicator_registry
-    })
+    ######################
+    ##### Main panel #####
+    ######################
 
     output$edit_title <- shiny::renderUI({
-      shiny::req(input$project_indicator)
+      shiny::req(input$project)
       shiny::textAreaInput(
         ns("title"), "Prosjekttittel (maks 255 tegn)",
-        value = "test", width = "90%", rows = 2
+        value = rv$project_data |>
+          dplyr::filter(.data$id == input$project) |>
+          dplyr::pull(.data$title), width = "90%", rows = 2
       )
     })
 
     output$edit_short <- shiny::renderUI({
-      shiny::req(input$project_indicator)
+      shiny::req(input$project)
       shiny::textAreaInput(
         ns("short_description"), "Kort indikatorbeskrivelse (maks 1023 tegn)",
-        value = "test", width = "90%", rows = 8
+        value = rv$project_data |>
+          dplyr::filter(.data$id == input$project) |>
+          dplyr::pull(.data$short_description), width = "90%", rows = 8
       )
     })
 
     output$edit_long <- shiny::renderUI({
-      shiny::req(input$project_indicator)
+      shiny::req(input$project)
       shiny::textAreaInput(
         ns("long_description"), "Lang indikatorbeskrivelse (maks 2047 tegn)",
-        value = "test", width = "90%", rows = 16
+        value = rv$project_data |>
+          dplyr::filter(.data$id == input$project) |>
+          dplyr::pull(.data$long_description), width = "90%", rows = 16
       )
     })
 

@@ -620,19 +620,24 @@ get_review_collaborators <- function(pool, registry) {
 
 #' @rdname db_get
 #' @export
-get_registry_projects <- function(pool, registry) {
+get_registry_projects <- function(pool, registry, indicator) {
   query <- paste0("
     SELECT
-      id,
-      start_year,
-      end_year,
-      title,
-      short_description,
-      long_description
+      project.id,
+      project_ind.ind_id,
+      project.start_year,
+      project.end_year,
+      project.title,
+      project.short_description,
+      project.long_description
     FROM
       project
+    LEFT JOIN
+      project_ind
+    ON
+      project.id=project_ind.project_id
     WHERE
-      registry_id=", registry, ";")
+      project.registry_id=", registry, " AND project_ind.ind_id='", indicator, "';")
 
   pool::dbGetQuery(pool, query)
 }

@@ -81,7 +81,7 @@ get_aggdata(pool, registry)
 
 get_review_collaborators(pool, registry)
 
-get_registry_projects(pool, registry)
+get_registry_projects(pool, registry, indicator)
 }
 \arguments{
 \item{pool}{a database connection pool object}
