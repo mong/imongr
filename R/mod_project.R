@@ -72,10 +72,22 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
       return(validateName(x, existing_project_ids))
     }
-
+    validateStartYear <- function(x) {
+      if (is.numeric(x)) {
+        return(NULL)
+      } else {
+        return("Skriv inn et årstall")
+      }
+    }
     inputValidator <- shinyvalidate::InputValidator$new(session = session)
     inputValidator$add_rule("new_project_name", validateProjectName)
+    inputValidator$add_rule("new_project_start_year", validateStartYear)
     inputValidator$enable()
+
+    # Event listener for the new indicator pop up
+    popUpListener <- shiny::reactive({
+      list(input$new_project_name, input$new_project_start_year)
+    })
 
     ########################
     ##### Sidebar menu #####
@@ -170,6 +182,10 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         shiny::modalDialog(
           shiny::tags$h3("Velg navn p\u00e5 nytt prosjekt"),
           shiny::textInput(ns("new_project_name"), "Prosjektnavn"),
+          shiny::numericInput(ns("new_project_start_year"),
+            label = "Velg startår",
+            value = NA
+          ),
           footer = shiny::tagList(
             shiny::actionButton(ns("new_project_submit"), "OK"),
             shiny::modalButton("Avbryt")
@@ -180,26 +196,49 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     # When you write a new project name in the popup
-    shiny::observeEvent(input$new_project_name, {
+    shiny::observeEvent(popUpListener(), {
       # Validate input
-      if (nchar(input$new_project_name) > 0) {
-        if (is.null(validateProjectName(input$new_project_name))) {
-          shinyjs::enable("new_project_submit")
-        } else {
-          shinyjs::disable("new_project_submit")
-        }
+      validName <- is.null(validateProjectName(input$new_project_name))
+      validYear <- is.null(validateStartYear(input$new_project_start_year))
+
+      if (validName && validYear) {
+        shinyjs::enable("new_project_submit")
+      } else {
+        shinyjs::disable("new_project_submit")
       }
     })
 
     # When you press "OK" in the new project popup
     shiny::observeEvent(input$new_project_submit, {
       shiny::removeModal()
-      rv$new_poject_name <- input$new_project_name
+      rv$new_project_name <- input$new_project_name
     })
 
     shiny::observeEvent(rv$new_project_name, {
       # TODO: Add the project to the database
-      NULL
+      query <- paste0("INSERT INTO project (id, registry_id, start_year) VALUES ( '",
+                      rv$new_project_name,
+                      "', '",
+                      input$project_registry,
+                      "', '",
+                      input$new_project_start_year,
+                      "');")
+
+      new_project_data <- data.frame(
+        id = rv$new_project_name,
+        registry_id = input$project_registry,
+        start_year = NA,
+        end_year = NA,
+        title = "",
+        short_description = "",
+        long_description = ""
+      )
+
+      pool::dbExecute(pool, query)
+      pool::dbExecute(pool_verify, query)
+
+      # Reactive value to trigger updates of UI elements
+      rv$new_project_counter <- rv$new_project_counter + 1
     })
 
     ######################

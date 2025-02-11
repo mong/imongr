@@ -285,7 +285,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `id` varchar(63) NOT NULL,
   `registry_id` smallint(5) unsigned NOT NULL,
   `start_year` smallint(5) NOT NULL,
-  `end_year` smallint(5) NOT NULL,
+  `end_year` smallint(5),
   `title` varchar(255) DEFAULT NULL,
   `short_description` varchar(1023) DEFAULT NULL,
   `long_description` varchar(2047) DEFAULT NULL,
