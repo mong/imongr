@@ -266,7 +266,6 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     shiny::observeEvent(input$new_ind_name, {
-      print(nchar(input$new_ind_name))
       if (nchar(input$new_ind_name) > 0) {
         if (is.null(validateIndName(input$new_ind_name))) {
           shinyjs::enable("new_ind_submit")

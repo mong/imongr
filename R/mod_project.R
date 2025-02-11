@@ -182,7 +182,6 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$new_project_name, {
       # Validate input
       if (nchar(input$new_project_name) > 0) {
-        print(input$new_project_start_year)
         if (is.null(validateProjectName(input$new_project_name))) {
           shinyjs::enable("new_project_submit")
         } else {
