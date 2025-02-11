@@ -17,6 +17,7 @@ app_server <- function(input, output, session) {
   conf <- get_config()
   pool <- make_pool()
   pool_verify <- make_pool(context = "verify")
+
   rv <- shiny::reactiveValues(
     context = "verify",
     medfield_data = get_table(pool_verify, "medfield"),
@@ -25,8 +26,7 @@ app_server <- function(input, output, session) {
       get_table(pool_verify, "medfield")
     ),
     user_data = get_users(pool_verify),
-    user_summary =
-      reguser_summary_text_ui(pool_verify, conf, get_users(pool_verify)),
+    user_registry_data = get_users_per_registry(pool_verify),
     publish_reg = character(),
     download_reg = character(),
     indicator_data = data.frame(),
@@ -164,8 +164,7 @@ app_server <- function(input, output, session) {
     rv$medfield_summary <-
       medfield_summary_text_ui(rv$pool, conf, get_table(rv$pool, "medfield"))
     rv$user_data <- get_users(rv$pool)
-    rv$user_summary <-
-      reguser_summary_text_ui(rv$pool, conf, get_users(rv$pool))
+    rv$user_registry_data <- get_users_per_registry(rv$pool)
   })
 
 
@@ -293,7 +292,11 @@ app_server <- function(input, output, session) {
     registry_tracker$current_registry <- input$medfield_registry
   })
 
-  # user registries
+  ###########################
+  ##### user registries #####
+  ###########################
+
+  # When you click the button
   shiny::observeEvent(input$update_reguser, {
     registry_user_update <- data.frame(
       registry_id = rep(
@@ -302,11 +305,14 @@ app_server <- function(input, output, session) {
       ),
       user_id = input$select_user
     )
+
     update_registry_user(rv$pool, input$user_registry, registry_user_update)
-    rv$user_summary <-
-      reguser_summary_text_ui(rv$pool, conf, rv$user_data)
+
+    rv$user_registry_data <- get_users_per_registry(rv$pool)
+    rv$user_data <- get_users(rv$pool)
   })
 
+  # Select registry drop down menu
   output$select_user_registry <- shiny::renderUI({
     select_registry_ui(rv$pool, conf,
       input_id = "user_registry",
@@ -315,28 +321,40 @@ app_server <- function(input, output, session) {
     )
   })
 
+  # Select users drop down meny
   output$select_registry_user <- shiny::renderUI({
     shiny::req(input$user_registry)
+
     if (dim(rv$user_data)[1] > 0) {
       all_user <- rv$user_data$id
       names(all_user) <- rv$user_data$user_name
     } else {
       all_user <- list(`Not defined!` = 0)
     }
+
     reguser <- get_registry_user(rv$pool, input$user_registry)
+
     if (!is.null(dim(reguser))) {
       current_reguser <- reguser$user_id
     } else {
       current_reguser <- NULL
     }
-    shiny::selectInput(
-      inputId = "select_user",
-      label = "Velg bruker(e):",
-      choices = all_user,
-      selected = current_reguser,
-      multiple = TRUE
+
+    shiny::tagList(
+      shiny::selectInput(
+        inputId = "select_user",
+        label = "Velg bruker(e):",
+        choices = all_user,
+        selected = current_reguser,
+        multiple = TRUE
+      ),
+      shiny::tags$style(type = "text/css",
+        ".selectize-input { word-break : break-word;}"
+      )
     )
   })
+
+  # Top text
   output$registry_user_header <- shiny::renderText({
     paste0(
       "<h2>", conf$reguser$text$heading, " <i>",
@@ -346,15 +364,33 @@ app_server <- function(input, output, session) {
       "</i>:</h2><br>", conf$reguser$text$body
     )
   })
-  output$registry_user_summary <- shiny::renderText({
-    rv$user_summary
+
+  # The user list
+  output$user_table <- DT::renderDataTable(
+    DT::datatable(rv$user_registry_data,
+      options = list(search = list(
+        search = get_registry_name(rv$pool, input$user_registry),
+        regex = FALSE
+      )
+      ),
+      colnames = c("Brukernavn", "Register"),
+      rownames = FALSE
+    )
+  )
+
+  output$registry_user_summary <- shiny::renderUI({
+    DT::dataTableOutput("user_table")
   })
 
+  # When you change registry
   shiny::observeEvent(input$user_registry, {
     registry_tracker$current_registry <- input$user_registry
   })
 
-  # our db admin interface
+  ##################################
+  ##### Our db admin interface #####
+  ##################################
+
   output$admin_frame <- shiny::renderUI({
     shiny::tags$iframe(
       src = rv$admin_url, width = "100%", height = 1024,

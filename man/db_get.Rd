@@ -25,6 +25,7 @@
 \alias{get_user_deliveries}
 \alias{get_indicators_registry}
 \alias{get_registry_ind}
+\alias{get_users_per_registry}
 \alias{get_aggdata}
 \alias{get_review_collaborators}
 \title{Retreiv data from imongr database}
@@ -70,6 +71,8 @@ get_medfield_registry(pool, medfield)
 get_registry_user(pool, registry)
 
 get_user_registry(pool, user)
+
+get_users_per_registry(pool)
 
 get_aggdata_delivery(pool, indicator)
 

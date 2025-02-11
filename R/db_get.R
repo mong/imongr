@@ -486,6 +486,28 @@ WHERE
   pool::dbGetQuery(pool, query)
 }
 
+#' @rdname db_get
+#' @export
+get_users_per_registry <- function(pool) {
+  query <- "
+SELECT
+  user.user_name,
+  registry.short_name
+FROM
+  user
+LEFT JOIN
+  user_registry
+ON
+  user.id = user_registry.user_id
+LEFT JOIN
+  registry
+ON
+  user_registry.registry_id = registry.id
+WHERE
+  user.valid = 1
+  "
+  pool::dbGetQuery(pool, query)
+}
 
 #' @rdname db_get
 #' @export
