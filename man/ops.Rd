@@ -44,9 +44,9 @@ clean_agg_data(pool)
 
 create_imongr_user(pool, df)
 
-update_registry_medfield(pool, df)
+update_registry_medfield(pool, registry_id, df)
 
-update_registry_user(pool, df)
+update_registry_user(pool, registry_id, df)
 
 update_ind_text(pool, df)
 
@@ -55,9 +55,9 @@ update_ind_val(pool, df)
 update_review(pool, df, registry_id, year)
 }
 \arguments{
-\item{pool}{Database connection pool object}
+\item{pool}{Database pool object}
 
-\item{df}{Data frame of relevant data}
+\item{df}{A data frame with new user data for overwriting the old user list}
 
 \item{update}{Character string of format YYYY-MM-DD providing date until data
 are regarded as updated. Default value is NA.}
@@ -76,6 +76,8 @@ accepted when data are published. Default value is NA that will normally
 apply for all uploads prior to publishing.}
 
 \item{indicator}{Character vector of indicator ids}
+
+\item{registry_id}{The numeric id of the selected registry}
 }
 \value{
 Relevant values from the current environment and database

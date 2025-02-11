@@ -49,6 +49,18 @@ test_that("a consistent md5 checksum of a data frame can be provided", {
   )
 })
 
+test_that("empty rows are removed from a data frame", {
+  test_data <- data.frame(
+    x = c(1, 2, 3, NA, 5, NA, 6, NA, NA),
+    y = c("a", "b", "c", "", "e", "f", "g", "", ""),
+    z = c(1, 2, 3, NA, 5, 6, 7, NA, NA)
+  )
+
+  expected_output <- test_data[c(-4, -8, -9), ]
+
+  expect_equal(remove_empty_rows(test_data), expected_output)
+})
+
 # For the remianing tests we need a test database
 ## first off with no data
 if (is.null(check_db(is_test_that = FALSE))) {

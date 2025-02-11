@@ -9,12 +9,15 @@
 \alias{no_opt_out_ok}
 \alias{insert_sample_data}
 \alias{delete_all_data}
+\alias{remove_empty_rows}
 \alias{invalidate_cache}
 \title{Tools and whatever}
 \usage{
 natural(vals, tolerance = .Machine$double.eps^0.5)
 
 md5_checksum(df, ind = "")
+
+remove_empty_rows(df)
 
 user_widget()
 
@@ -52,6 +55,11 @@ Invisible
 }
 \description{
 Tools and whatever
+
+Function for removing empty rows in csv input.
+In a row ";;;;;" the values will translate to
+NA or an empty string depending on whether the columns
+are numeric or strings.
 }
 \examples{
 version_info()

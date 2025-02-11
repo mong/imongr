@@ -6,7 +6,7 @@
 #'
 #' @return Shiny objects for the imongr app
 #'
-#' #' @name mod_status
+#' @name mod_status
 #' @aliases status_ui status_server status_app
 NULL
 
