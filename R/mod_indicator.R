@@ -22,6 +22,7 @@ indicator_ui <- function(id) {
       shiny::sidebarPanel(
         shiny::uiOutput(ns("select_indicator_registry")),
         shiny::uiOutput(ns("select_indicator")),
+        shiny::uiOutput(ns("add_new_indicator")),
         shiny::hr(),
         shiny::uiOutput(ns("select_dg_id")),
         shiny::uiOutput(ns("set_include")),
@@ -33,12 +34,7 @@ indicator_ui <- function(id) {
         shiny::uiOutput(ns("set_format")),
         shiny::uiOutput(ns("set_digits")),
         shiny::uiOutput(ns("update_indicator_val")),
-        shiny::uiOutput(ns("message")),
-        shiny::br(),
-        shiny::hr(),
-        shiny::br(),
-        shiny::uiOutput(ns("add_new_indicator"))
-
+        shiny::uiOutput(ns("message"))
       ),
       shiny::mainPanel(
         shiny::uiOutput(ns("edit_ind_title")),
@@ -130,8 +126,29 @@ oversize_check <- function(oversize, conf) {
 indicator_server <- function(id, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
-
+    shinyjs::useShinyjs()
     conf <- get_config()
+
+    validateIndName <- function(x) {
+      ind_ids <- pool::dbGetQuery(pool_verify, "SELECT id FROM ind")$id
+
+      if (is.null(x)) {
+        return(NULL)
+      } else {
+        if (grepl("^[a-zA-Z0-9_]+$", x) && !(x %in% ind_ids)) {
+          return(NULL)
+        } else {
+          return(
+            "Kan ikke inneholde mellomrom eller spesialtegn, 
+            eller v\u00e6re lik en eksisterende indikator."
+          )
+        }
+      }
+    }
+
+    inputValidator <- shinyvalidate::InputValidator$new(session = session)
+    inputValidator$add_rule("new_ind_name", validateIndName)
+    inputValidator$enable()
 
     rv <- shiny::reactiveValues(
       level_logi = "st\u00f8rre eller lik:",
@@ -147,16 +164,18 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     rv_return <- shiny::reactiveValues()
 
     level_limits <- shiny::reactive({
-      if (rv$ind_data$level_direction == 1) {
-        rv$level_green_min <- rv$ind_data$level_yellow
-        rv$level_green_max <- 1
-        rv$level_yellow_min <- 0
-        rv$level_yellow_max <- rv$ind_data$level_yellow
-      } else {
-        rv$level_green_min <- 0
-        rv$level_green_max <- rv$ind_data$level_yellow
-        rv$level_yellow_min <- rv$ind_data$level_yellow
-        rv$level_yellow_max <- 1
+      if (nrow(rv$ind_data) != 0) {
+        if (rv$ind_data$level_direction == 1) {
+          rv$level_green_min <- rv$ind_data$level_yellow
+          rv$level_green_max <- 1
+          rv$level_yellow_min <- 0
+          rv$level_yellow_max <- rv$ind_data$level_yellow
+        } else {
+          rv$level_green_min <- 0
+          rv$level_green_max <- rv$ind_data$level_yellow
+          rv$level_yellow_min <- rv$ind_data$level_yellow
+          rv$level_yellow_max <- 1
+        }
       }
     })
 
@@ -240,39 +259,58 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     shiny::observeEvent(input$new_indicator, {
-      shinyalert::shinyalert(
-        title = "",
-        text = "Velg navn p\u00e5 ny indikator",
-        type = "input",
-        inputType = "text",
-        showCancelButton = TRUE,
-        callbackR = function(x) {
-          ind_ids <- pool::dbGetQuery(pool, "SELECT id FROM ind")$id
-
-          if (x == FALSE) {
-            return(NULL)
-          } else {
-            if (grepl("^[a-zA-Z0-9_]+$", x) && !(x %in% ind_ids)) {
-              rv$new_ind_name <- x
-            } else {
-              shinyalert::shinyalert(title = "Ugyldig input",
-                                     text = "Kan ikke inneholde mellomrom eller spesialtegn, 
-                                     eller v\u00e6re lik en eksisterende indikator.")
-            }
-          }
-        }
+      shiny::showModal(
+        shiny::modalDialog(
+          shiny::tags$h3("Velg navn p\u00e5 ny indikator"),
+          shiny::textInput(ns("new_ind_name"), "Indikatornavn"),
+          shiny::selectInput(
+            ns("new_ind_type"), "Indikatortype:",
+            choices = conf$indicator$types, selected = rv$ind_data$type
+          ),
+          footer = shiny::tagList(
+            shiny::actionButton(ns("new_ind_submit"), "OK"),
+            shiny::modalButton("Avbryt")
+          )
+        )
       )
+      shinyjs::disable("new_ind_submit")
+    })
+
+    shiny::observeEvent(input$new_ind_name, {
+      if (nchar(input$new_ind_name) > 0) {
+        if (is.null(validateIndName(input$new_ind_name))) {
+          shinyjs::enable("new_ind_submit")
+        } else {
+          shinyjs::disable("new_ind_submit")
+        }
+      }
+    })
+
+    shiny::observeEvent(input$new_ind_submit, {
+      shiny::removeModal()
+      rv$new_ind_name <- input$new_ind_name
     })
 
     shiny::observeEvent(rv$new_ind_name, {
       query <- paste0("INSERT INTO ind (id, registry_id) VALUES ( '",
                       rv$new_ind_name, "', '", input$indicator_registry, "');")
 
-      new_ind_data <- rv$ind_data
-      new_ind_data$id <- rv$new_ind_name
-      new_ind_data$title <- "Indikatortittel"
-      new_ind_data$short_description <- "Kort indikatorbeskrivelse"
-      new_ind_data$long_description <- "Lang indikatorbeskrivelse"
+      new_ind_data <- data.frame(
+        id = rv$new_ind_name,
+        dg_id = NA,
+        include = 0,
+        title = "Indikatortittel",
+        name = "a",
+        type = input$new_ind_type,
+        sformat = ifelse(grepl("andel", input$new_ind_type), ",.0%", ",.0f"),
+        min_denominator = NA,
+        level_green = NA,
+        level_yellow = NA,
+        level_direction = 1,
+        short_description = "Kort indikatorbeskrivelse",
+        long_description = "Lang indikatorbeskrivelse",
+        registry_id = input$indicator_registry
+      )
 
       pool::dbExecute(pool, query)
       pool::dbExecute(pool_verify, query)
@@ -300,7 +338,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$indicator_registry)
       shiny::selectInput(
         ns("indicator"), "Velg indikator:",
-        choices = get_registry_indicators(pool, input$indicator_registry)$id,
+        choices = get_registry_indicators(pool_verify, input$indicator_registry)$id,
         selected = rv$new_ind_name
       )
     })
@@ -310,7 +348,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
 
       shiny::selectInput(
         ns("dg_id"), "Tilh\u00f8rende dekningsgradsindikator:",
-        choices = c("Ingen", get_dg_indicators(pool, input$indicator_registry)$id),
+        choices = c("Ingen", get_dg_indicators(pool_verify, input$indicator_registry)$id),
         selected = check_no_dg(rv$ind_data$dg_id)
       )
     })
@@ -441,7 +479,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       if (any(c(
         is.null(input$indicator),
         is.null(input$include),
-        is.null(input$level_direction)
+        is.null(input$level_direction),
+        nrow(rv$ind_data) == 0
       ))) {
         NULL
       } else {
@@ -542,7 +581,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         )
         if (all(no_new_text)) {
           return(NULL)
-        } else {
+        } else if (nrow(rv$ind_data != 0)) {
           shiny::actionButton(
             ns("update_txt"),
             "Oppdat\u00e9r tekster",
