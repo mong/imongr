@@ -29,7 +29,7 @@ delete_all_data(prompt = TRUE)
 
 invalidate_cache()
 
-validateName(x)
+validateName(x, existing_names)
 }
 \arguments{
 \item{vals}{A numeric vector}
