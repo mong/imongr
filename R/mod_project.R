@@ -67,6 +67,16 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     hospitals_orgnr <- get_hospitals_orgnr(pool_verify)
 
+    validateProjectName <- function(x) {
+      existing_project_ids <- pool::dbGetQuery(pool_verify, "SELECT id FROM project")$id
+
+      return(validateName(x, existing_project_ids))
+    }
+
+    inputValidator <- shinyvalidate::InputValidator$new(session = session)
+    inputValidator$add_rule("new_project_name", validateProjectName)
+    inputValidator$enable()
+
     ########################
     ##### Sidebar menu #####
     ########################
@@ -147,11 +157,39 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
     })
 
+    # The button for making a new project
     output$add_new_project <- shiny::renderUI({
       shiny::req(input$project_indicator)
       shiny::actionButton(ns("new_project"), "Lag helt nytt prosjekt")
     })
 
+    # When you push the button
+    shiny::observeEvent(input$new_project, {
+      shiny::showModal(
+        shiny::modalDialog(
+          shiny::tags$h3("Velg navn p\u00e5 nytt prosjekt"),
+          shiny::textInput(ns("new_project_name"), "Prosjektnavn"),
+          footer = shiny::tagList(
+            shiny::actionButton(ns("new_project_submit"), "OK"),
+            shiny::modalButton("Avbryt")
+          )
+        )
+      )
+      shinyjs::disable("new_project_submit")
+    })
+
+    # When you write a new project name in the popup
+    shiny::observeEvent(input$new_project_name, {
+      # Validate input
+      if (nchar(input$new_project_name) > 0) {
+        print(input$new_project_start_year)
+        if (is.null(validateProjectName(input$new_project_name))) {
+          shinyjs::enable("new_project_submit")
+        } else {
+          shinyjs::disable("new_project_submit")
+        }
+      }
+    })
     ######################
     ##### Main panel #####
     ######################
