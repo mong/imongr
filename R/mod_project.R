@@ -106,6 +106,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::selectInput(
         ns("project"), "Velg prosjekt:",
         choices = rv$indicator_projects_data$id,
+        selected = rv$new_poject_name, # Switch to the new project when it is made
       )
     })
 
@@ -163,7 +164,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::actionButton(ns("new_project"), "Lag helt nytt prosjekt")
     })
 
-    # When you push the button
+    # When you push the new project button
     shiny::observeEvent(input$new_project, {
       shiny::showModal(
         shiny::modalDialog(
@@ -189,10 +190,23 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         }
       }
     })
+
+    # When you press "OK" in the new project popup
+    shiny::observeEvent(input$new_project_submit, {
+      shiny::removeModal()
+      rv$new_poject_name <- input$new_project_name
+    })
+
+    shiny::observeEvent(rv$new_project_name, {
+      # TODO: Add the project to the database
+      NULL
+    })
+
     ######################
     ##### Main panel #####
     ######################
 
+    # Project title text input
     output$edit_title <- shiny::renderUI({
       shiny::req(input$project)
       shiny::textAreaInput(
@@ -201,6 +215,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
+    # Project short description text input
     output$edit_short <- shiny::renderUI({
       shiny::req(input$project)
       shiny::textAreaInput(
@@ -209,6 +224,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
+    # Project long description text input
     output$edit_long <- shiny::renderUI({
       shiny::req(input$project)
       shiny::textAreaInput(
