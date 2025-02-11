@@ -130,20 +130,9 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     conf <- get_config()
 
     validateIndName <- function(x) {
-      ind_ids <- pool::dbGetQuery(pool_verify, "SELECT id FROM ind")$id
+      existing_ind_ids <- pool::dbGetQuery(pool_verify, "SELECT id FROM ind")$id
 
-      if (is.null(x)) {
-        return(NULL)
-      } else {
-        if (grepl("^[a-zA-Z0-9_]+$", x) && !(x %in% ind_ids)) {
-          return(NULL)
-        } else {
-          return(
-            "Kan ikke inneholde mellomrom eller spesialtegn, 
-            eller v\u00e6re lik en eksisterende indikator."
-          )
-        }
-      }
+      return(validateName(x, existing_ind_ids))
     }
 
     inputValidator <- shinyvalidate::InputValidator$new(session = session)
