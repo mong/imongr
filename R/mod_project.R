@@ -118,7 +118,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::selectInput(
         ns("project"), "Velg prosjekt:",
         choices = rv$indicator_projects_data$id,
-        selected = rv$new_poject_name, # Switch to the new project when it is made
+        selected = rv$new_project_name, # Switch to the new project when it is made
       )
     })
 
@@ -271,6 +271,12 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
       # Update database
       update_project_text(pool_verify, rv$project_data)
+
+      # Fetch data again to clean up state
+      rv$indicator_projects_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
+      rv$project_data <- rv$indicator_projects_data |>
+        dplyr::filter(.data$id == input$project)
+      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
     })
 
     ###### Oversize observers #####
