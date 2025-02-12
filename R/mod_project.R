@@ -91,6 +91,11 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       list(input$new_project_name, input$new_project_start_year)
     })
 
+    # Check if the years are consistent
+    years_consistent <- shiny::reactive({
+      input$end_year >= input$start_year
+    })
+
     ########################
     ##### Sidebar menu #####
     ########################
@@ -158,7 +163,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     # Update values button
     output$update_values_button <- shiny::renderUI({
       # Make an action button with id update_values
-      update_project_val_check(input, conf, ns, rv, function(x) {TRUE})
+      update_project_val_check(input, conf, ns, rv, years_consistent)
     })
 
     # When you push the update values button

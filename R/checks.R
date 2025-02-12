@@ -92,6 +92,7 @@ levels_consistent_check <- function(input, conf) {
 #' @param conf The data from the get_config function
 #' @param ns A shiny::NS namespace function
 #' @param rv A shiny::reactiveValues object
+#' @param levels_consistent A shiny::reactive boolean value
 #'
 #' @rdname checks
 #' @noRd
@@ -155,7 +156,7 @@ update_check <- function(input, conf, ns, rv, level_consistent) {
 #' @param conf The data from the get_config function
 #' @param ns A shiny::NS namespace function
 #' @param rv A shiny::reactiveValues object
-#' @param years_consistent A boolean value
+#' @param years_consistent A shiny::reactive boolean value
 #'
 #' @rdname checks
 #' @noRd
