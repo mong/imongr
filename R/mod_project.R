@@ -29,7 +29,9 @@ project_ui <- function(id) {
           shiny::uiOutput(ns("enter_start_year")),
           shiny::uiOutput(ns("enter_end_year")),
         ),
-        shiny::uiOutput(ns("add_hospitals"))
+        shiny::uiOutput(ns("add_hospitals")),
+        shiny::br(),
+        shiny::uiOutput(ns("update_values_button")),
       ),
       shiny::mainPanel(
         shiny::uiOutput(ns("edit_title")),
@@ -151,6 +153,11 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         selected = rv$selected_hospitals,
         multiple = TRUE
       )
+    })
+
+    # Update values button
+    output$update_values_button <- shiny::renderUI({
+      update_project_val_check(input, conf, ns, rv, function(x) {TRUE})
     })
 
     # When you select a registry

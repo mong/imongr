@@ -148,6 +148,48 @@ update_check <- function(input, conf, ns, rv, level_consistent) {
   }
 }
 
+#' Check for updated project parameters in the sidebar menu
+#' in the project tab
+#'
+#' @param input A shiny input object
+#' @param conf The data from the get_config function
+#' @param ns A shiny::NS namespace function
+#' @param rv A shiny::reactiveValues object
+#' @param years_consistent A boolean value
+#'
+#' @rdname checks
+#' @noRd
+update_project_val_check <- function(input, conf, ns, rv, years_consistent) {
+  if (any(c(
+    is.null(input$start_year),
+    is.null(input$end_year),
+    nrow(rv$project_data) == 0
+  ))) {
+    NULL
+  } else {
+    no_new_values <- c(
+      identical(input$start_year, rv$project_data$start_year),
+      identical(input$end_year, rv$project_data$end_year),
+      identical(as.integer(input$hospitals), rv$selected_hospitals)
+    )
+    if (all(no_new_values)) {
+      return(NULL)
+    } else {
+      if (years_consistent()) {
+        return(
+          shiny::actionButton(
+            ns("update_values"),
+            "Oppdat\u00e9r verdier",
+            style = conf$profile$action_button_style
+          )
+        )
+      } else {
+        return(NULL)
+      }
+    }
+  }
+}
+
 #' Check for updated indicator descriptions in the main panel of the indicator tab
 #'
 #' @param input A shiny input object
