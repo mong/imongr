@@ -74,16 +74,40 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
       return(validateName(x, existing_project_ids))
     }
-    validateStartYear <- function(x) {
+
+    validatePopupStartYear <- function(x) {
       if (is.numeric(x)) {
         return(NULL)
       } else {
         return("Skriv inn et årstall")
       }
     }
+
+    validateStartYear <- function(x) {
+      if (is.null(input$end_year) || is.na(x)) {
+        return(NULL)
+      } else if (x <= input$end_year) {
+        return(NULL)
+      } else {
+        return("Startår kan ikke være større enn sluttår")
+      }
+    }
+
+    validateEndYear <- function(x) {
+      if (is.null(input$start_year) || is.na(x)) {
+        return(NULL)
+      } else if (x >= input$start_year) {
+        return(NULL)
+      } else {
+        return("")
+      }
+    }
+
     inputValidator <- shinyvalidate::InputValidator$new(session = session)
     inputValidator$add_rule("new_project_name", validateProjectName)
-    inputValidator$add_rule("new_project_start_year", validateStartYear)
+    inputValidator$add_rule("new_project_start_year", validatePopupStartYear)
+    inputValidator$add_rule("start_year", validateStartYear)
+    inputValidator$add_rule("end_year", validateEndYear)
     inputValidator$enable()
 
     # Event listener for the new indicator pop up
@@ -226,6 +250,8 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # When you write a new project name in the popup
     shiny::observeEvent(popUpListener(), {
+      shiny::req("new_project_submit")
+
       # Validate input
       validName <- is.null(validateProjectName(input$new_project_name))
       validYear <- is.null(validateStartYear(input$new_project_start_year))
