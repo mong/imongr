@@ -157,7 +157,28 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # Update values button
     output$update_values_button <- shiny::renderUI({
+      # Make an action button with id update_values
       update_project_val_check(input, conf, ns, rv, function(x) {TRUE})
+    })
+
+    # When you push the update values button
+    shiny::observeEvent(input$update_values, {
+
+      # Update the projects table
+      rv$project_data$start_year <- input$start_year
+      rv$project_data$end_year <- input$end_year
+
+      update_project_val(pool_verify, rv$project_data)
+
+      # Update the project_hospital table
+      new_data <- data.frame(project_id = input$project, hospital_orgnr = input$hospitals)
+      update_project_hospitals(pool_verify, input$project, new_data)
+
+      # Reload data
+      rv$indicator_projects_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
+      rv$project_data <- rv$indicator_projects_data |>
+        dplyr::filter(.data$id == input$project)
+      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
     })
 
     # When you select a registry

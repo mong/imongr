@@ -390,19 +390,19 @@ WHERE
 #' @param registry_id The numeric id of the selected project
 #' @param df A data frame with new hospital data for overwriting the old hospital list
 #' @noRd
-update_project_hospital <- function(pool, project_id, new_data) {
+update_project_hospitals <- function(pool, project_id, new_data) {
   # Delete all hospitals from the selected project
   query <- paste0("
 DELETE FROM
   project_hospital
 WHERE
-  project_id=", project_id, ";")
+  project_id='", project_id, "';")
 
   pool::dbExecute(pool, query)
 
   # Add new hospitals if available
   if (nrow(new_data) > 0) {
-    pool::dbWriteTable(pool, "project_hospital", new_dat,
+    pool::dbWriteTable(pool, "project_hospital", new_data,
       append = TRUE,
       row.names = FALSE
     )
@@ -536,7 +536,7 @@ UPDATE
   project
 SET
   start_year = ?,
-  end_year = ?,
+  end_year = ?
 WHERE
   id = ?;")
 
@@ -545,7 +545,7 @@ WHERE
     new_data$end_year,
     new_data$id
   )
-
+  print(params)
   con <- pool::poolCheckout(pool)
   rs <- DBI::dbSendQuery(con, query)
   DBI::dbBind(rs, params)
