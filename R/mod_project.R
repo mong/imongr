@@ -38,7 +38,7 @@ project_ui <- function(id) {
         shiny::uiOutput(ns("short_oversize")),
         shiny::uiOutput(ns("edit_long")),
         shiny::uiOutput(ns("long_oversize")),
-        shiny::uiOutput(ns("update_text"))
+        shiny::uiOutput(ns("update_text_button"))
       )
     )
   )
@@ -158,13 +158,9 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       rv_return$registry_id <- input$indicator_registry
     })
 
-    # When you select an indicator
-    shiny::observeEvent(input$project_indicator, {
-      rv$indicator_projects_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
-    })
-
     # When you select a project
     shiny::observeEvent(input$project, {
+      rv$indicator_projects_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
       rv$project_data <- rv$indicator_projects_data |>
         dplyr::filter(.data$id == input$project)
       rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
@@ -259,6 +255,22 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         ns("long_description"), "Lang indikatorbeskrivelse (maks 2047 tegn)",
         value = rv$project_data$long_description, width = "90%", rows = 16
       )
+    })
+
+    # Update button
+    output$update_text_button <- shiny::renderUI({
+      update_project_txt_check(input, conf, ns, rv)
+    })
+
+    # Button click observer
+    shiny::observeEvent(input$update_text, {
+      # Update local data
+      rv$project_data$title <- input$title
+      rv$project_data$short_description <- input$short_description
+      rv$project_data$long_description <- input$long_description
+
+      # Update database
+      update_project_text(pool_verify, rv$project_data)
     })
 
     ###### Oversize observers #####

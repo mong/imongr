@@ -464,10 +464,10 @@ WHERE
   id = ?;")
 
   params <- list(
-    df$title,
-    df$short_description,
-    df$long_description,
-    df$id
+    new_data$title,
+    new_data$short_description,
+    new_data$long_description,
+    new_data$id
   )
 
   con <- pool::poolCheckout(pool)

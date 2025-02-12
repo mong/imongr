@@ -177,3 +177,33 @@ update_indicator_txt_check <- function(input, conf, ns, rv) {
     }
   }
 }
+
+#' Check for updated indicator descriptions in the main panel of the project tab
+#'
+#' @param input A shiny input object
+#' @param conf The data from the get_config function
+#' @param ns A shiny::NS namespace function
+#' @param rv A shiny::reactiveValues object
+#'
+#' @rdname checks
+#' @noRd
+update_project_txt_check <- function(input, conf, ns, rv) {
+  if (any(c(rv$title_oversize, rv$short_oversize, rv$long_oversize))) {
+    NULL
+  } else {
+    no_new_text <- c(
+      identical(input$short_description, rv$project_data$short_description),
+      identical(input$title, rv$project_data$title),
+      identical(input$long_description, rv$project_data$long_description)
+    )
+    if (all(no_new_text)) {
+      return(NULL)
+    } else if (nrow(rv$project_data != 0)) {
+      shiny::actionButton(
+        ns("update_text"),
+        "Oppdat\u00e9r tekster",
+        style = conf$profile$action_button_style
+      )
+    }
+  }
+}
