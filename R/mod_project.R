@@ -7,7 +7,7 @@
 #'
 #' @return Shiny objects for the imongr app
 #'
-#' @name mod_indicator
+#' @name mod_project
 #' @aliases indicator_ui indicator_server indicator_app
 NULL
 
@@ -215,7 +215,6 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     shiny::observeEvent(rv$new_project_name, {
-      # TODO: Add the project to the database
       query <- paste0("INSERT INTO project (id, registry_id, start_year) VALUES ( '",
                       rv$new_project_name,
                       "', '",
@@ -223,16 +222,6 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
                       "', '",
                       input$new_project_start_year,
                       "');")
-
-      new_project_data <- data.frame(
-        id = rv$new_project_name,
-        registry_id = input$project_registry,
-        start_year = NA,
-        end_year = NA,
-        title = "",
-        short_description = "",
-        long_description = ""
-      )
 
       pool::dbExecute(pool, query)
       pool::dbExecute(pool_verify, query)

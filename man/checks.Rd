@@ -2,17 +2,7 @@
 % Please edit documentation in R/checks.R
 \name{checks}
 \alias{checks}
-\alias{levels_consistent_check}
-\alias{update_check}
-\alias{update_indicator_txt_check}
 \title{Functions for checks in imongr}
-\usage{
-levels_consistent_check(input, conf)
-
-update_check(input, conf, ns, rv, level_consistent)
-
-update_indicator_txt_check(input, conf, ns, rv)
-}
 \arguments{
 \item{input}{A shiny input object}
 
@@ -23,9 +13,5 @@ update_indicator_txt_check(input, conf, ns, rv)
 \item{rv}{A shiny::reactiveValues object}
 }
 \description{
-This function is intended for use in indicator_server.
-Threshold are set for high accomplishment (green)
-and medium accomplihment (yellow). The green threshold
-should be higher than the yellow. If not, and error message
-is displayed.
+Functions for checks in imongr
 }
