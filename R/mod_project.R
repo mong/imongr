@@ -261,6 +261,33 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
+    ###### Oversize observers #####
+    shiny::observeEvent(input$title, {
+      rv$title_oversize <- ifelse(nchar(input$title) > 255, TRUE, FALSE)
+    })
+
+    shiny::observeEvent(input$short_description, {
+      rv$short_oversize <- ifelse(nchar(input$short_description) > 1023, TRUE, FALSE)
+    })
+
+    shiny::observeEvent(input$long_description, {
+      rv$long_oversize <- ifelse(nchar(input$long_description) > 2047, TRUE, FALSE)
+    })
+
+    ##### Oversize warnings #####
+    output$title_oversize <- shiny::renderUI({
+      oversize_check(rv$title_oversize, conf)
+    })
+
+    output$short_oversize <- shiny::renderUI({
+      oversize_check(rv$short_oversize, conf)
+    })
+
+    output$long_oversize <- shiny::renderUI({
+      oversize_check(rv$long_oversize, conf)
+    })
+
+
     return(rv_return)
   })
 }
