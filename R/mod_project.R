@@ -84,7 +84,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     }
 
     validateStartYear <- function(x) {
-      if (is.null(input$end_year) || is.na(x)) {
+      if (is.null(input$end_year) || is.na(input$end_year) || is.null(x) || is.na(x)) {
         return(NULL)
       } else if (x <= input$end_year) {
         return(NULL)
@@ -94,7 +94,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     }
 
     validateEndYear <- function(x) {
-      if (is.null(input$start_year) || is.na(x)) {
+      if (is.null(input$start_year) || is.na(input$start_year) || is.null(x) || is.na(x)) {
         return(NULL)
       } else if (x >= input$start_year) {
         return(NULL)
@@ -117,8 +117,23 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # Check if the years are consistent
     years_consistent <- shiny::reactive({
-      input$end_year >= input$start_year
+      if (is.na(input$end_year)) {
+        # Allow empty value
+        TRUE
+      } else {
+        input$end_year >= input$start_year
+      }
+
     })
+
+    reload_data <- function() {
+      rv$indicator_projects_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
+      rv$project_data <- rv$indicator_projects_data |>
+        dplyr::filter(.data$id == input$project)
+      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
+
+      return(rv)
+    }
 
     ########################
     ##### Sidebar menu #####
@@ -204,11 +219,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       new_data <- data.frame(project_id = input$project, hospital_orgnr = input$hospitals)
       update_project_hospitals(pool_verify, input$project, new_data)
 
-      # Reload data
-      rv$indicator_projects_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
-      rv$project_data <- rv$indicator_projects_data |>
-        dplyr::filter(.data$id == input$project)
-      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
+      rv <- reload_data()
     })
 
     # When you select a registry
@@ -218,10 +229,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # When you select a project
     shiny::observeEvent(input$project, {
-      rv$indicator_projects_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
-      rv$project_data <- rv$indicator_projects_data |>
-        dplyr::filter(.data$id == input$project)
-      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
+      rv <- reload_data()
     })
 
     # The button for making a new project
@@ -274,14 +282,21 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       add_project(input, rv, pool, pool_verify)
       add_project_to_indicator(pool_verify, rv$new_project_name, input$project_indicator)
 
+      default_text <- data.frame(
+        title = "Tittel",
+        short_description = "Kort beskrivelse",
+        long_description = "Lang beskrivelse",
+        id = rv$new_project_name
+      )
+
+      update_project_text(pool, default_text)
+      update_project_text(pool_verify, default_text)
+
       # Reactive value to trigger updates of UI elements
       rv$new_project_counter <- rv$new_project_counter + 1
 
       # Reload data
-      rv$indicator_projects_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
-      rv$project_data <- rv$indicator_projects_data |>
-        dplyr::filter(.data$id == input$project)
-      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
+      rv <- reload_data()
     })
 
     ######################
@@ -317,6 +332,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # Update button
     output$update_text_button <- shiny::renderUI({
+      # Make an action button with id update_text
       update_project_txt_check(input, conf, ns, rv)
     })
 
@@ -331,10 +347,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       update_project_text(pool_verify, rv$project_data)
 
       # Fetch data again to clean up state
-      rv$indicator_projects_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
-      rv$project_data <- rv$indicator_projects_data |>
-        dplyr::filter(.data$id == input$project)
-      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
+      rv <- reload_data()
     })
 
     ###### Oversize observers #####

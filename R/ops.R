@@ -585,7 +585,7 @@ WHERE
     new_data$end_year,
     new_data$id
   )
-  print(params)
+
   con <- pool::poolCheckout(pool)
   rs <- DBI::dbSendQuery(con, query)
   DBI::dbBind(rs, params)

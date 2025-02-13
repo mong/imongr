@@ -164,13 +164,14 @@ update_project_val_check <- function(input, conf, ns, rv, years_consistent) {
   if (any(c(
     is.null(input$start_year),
     is.null(input$end_year),
+    is.na(input$start_year),
     nrow(rv$project_data) == 0
   ))) {
     NULL
   } else {
     no_new_values <- c(
-      identical(input$start_year, rv$project_data$start_year),
-      identical(input$end_year, rv$project_data$end_year),
+      identical(as.integer(input$start_year), rv$project_data$start_year),
+      identical(as.integer(input$end_year), rv$project_data$end_year),
       identical(as.integer(input$hospitals), rv$selected_hospitals)
     )
     if (all(no_new_values)) {
