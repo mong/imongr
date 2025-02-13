@@ -161,34 +161,29 @@ update_check <- function(input, conf, ns, rv, level_consistent) {
 #' @rdname checks
 #' @noRd
 update_project_val_check <- function(input, conf, ns, rv, years_consistent) {
-  if (any(c(
+  missing_values <- any(c(
     is.null(input$start_year),
     is.null(input$end_year),
     is.na(input$start_year),
     nrow(rv$project_data) == 0
-  ))) {
-    NULL
+  ))
+
+  no_new_values <- all(c(
+    identical(as.integer(input$start_year), rv$project_data$start_year),
+    identical(as.integer(input$end_year), rv$project_data$end_year),
+    identical(as.integer(input$hospitals), rv$selected_hospitals)
+  ))
+
+  if (missing_values || no_new_values || !years_consistent()) {
+    return(NULL)
   } else {
-    no_new_values <- c(
-      identical(as.integer(input$start_year), rv$project_data$start_year),
-      identical(as.integer(input$end_year), rv$project_data$end_year),
-      identical(as.integer(input$hospitals), rv$selected_hospitals)
+    return(
+      shiny::actionButton(
+        ns("update_values"),
+        "Oppdat\u00e9r verdier",
+        style = conf$profile$action_button_style
+      )
     )
-    if (all(no_new_values)) {
-      return(NULL)
-    } else {
-      if (years_consistent()) {
-        return(
-          shiny::actionButton(
-            ns("update_values"),
-            "Oppdat\u00e9r verdier",
-            style = conf$profile$action_button_style
-          )
-        )
-      } else {
-        return(NULL)
-      }
-    }
   }
 }
 
@@ -232,22 +227,23 @@ update_indicator_txt_check <- function(input, conf, ns, rv) {
 #' @rdname checks
 #' @noRd
 update_project_txt_check <- function(input, conf, ns, rv) {
-  if (any(c(rv$title_oversize, rv$short_oversize, rv$long_oversize))) {
+  missing_values <- any(c(rv$title_oversize, rv$short_oversize, rv$long_oversize))
+
+  no_new_text <- all(c(
+    identical(input$short_description, rv$project_data$short_description),
+    identical(input$title, rv$project_data$title),
+    identical(input$long_description, rv$project_data$long_description)
+  ))
+
+  if (missing_values || no_new_text || nrow(rv$project_data) == 0) {
     NULL
   } else {
-    no_new_text <- c(
-      identical(input$short_description, rv$project_data$short_description),
-      identical(input$title, rv$project_data$title),
-      identical(input$long_description, rv$project_data$long_description)
-    )
-    if (all(no_new_text)) {
-      return(NULL)
-    } else if (nrow(rv$project_data != 0)) {
+    return(
       shiny::actionButton(
         ns("update_text"),
         "Oppdat\u00e9r tekster",
         style = conf$profile$action_button_style
       )
-    }
+    )
   }
 }

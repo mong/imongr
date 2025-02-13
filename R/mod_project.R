@@ -139,6 +139,8 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     ##### Sidebar menu #####
     ########################
 
+    ##### UI elements #####
+
     # Select registry UI
     output$select_project_registry <- shiny::renderUI({
       select_registry_ui(pool_verify, conf,
@@ -167,6 +169,12 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         choices = rv$indicator_projects_data$id,
         selected = rv$new_project_name, # Switch to the new project when it is made
       )
+    })
+
+    # The button for making a new project
+    output$add_new_project <- shiny::renderUI({
+      shiny::req(input$project_indicator)
+      shiny::actionButton(ns("new_project"), "Lag helt nytt prosjekt")
     })
 
     # Set start year UI
@@ -206,6 +214,12 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       update_project_val_check(input, conf, ns, rv, years_consistent)
     })
 
+
+
+
+
+    ##### Event observers #####
+
     # When you push the update values button
     shiny::observeEvent(input$update_values, {
 
@@ -230,12 +244,6 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     # When you select a project
     shiny::observeEvent(input$project, {
       rv <- reload_data()
-    })
-
-    # The button for making a new project
-    output$add_new_project <- shiny::renderUI({
-      shiny::req(input$project_indicator)
-      shiny::actionButton(ns("new_project"), "Lag helt nytt prosjekt")
     })
 
     # When you push the new project button
@@ -299,9 +307,15 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       rv <- reload_data()
     })
 
+
+
+
+
     ######################
     ##### Main panel #####
     ######################
+
+    ##### UI elements #####
 
     # Project title text input
     output$edit_title <- shiny::renderUI({
@@ -336,6 +350,28 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       update_project_txt_check(input, conf, ns, rv)
     })
 
+    ##### Oversize warnings #####
+    output$title_oversize <- shiny::renderUI({
+      shiny::req(rv$title_oversize)
+      oversize_check(rv$title_oversize, conf)
+    })
+
+    output$short_oversize <- shiny::renderUI({
+      shiny::req(rv$short_oversize)
+      oversize_check(rv$short_oversize, conf)
+    })
+
+    output$long_oversize <- shiny::renderUI({
+      shiny::req(rv$long_oversize)
+      oversize_check(rv$long_oversize, conf)
+    })
+
+
+
+
+
+    ##### Event observers #####
+
     # Button click observer
     shiny::observeEvent(input$update_text, {
       # Update local data
@@ -365,23 +401,6 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$long_description)
       rv$long_oversize <- ifelse(nchar(input$long_description) > 2047, TRUE, FALSE)
     })
-
-    ##### Oversize warnings #####
-    output$title_oversize <- shiny::renderUI({
-      shiny::req(rv$title_oversize)
-      oversize_check(rv$title_oversize, conf)
-    })
-
-    output$short_oversize <- shiny::renderUI({
-      shiny::req(rv$short_oversize)
-      oversize_check(rv$short_oversize, conf)
-    })
-
-    output$long_oversize <- shiny::renderUI({
-      shiny::req(rv$long_oversize)
-      oversize_check(rv$long_oversize, conf)
-    })
-
 
     return(rv_return)
   })
