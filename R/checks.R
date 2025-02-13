@@ -180,7 +180,7 @@ update_project_val_check <- function(input, conf, ns, rv, years_consistent) {
     return(
       shiny::actionButton(
         ns("update_values"),
-        "Oppdat\u00e9r verdier",
+        "Oppdater verdier",
         style = conf$profile$action_button_style
       )
     )
@@ -241,7 +241,7 @@ update_project_txt_check <- function(input, conf, ns, rv) {
     return(
       shiny::actionButton(
         ns("update_text"),
-        "Oppdat\u00e9r tekster",
+        "Oppdater tekster",
         style = conf$profile$action_button_style
       )
     )

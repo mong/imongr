@@ -79,7 +79,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       if (is.numeric(x)) {
         return(NULL)
       } else {
-        return("Skriv inn et årstall")
+        return("Skriv inn et \u00e5rstall")
       }
     }
 
@@ -87,7 +87,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       if (!shiny::isTruthy(x) || !shiny::isTruthy(input$end_year) || x <= input$end_year) {
         return(NULL)
       } else {
-        return("Startår kan ikke være større enn sluttår")
+        return("Start\u00e5r kan ikke være større enn slutt\u00e5r")
       }
     }
 
@@ -178,7 +178,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$project)
       shiny::numericInput(
         ns("start_year"),
-        "Startår",
+        "Start\u00e5r",
         value = rv$project_data$start_year,
       )
     })
@@ -188,7 +188,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$project)
       shiny::numericInput(
         ns("end_year"),
-        "Sluttår",
+        "Slutt\u00e5r",
         value = rv$project_data$end_year,
       )
     })
@@ -249,7 +249,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
           shiny::tags$h3("Velg navn p\u00e5 nytt prosjekt"),
           shiny::textInput(ns("new_project_name"), "Prosjektnavn"),
           shiny::numericInput(ns("new_project_start_year"),
-            label = "Velg startår",
+            label = "Velg start\u00e5r",
             value = NA
           ),
           footer = shiny::tagList(
