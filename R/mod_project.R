@@ -84,9 +84,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     }
 
     validateStartYear <- function(x) {
-      if (is.null(input$end_year) || is.na(input$end_year) || is.null(x) || is.na(x)) {
-        return(NULL)
-      } else if (x <= input$end_year) {
+      if (!shiny::isTruthy(x) || !shiny::isTruthy(input$end_year) || x <= input$end_year) {
         return(NULL)
       } else {
         return("Startår kan ikke være større enn sluttår")
@@ -94,9 +92,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     }
 
     validateEndYear <- function(x) {
-      if (is.null(input$start_year) || is.na(input$start_year) || is.null(x) || is.na(x)) {
-        return(NULL)
-      } else if (x >= input$start_year) {
+      if (!shiny::isTruthy(x) || !shiny::isTruthy(input$start_year) || x >= input$start_year) {
         return(NULL)
       } else {
         return("")
