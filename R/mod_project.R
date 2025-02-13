@@ -145,6 +145,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # Select project UI
     output$select_project <- shiny::renderUI({
+      rv$new_project_counter
       shiny::req(input$project_registry, input$project_indicator, input$project_indicator)
       shiny::selectInput(
         ns("project"), "Velg prosjekt:",
@@ -270,19 +271,17 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     shiny::observeEvent(rv$new_project_name, {
-      query <- paste0("INSERT INTO project (id, registry_id, start_year) VALUES ( '",
-                      rv$new_project_name,
-                      "', '",
-                      input$project_registry,
-                      "', '",
-                      input$new_project_start_year,
-                      "');")
-
-      pool::dbExecute(pool, query)
-      pool::dbExecute(pool_verify, query)
+      add_project(input, rv, pool, pool_verify)
+      add_project_to_indicator(pool_verify, rv$new_project_name, input$project_indicator)
 
       # Reactive value to trigger updates of UI elements
       rv$new_project_counter <- rv$new_project_counter + 1
+
+      # Reload data
+      rv$indicator_projects_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
+      rv$project_data <- rv$indicator_projects_data |>
+        dplyr::filter(.data$id == input$project)
+      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
     })
 
     ######################

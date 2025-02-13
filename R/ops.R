@@ -387,6 +387,46 @@ WHERE
 
 #' @rdname ops
 #' @param pool Database pool object
+#' @param pool_verify Database pool object
+#' @param conf The data from the get_config function
+#' @param rv A shiny::reactiveValues object
+#' @noRd
+add_project <- function(input, rv, pool, pool_verify) {
+  query <- paste0("INSERT INTO project (id, registry_id, start_year) VALUES ( '",
+    rv$new_project_name,
+    "', '",
+    input$project_registry,
+    "', '",
+    input$new_project_start_year,
+    "');"
+  )
+
+  pool::dbExecute(pool, query)
+  pool::dbExecute(pool_verify, query)
+}
+
+#' @rdname ops
+#' @param pool Database pool object
+#' @param project_id String
+#' @param indicator_id String
+#' @noRd
+add_project_to_indicator <- function(pool, project_id, indicator_id) {
+  query <- paste0("
+    INSERT INTO
+      project_ind
+      (project_id, ind_id)
+    VALUES ('",
+    project_id,
+    "','",
+    indicator_id,
+    "');"
+  )
+
+  pool::dbExecute(pool, query)
+}
+
+#' @rdname ops
+#' @param pool Database pool object
 #' @param registry_id The numeric id of the selected project
 #' @param df A data frame with new hospital data for overwriting the old hospital list
 #' @noRd
