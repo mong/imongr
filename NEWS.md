@@ -1,3 +1,29 @@
+# imongr 2.6.0
+
+## Endringer
+
+* API i docker-compose-fila by @arnfinn in https://github.com/mong/imongr/pull/482
+* Endre advarsel i opplasting og publisering by @Stein-Kato in https://github.com/mong/imongr/pull/497
+* Kun kjøre hovedversjon av gh-actions by @arnfinn in https://github.com/mong/imongr/pull/499
+* Kjør gh-actions på ubuntu 24.04 by @arnfinn in https://github.com/mong/imongr/pull/500
+* Fjern navnet Sykehusviser by @arnfinn in https://github.com/mong/imongr/pull/501
+* Drep samtidige jobber by @arnfinn in https://github.com/mong/imongr/pull/503
+* Oppdatert create_tabs.sql by @arnfinn in https://github.com/mong/imongr/pull/502
+* Gjem knappen "Hent forrige års registreringer" hvis det finnes data fra i år by @Stein-Kato in https://github.com/mong/imongr/pull/510
+* Bryter istedenfor sjekkboks på "Vis indikator" by @Stein-Kato in https://github.com/mong/imongr/pull/512
+* Fikset bug i brukeradministrasjon by @Stein-Kato in https://github.com/mong/imongr/pull/506
+* Fikset bug i brukerliste og fagområdeliste by @Stein-Kato in https://github.com/mong/imongr/pull/519
+* Endret tekst i ekspertgruppefanen by @Stein-Kato in https://github.com/mong/imongr/pull/509
+* Fikset bug i fagområde-admin by @Stein-Kato in https://github.com/mong/imongr/pull/508
+* Short_name i nedrekksmeny for registre by @Stein-Kato in https://github.com/mong/imongr/pull/514
+* Datatable i brukeroversikt by @Stein-Kato in https://github.com/mong/imongr/pull/518
+* Fikset bug i datatable by @Stein-Kato in https://github.com/mong/imongr/pull/522
+* Frisket opp opplegg for å lage ny indikator by @Stein-Kato in https://github.com/mong/imongr/pull/521
+* Bug-fiks i validering av indikatornavn by @Stein-Kato in https://github.com/mong/imongr/pull/529
+* Flyttet funksjoner ut av mod_indicator by @Stein-Kato in https://github.com/mong/imongr/pull/530
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.5.1...v2.6.0
+
 # imongr 2.5.1
 
 ## Endringer
