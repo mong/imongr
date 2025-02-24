@@ -70,6 +70,8 @@ app_text:
       Angi fagområde(r) for registrene
     reguser: |-
       Angi bruker(e) for registrene
+    selected_inds: |-
+      Angi utvalgte indikatorer for sykehus
     indicator: |-
       Se og endre på indikatortekster
     review: |-

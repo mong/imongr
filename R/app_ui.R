@@ -128,6 +128,24 @@ app_ui <- function() {
           )
         ),
         shiny::tabPanel(
+          value = "selected_inds",
+          shiny::span("Utvalgte indikatorer",
+            title = conf$app_text$tooltip$selected_inds,
+            id = "selected_inds"
+          ),
+          shiny::sidebarLayout(
+            shiny::sidebarPanel(
+              width = 3,
+              shiny::uiOutput("select_hospital"),
+              shiny::uiOutput("select_inds"),
+              shiny::uiOutput("submit_changes")
+            ),
+            shiny::mainPanel(
+              shiny::uiOutput("hospital_ind_table")
+            )
+          )
+        ),
+        shiny::tabPanel(
           value = "adminer",
           shiny::span("Adminer",
             title = conf$app_text$tooltip$adminer,
