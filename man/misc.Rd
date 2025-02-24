@@ -11,6 +11,7 @@
 \alias{delete_all_data}
 \alias{remove_empty_rows}
 \alias{invalidate_cache}
+\alias{validateName}
 \title{Tools and whatever}
 \usage{
 natural(vals, tolerance = .Machine$double.eps^0.5)
@@ -30,6 +31,8 @@ insert_sample_data(include_data_table = TRUE)
 delete_all_data(prompt = TRUE)
 
 invalidate_cache()
+
+validateName(x, existing_names)
 }
 \arguments{
 \item{vals}{A numeric vector}

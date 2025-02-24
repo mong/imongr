@@ -197,3 +197,20 @@ invalidate_cache <- function() {
   system("aws cloudfront create-invalidation --distribution-id ${distribution_id} --path \"/*\"")
   message("Invaliderte cache")
 }
+
+#' @rdname misc
+#' @internal
+validateName <- function(x, existing_names) {
+  if (is.null(x)) {
+    return(NULL)
+  } else {
+    if (grepl("^[a-zA-Z0-9_]+$", x) && !(tolower(x) %in% tolower(existing_names))) {
+      return(NULL)
+    } else {
+      return(
+        "Kan ikke være tom, inneholde mellomrom eller spesialtegn, 
+        eller v\u00e6re lik en et eksisterende navn."
+      )
+    }
+  }
+}
