@@ -199,7 +199,7 @@ invalidate_cache <- function() {
 }
 
 #' @rdname misc
-#' @internal
+#' @noRd
 validateName <- function(x, existing_names) {
   if (is.null(x)) {
     return(NULL)
