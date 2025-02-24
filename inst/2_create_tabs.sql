@@ -280,3 +280,16 @@ CREATE TABLE IF NOT EXISTS `requirements` (
   `last_year` smallint(6) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `hospital_ind` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `orgnr` int(10) unsigned NOT NULL,
+  `ind_id` varchar(63) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_hospital_ind_hospital`
+    FOREIGN KEY (`orgnr`) REFERENCES `hospital` (`orgnr`)
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_hospital_ind_ind_id`
+    FOREIGN KEY (`ind_id`) REFERENCES `ind` (`id`)
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
