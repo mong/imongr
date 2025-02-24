@@ -592,8 +592,6 @@ WHERE
   DBI::dbClearResult(rs)
   pool::poolReturn(con)
 
-  # TODO: add hospitals
-
   message("Ferdig\n")
 }
 

@@ -67,6 +67,11 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     rv_return <- shiny::reactiveValues()
     rv <- shiny::reactiveValues()
 
+    project_data <- shiny::reactive({
+      get_registry_projects(pool_verify, input$project_registry, input$project_indicator) |>
+        dplyr::filter(.data$id == input$project)
+    })
+
     hospitals_orgnr <- get_hospitals_orgnr(pool_verify)
 
     validateProjectName <- function(x) {
@@ -122,15 +127,6 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     })
 
-    reload_data <- function() {
-      rv$indicator_projects_data <- get_registry_projects(pool_verify, input$project_registry, input$project_indicator)
-      rv$project_data <- rv$indicator_projects_data |>
-        dplyr::filter(.data$id == input$project)
-      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
-
-      return(rv)
-    }
-
     ########################
     ##### Sidebar menu #####
     ########################
@@ -162,7 +158,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$project_registry, input$project_indicator, input$project_indicator)
       shiny::selectInput(
         ns("project"), "Velg prosjekt:",
-        choices = rv$indicator_projects_data$id,
+        choices = get_registry_projects(pool_verify, input$project_registry, input$project_indicator)$id,
         selected = rv$new_project_name, # Switch to the new project when it is made
       )
     })
@@ -179,7 +175,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::numericInput(
         ns("start_year"),
         "Start\u00e5r",
-        value = rv$project_data$start_year,
+        value = project_data()$start_year,
       )
     })
 
@@ -189,7 +185,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::numericInput(
         ns("end_year"),
         "Slutt\u00e5r",
-        value = rv$project_data$end_year,
+        value = project_data()$end_year,
       )
     })
 
@@ -199,7 +195,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         inputId = ns("hospitals"),
         label = "Velg sykehus",
         choices = hospitals_orgnr,
-        selected = rv$selected_hospitals,
+        selected = get_project_hospitals(pool_verify, input$project)$hospital_orgnr,
         multiple = TRUE
       )
     })
@@ -226,10 +222,15 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       update_project_val(pool_verify, rv$project_data)
 
       # Update the project_hospital table
-      new_data <- data.frame(project_id = input$project, hospital_orgnr = input$hospitals)
+      if (!is.null(input$hospitals)) {
+        new_data <- data.frame(project_id = input$project, hospital_orgnr = input$hospitals)
+      } else {
+        new_data <- data.frame()
+      }
+
       update_project_hospitals(pool_verify, input$project, new_data)
 
-      rv <- reload_data()
+      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
     })
 
     # When you select a registry
@@ -239,7 +240,8 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # When you select a project
     shiny::observeEvent(input$project, {
-      rv <- reload_data()
+      rv$project_data <- project_data()
+      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
     })
 
     # When you push the new project button
@@ -298,9 +300,6 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
       # Reactive value to trigger updates of UI elements
       rv$new_project_counter <- rv$new_project_counter + 1
-
-      # Reload data
-      rv <- reload_data()
     })
 
 
@@ -318,7 +317,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$project)
       shiny::textAreaInput(
         ns("title"), "Prosjekttittel (maks 255 tegn)",
-        value = rv$project_data$title, width = "90%", rows = 2
+        value = project_data()$title, width = "90%", rows = 2
       )
     })
 
@@ -326,8 +325,8 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     output$edit_short <- shiny::renderUI({
       shiny::req(input$project)
       shiny::textAreaInput(
-        ns("short_description"), "Kort indikatorbeskrivelse (maks 1023 tegn)",
-        value = rv$project_data$short_description, width = "90%", rows = 8
+        ns("short_description"), "Kort prosjektbeskrivelse (maks 1023 tegn)",
+        value = project_data()$short_description, width = "90%", rows = 8
       )
     })
 
@@ -335,8 +334,8 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     output$edit_long <- shiny::renderUI({
       shiny::req(input$project)
       shiny::textAreaInput(
-        ns("long_description"), "Lang indikatorbeskrivelse (maks 2047 tegn)",
-        value = rv$project_data$long_description, width = "90%", rows = 16
+        ns("long_description"), "Lang prosjektbeskrivelse (maks 2047 tegn)",
+        value = project_data()$long_description, width = "90%", rows = 16
       )
     })
 
@@ -371,15 +370,13 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     # Button click observer
     shiny::observeEvent(input$update_text, {
       # Update local data
+      rv$project_data <- project_data()
       rv$project_data$title <- input$title
       rv$project_data$short_description <- input$short_description
       rv$project_data$long_description <- input$long_description
 
       # Update database
       update_project_text(pool_verify, rv$project_data)
-
-      # Fetch data again to clean up state
-      rv <- reload_data()
     })
 
     ###### Oversize observers #####
