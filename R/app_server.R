@@ -109,7 +109,6 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "download")
   shiny::hideTab("tabs", target = "indicator")
   shiny::hideTab("tabs", target = "Administrative verkt\u00f8y")
-  shiny::hideTab("tabs", target = "settings")
   shiny::hideTab("tabs", target = "medfield")
   shiny::hideTab("tabs", target = "reguser")
   shiny::hideTab("tabs", target = "adminer")
