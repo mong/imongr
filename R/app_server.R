@@ -212,26 +212,6 @@ app_server <- function(input, output, session) {
 
   ##### Admin #####
 
-  # manager settings
-  output$select_context <- shiny::renderUI({
-    if (valid_user) {
-      shiny::selectInput("context", "Velg milj\u00f8:",
-        choices = list(
-          Produksjon = "prod",
-          Kvalitetskontroll = "verify",
-          QA = "qa"
-        ),
-        selected = rv$context
-      )
-    } else {
-      NULL
-    }
-  })
-
-  shiny::observeEvent(input$context, {
-    rv$context <- input$context
-  })
-
   # registry medfields
   shiny::observeEvent(input$update_medfield, {
     registry_medfield_update <- data.frame(
@@ -423,21 +403,6 @@ app_server <- function(input, output, session) {
   ##################################
   ##### Our db admin interface #####
   ##################################
-
-  output$select_admin_context <- shiny::renderUI({
-    shiny::selectInput("user_context", "Velg milj\u00f8:",
-      choices = list(
-        Produksjon = "prod",
-        Kvalitetskontroll = "verify",
-        QA = "qa"
-      ),
-      selected = rv$context
-    )
-  })
-
-  shiny::observeEvent(input$admin_context, {
-    rv$context <- input$admin_context
-  })
 
   output$admin_frame <- shiny::renderUI({
     shiny::tags$iframe(

@@ -70,20 +70,6 @@ app_ui <- function() {
       shiny::navbarMenu(
         "Administrative verkt\u00f8y",
         shiny::tabPanel(
-          value = "settings",
-          shiny::span("Innstillinger",
-            title = conf$app_text$tooltip$settings,
-            id = "settings"
-          ),
-          shiny::sidebarLayout(
-            shiny::sidebarPanel(
-              width = 3,
-              shiny::uiOutput("select_context")
-            ),
-            shiny::mainPanel()
-          )
-        ),
-        shiny::tabPanel(
           value = "medfield",
           shiny::span("Fagomr\u00e5der",
             title = conf$app_text$tooltip$medfield,
@@ -135,16 +121,7 @@ app_ui <- function() {
             title = conf$app_text$tooltip$adminer,
             id = "adminer"
           ),
-          shiny::sidebarLayout(
-            shiny::sidebarPanel(
-              width = 2,
-              shiny::uiOutput("select_admin_context")
-            ),
-            shiny::mainPanel(
-              width = 10,
-              shiny::htmlOutput("admin_frame")
-            )
-          )
+          shiny::mainPanel(width = 12, shiny::htmlOutput("admin_frame"))
         ),
         shiny::tabPanel(
           value = "mine_field",
