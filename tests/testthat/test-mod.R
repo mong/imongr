@@ -355,7 +355,7 @@ test_that("upload module has output...", {
         latest_affirm = "2022-01-01"
       )
       expect_equal_to_reference(ind(), "data/norgast_ind.rds")
-      expect_equal(df(), data.frame())
+      expect_equal(input_data(), data.frame())
     }
   )
 })
