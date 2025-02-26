@@ -143,6 +143,7 @@ reference:
     - mod_upload
     - mod_download
     - mod_review
+    - mod_status
 
   - title: Data
     desc: >

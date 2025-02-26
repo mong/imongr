@@ -51,7 +51,7 @@ oversize_check <- function(oversize, conf) {
 #' is displayed.
 #'
 #' @rdname checks
-#' @internal
+#' @noRd
 #' @param input Shiny input object
 #' @param conf get_config() output
 levels_consistent_check <- function(input, conf) {
@@ -94,7 +94,7 @@ levels_consistent_check <- function(input, conf) {
 #' @param rv A shiny::reactiveValues object
 #'
 #' @rdname checks
-#' @internal
+#' @noRd
 update_check <- function(input, conf, ns, rv, level_consistent) {
   if (any(c(
     is.null(input$indicator),
@@ -156,7 +156,7 @@ update_check <- function(input, conf, ns, rv, level_consistent) {
 #' @param rv A shiny::reactiveValues object
 #'
 #' @rdname checks
-#' @internal
+#' @noRd
 update_indicator_txt_check <- function(input, conf, ns, rv) {
   if (any(c(rv$title_oversize, rv$short_oversize, rv$long_oversize))) {
     NULL
