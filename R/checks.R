@@ -169,9 +169,10 @@ update_project_val_check <- function(input, conf, ns, rv, years_consistent) {
   ))
 
   no_new_values <- all(c(
-    identical(as.integer(input$start_year), rv$project_data$start_year),
-    identical(as.integer(input$end_year), rv$project_data$end_year),
-    identical(as.integer(input$hospitals), rv$selected_hospitals)
+    # Cast to integer to make sure that the classes are the same
+    identical(as.integer(input$start_year), as.integer(rv$project_data$start_year)),
+    identical(as.integer(input$end_year), as.integer(rv$project_data$end_year)),
+    identical(as.integer(input$hospitals), as.integer(rv$selected_hospitals))
   ))
 
   if (missing_values || no_new_values || !years_consistent()) {
