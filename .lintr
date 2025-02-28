@@ -1,4 +1,6 @@
 linters: linters_with_defaults(object_name_linter(c("camelCase", "snake_case")),
-                       line_length_linter(length = 120L))
+                       line_length_linter(length = 120L),
+                       return_linter = NULL
+                       )
 exclusions: list("data-raw/delivery.R", "data-raw/data.R", "data-raw/org.R", "data-raw/user.R")
 
