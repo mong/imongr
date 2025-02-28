@@ -92,6 +92,7 @@ levels_consistent_check <- function(input, conf) {
 #' @param conf The data from the get_config function
 #' @param ns A shiny::NS namespace function
 #' @param rv A shiny::reactiveValues object
+#' @param levels_consistent A shiny::reactive boolean value
 #'
 #' @rdname checks
 #' @noRd
@@ -148,6 +149,45 @@ update_check <- function(input, conf, ns, rv, level_consistent) {
   }
 }
 
+#' Check for updated project parameters in the sidebar menu
+#' in the project tab
+#'
+#' @param input A shiny input object
+#' @param conf The data from the get_config function
+#' @param ns A shiny::NS namespace function
+#' @param rv A shiny::reactiveValues object
+#' @param years_consistent A shiny::reactive boolean value
+#'
+#' @rdname checks
+#' @noRd
+update_project_val_check <- function(input, conf, ns, rv, years_consistent) {
+  missing_values <- any(c(
+    is.null(input$start_year),
+    is.null(input$end_year),
+    is.na(input$start_year),
+    nrow(rv$project_data) == 0
+  ))
+
+  no_new_values <- all(c(
+    # Cast to integer to make sure that the classes are the same
+    identical(as.integer(input$start_year), as.integer(rv$project_data$start_year)),
+    identical(as.integer(input$end_year), as.integer(rv$project_data$end_year)),
+    identical(as.integer(input$hospitals), as.integer(rv$selected_hospitals))
+  ))
+
+  if (missing_values || no_new_values || !years_consistent()) {
+    return(NULL)
+  } else {
+    return(
+      shiny::actionButton(
+        ns("update_values"),
+        "Oppdater verdier",
+        style = conf$profile$action_button_style
+      )
+    )
+  }
+}
+
 #' Check for updated indicator descriptions in the main panel of the indicator tab
 #'
 #' @param input A shiny input object
@@ -175,5 +215,36 @@ update_indicator_txt_check <- function(input, conf, ns, rv) {
         style = conf$profile$action_button_style
       )
     }
+  }
+}
+
+#' Check for updated indicator descriptions in the main panel of the project tab
+#'
+#' @param input A shiny input object
+#' @param conf The data from the get_config function
+#' @param ns A shiny::NS namespace function
+#' @param rv A shiny::reactiveValues object
+#'
+#' @rdname checks
+#' @noRd
+update_project_txt_check <- function(input, conf, ns, rv) {
+  missing_values <- any(c(rv$title_oversize, rv$short_oversize, rv$long_oversize))
+
+  no_new_text <- all(c(
+    identical(input$short_description, rv$project_data$short_description),
+    identical(input$title, rv$project_data$title),
+    identical(input$long_description, rv$project_data$long_description)
+  ))
+
+  if (missing_values || no_new_text || nrow(rv$project_data) == 0) {
+    NULL
+  } else {
+    return(
+      shiny::actionButton(
+        ns("update_text"),
+        "Oppdater tekster",
+        style = conf$profile$action_button_style
+      )
+    )
   }
 }
