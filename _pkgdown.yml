@@ -177,7 +177,7 @@ reference:
 
   - title: internal
     contents:
+    - checks
     - check_no_dg
-    - levels_consistent_check
     - oversize_check
 
