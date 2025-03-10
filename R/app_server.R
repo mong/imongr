@@ -110,7 +110,6 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "download")
   shiny::hideTab("tabs", target = "indicator")
   shiny::hideTab("tabs", target = "Administrative verkt\u00f8y")
-  shiny::hideTab("tabs", target = "settings")
   shiny::hideTab("tabs", target = "medfield")
   shiny::hideTab("tabs", target = "reguser")
   shiny::hideTab("tabs", target = "adminer")
@@ -151,8 +150,7 @@ app_server <- function(input, output, session) {
     )
   )
 
-  shiny::observeEvent(input$context, {
-    rv$context <- input$context
+  shiny::observeEvent(rv$context, {
     drain_pool(rv$pool)
     rv$download_reg <- input$download_registry
     rv$admin_url <- paste0(
@@ -224,22 +222,6 @@ app_server <- function(input, output, session) {
 
   ##### Admin #####
 
-  # manager settings
-  output$select_context <- shiny::renderUI({
-    if (valid_user) {
-      shiny::selectInput("context", "Velg milj\u00f8:",
-        choices = list(
-          Produksjon = "prod",
-          Kvalitetskontroll = "verify",
-          QA = "qa"
-        ),
-        selected = "verify"
-      )
-    } else {
-      NULL
-    }
-  })
-
   # registry medfields
   shiny::observeEvent(input$update_medfield, {
     registry_medfield_update <- data.frame(
@@ -252,6 +234,21 @@ app_server <- function(input, output, session) {
     update_registry_medfield(rv$pool, input$medfield_registry, registry_medfield_update)
     rv$medfield_summary <-
       medfield_summary_text_ui(rv$pool, conf, rv$medfield_data)
+  })
+
+  output$select_medfield_context <- shiny::renderUI({
+    shiny::selectInput("medfield_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$medfield_context, {
+    rv$context <- input$medfield_context
   })
 
   output$select_medfield_registry <- shiny::renderUI({
@@ -321,6 +318,21 @@ app_server <- function(input, output, session) {
 
     rv$user_registry_data <- get_users_per_registry(rv$pool)
     rv$user_data <- get_users(rv$pool)
+  })
+
+  output$select_user_context <- shiny::renderUI({
+    shiny::selectInput("user_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$user_context, {
+    rv$context <- input$user_context
   })
 
   # Select registry drop down menu
@@ -440,6 +452,21 @@ app_server <- function(input, output, session) {
         shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
       }
     )
+  })
+
+  output$select_minefield_context <- shiny::renderUI({
+    shiny::selectInput("minefield_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$minefield_context, {
+    rv$context <- input$minefield_context
   })
 
   output$mine_field_uc <- shiny::renderUI({

@@ -77,20 +77,6 @@ app_ui <- function() {
       shiny::navbarMenu(
         "Administrative verkt\u00f8y",
         shiny::tabPanel(
-          value = "settings",
-          shiny::span("Innstillinger",
-            title = conf$app_text$tooltip$settings,
-            id = "settings"
-          ),
-          shiny::sidebarLayout(
-            shiny::sidebarPanel(
-              width = 3,
-              shiny::uiOutput("select_context")
-            ),
-            shiny::mainPanel()
-          )
-        ),
-        shiny::tabPanel(
           value = "medfield",
           shiny::span("Fagomr\u00e5der",
             title = conf$app_text$tooltip$medfield,
@@ -99,6 +85,7 @@ app_ui <- function() {
           shiny::sidebarLayout(
             shiny::sidebarPanel(
               width = 3,
+              shiny::uiOutput("select_medfield_context"),
               shiny::uiOutput("select_medfield_registry"),
               shiny::uiOutput("select_registry_medfield"),
               shiny::actionButton("update_medfield",
@@ -121,6 +108,7 @@ app_ui <- function() {
           shiny::sidebarLayout(
             shiny::sidebarPanel(
               width = 3,
+              shiny::uiOutput("select_user_context"),
               shiny::uiOutput("select_user_registry"),
               shiny::uiOutput("select_registry_user"),
               shiny::actionButton("update_reguser",
@@ -147,6 +135,7 @@ app_ui <- function() {
           shiny::span("Minefelt!", title = conf$app_text$tooltip$mine_field),
           shiny::sidebarLayout(
             shiny::sidebarPanel(
+              shiny::uiOutput("select_minefield_context"),
               shiny::uiOutput("mine_field_uc")
             ),
             shiny::mainPanel(
