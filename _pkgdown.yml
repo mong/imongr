@@ -143,6 +143,7 @@ reference:
     - mod_upload
     - mod_download
     - mod_review
+    - mod_status
 
   - title: Data
     desc: >
@@ -176,7 +177,7 @@ reference:
 
   - title: internal
     contents:
+    - checks
     - check_no_dg
-    - levels_consistent_check
     - oversize_check
 

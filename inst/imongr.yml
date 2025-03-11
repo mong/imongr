@@ -76,6 +76,8 @@ app_text:
       Se og endre på indikatortekster
     review: |-
       Send inn vurdering av årsrapporter
+    project: |-
+      Se og endre på kvalitetsforbedringsprosjekter
     adminer: |-
       Administrer data
 db:
@@ -168,6 +170,23 @@ db:
       - phone
       - email
       - valid
+    project_ind:
+      insert:
+      - project_id
+      - ind_id
+    project_hospital:
+      insert:
+      - project_id
+      - hospital_orgnr
+    project:
+      insert:
+      - id
+      - registry_id
+      - start_year
+      - end_year
+      - title
+      - short_description
+      - long_description
     ind:
       insert:
       - id
