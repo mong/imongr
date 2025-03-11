@@ -144,6 +144,7 @@ reference:
     - mod_download
     - mod_review
     - mod_status
+    - mod_project
 
   - title: Data
     desc: >
