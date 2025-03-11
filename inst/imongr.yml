@@ -188,7 +188,12 @@ db:
     hospital_ind:
       insert:
       - id
-      - orgnr
+      - hospital_orgnr
+      - ind_id
+    rhf_ind:
+      insert:
+      - id
+      - rhf_orgnr
       - ind_id
     ind:
       insert:
