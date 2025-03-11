@@ -61,7 +61,3 @@ In a row ";;;;;" the values will translate to
 NA or an empty string depending on whether the columns
 are numeric or strings.
 }
-\examples{
-version_info()
-no_opt_out_ok()
-}
