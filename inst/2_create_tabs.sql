@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS `requirements` (
 
 CREATE TABLE IF NOT EXISTS `hospital_ind` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `hospita_orgnr` int(10) unsigned NOT NULL,
+  `hospital_orgnr` int(10) unsigned NOT NULL,
   `ind_id` varchar(63) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_hospital_ind_hospital`
