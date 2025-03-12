@@ -4,8 +4,8 @@ development:
   mode: auto
 
 template:
-  params:
-    bootswatch: flatly
+  bootstrap: 5
+  bootswatch: flatly
 
 reference:
   - title: Configuration
@@ -144,6 +144,7 @@ reference:
     - mod_download
     - mod_review
     - mod_status
+    - mod_project
 
   - title: Data
     desc: >
@@ -174,10 +175,3 @@ reference:
     - mod_report
     - get_table_raw
     - registry_status_report
-
-  - title: internal
-    contents:
-    - checks
-    - check_no_dg
-    - oversize_check
-
