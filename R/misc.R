@@ -92,9 +92,6 @@ user_widget <- function() {
 
 #' @rdname misc
 #' @export
-#' @importFrom utils installed.packages
-#' @examples
-#' version_info()
 version_info <- function(newline = "<br>") {
   conf <- get_config()
   pkg <- conf$app_text$info$version$app
@@ -105,8 +102,6 @@ version_info <- function(newline = "<br>") {
 
 #' @rdname misc
 #' @export
-#' @examples
-#' no_opt_out_ok()
 no_opt_out_ok <- function() {
   conf <- get_config()
   msg <- conf$app_text$action_button$no_opt_out_ok

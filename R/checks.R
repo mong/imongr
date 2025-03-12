@@ -6,6 +6,7 @@
 #' @param rv A shiny::reactiveValues object
 #'
 #' @name checks
+#' @noRd
 NULL
 
 ############################
@@ -20,6 +21,7 @@ NULL
 #' The input should therefore go through this function.
 #'
 #' @param s string
+#' @noRd
 check_no_dg <- function(s) {
   dplyr::case_when(s == "Ingen" ~ NA, .default = s)
 }
@@ -34,6 +36,7 @@ check_no_dg <- function(s) {
 #' @param oversize Logical
 #' @param conf The data from the get_config function
 #' @param conf get_config() output
+#' @noRd
 oversize_check <- function(oversize, conf) {
   if (oversize) {
     shiny::HTML(conf$indicator$oversize_message)
