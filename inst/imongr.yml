@@ -185,14 +185,11 @@ db:
       - title
       - short_description
       - long_description
-    hospital_ind:
+    unit_ind:
       insert:
       - id
       - hospital_orgnr
-      - ind_id
-    rhf_ind:
-      insert:
-      - id
+      - hf_orgnr
       - rhf_orgnr
       - ind_id
     ind:
