@@ -221,6 +221,12 @@ app_server <- function(input, output, session) {
     registry_tracker$current_registry <- rv_project$registry_id
   })
 
+  # selected indicators
+  rv_selected_indicators <- selected_indicators_server("selected_indicators", registry_tracker, pool, pool_verify)
+
+  shiny::observeEvent(rv_selected_indicators$registry_id, {
+    registry_tracker$current_registry <- rv_selected_indicators$registry_id
+  })
 
   ##### Admin #####
 
