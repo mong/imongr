@@ -68,6 +68,12 @@ app_ui <- function() {
         review_ui("review")
       ),
       shiny::tabPanel(
+        value = "selected_indicators",
+        shiny::span("Utvalgte indikatorer",
+        title = conf$app_text$tooltip$selected_indicators
+        )
+      ),
+      shiny::tabPanel(
         value = "project",
         shiny::span("Kvalitetsforbedring",
           title = conf$app_text$tooltip$project

@@ -91,7 +91,6 @@ app_server <- function(input, output, session) {
     shiny::showTab("tabs", target = "publish")
     shiny::showTab("tabs", target = "download")
     shiny::showTab("tabs", target = "indicator")
-    shiny::showTab("tabs", target = "project")
   }
 
   show_reviewer <- function() {
@@ -100,6 +99,8 @@ app_server <- function(input, output, session) {
 
   show_manager <- function() {
     shiny::showTab("tabs", target = "Administrative verkt\u00f8y")
+    shiny::showTab("tabs", target = "selected_indicators")
+    shiny::showTab("tabs", target = "project")
   }
 
   show_tabs <- c(show_provider, show_reviewer, show_manager)
@@ -118,6 +119,7 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "status")
   shiny::hideTab("tabs", target = "review")
   shiny::hideTab("tabs", target = "project")
+  shiny::hideTab("tabs", target = "selected_indicators")
 
   # Show the tabs that are appropriate for the user's roles
   lapply(show_tabs[which(roles)], FUN = function(fun) {
