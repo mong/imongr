@@ -27,9 +27,9 @@ selected_indicators_ui <- function(id) {
         shiny::uiOutput(ns("message"))
       ),
       shiny::mainPanel(
-        shiny::uiOutput(ns("hospitals")),
-        shiny::uiOutput(ns("hfs")),
-        shiny::uiOutput(ns("rhfs")),
+        shiny::uiOutput(ns("add_hospitals")),
+        shiny::uiOutput(ns("add_hfs")),
+        shiny::uiOutput(ns("add_rhfs")),
       )
     )
   )
@@ -42,7 +42,12 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
     ns <- session$ns
     conf <- get_config()
 
+    rv <- shiny::reactiveValues()
     rv_return <- shiny::reactiveValues()
+
+    rhfs_orgnr <- get_named_orgnr(pool_verify, "rhf")
+    hfs_orgnr <- get_named_orgnr(pool_verify, "hf")
+    hospitals_orgnr <- get_named_orgnr(pool_verify, "hospital")
 
     output$select_registry <- shiny::renderUI({
       select_registry_ui(pool_verify, conf,
@@ -53,6 +58,7 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       )
     })
 
+    # When you select a registry
     shiny::observeEvent(input$selected_registry, {
       rv_return$registry_id <- input$selected_registry
     })
@@ -62,6 +68,51 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       shiny::selectInput(
         ns("selected_indicator"), "Velg indikator:",
         choices = get_registry_indicators(pool_verify, input$selected_registry)$id
+      )
+    })
+
+    # When you select an indicator
+    shiny::observeEvent(input$selected_indicator, {
+      rv$hospitals <- get_ind_units(pool_verify, input$selected_indicator)$hospital_orgnr
+      rv$hfs <- get_ind_units(pool_verify, input$selected_indicator)$hf_orgnr
+      rv$rhfs <- get_ind_units(pool_verify, input$selected_indicator)$rhf_orgnr
+
+      # Remove NULL rows
+      rv$hospitals <- rv$hospitals[!is.na(rv$hospitals)]
+      rv$hfs <- rv$hfs[!is.na(rv$hfs)]
+      rv$rhfs <- rv$rhfs[!is.na(rv$rhfs)]
+    })
+
+    # Add RHFs UI
+    output$add_rhfs <- shiny::renderUI({
+      shiny::selectInput(
+        inputId = ns("rhfs"),
+        label = "Velg RHF",
+        choices = rhfs_orgnr,
+        selected = rv$rhfs,
+        multiple = TRUE
+      )
+    })
+
+    # Add hospitals UI
+    output$add_hfs <- shiny::renderUI({
+      shiny::selectInput(
+        inputId = ns("hfs"),
+        label = "Velg HF",
+        choices = hfs_orgnr,
+        selected = rv$hfs,
+        multiple = TRUE
+      )
+    })
+
+    # Add hospitals UI
+    output$add_hospitals <- shiny::renderUI({
+      shiny::selectInput(
+        inputId = ns("hospitals"),
+        label = "Velg sykehus",
+        choices = hospitals_orgnr,
+        selected = rv$hospitals,
+        multiple = TRUE
       )
     })
 
