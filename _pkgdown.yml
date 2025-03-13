@@ -145,6 +145,7 @@ reference:
     - mod_review
     - mod_status
     - mod_project
+    - mod_selected_indicators
 
   - title: Data
     desc: >
