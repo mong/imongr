@@ -57,7 +57,7 @@ services:
   code-server:
     depends_on:
       - db
-    image: hnskde/mongr-dev-code-server:2.2.0
+    image: hnskde/mongr-dev-code-server:2.2.1
     restart: "no"
     volumes:
       - ~/.ssh:/home/coder/.ssh
