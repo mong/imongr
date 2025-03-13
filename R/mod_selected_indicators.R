@@ -26,9 +26,9 @@ selected_indicators_ui <- function(id) {
         shiny::uiOutput(ns("update_button")),
       ),
       shiny::mainPanel(
-        shiny::uiOutput(ns("add_hospitals")),
-        shiny::uiOutput(ns("add_hfs")),
         shiny::uiOutput(ns("add_rhfs")),
+        shiny::uiOutput(ns("add_hfs")),
+        shiny::uiOutput(ns("add_hospitals"))
       )
     )
   )
