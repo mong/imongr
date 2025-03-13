@@ -77,7 +77,7 @@ app_ui <- function() {
       shiny::tabPanel(
         value = "selected_indicators",
         shiny::span("Utvalgte indikatorer",
-        title = conf$app_text$tooltip$selected_indicators
+          title = conf$app_text$tooltip$selected_indicators
         ),
         selected_indicators_ui("selected_indicators")
       ),

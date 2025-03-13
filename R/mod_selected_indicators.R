@@ -26,7 +26,11 @@ selected_indicators_ui <- function(id) {
         shiny::uiOutput(ns("update_indicators")),
         shiny::uiOutput(ns("message"))
       ),
-       shiny::mainPanel()
+      shiny::mainPanel(
+        shiny::uiOutput(ns("hospitals")),
+        shiny::uiOutput(ns("hfs")),
+        shiny::uiOutput(ns("rhfs")),
+      )
     )
   )
 }
