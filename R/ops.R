@@ -453,9 +453,9 @@ WHERE
 #' @param pool Database pool object
 #' @param ind_id The id of the selected indicator
 #' @param df A data frame with new unit data for overwriting the old rows
-#' 
-#' This function is intended for the selected indicators tab, 
-#' 
+#'
+#' This function is intended for the selected indicators tab,
+#'
 #' @noRd
 update_ind_units <- function(pool, ind_id, new_data) {
   # Delete all hospitals from the selected project

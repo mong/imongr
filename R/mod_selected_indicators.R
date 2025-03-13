@@ -97,8 +97,11 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       new_hfs <- c(rep(NA, hospital_count), input$hfs, rep(NA, rhf_count))
       new_rhfs <- c(rep(NA, hospital_count + hf_count), input$rhfs)
 
-      new_data <- data.frame(ind_id = input$selected_indicator, hospital_orgnr = new_hospitals, hf_orgnr = new_hfs, rhf_orgnr = new_rhfs)
-      
+      new_data <- data.frame(ind_id = input$selected_indicator,
+                             hospital_orgnr = new_hospitals,
+                             hf_orgnr = new_hfs,
+                             rhf_orgnr = new_rhfs)
+
       update_ind_units(pool_verify, input$selected_indicator, new_data)
 
       # Reload data from the data base
