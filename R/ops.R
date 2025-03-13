@@ -449,6 +449,33 @@ WHERE
   }
 }
 
+#' @rdname ops
+#' @param pool Database pool object
+#' @param ind_id The id of the selected indicator
+#' @param df A data frame with new unit data for overwriting the old rows
+#' 
+#' This function is intended for the selected indicators tab, 
+#' 
+#' @noRd
+update_ind_units <- function(pool, ind_id, new_data) {
+  # Delete all hospitals from the selected project
+  query <- paste0("
+DELETE FROM
+  unit_ind
+WHERE
+  ind_id='", ind_id, "';")
+
+  pool::dbExecute(pool, query)
+
+  # Add new rows if available
+  if (nrow(new_data) > 0) {
+    pool::dbWriteTable(pool, "unit_ind", new_data,
+      append = TRUE,
+      row.names = FALSE
+    )
+  }
+}
+
 #' Update the description text from the main panel input
 #' in the indicator tab
 #'

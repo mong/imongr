@@ -23,8 +23,7 @@ selected_indicators_ui <- function(id) {
         shiny::uiOutput(ns("select_registry")),
         shiny::uiOutput(ns("select_indicator")),
         shiny::hr(),
-        shiny::uiOutput(ns("update_indicators")),
-        shiny::uiOutput(ns("message"))
+        shiny::uiOutput(ns("update_button")),
       ),
       shiny::mainPanel(
         shiny::uiOutput(ns("add_hospitals")),
@@ -71,16 +70,40 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       )
     })
 
+    output$update_button <- shiny::renderUI({
+      shiny::actionButton(
+        ns("update_units"),
+        "Oppdater enheter",
+        style = conf$profile$action_button_style
+      )
+    })
+
     # When you select an indicator
     shiny::observeEvent(input$selected_indicator, {
-      rv$hospitals <- get_ind_units(pool_verify, input$selected_indicator)$hospital_orgnr
-      rv$hfs <- get_ind_units(pool_verify, input$selected_indicator)$hf_orgnr
-      rv$rhfs <- get_ind_units(pool_verify, input$selected_indicator)$rhf_orgnr
+      ind_units <- get_ind_units(pool_verify, input$selected_indicator)
+      rv$hospitals <- ind_units$hospital_orgnr
+      rv$hfs <- ind_units$hf_orgnr
+      rv$rhfs <- ind_units$rhf_orgnr
 
       # Remove NULL rows
       rv$hospitals <- rv$hospitals[!is.na(rv$hospitals)]
       rv$hfs <- rv$hfs[!is.na(rv$hfs)]
       rv$rhfs <- rv$rhfs[!is.na(rv$rhfs)]
+    })
+
+    # When you click the update button
+    shiny::observeEvent(input$update_units, {
+      hospital_count <- length(input$hospitals)
+      hf_count <- length(input$hfs)
+      rhf_count <- length(input$rhfs)
+
+      new_hospitals <- c(input$hospitals, rep(NA, hf_count + rhf_count))
+      new_hfs <- c(rep(NA, hospital_count), input$hfs, rep(NA, rhf_count))
+      new_rhfs <- c(rep(NA, hospital_count + hf_count), input$rhfs)
+
+      new_data <- data.frame(ind_id = input$selected_indicator, hospital_orgnr = new_hospitals, hf_orgnr = new_hfs, rhf_orgnr = new_rhfs)
+      
+      update_ind_units(pool_verify, input$selected_indicator, new_data)
     })
 
     # Add RHFs UI
