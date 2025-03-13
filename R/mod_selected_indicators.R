@@ -48,6 +48,7 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
     hfs_orgnr <- get_named_orgnr(pool_verify, "hf")
     hospitals_orgnr <- get_named_orgnr(pool_verify, "hospital")
 
+    # Select registry drop down menu
     output$select_registry <- shiny::renderUI({
       select_registry_ui(pool_verify, conf,
         input_id = ns("selected_registry"),
@@ -62,6 +63,7 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       rv_return$registry_id <- input$selected_registry
     })
 
+    # Select indicator drop down menu
     output$select_indicator <- shiny::renderUI({
       shiny::req(input$selected_registry)
       shiny::selectInput(
@@ -70,6 +72,7 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       )
     })
 
+    # Update button
     output$update_button <-  shiny::renderUI({
       update_ind_units_check(input, conf, ns, rv)
     })
@@ -111,7 +114,7 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       rv$rhfs <- ind_units$rhf_orgnr
     })
 
-    # Add RHFs UI
+    # Add RHFs input field
     output$add_rhfs <- shiny::renderUI({
       shiny::selectInput(
         inputId = ns("rhfs"),
@@ -122,7 +125,7 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       )
     })
 
-    # Add hospitals UI
+    # Add hospitals input field
     output$add_hfs <- shiny::renderUI({
       shiny::selectInput(
         inputId = ns("hfs"),
@@ -133,7 +136,7 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       )
     })
 
-    # Add hospitals UI
+    # Add hospitals input field
     output$add_hospitals <- shiny::renderUI({
       shiny::selectInput(
         inputId = ns("hospitals"),
