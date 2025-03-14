@@ -74,6 +74,13 @@ app_ui <- function() {
         ),
         project_ui("project")
       ),
+      shiny::tabPanel(
+        value = "selected_indicators",
+        shiny::span("Utvalgte indikatorer",
+          title = conf$app_text$tooltip$selected_indicators
+        ),
+        selected_indicators_ui("selected_indicators")
+      ),
       shiny::navbarMenu(
         "Administrative verkt\u00f8y",
         shiny::tabPanel(

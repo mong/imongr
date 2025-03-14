@@ -47,17 +47,6 @@ project_ui <- function(id) {
 }
 
 #' @rdname mod_project
-#' @return A named list of hospital organization numbers with their short names as names
-#' @export
-get_hospitals_orgnr <- function(pool) {
-  hospitals_df <- get_hospitals(pool)
-  hospitals_orgnr <- hospitals_df$orgnr
-  names(hospitals_orgnr) <- hospitals_df$short_name
-
-  return(hospitals_orgnr)
-}
-
-#' @rdname mod_project
 #' @export
 project_server <- function(id, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {
@@ -72,7 +61,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         dplyr::filter(.data$id == input$project)
     })
 
-    hospitals_orgnr <- get_hospitals_orgnr(pool_verify)
+    hospitals_orgnr <- get_named_orgnr(pool_verify, "hospital")
 
     validateProjectName <- function(x) {
       existing_project_ids <- pool::dbGetQuery(pool_verify, "SELECT id FROM project")$id

@@ -76,6 +76,8 @@ app_text:
       Send inn vurdering av årsrapporter
     project: |-
       Se og endre på kvalitetsforbedringsprosjekter
+    selected_indicators: |-
+      Velg utvalgte indikatorer for behandlingsenheter
     adminer: |-
       Administrer data
 db:
@@ -185,6 +187,13 @@ db:
       - title
       - short_description
       - long_description
+    unit_ind:
+      insert:
+      - id
+      - hospital_orgnr
+      - hf_orgnr
+      - rhf_orgnr
+      - ind_id
     ind:
       insert:
       - id
