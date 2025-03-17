@@ -17,16 +17,16 @@ app_server <- function(input, output, session) {
   conf <- get_config()
   pool <- make_pool()
   pool_verify <- make_pool(context = "verify")
+
   rv <- shiny::reactiveValues(
     context = "verify",
-    medfield_data = get_table(pool, "medfield"),
+    medfield_data = get_table(pool_verify, "medfield"),
     medfield_summary = medfield_summary_text_ui(
-      pool, conf,
-      get_table(pool, "medfield")
+      pool_verify, conf,
+      get_table(pool_verify, "medfield")
     ),
-    user_data = get_users(pool),
-    user_summary =
-      reguser_summary_text_ui(pool, conf, get_users(pool)),
+    user_data = get_users(pool_verify),
+    user_registry_data = get_users_per_registry(pool_verify),
     publish_reg = character(),
     download_reg = character(),
     indicator_data = data.frame(),
@@ -99,6 +99,8 @@ app_server <- function(input, output, session) {
 
   show_manager <- function() {
     shiny::showTab("tabs", target = "Administrative verkt\u00f8y")
+    shiny::showTab("tabs", target = "selected_indicators")
+    shiny::showTab("tabs", target = "project")
   }
 
   show_tabs <- c(show_provider, show_reviewer, show_manager)
@@ -109,7 +111,6 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "download")
   shiny::hideTab("tabs", target = "indicator")
   shiny::hideTab("tabs", target = "Administrative verkt\u00f8y")
-  shiny::hideTab("tabs", target = "settings")
   shiny::hideTab("tabs", target = "medfield")
   shiny::hideTab("tabs", target = "reguser")
   shiny::hideTab("tabs", target = "adminer")
@@ -117,6 +118,8 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "report")
   shiny::hideTab("tabs", target = "status")
   shiny::hideTab("tabs", target = "review")
+  shiny::hideTab("tabs", target = "project")
+  shiny::hideTab("tabs", target = "selected_indicators")
 
   # Show the tabs that are appropriate for the user's roles
   lapply(show_tabs[which(roles)], FUN = function(fun) {
@@ -149,8 +152,7 @@ app_server <- function(input, output, session) {
     )
   )
 
-  shiny::observeEvent(input$context, {
-    rv$context <- input$context
+  shiny::observeEvent(rv$context, {
     drain_pool(rv$pool)
     rv$download_reg <- input$download_registry
     rv$admin_url <- paste0(
@@ -164,8 +166,7 @@ app_server <- function(input, output, session) {
     rv$medfield_summary <-
       medfield_summary_text_ui(rv$pool, conf, get_table(rv$pool, "medfield"))
     rv$user_data <- get_users(rv$pool)
-    rv$user_summary <-
-      reguser_summary_text_ui(rv$pool, conf, get_users(rv$pool))
+    rv$user_registry_data <- get_users_per_registry(rv$pool)
   })
 
 
@@ -206,29 +207,28 @@ app_server <- function(input, output, session) {
     registry_tracker$current_registry <- rv_indicator$registry_id
   })
 
+  # review
   rv_review <- review_server("review", registry_tracker, pool)
 
   shiny::observeEvent(rv_review$registry_id, {
     registry_tracker$current_registry <- rv_review$registry_id
   })
 
-  ##### Admin #####
+  # project
+  rv_project <- project_server("project", registry_tracker, pool, pool_verify)
 
-  # manager settings
-  output$select_context <- shiny::renderUI({
-    if (valid_user) {
-      shiny::selectInput("context", "Velg milj\u00f8:",
-        choices = list(
-          Produksjon = "prod",
-          Kvalitetskontroll = "verify",
-          QA = "qa"
-        ),
-        selected = "verify"
-      )
-    } else {
-      NULL
-    }
+  shiny::observeEvent(rv_project$registry_id, {
+    registry_tracker$current_registry <- rv_project$registry_id
   })
+
+  # selected indicators
+  rv_selected_indicators <- selected_indicators_server("selected_indicators", registry_tracker, pool, pool_verify)
+
+  shiny::observeEvent(rv_selected_indicators$registry_id, {
+    registry_tracker$current_registry <- rv_selected_indicators$registry_id
+  })
+
+  ##### Admin #####
 
   # registry medfields
   shiny::observeEvent(input$update_medfield, {
@@ -239,9 +239,24 @@ app_server <- function(input, output, session) {
       ),
       medfield_id = input$select_medfield
     )
-    update_registry_medfield(rv$pool, registry_medfield_update)
+    update_registry_medfield(rv$pool, input$medfield_registry, registry_medfield_update)
     rv$medfield_summary <-
       medfield_summary_text_ui(rv$pool, conf, rv$medfield_data)
+  })
+
+  output$select_medfield_context <- shiny::renderUI({
+    shiny::selectInput("medfield_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$medfield_context, {
+    rv$context <- input$medfield_context
   })
 
   output$select_medfield_registry <- shiny::renderUI({
@@ -293,7 +308,11 @@ app_server <- function(input, output, session) {
     registry_tracker$current_registry <- input$medfield_registry
   })
 
-  # user registries
+  ###########################
+  ##### user registries #####
+  ###########################
+
+  # When you click the button
   shiny::observeEvent(input$update_reguser, {
     registry_user_update <- data.frame(
       registry_id = rep(
@@ -302,11 +321,29 @@ app_server <- function(input, output, session) {
       ),
       user_id = input$select_user
     )
-    update_registry_user(rv$pool, registry_user_update)
-    rv$user_summary <-
-      reguser_summary_text_ui(rv$pool, conf, rv$user_data)
+
+    update_registry_user(rv$pool, input$user_registry, registry_user_update)
+
+    rv$user_registry_data <- get_users_per_registry(rv$pool)
+    rv$user_data <- get_users(rv$pool)
   })
 
+  output$select_user_context <- shiny::renderUI({
+    shiny::selectInput("user_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$user_context, {
+    rv$context <- input$user_context
+  })
+
+  # Select registry drop down menu
   output$select_user_registry <- shiny::renderUI({
     select_registry_ui(rv$pool, conf,
       input_id = "user_registry",
@@ -315,28 +352,40 @@ app_server <- function(input, output, session) {
     )
   })
 
+  # Select users drop down meny
   output$select_registry_user <- shiny::renderUI({
     shiny::req(input$user_registry)
+
     if (dim(rv$user_data)[1] > 0) {
       all_user <- rv$user_data$id
       names(all_user) <- rv$user_data$user_name
     } else {
       all_user <- list(`Not defined!` = 0)
     }
+
     reguser <- get_registry_user(rv$pool, input$user_registry)
+
     if (!is.null(dim(reguser))) {
       current_reguser <- reguser$user_id
     } else {
       current_reguser <- NULL
     }
-    shiny::selectInput(
-      inputId = "select_user",
-      label = "Velg bruker(e):",
-      choices = all_user,
-      selected = current_reguser,
-      multiple = TRUE
+
+    shiny::tagList(
+      shiny::selectInput(
+        inputId = "select_user",
+        label = "Velg bruker(e):",
+        choices = all_user,
+        selected = current_reguser,
+        multiple = TRUE
+      ),
+      shiny::tags$style(type = "text/css",
+        ".selectize-input { word-break : break-word;}"
+      )
     )
   })
+
+  # Top text
   output$registry_user_header <- shiny::renderText({
     paste0(
       "<h2>", conf$reguser$text$heading, " <i>",
@@ -346,15 +395,33 @@ app_server <- function(input, output, session) {
       "</i>:</h2><br>", conf$reguser$text$body
     )
   })
-  output$registry_user_summary <- shiny::renderText({
-    rv$user_summary
+
+  # The user list
+  output$user_table <- DT::renderDataTable(
+    DT::datatable(rv$user_registry_data,
+      options = list(search = list(
+        search = get_registry_name(rv$pool, input$user_registry),
+        regex = FALSE
+      )
+      ),
+      colnames = c("Brukernavn", "Register"),
+      rownames = FALSE
+    )
+  )
+
+  output$registry_user_summary <- shiny::renderUI({
+    DT::dataTableOutput("user_table")
   })
 
+  # When you change registry
   shiny::observeEvent(input$user_registry, {
     registry_tracker$current_registry <- input$user_registry
   })
 
-  # our db admin interface
+  ##################################
+  ##### Our db admin interface #####
+  ##################################
+
   output$admin_frame <- shiny::renderUI({
     shiny::tags$iframe(
       src = rv$admin_url, width = "100%", height = 1024,
@@ -393,6 +460,21 @@ app_server <- function(input, output, session) {
         shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
       }
     )
+  })
+
+  output$select_minefield_context <- shiny::renderUI({
+    shiny::selectInput("minefield_context", "Velg milj\u00f8:",
+      choices = list(
+        Produksjon = "prod",
+        Kvalitetskontroll = "verify",
+        QA = "qa"
+      ),
+      selected = rv$context
+    )
+  })
+
+  shiny::observeEvent(input$minefield_context, {
+    rv$context <- input$minefield_context
   })
 
   output$mine_field_uc <- shiny::renderUI({

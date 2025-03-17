@@ -31,7 +31,7 @@ review_ui <- function(id) {
         shiny::uiOutput(ns("select_year")),
         shiny::numericInput(
           ns("reported_dg"),
-          "DG i % oppgitt av regionene utfra \u00e5rsrapporter",
+          "Total oppgitt dekningsgrad (%) for registeret i rapporterings\u00e5ret",
           value = 0,
           min = 0,
           max = 100,
@@ -257,8 +257,8 @@ review_server <- function(id, registry_tracker, pool) {
     })
 
     # Hold oversikt over valgt register
-    shiny::observeEvent(input$indicator_registry, {
-      rv_return$registry_id <- input$indicator_registry
+    shiny::observeEvent(input$selected_registry, {
+      rv_return$registry_id <- input$selected_registry
     })
 
     #######################

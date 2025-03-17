@@ -211,29 +211,6 @@ test_that("text for medfield summary is properly provided", {
   )
 })
 
-test_that("text for reguser summary is properly provided", {
-  check_db()
-  expect_null(reguser_summary_text_ui(pool, conf, data.frame()))
-  df <- imongr::user
-  df <- cbind(data.frame(id = seq(1, dim(df)[1])), df)
-  expect_equal(
-    class(reguser_summary_text_ui(pool, conf, df)),
-    "character"
-  )
-  df <- rbind(
-    df,
-    data.frame(
-      id = 100, user_name = "nobody@nowhere.com",
-      name = "Mr Nobody", phone = "+0000000000",
-      email = "nobody@nowhere.com", valid = 1
-    )
-  )
-  expect_equal(
-    class(medfield_summary_text_ui(pool, conf, df)),
-    "character"
-  )
-})
-
 # clean up
 ## drop tables (in case tests are re-run on the same instance)
 if (is.null(check_db(is_test_that = FALSE))) {
