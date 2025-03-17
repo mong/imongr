@@ -296,6 +296,50 @@ FROM
 }
 
 #' @rdname db_get
+#' @return A named list of hospital organization numbers with their short names as names
+#' @export
+get_named_orgnr <- function(pool, level) {
+  units_df <- switch(level,
+    "hospital" = get_hospitals(pool),
+    "hf" = get_hfs(pool),
+    "rhf" = get_rhfs(pool)
+  )
+
+  units_orgnr <- units_df$orgnr
+  names(units_orgnr) <- units_df$short_name
+
+  return(units_orgnr)
+}
+
+#' @rdname db_get
+#' @export
+get_hfs <- function(pool) {
+  query <- paste0("
+SELECT
+  orgnr,
+  short_name
+FROM
+  hf;
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
+get_rhfs <- function(pool) {
+  query <- paste0("
+SELECT
+  orgnr,
+  short_name
+FROM
+  rhf;
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
 #' @export
 get_flat_org <- function(pool) {
   conf <- get_config()
@@ -665,6 +709,23 @@ get_project_hospitals <- function(pool, project) {
       project_hospital
     WHERE
       project_id='", project, "';
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
+get_ind_units <- function(pool, ind_id) {
+  query <- paste0("
+  SELECT
+    hospital_orgnr,
+    hf_orgnr,
+    rhf_orgnr
+  FROM
+    unit_ind
+  WHERE
+    ind_id = '", ind_id, "';
   ")
 
   pool::dbGetQuery(pool, query)

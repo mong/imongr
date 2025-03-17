@@ -251,3 +251,35 @@ update_project_txt_check <- function(input, conf, ns, rv) {
     )
   }
 }
+
+
+#' Check for updated treatments unit for selected indicators
+#'
+#' @param input A shiny input object
+#' @param conf The data from the get_config function
+#' @param ns A shiny::NS namespace function
+#' @param rv A shiny::reactiveValues object
+#'
+#' @rdname checks
+#' @noRd
+update_ind_units_check <- function(input, conf, ns, rv) {
+  cast_and_sort <- function(x) {
+    return(sort(as.numeric(x)))
+  }
+
+  no_changes <- all(c(
+    identical(cast_and_sort(rv$hospitals), cast_and_sort(input$hospitals)),
+    identical(cast_and_sort(rv$hfs), cast_and_sort(input$hfs)),
+    identical(cast_and_sort(rv$rhfs), cast_and_sort(input$rhfs))
+  ))
+
+  if (no_changes) {
+    NULL
+  } else {
+    shiny::actionButton(
+      ns("update_units"),
+      "Oppdater enheter",
+      style = conf$profile$action_button_style
+    )
+  }
+}
