@@ -281,7 +281,6 @@ CREATE TABLE IF NOT EXISTS `requirements` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
-
 CREATE TABLE IF NOT EXISTS `unit_ind` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `hospital_orgnr` int(10) unsigned,
@@ -318,8 +317,10 @@ CREATE TABLE IF NOT EXISTS `project` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `project_hospital` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `project_id` varchar(63) NOT NULL,
   `hospital_orgnr` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
   CONSTRAINT `fk_project_hospital_project`
     FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
     ON UPDATE CASCADE,
@@ -329,8 +330,10 @@ CREATE TABLE IF NOT EXISTS `project_hospital` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `project_ind` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `project_id` varchar(63) NOT NULL,
   `ind_id` varchar(63) NOT NULL,
+  PRIMARY KEY (`id`),
   CONSTRAINT `fk_project_ind_project`
     FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
     ON UPDATE CASCADE,
