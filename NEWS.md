@@ -1,3 +1,18 @@
+# imongr 2.7.0
+
+## Endringer
+
+* Tillat tomme rader i csv-fil by @Stein-Kato in https://github.com/mong/imongr/pull/524
+* Fiks lintr-jobb by @arnfinn in https://github.com/mong/imongr/pull/533
+* Bytt kontekst i fagområde-, bruker- og minefeltmenyer by @Stein-Kato in https://github.com/mong/imongr/pull/516
+* Ny fane for kvalitetsforbedring by @Stein-Kato in https://github.com/mong/imongr/pull/527
+* Fiks dokumentasjon slik at pkgdown bygger siden by @Stein-Kato in https://github.com/mong/imongr/pull/537
+* Update hnskde/mongr-dev-rstudio Docker tag to v2.2.1 by @renovate in https://github.com/mong/imongr/pull/539
+* Update hnskde/mongr-dev-code-server Docker tag to v2.2.1 by @renovate in https://github.com/mong/imongr/pull/538
+* Inndata for utvalgte indikatorer by @Stein-Kato in https://github.com/mong/imongr/pull/536
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.6.0...v2.7.0
+
 # imongr 2.6.0
 
 ## Endringer
