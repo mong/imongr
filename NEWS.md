@@ -10,6 +10,7 @@
 * Update hnskde/mongr-dev-rstudio Docker tag to v2.2.1 by @renovate in https://github.com/mong/imongr/pull/539
 * Update hnskde/mongr-dev-code-server Docker tag to v2.2.1 by @renovate in https://github.com/mong/imongr/pull/538
 * Inndata for utvalgte indikatorer by @Stein-Kato in https://github.com/mong/imongr/pull/536
+* Lagt til id i databaseskjema for kvalitetsforbedringsprosjekter by @Stein-Kato in https://github.com/mong/imongr/pull/541
 
 **Full Changelog**: https://github.com/mong/imongr/compare/v2.6.0...v2.7.0
 
