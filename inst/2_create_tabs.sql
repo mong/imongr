@@ -283,20 +283,11 @@ CREATE TABLE IF NOT EXISTS `requirements` (
 
 CREATE TABLE IF NOT EXISTS `unit_ind` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `hospital_orgnr` int(10) unsigned,
-  `hf_orgnr` int(10) unsigned,
-  `rhf_orgnr` int(10) unsigned,
+  `hospital_short_name` varchar(255),
+  `hf_short_name` varchar(255),
+  `rhf_short_name` varchar(255),
   `ind_id` varchar(63) NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_unit_ind_hospital`
-    FOREIGN KEY (`hospital_orgnr`) REFERENCES `hospital` (`orgnr`)
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_unit_ind_hf`
-    FOREIGN KEY (`hf_orgnr`) REFERENCES `hf` (`orgnr`)
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_unit_ind_rhf`
-    FOREIGN KEY (`rhf_orgnr`) REFERENCES `rhf` (`orgnr`)
-    ON UPDATE CASCADE,
   CONSTRAINT `fk_unit_ind_ind_id`
     FOREIGN KEY (`ind_id`) REFERENCES `ind` (`id`)
     ON UPDATE CASCADE
@@ -319,13 +310,10 @@ CREATE TABLE IF NOT EXISTS `project` (
 CREATE TABLE IF NOT EXISTS `project_hospital` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `project_id` varchar(63) NOT NULL,
-  `hospital_orgnr` int(10) unsigned NOT NULL,
+  `hospital_short_name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_project_hospital_project`
     FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_project_hospital_hospital`
-    FOREIGN KEY (`hospital_orgnr`) REFERENCES `hospital` (`orgnr`)
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 

@@ -44,9 +44,9 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
     rv <- shiny::reactiveValues()
     rv_return <- shiny::reactiveValues()
 
-    rhfs_orgnr <- get_named_orgnr(pool_verify, "rhf")
-    hfs_orgnr <- get_named_orgnr(pool_verify, "hf")
-    hospitals_orgnr <- get_named_orgnr(pool_verify, "hospital")
+    rhf_unit_names <- get_rhfs(pool_verify)$short_name
+    hf_unit_names <- get_hfs(pool_verify)$short_name
+    hospital_unit_names <- get_hospitals(pool_verify)$short_name
 
     # Select registry drop down menu
     output$select_registry <- shiny::renderUI({
@@ -73,16 +73,16 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
     })
 
     # Update button
-    output$update_button <-  shiny::renderUI({
+    output$update_button <- shiny::renderUI({
       update_ind_units_check(input, conf, ns, rv)
     })
 
     # When you select an indicator
     shiny::observeEvent(input$selected_indicator, {
       ind_units <- get_ind_units(pool_verify, input$selected_indicator)
-      rv$hospitals <- ind_units$hospital_orgnr
-      rv$hfs <- ind_units$hf_orgnr
-      rv$rhfs <- ind_units$rhf_orgnr
+      rv$hospitals <- ind_units$hospital_short_name
+      rv$hfs <- ind_units$hf_short_name
+      rv$rhfs <- ind_units$rhf_short_name
 
       # Remove NULL rows
       rv$hospitals <- rv$hospitals[!is.na(rv$hospitals)]
@@ -96,22 +96,30 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       hf_count <- length(input$hfs)
       rhf_count <- length(input$rhfs)
 
-      new_hospitals <- c(input$hospitals, rep(NA, hf_count + rhf_count))
-      new_hfs <- c(rep(NA, hospital_count), input$hfs, rep(NA, rhf_count))
-      new_rhfs <- c(rep(NA, hospital_count + hf_count), input$rhfs)
+      if (hospital_count + hf_count + rhf_count > 0) {
+        new_hospitals <- c(input$hospitals, rep(NA, hf_count + rhf_count))
+        new_hfs <- c(rep(NA, hospital_count), input$hfs, rep(NA, rhf_count))
+        new_rhfs <- c(rep(NA, hospital_count + hf_count), input$rhfs)
 
-      new_data <- data.frame(ind_id = input$selected_indicator,
-                             hospital_orgnr = new_hospitals,
-                             hf_orgnr = new_hfs,
-                             rhf_orgnr = new_rhfs)
-
+        new_data <- data.frame(ind_id = input$selected_indicator,
+                               hospital_short_name = new_hospitals,
+                               hf_short_name = new_hfs,
+                               rhf_short_name = new_rhfs)
+      } else {
+        new_data <- data.frame()
+      }
       update_ind_units(pool_verify, input$selected_indicator, new_data)
 
       # Reload data from the data base
       ind_units <- get_ind_units(pool_verify, input$selected_indicator)
-      rv$hospitals <- ind_units$hospital_orgnr
-      rv$hfs <- ind_units$hf_orgnr
-      rv$rhfs <- ind_units$rhf_orgnr
+      rv$hospitals <- ind_units$hospital_short_name
+      rv$hfs <- ind_units$hf_short_name
+      rv$rhfs <- ind_units$rhf_short_name
+
+      # Remove NULL rows
+      rv$hospitals <- rv$hospitals[!is.na(rv$hospitals)]
+      rv$hfs <- rv$hfs[!is.na(rv$hfs)]
+      rv$rhfs <- rv$rhfs[!is.na(rv$rhfs)]
     })
 
     # Add RHFs input field
@@ -119,7 +127,7 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       shiny::selectInput(
         inputId = ns("rhfs"),
         label = "Velg RHF",
-        choices = rhfs_orgnr,
+        choices = rhf_unit_names,
         selected = rv$rhfs,
         multiple = TRUE
       )
@@ -130,7 +138,7 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       shiny::selectInput(
         inputId = ns("hfs"),
         label = "Velg HF",
-        choices = hfs_orgnr,
+        choices = hf_unit_names,
         selected = rv$hfs,
         multiple = TRUE
       )
@@ -141,7 +149,7 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       shiny::selectInput(
         inputId = ns("hospitals"),
         label = "Velg sykehus",
-        choices = hospitals_orgnr,
+        choices = hospital_unit_names,
         selected = rv$hospitals,
         multiple = TRUE
       )
