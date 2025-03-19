@@ -42,7 +42,7 @@ Imports:
     shinyvalidate,
     tibble,
     yaml
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Suggests: 
     testthat (>= 2.1.0),
     covr,

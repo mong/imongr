@@ -26,7 +26,6 @@
 \alias{get_indicators_registry}
 \alias{get_registry_ind}
 \alias{get_hospitals}
-\alias{get_named_orgnr}
 \alias{get_hfs}
 \alias{get_rhfs}
 \alias{get_users_per_registry}
@@ -60,8 +59,6 @@ get_registry_name(pool, registry, full_name = FALSE)
 get_org_name(pool, orgnr)
 
 get_hospitals(pool)
-
-get_named_orgnr(pool, level)
 
 get_hfs(pool)
 
@@ -125,8 +122,6 @@ Defaults to NA in which case all data is returned}
 }
 \value{
 Data object from database
-
-A named list of hospital organization numbers with their short names as names
 }
 \description{
 Database metadata are read from config. If one or more of these are

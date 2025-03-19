@@ -61,7 +61,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         dplyr::filter(.data$id == input$project)
     })
 
-    hospitals_orgnr <- get_named_orgnr(pool_verify, "hospital")
+    hospital_unit_names <- get_hospitals(pool_verify)$short_name
 
     validateProjectName <- function(x) {
       existing_project_ids <- pool::dbGetQuery(pool_verify, "SELECT id FROM project")$id
@@ -183,8 +183,8 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::selectInput(
         inputId = ns("hospitals"),
         label = "Velg sykehus",
-        choices = hospitals_orgnr,
-        selected = get_project_hospitals(pool_verify, input$project)$hospital_orgnr,
+        choices = hospital_unit_names,
+        selected = get_project_hospitals(pool_verify, input$project)$hospital_short_name,
         multiple = TRUE
       )
     })
@@ -212,14 +212,14 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
       # Update the project_hospital table
       if (!is.null(input$hospitals)) {
-        new_data <- data.frame(project_id = input$project, hospital_orgnr = input$hospitals)
+        new_data <- data.frame(project_id = input$project, hospital_short_name = input$hospitals)
       } else {
         new_data <- data.frame()
       }
 
       update_project_hospitals(pool_verify, input$project, new_data)
 
-      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
+      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_short_name
     })
 
     # When you select a registry
@@ -230,7 +230,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     # When you select a project
     shiny::observeEvent(input$project, {
       rv$project_data <- project_data()
-      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_orgnr
+      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_short_name
     })
 
     # When you push the new project button
