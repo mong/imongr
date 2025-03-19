@@ -166,7 +166,6 @@ update_check <- function(input, conf, ns, rv, level_consistent) {
 update_project_val_check <- function(input, conf, ns, rv, years_consistent) {
   missing_values <- any(c(
     is.null(input$start_year),
-    is.null(input$end_year),
     is.na(input$start_year),
     nrow(rv$project_data) == 0
   ))
