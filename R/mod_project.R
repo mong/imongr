@@ -56,10 +56,10 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     rv_return <- shiny::reactiveValues()
     rv <- shiny::reactiveValues()
 
-    project_data <- shiny::reactive({
+    project_data <- function() {
       get_registry_projects(pool_verify, input$project_registry, input$project_indicator) |>
         dplyr::filter(.data$id == input$project)
-    })
+    }
 
     hospital_unit_names <- get_hospitals(pool_verify)$short_name
 
