@@ -2,6 +2,7 @@
 
 ## Endringer
 * Endret fra orgnr til kortnavn by @Stein-Kato in https://github.com/mong/imongr/pull/543
+* Fikset bug i projektfanen by @Stein-Kato in https://github.com/mong/imongr/pull/545
 
 **Full Changelog**: https://github.com/mong/imongr/compare/v2.7.0...v2.7.1
 
