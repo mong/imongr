@@ -102,9 +102,9 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
         new_rhfs <- c(rep(NA, hospital_count + hf_count), input$rhfs)
 
         new_data <- data.frame(ind_id = input$selected_indicator,
-                              hospital_short_name = new_hospitals,
-                              hf_short_name = new_hfs,
-                              rhf_short_name = new_rhfs)
+                               hospital_short_name = new_hospitals,
+                               hf_short_name = new_hfs,
+                               rhf_short_name = new_rhfs)
       } else {
         new_data <- data.frame()
       }
