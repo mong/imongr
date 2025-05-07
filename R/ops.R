@@ -338,41 +338,149 @@ create_imongr_user <- function(pool, df) {
 }
 
 #' @rdname ops
+#' @param pool Database pool object
+#' @param registry_id The numeric id of the selected registry
+#' @param df A data frame with new user medfield for overwriting the old medfield list
 #' @export
-update_registry_medfield <- function(pool, df) {
+update_registry_medfield <- function(pool, registry_id, df) {
+  # Delete all medfields from the selected registry
   query <- paste0("
 DELETE FROM
   registry_medfield
 WHERE
-  registry_id IN (", paste0(df$registry_id, collapse = ", "), ");")
+  registry_id=", registry_id, ";")
 
   pool::dbExecute(pool, query)
 
-  pool::dbWriteTable(pool, "registry_medfield", df,
-    append = TRUE,
-    row.names = FALSE
-  )
+  # Add medfields to the registry if available
+  if (nrow(df) > 0) {
+    pool::dbWriteTable(pool, "registry_medfield", df,
+      append = TRUE,
+      row.names = FALSE
+    )
+  }
 }
 
 #' @rdname ops
+#' @param pool Database pool object
+#' @param registry_id The numeric id of the selected registry
+#' @param df A data frame with new user data for overwriting the old user list
 #' @export
-update_registry_user <- function(pool, df) {
+update_registry_user <- function(pool, registry_id, df) {
+  # Delete all users from the selected registry
   query <- paste0("
 DELETE FROM
   user_registry
 WHERE
-  registry_id IN (", paste0(df$registry_id, collapse = ", "), ");")
+  registry_id=", registry_id, ";")
 
   pool::dbExecute(pool, query)
 
-  pool::dbWriteTable(pool, "user_registry", df,
-    append = TRUE,
-    row.names = FALSE
-  )
+  # Add new users if available
+  if (nrow(df) > 0) {
+    pool::dbWriteTable(pool, "user_registry", df,
+      append = TRUE,
+      row.names = FALSE
+    )
+  }
 }
 
 #' @rdname ops
-#' @export
+#' @param pool Database pool object
+#' @param pool_verify Database pool object
+#' @param conf The data from the get_config function
+#' @param rv A shiny::reactiveValues object
+#' @noRd
+add_project <- function(input, rv, pool, pool_verify) {
+  query <- paste0("INSERT INTO project (id, registry_id, start_year) VALUES ( '",
+    rv$new_project_name,
+    "', '",
+    input$project_registry,
+    "', '",
+    input$new_project_start_year,
+    "');"
+  )
+
+  pool::dbExecute(pool, query)
+  pool::dbExecute(pool_verify, query)
+}
+
+#' @rdname ops
+#' @param pool Database pool object
+#' @param project_id String
+#' @param indicator_id String
+#' @noRd
+add_project_to_indicator <- function(pool, project_id, indicator_id) {
+  query <- paste0("
+    INSERT INTO
+      project_ind
+      (project_id, ind_id)
+    VALUES ('",
+    project_id,
+    "','",
+    indicator_id,
+    "');"
+  )
+
+  pool::dbExecute(pool, query)
+}
+
+#' @rdname ops
+#' @param pool Database pool object
+#' @param registry_id The numeric id of the selected project
+#' @param df A data frame with new hospital data for overwriting the old hospital list
+#' @noRd
+update_project_hospitals <- function(pool, project_id, new_data) {
+  # Delete all hospitals from the selected project
+  query <- paste0("
+DELETE FROM
+  project_hospital
+WHERE
+  project_id='", project_id, "';")
+
+  pool::dbExecute(pool, query)
+
+  # Add new hospitals if available
+  if (nrow(new_data) > 0) {
+    pool::dbWriteTable(pool, "project_hospital", new_data,
+      append = TRUE,
+      row.names = FALSE
+    )
+  }
+}
+
+#' @rdname ops
+#' @param pool Database pool object
+#' @param ind_id The id of the selected indicator
+#' @param df A data frame with new unit data for overwriting the old rows
+#'
+#' This function is intended for the selected indicators tab,
+#'
+#' @noRd
+update_ind_units <- function(pool, ind_id, new_data) {
+  # Delete all hospitals from the selected project
+  query <- paste0("
+DELETE FROM
+  unit_ind
+WHERE
+  ind_id='", ind_id, "';")
+
+  pool::dbExecute(pool, query)
+
+  # Add new rows if available
+  if (nrow(new_data) > 0) {
+    pool::dbWriteTable(pool, "unit_ind", new_data,
+      append = TRUE,
+      row.names = FALSE
+    )
+  }
+}
+
+#' Update the description text from the main panel input
+#' in the indicator tab
+#'
+#' @rdname ops
+#' @noRd
 update_ind_text <- function(pool, df) {
 
   message("Oppdaterer indikatortekst")
@@ -403,8 +511,45 @@ WHERE
   message("Ferdig\n")
 }
 
+#' Updatet the description text from the main panel input
+#' in the project tab
+#'
 #' @rdname ops
-#' @export
+#' @noRd
+update_project_text <- function(pool, new_data) {
+
+  message("Oppdaterer prosjekttekst")
+
+  query <- paste0("
+UPDATE
+  project
+SET
+  title = ?,
+  short_description = ?,
+  long_description = ?
+WHERE
+  id = ?;")
+
+  params <- list(
+    new_data$title,
+    new_data$short_description,
+    new_data$long_description,
+    new_data$id
+  )
+
+  con <- pool::poolCheckout(pool)
+  rs <- DBI::dbSendQuery(con, query)
+  DBI::dbBind(rs, params)
+  DBI::dbClearResult(rs)
+  pool::poolReturn(con)
+
+  message("Ferdig\n")
+}
+
+#' Update indicator parameters from in the indicator tab sidebar
+#'
+#' @rdname ops
+#' @noRd
 update_ind_val <- function(pool, df) {
 
   message("Oppdaterer indikatorverdier")
@@ -445,8 +590,43 @@ WHERE
   message("Ferdig\n")
 }
 
+#' Update the project info with input from the sidebar menu
+#' in the project tab
 #' @rdname ops
-#' @export
+#' @noRd
+update_project_val <- function(pool, new_data) {
+
+  message("Oppdaterer prosjektverdier")
+
+  query <- paste0("
+UPDATE
+  project
+SET
+  start_year = ?,
+  end_year = ?
+WHERE
+  id = ?;")
+
+  params <- list(
+    new_data$start_year,
+    new_data$end_year,
+    new_data$id
+  )
+
+  con <- pool::poolCheckout(pool)
+  rs <- DBI::dbSendQuery(con, query)
+  DBI::dbBind(rs, params)
+  DBI::dbClearResult(rs)
+  pool::poolReturn(con)
+
+  message("Ferdig\n")
+}
+
+#' Update the review for a given registry and year with input from the checkbox form
+#' in the review tab
+#'
+#' @rdname ops
+#' @noRd
 update_review <- function(pool, df, registry_id, year) {
 
   message("Oppdaterer vurdering")

@@ -30,7 +30,6 @@ natural <- function(vals, tolerance = .Machine$double.eps^0.5) {
   abs(vals - round(vals)) < tolerance
 }
 
-
 #' @rdname misc
 #' @export
 md5_checksum <- function(df, ind = "") {
@@ -52,6 +51,18 @@ md5_checksum <- function(df, ind = "") {
   digest::digest(t, algo = "md5", serialize = FALSE)
 }
 
+#' Function for removing empty rows in csv input.
+#' In a row ";;;;;" the values will translate to
+#' NA or an empty string depending on whether the columns
+#' are numeric or strings.
+#'
+#' @rdname misc
+#' @export
+remove_empty_rows <- function(df) {
+  return(
+    df[rowSums(is.na(df) | df == "") != ncol(df), ]
+  )
+}
 
 #' @rdname misc
 #' @export
@@ -81,9 +92,6 @@ user_widget <- function() {
 
 #' @rdname misc
 #' @export
-#' @importFrom utils installed.packages
-#' @examples
-#' version_info()
 version_info <- function(newline = "<br>") {
   conf <- get_config()
   pkg <- conf$app_text$info$version$app
@@ -94,8 +102,6 @@ version_info <- function(newline = "<br>") {
 
 #' @rdname misc
 #' @export
-#' @examples
-#' no_opt_out_ok()
 no_opt_out_ok <- function() {
   conf <- get_config()
   msg <- conf$app_text$action_button$no_opt_out_ok
@@ -185,4 +191,21 @@ invalidate_cache <- function() {
   system("aws sts get-caller-identity")
   system("aws cloudfront create-invalidation --distribution-id ${distribution_id} --path \"/*\"")
   message("Invaliderte cache")
+}
+
+#' @rdname misc
+#' @noRd
+validateName <- function(x, existing_names) {
+  if (is.null(x)) {
+    return(NULL)
+  } else {
+    if (grepl("^[a-zA-Z0-9_]+$", x) && !(tolower(x) %in% tolower(existing_names))) {
+      return(NULL)
+    } else {
+      return(
+        "Kan ikke være tom, inneholde mellomrom eller spesialtegn, 
+        eller v\u00e6re lik en et eksisterende navn."
+      )
+    }
+  }
 }

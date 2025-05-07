@@ -201,6 +201,27 @@ test_that("all user can be fetched", {
   expect_equal(class(get_users(pool, valid = FALSE)), "data.frame")
 })
 
+test_that("users per registry can be fetched", {
+  check_db()
+
+  users <- imongr::user
+  users$user_name <- as.character(users$user_name)
+  user_registry <- imongr::user_registry
+  registry <- imongr::registry
+
+  users$user_id <- rownames(users) |> as.numeric()
+  registry$id <- as.numeric(registry$id)
+
+  expected_output <- users |>
+    dplyr::left_join(user_registry, by = "user_id") |>
+    dplyr::left_join(registry, by = dplyr::join_by(registry_id == id)) |>
+    dplyr::select(user_name, short_name)
+
+  colnames(expected_output) <- c("user_name", "short_name")
+
+  expect_equal(get_users_per_registry(pool), expected_output)
+})
+
 test_that("indicator data can be fetched from test database", {
   check_db()
   expect_equal(dim(get_table(pool, "ind")), dim(imongr::ind))
@@ -274,8 +295,8 @@ test_that("registries medfields can be fetched", {
 
 test_that("registry-medfield tab can be updated", {
   check_db()
-  df <- imongr::registry_medfield
-  expect_invisible(update_registry_medfield(pool, df))
+  df <- data.frame(registry_id = c(1, 1), medfield_id = c(1, 2))
+  expect_invisible(update_registry_medfield(pool, 1, df))
 })
 
 test_that("users registries can be fetched", {
@@ -285,8 +306,8 @@ test_that("users registries can be fetched", {
 
 test_that("users registries can be updated", {
   check_db()
-  df <- imongr::user_registry
-  expect_invisible(update_registry_user(pool, df))
+  df <- data.frame(registry_id = 1, user_id = 1)
+  expect_invisible(update_registry_user(pool, 1, df))
 })
 
 test_that("aggdata delivery timings can be provided", {

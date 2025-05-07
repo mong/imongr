@@ -281,6 +281,44 @@ FROM
   dplyr::left_join(orgnr, orgs, by = "orgnr")$short_name
 }
 
+#' @rdname db_get
+#' @export
+get_hospitals <- function(pool) {
+  query <- paste0("
+SELECT DISTINCT
+  short_name
+FROM
+  hospital;
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
+get_hfs <- function(pool) {
+  query <- paste0("
+SELECT DISTINCT
+  short_name
+FROM
+  hf;
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
+get_rhfs <- function(pool) {
+  query <- paste0("
+SELECT DISTINCT
+  short_name
+FROM
+  rhf;
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
 
 #' @rdname db_get
 #' @export
@@ -486,6 +524,28 @@ WHERE
   pool::dbGetQuery(pool, query)
 }
 
+#' @rdname db_get
+#' @export
+get_users_per_registry <- function(pool) {
+  query <- "
+SELECT
+  user.user_name,
+  registry.short_name
+FROM
+  user
+LEFT JOIN
+  user_registry
+ON
+  user.id = user_registry.user_id
+LEFT JOIN
+  registry
+ON
+  user_registry.registry_id = registry.id
+WHERE
+  user.valid = 1
+  "
+  pool::dbGetQuery(pool, query)
+}
 
 #' @rdname db_get
 #' @export
@@ -592,6 +652,62 @@ get_review_collaborators <- function(pool, registry) {
   WHERE
     user_registry.registry_id=", registry, " AND role IS NOT NULL;"
   )
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
+get_registry_projects <- function(pool, registry, indicator) {
+  query <- paste0("
+    SELECT
+      project.id,
+      project_ind.ind_id,
+      project.start_year,
+      project.end_year,
+      project.title,
+      project.short_description,
+      project.long_description
+    FROM
+      project
+    LEFT JOIN
+      project_ind
+    ON
+      project.id=project_ind.project_id
+    WHERE
+      project.registry_id=", registry, " AND project_ind.ind_id='", indicator, "';")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
+get_project_hospitals <- function(pool, project) {
+  query <- paste0("
+    SELECT
+      hospital_short_name
+    FROM
+      project_hospital
+    WHERE
+      project_id='", project, "';
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
+get_ind_units <- function(pool, ind_id) {
+  query <- paste0("
+  SELECT
+    hospital_short_name,
+    hf_short_name,
+    rhf_short_name
+  FROM
+    unit_ind
+  WHERE
+    ind_id = '", ind_id, "';
+  ")
 
   pool::dbGetQuery(pool, query)
 }

@@ -25,8 +25,15 @@
 \alias{get_user_deliveries}
 \alias{get_indicators_registry}
 \alias{get_registry_ind}
+\alias{get_hospitals}
+\alias{get_hfs}
+\alias{get_rhfs}
+\alias{get_users_per_registry}
 \alias{get_aggdata}
 \alias{get_review_collaborators}
+\alias{get_registry_projects}
+\alias{get_project_hospitals}
+\alias{get_ind_units}
 \title{Retreiv data from imongr database}
 \usage{
 get_all_user_data(pool)
@@ -51,6 +58,12 @@ get_registry_name(pool, registry, full_name = FALSE)
 
 get_org_name(pool, orgnr)
 
+get_hospitals(pool)
+
+get_hfs(pool)
+
+get_rhfs(pool)
+
 get_flat_org(pool)
 
 get_all_orgnr(pool, include_short_name = FALSE)
@@ -71,11 +84,19 @@ get_registry_user(pool, registry)
 
 get_user_registry(pool, user)
 
+get_users_per_registry(pool)
+
 get_aggdata_delivery(pool, indicator)
 
 get_aggdata(pool, registry)
 
 get_review_collaborators(pool, registry)
+
+get_registry_projects(pool, registry, indicator)
+
+get_project_hospitals(pool, project)
+
+get_ind_units(pool, ind_id)
 }
 \arguments{
 \item{pool}{a database connection pool object}

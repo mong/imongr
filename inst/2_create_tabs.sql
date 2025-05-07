@@ -277,6 +277,55 @@ CREATE TABLE IF NOT EXISTS `requirements` (
   `guide` mediumtext NOT NULL,
   `section` tinytext NOT NULL,
   `introduction_year` smallint(5) NOT NULL,
-  `last_year` smallint(6) NOT NULL,
+  `last_year` smallint(5) NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `unit_ind` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `hospital_short_name` varchar(255),
+  `hf_short_name` varchar(255),
+  `rhf_short_name` varchar(255),
+  `ind_id` varchar(63) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_unit_ind_ind_id`
+    FOREIGN KEY (`ind_id`) REFERENCES `ind` (`id`)
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `project` (
+  `id` varchar(63) NOT NULL,
+  `registry_id` smallint(5) unsigned NOT NULL,
+  `start_year` smallint(5) NOT NULL,
+  `end_year` smallint(5),
+  `title` varchar(255) DEFAULT NULL,
+  `short_description` varchar(1023) DEFAULT NULL,
+  `long_description` varchar(2047) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_projects_registry`
+    FOREIGN KEY (`registry_id`) REFERENCES `registry` (`id`)
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `project_hospital` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` varchar(63) NOT NULL,
+  `hospital_short_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_project_hospital_project`
+    FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `project_ind` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` varchar(63) NOT NULL,
+  `ind_id` varchar(63) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_project_ind_project`
+    FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_project_ind`
+    FOREIGN KEY (`ind_id`) REFERENCES `ind` (`id`)
+    ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
