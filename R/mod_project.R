@@ -72,6 +72,28 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     rv_return <- shiny::reactiveValues()
     rv <- shiny::reactiveValues()
 
+    colours <- c("#3baa34", "#fd9c00", "#e30713")
+
+    limit_data <- shiny::reactive({
+      if (rv$indicator_limits$level_direction == 0) {
+        data.frame(
+          xmin = -Inf,
+          xmax = Inf,
+          ymin = c(0, rv$indicator_limits$level_green, rv$indicator_limits$level_yellow), 
+          ymax = c(rv$indicator_limits$level_green, rv$indicator_limits$level_yellow, Inf), 
+          levels = c("high", "medium", "low")
+        )
+      } else {
+        data.frame(
+          xmin = -Inf,
+          xmax = Inf,
+          ymin = c(0, rv$indicator_limits$level_yellow, rv$indicator_limits$level_green), 
+          ymax = c(rv$indicator_limits$level_yellow, rv$indicator_limits$level_green, Inf), 
+          levels = c("low", "medium", "high")
+        )
+      }
+    })
+
     project_data <- function() {
       get_registry_projects(pool_verify, input$project_registry, input$project_indicator) |>
         dplyr::filter(.data$id == input$project)
@@ -248,6 +270,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       rv$project_data <- project_data()
       rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_short_name
       rv$indicator_data <- get_ind_agg_data(pool_verify, input$project_indicator)
+      rv$indicator_limits <- get_ind_limits(pool_verify, input$project_indicator)
     })
 
     # When you push the new project button
@@ -372,8 +395,11 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     output$boxplot <- shiny::renderUI({
       shiny::req(input$project, rv$indicator_data)
 
+      ymax <- max(rv$indicator_data$var * 100)
+
       plot_data <- rv$indicator_data |>
         dplyr::filter(.data$unit_name %in% input$hospitals)
+
 
       plot_data$project_period <- plot_data$year >= rv$project_data$start_year &
         plot_data$year <= rv$project_data$end_year
@@ -381,14 +407,21 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::renderPlot({
         ggplot2::ggplot(data = plot_data,
                         ggplot2::aes(x = as.factor(year), y = var * 100, colour = project_period)) +
+          ggplot2::geom_rect(
+            data = limit_data(),
+            ggplot2::aes(xmin = xmin, xmax = xmax, ymin = 100*ymin, ymax = 100*ymax, fill = levels), alpha = .2,
+            inherit.aes = FALSE
+          ) +
           ggplot2::geom_boxplot() +
           ggplot2::geom_jitter(width = 0.1) +
           ggplot2::scale_colour_manual(values = c("black", "#1E88E5")) +
           ggplot2::xlab("År") +
           ggplot2::ylab("Andel (%)") +
+          ggplot2::ylim(0, ymax) +
           ggplot2::theme_bw() +
           ggplot2::theme(text = ggplot2::element_text(size = 20)) +
-          ggplot2::guides(colour = "none")
+          ggplot2::guides(colour = "none") +
+          ggplot2::scale_fill_manual(values = colours, breaks = c("low", "medium", "high"))
       })
     })
 
@@ -396,8 +429,10 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     output$lineplot <- shiny::renderUI({
       shiny::req(input$project, rv$indicator_data)
 
+      ymax <- max(rv$indicator_data$var * 100)
+      
       plot_data <- rv$indicator_data
-
+      
       plot_data$participant <- plot_data$unit_name %in% input$hospitals
 
       plot_data <- plot_data |>
@@ -406,16 +441,24 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
       shiny::renderPlot({
         ggplot2::ggplot(data = plot_data, ggplot2::aes(x = year, y = mean_var * 100)) +
+        ggplot2::geom_rect(
+            data = limit_data(),
+            ggplot2::aes(xmin = xmin, xmax = xmax, ymin = 100*ymin, ymax = 100*ymax, fill = levels), alpha = .2,
+            inherit.aes = FALSE
+          ) +
           ggplot2::geom_vline(ggplot2::aes(xintercept = rv$project_data$start_year), colour = "red") +
           ggplot2::geom_vline(ggplot2::aes(xintercept = rv$project_data$end_year), colour = "red") +
           ggplot2::geom_line(ggplot2::aes(colour = participant)) +
           ggplot2::geom_point(ggplot2::aes(colour = participant)) +
           ggplot2::scale_x_continuous("År", seq(min(plot_data$year), max(plot_data$year))) +
+          ggplot2::scale_y_continuous("Andel (%)", limits = c(0, ymax)) +
           ggplot2::ylab("Andel (%)") +
           ggplot2::theme_classic() +
           ggplot2::theme(text = ggplot2::element_text(size = 20)) +
           ggplot2::scale_colour_manual(values = c("#1E88E5", "#D81B60"), breaks = c(TRUE, FALSE), labels = c("Ja", "Nei")) +
-          ggplot2::guides(colour = ggplot2::guide_legend(title = "Deltatt"))
+          ggplot2::guides(colour = ggplot2::guide_legend(title = "Deltatt")) +
+          ggplot2::scale_fill_manual(values = colours, breaks = c("low", "medium", "high"))
+
       })
     })
 

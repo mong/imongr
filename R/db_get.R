@@ -728,3 +728,18 @@ get_ind_units <- function(pool, ind_id) {
 
   pool::dbGetQuery(pool, query)
 }
+
+#' @rdname db_get
+#' @export
+get_ind_limits <- function(pool, ind_id) {
+  query <- paste0("
+    SELECT
+      id, level_yellow, level_green, level_direction
+    FROM
+      ind
+    WHERE
+      id = '", ind_id, "'
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
