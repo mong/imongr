@@ -34,13 +34,22 @@ project_ui <- function(id) {
         shiny::uiOutput(ns("update_values_button")),
       ),
       shiny::mainPanel(
-        shiny::uiOutput(ns("edit_title")),
-        shiny::uiOutput(ns("title_oversize")),
-        shiny::uiOutput(ns("edit_short")),
-        shiny::uiOutput(ns("short_oversize")),
-        shiny::uiOutput(ns("edit_long")),
-        shiny::uiOutput(ns("long_oversize")),
-        shiny::uiOutput(ns("update_text_button"))
+        shiny::tabsetPanel(
+          shiny::tabPanel(
+            ns("text_input_tab"),
+            shiny::uiOutput(ns("edit_title")),
+            shiny::uiOutput(ns("title_oversize")),
+            shiny::uiOutput(ns("edit_short")),
+            shiny::uiOutput(ns("short_oversize")),
+            shiny::uiOutput(ns("edit_long")),
+            shiny::uiOutput(ns("long_oversize")),
+            shiny::uiOutput(ns("update_text_button"))
+          ),
+          shiny::tabPanel(
+            ns("plot_tab"),
+            shiny::uiOutput(ns("plot_results")),
+          )
+        )
       )
     )
   )
@@ -350,8 +359,13 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       oversize_check(rv$long_oversize, conf)
     })
 
-
-
+    output$plot_results <- shiny::renderUI({
+       shiny::textAreaInput(
+        ns("test"),
+        value = "Test",
+        label = "test"
+       )
+    })
 
 
     ##### Event observers #####
