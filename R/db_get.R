@@ -697,25 +697,16 @@ get_project_hospitals <- function(pool, project) {
 
 #' @rdname db_get
 #' @export
-get_project_ind_agg_data <- function(pool, project) {
+get_ind_agg_data <- function(pool, ind_id) {
   query <- paste0("
     SELECT
-      agg_data.var, agg_data.year, agg_data.unit_name, agg_data.ind_id
+      var, year, unit_name, ind_id
     FROM
       agg_data
-    RIGHT JOIN
-      project_ind
-    ON
-      agg_data.ind_id = project_ind.ind_id
-    RIGHT JOIN project_hospital
-    ON
-      agg_data.unit_name = project_hospital.hospital_short_name
-    AND
-      project_ind.project_id = project_hospital.project_id
     WHERE
       context = 'caregiver'
     AND
-      project_ind.project_id = '", project, "';"
+      ind_id = '", ind_id, "';"
   )
 
   pool::dbGetQuery(pool, query)

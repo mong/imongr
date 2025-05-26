@@ -247,7 +247,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$project, {
       rv$project_data <- project_data()
       rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_short_name
-      rv$indicator_data <- get_project_ind_agg_data(pool_verify, input$project)
+      rv$indicator_data <- get_ind_agg_data(pool_verify, input$project_indicator)
     })
 
     # When you push the new project button
@@ -383,7 +383,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
                         ggplot2::aes(x = as.factor(year), y = var * 100, colour = project_period)) +
           ggplot2::geom_boxplot() +
           ggplot2::geom_jitter(width = 0.1) +
-          ggplot2::scale_colour_manual(values = c("black", "blue")) +
+          ggplot2::scale_colour_manual(values = c("black", "#1E88E5")) +
           ggplot2::xlab("År") +
           ggplot2::ylab("Andel (%)") +
           ggplot2::theme_bw() +
@@ -396,26 +396,26 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     output$lineplot <- shiny::renderUI({
       shiny::req(input$project, rv$indicator_data)
 
-      plot_data <- rv$indicator_data |>
-        dplyr::filter(unit_name %in% input$hospitals) |>
-        dplyr::group_by(year) |>
-        dplyr::summarise(mean_var = mean(var))
+      plot_data <- rv$indicator_data
 
-      plot_data$project_period <- plot_data$year >= rv$project_data$start_year &
-        plot_data$year <= rv$project_data$end_year
+      plot_data$participant <- plot_data$unit_name %in% input$hospitals
+
+      plot_data <- plot_data |>
+        dplyr::group_by(year, participant) |>
+        dplyr::summarise(mean_var = mean(var))
 
       shiny::renderPlot({
         ggplot2::ggplot(data = plot_data, ggplot2::aes(x = year, y = mean_var * 100)) +
-          ggplot2::geom_tile(ggplot2::aes(fill = project_period),
-                             width = 1, height = Inf, alpha = 0.3) +
-          ggplot2::geom_line() +
-          ggplot2::geom_point() +
-          ggplot2::scale_fill_manual(values = c("white", "blue")) +
+          ggplot2::geom_vline(ggplot2::aes(xintercept = rv$project_data$start_year), colour = "red") +
+          ggplot2::geom_vline(ggplot2::aes(xintercept = rv$project_data$end_year), colour = "red") +
+          ggplot2::geom_line(ggplot2::aes(colour = participant)) +
+          ggplot2::geom_point(ggplot2::aes(colour = participant)) +
           ggplot2::scale_x_continuous("År", seq(min(plot_data$year), max(plot_data$year))) +
           ggplot2::ylab("Andel (%)") +
-          ggplot2::theme_bw() +
+          ggplot2::theme_classic() +
           ggplot2::theme(text = ggplot2::element_text(size = 20)) +
-          ggplot2::guides(fill = "none")
+          ggplot2::scale_colour_manual(values = c("#1E88E5", "#D81B60"), breaks = c(TRUE, FALSE), labels = c("Ja", "Nei")) +
+          ggplot2::guides(colour = ggplot2::guide_legend(title = "Deltatt"))
       })
     })
 
