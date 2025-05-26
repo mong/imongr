@@ -412,9 +412,9 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
             ggplot2::aes(xmin = xmin, xmax = xmax, ymin = 100*ymin, ymax = 100*ymax, fill = levels), alpha = .2,
             inherit.aes = FALSE
           ) +
-          ggplot2::geom_boxplot() +
-          ggplot2::geom_jitter(width = 0.1) +
-          ggplot2::scale_colour_manual(values = c("black", "#1E88E5")) +
+          ggplot2::geom_boxplot(alpha = 0.5, size = 1) +
+          ggplot2::geom_jitter(width = 0.1, size = 2) +
+          ggplot2::scale_colour_manual(values = c("black", "#D81B60")) +
           ggplot2::xlab("År") +
           ggplot2::ylab("Andel (%)") +
           ggplot2::ylim(0, ymax) +
@@ -446,14 +446,14 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
             ggplot2::aes(xmin = xmin, xmax = xmax, ymin = 100*ymin, ymax = 100*ymax, fill = levels), alpha = .2,
             inherit.aes = FALSE
           ) +
-          ggplot2::geom_vline(ggplot2::aes(xintercept = rv$project_data$start_year), colour = "red") +
-          ggplot2::geom_vline(ggplot2::aes(xintercept = rv$project_data$end_year), colour = "red") +
-          ggplot2::geom_line(ggplot2::aes(colour = participant)) +
-          ggplot2::geom_point(ggplot2::aes(colour = participant)) +
+          ggplot2::geom_vline(ggplot2::aes(xintercept = rv$project_data$start_year), colour = "red", size = 1.2) +
+          ggplot2::geom_vline(ggplot2::aes(xintercept = rv$project_data$end_year), colour = "red", size = 1.2) +
+          ggplot2::geom_line(ggplot2::aes(colour = participant), size = 1.2) +
+          ggplot2::geom_point(ggplot2::aes(colour = participant), size = 2) +
           ggplot2::scale_x_continuous("År", seq(min(plot_data$year), max(plot_data$year))) +
           ggplot2::scale_y_continuous("Andel (%)", limits = c(0, ymax)) +
           ggplot2::ylab("Andel (%)") +
-          ggplot2::theme_classic() +
+          ggplot2::theme_bw() +
           ggplot2::theme(text = ggplot2::element_text(size = 20)) +
           ggplot2::scale_colour_manual(values = c("#1E88E5", "#D81B60"), breaks = c(TRUE, FALSE), labels = c("Ja", "Nei")) +
           ggplot2::guides(colour = ggplot2::guide_legend(title = "Deltatt")) +
