@@ -36,7 +36,8 @@ project_ui <- function(id) {
       shiny::mainPanel(
         shiny::tabsetPanel(
           shiny::tabPanel(
-            ns("text_input_tab"),
+            value = ns("text_input_tab"),
+            title = "Prosjektinfo",
             shiny::uiOutput(ns("edit_title")),
             shiny::uiOutput(ns("title_oversize")),
             shiny::uiOutput(ns("edit_short")),
@@ -46,7 +47,8 @@ project_ui <- function(id) {
             shiny::uiOutput(ns("update_text_button"))
           ),
           shiny::tabPanel(
-            ns("plot_tab"),
+            value = ns("plot_tab"),
+            title = "Resultater",
             shiny::uiOutput(ns("plot_results")),
           )
         )
@@ -308,7 +310,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     ##### Main panel #####
     ######################
 
-    ##### UI elements #####
+    ##### UI elements tab 1 #####
 
     # Project title text input
     output$edit_title <- shiny::renderUI({
@@ -359,12 +361,14 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       oversize_check(rv$long_oversize, conf)
     })
 
+
+    ##### UI elements tab 2 #####
+    data(iris)
     output$plot_results <- shiny::renderUI({
-       shiny::textAreaInput(
-        ns("test"),
-        value = "Test",
-        label = "test"
-       )
+      shiny::renderPlot({
+        ggplot2::ggplot(data = iris, ggplot2::aes(Sepal.Length)) + 
+                ggplot2::geom_histogram() 
+      })
     })
 
 
