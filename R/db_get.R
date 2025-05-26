@@ -697,6 +697,28 @@ get_project_hospitals <- function(pool, project) {
 
 #' @rdname db_get
 #' @export
+get_project_ind_agg_data <- function(pool, project) {
+  query <- paste0("
+    SELECT
+      *
+    FROM
+      agg_data
+    RIGHT JOIN
+      project_ind
+    ON
+      agg_data.ind_id = project_ind.ind_id
+    RIGHT JOIN project_hospital
+    ON
+      agg_data.unit_name = project_hospital.hospital_short_name
+    WHERE
+      project_ind.project_id = '", project, "';"
+  )
+  print(query)
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
 get_ind_units <- function(pool, ind_id) {
   query <- paste0("
   SELECT

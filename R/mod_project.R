@@ -242,6 +242,8 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$project, {
       rv$project_data <- project_data()
       rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_short_name
+      rv$indicator_data <- get_project_ind_agg_data(pool_verify, input$project)
+      browser()
     })
 
     # When you push the new project button
@@ -365,6 +367,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     ##### UI elements tab 2 #####
     data(iris)
     output$plot_results <- shiny::renderUI({
+      shiny::req(input$project)
       shiny::renderPlot({
         ggplot2::ggplot(data = iris, ggplot2::aes(Sepal.Length)) + 
                 ggplot2::geom_histogram() 
