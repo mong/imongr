@@ -372,15 +372,15 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     output$boxplot <- shiny::renderUI({
       shiny::req(input$project, rv$indicator_data)
 
-      plot_data <- rv$indicator_data |> 
-        dplyr::filter(unit_name %in% input$hospitals) #|>
-        #dplyr::group_by(year) |> 
-        #dplyr::summarise(mean_var = mean(var))
+      plot_data <- rv$indicator_data |>
+        dplyr::filter(.data$unit_name %in% input$hospitals)
 
-      plot_data$project_period <- plot_data$year >= rv$project_data$start_year & plot_data$year <= rv$project_data$end_year 
-      
+      plot_data$project_period <- plot_data$year >= rv$project_data$start_year &
+        plot_data$year <= rv$project_data$end_year
+
       shiny::renderPlot({
-        ggplot2::ggplot(data = plot_data, ggplot2::aes(x = as.factor(year), y = var * 100, colour = project_period)) +
+        ggplot2::ggplot(data = plot_data,
+                        ggplot2::aes(x = as.factor(year), y = var * 100, colour = project_period)) +
           ggplot2::geom_boxplot() +
           ggplot2::geom_jitter(width = 0.1) +
           ggplot2::scale_colour_manual(values = c("black", "blue")) +
@@ -396,17 +396,18 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     output$lineplot <- shiny::renderUI({
       shiny::req(input$project, rv$indicator_data)
 
-      plot_data <- rv$indicator_data |> 
+      plot_data <- rv$indicator_data |>
         dplyr::filter(unit_name %in% input$hospitals) |>
-        dplyr::group_by(year) |> 
+        dplyr::group_by(year) |>
         dplyr::summarise(mean_var = mean(var))
 
-      plot_data$project_period <- plot_data$year >= rv$project_data$start_year & plot_data$year <= rv$project_data$end_year 
-      
+      plot_data$project_period <- plot_data$year >= rv$project_data$start_year &
+        plot_data$year <= rv$project_data$end_year
+
       shiny::renderPlot({
         ggplot2::ggplot(data = plot_data, ggplot2::aes(x = year, y = mean_var * 100)) +
-        ggplot2::geom_tile(ggplot2::aes(fill = project_period),
-            width = 1, height = Inf, alpha = 0.3) +
+          ggplot2::geom_tile(ggplot2::aes(fill = project_period),
+                             width = 1, height = Inf, alpha = 0.3) +
           ggplot2::geom_line() +
           ggplot2::geom_point() +
           ggplot2::scale_fill_manual(values = c("white", "blue")) +
