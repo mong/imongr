@@ -700,7 +700,7 @@ get_project_hospitals <- function(pool, project) {
 get_project_ind_agg_data <- function(pool, project) {
   query <- paste0("
     SELECT
-      *
+      agg_data.var, agg_data.year, agg_data.unit_name, agg_data.ind_id
     FROM
       agg_data
     RIGHT JOIN
@@ -711,9 +711,11 @@ get_project_ind_agg_data <- function(pool, project) {
     ON
       agg_data.unit_name = project_hospital.hospital_short_name
     WHERE
+      context = 'caregiver'
+    AND
       project_ind.project_id = '", project, "';"
   )
-  print(query)
+
   pool::dbGetQuery(pool, query)
 }
 
