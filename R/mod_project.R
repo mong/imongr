@@ -47,9 +47,14 @@ project_ui <- function(id) {
             shiny::uiOutput(ns("update_text_button"))
           ),
           shiny::tabPanel(
-            value = ns("plot_tab"),
-            title = "Resultater",
-            shiny::uiOutput(ns("plot_results")),
+            value = ns("boxplot_tab"),
+            title = "Boksplot",
+            shiny::uiOutput(ns("boxplot")),
+          ),
+          shiny::tabPanel(
+            value = ns("lineplot_tab"),
+            title = "Linjeplot",
+            shiny::uiOutput(ns("lineplot")),
           )
         )
       )
@@ -364,16 +369,52 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
 
     ##### UI elements tab 2 #####
-    output$plot_results <- shiny::renderUI({
+    output$boxplot <- shiny::renderUI({
       shiny::req(input$project, rv$indicator_data)
 
       plot_data <- rv$indicator_data |> 
+        dplyr::filter(unit_name %in% input$hospitals) #|>
+        #dplyr::group_by(year) |> 
+        #dplyr::summarise(mean_var = mean(var))
+
+      plot_data$project_period <- plot_data$year >= rv$project_data$start_year & plot_data$year <= rv$project_data$end_year 
+      
+      shiny::renderPlot({
+        ggplot2::ggplot(data = plot_data, ggplot2::aes(x = as.factor(year), y = var * 100, colour = project_period)) +
+          ggplot2::geom_boxplot() +
+          ggplot2::geom_jitter(width = 0.1) +
+          ggplot2::scale_colour_manual(values = c("black", "blue")) +
+          ggplot2::xlab("År") +
+          ggplot2::ylab("Andel (%)") +
+          ggplot2::theme_bw() +
+          ggplot2::theme(text = ggplot2::element_text(size = 20)) +
+          ggplot2::guides(colour = "none")
+      })
+    })
+
+    ##### UI elements tab 2 #####
+    output$lineplot <- shiny::renderUI({
+      shiny::req(input$project, rv$indicator_data)
+
+      plot_data <- rv$indicator_data |> 
+        dplyr::filter(unit_name %in% input$hospitals) |>
         dplyr::group_by(year) |> 
         dplyr::summarise(mean_var = mean(var))
 
+      plot_data$project_period <- plot_data$year >= rv$project_data$start_year & plot_data$year <= rv$project_data$end_year 
+      
       shiny::renderPlot({
-        ggplot2::ggplot(data = plot_data, ggplot2::aes(x = year, y = mean_var)) + 
-                ggplot2::geom_line() + ggplot2::geom_point()
+        ggplot2::ggplot(data = plot_data, ggplot2::aes(x = year, y = mean_var * 100)) +
+        ggplot2::geom_tile(ggplot2::aes(fill = project_period),
+            width = 1, height = Inf, alpha = 0.3) +
+          ggplot2::geom_line() +
+          ggplot2::geom_point() +
+          ggplot2::scale_fill_manual(values = c("white", "blue")) +
+          ggplot2::scale_x_continuous("År", seq(min(plot_data$year), max(plot_data$year))) +
+          ggplot2::ylab("Andel (%)") +
+          ggplot2::theme_bw() +
+          ggplot2::theme(text = ggplot2::element_text(size = 20)) +
+          ggplot2::guides(fill = "none")
       })
     })
 

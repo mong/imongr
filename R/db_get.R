@@ -710,6 +710,8 @@ get_project_ind_agg_data <- function(pool, project) {
     RIGHT JOIN project_hospital
     ON
       agg_data.unit_name = project_hospital.hospital_short_name
+    AND
+      project_ind.project_id = project_hospital.project_id
     WHERE
       context = 'caregiver'
     AND
