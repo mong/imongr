@@ -9,6 +9,12 @@ WORKDIR /app/R
 RUN apk add --no-cache --update-cache aws-cli \
     && installr -d shinyvalidate
 
+RUN apk add --no-cache --update python3 py3-pip
+
+RUN apk add --no-cache --update --virtual=build gcc musl-dev python3-dev libffi-dev openssl-dev cargo make \
+    && pip3 install --no-cache-dir --prefer-binary azure-cli \
+    && apk del build
+
 ## add package tarball
 # hadolint ignore=DL3010
 COPY *.tar.gz .
@@ -17,6 +23,7 @@ COPY *.tar.gz .
 RUN R CMD INSTALL --clean ./*.tar.gz \
     && rm ./*.tar.gz \
     && R -e "rmarkdown::render(input = system.file('terms.Rmd', package = 'imongr'), output_format = 'html_fragment')"
+
 
 EXPOSE 3838
 
