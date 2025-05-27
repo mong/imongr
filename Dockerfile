@@ -9,8 +9,10 @@ WORKDIR /app/R
 RUN apk add --no-cache --update-cache aws-cli \
     && installr -d shinyvalidate
 
+# hadolint ignore=DL3018
 RUN apk add --no-cache --update python3 py3-pip
 
+# hadolint ignore=DL3018
 RUN apk add --no-cache --update --virtual=build gcc musl-dev python3-dev \
     libffi-dev openssl-dev cargo make \
     && pip3 install --no-cache-dir --prefer-binary azure-cli \
