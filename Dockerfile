@@ -7,7 +7,7 @@ WORKDIR /app/R
 
 RUN installr -d shinyvalidate
 
-# hadolint ignore=DL3018
+# hadolint ignore=DL3018,DL3013
 RUN apk add --no-cache --update python3 py3-pip \
     && apk add --no-cache --update --virtual=build gcc musl-dev python3-dev \
     libffi-dev openssl-dev cargo make \
