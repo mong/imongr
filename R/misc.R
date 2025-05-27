@@ -183,14 +183,31 @@ delete_all_data <- function(prompt = TRUE) {
 #' @rdname misc
 #' @export
 invalidate_cache <- function() {
-  login_info <- Sys.getenv("AWS_ACCESS_KEY_ID")
-  which_aws <- system("which aws")
-  if (login_info == "" || which_aws != 0) {
+  az_user_name <- Sys.getenv("AZ_USER_NAME")
+  az_secret <- Sys.getenv("AZ_SECRET")
+  az_tenant <- Sys.getenv("AZ_TENANT")
+  api_endpoint_name <- Sys.getenv("API_ENDPOINT_NAME")
+
+  which_az <- system("which az")
+  if (which_az != 0 ||
+        az_user_name == "" ||
+        az_secret == "" ||
+        az_tenant == "" ||
+        api_endpoint_name == "") {
     return(NULL)
   }
-  system("aws sts get-caller-identity")
-  system("aws cloudfront create-invalidation --distribution-id ${distribution_id} --path \"/*\"")
-  message("Invaliderte cache")
+
+  system("az login --service-principal --username ${az_user_name} --password ${az_secret} --tenant ${az_tenant}")
+  system(paste0(
+    "az afd endpoint purge ",
+    "--resource-group rg-nettsider-felles ",
+    "--profile-name interaktiveNettsiderFrontDoor ",
+    "--endpoint-name ${api_endpoint_name} ",
+    "--content-paths '/*' ",
+    "--no-wait true"
+  ))
+
+  message("Invaliderte API-cache")
 }
 
 #' @rdname misc
@@ -203,7 +220,7 @@ validateName <- function(x, existing_names) {
       return(NULL)
     } else {
       return(
-        "Kan ikke være tom, inneholde mellomrom eller spesialtegn, 
+        "Kan ikke være tom, inneholde mellomrom eller spesialtegn,
         eller v\u00e6re lik en et eksisterende navn."
       )
     }
