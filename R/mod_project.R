@@ -137,7 +137,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$project_registry)
       shiny::selectInput(
         ns("project_indicator"), "Velg indikator:",
-        choices = get_registry_indicators(pool_verify, input$project_registry)$id,
+        choices = rv$registry_indicators
       )
     })
 
@@ -225,6 +225,10 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     # When you select a registry
     shiny::observeEvent(input$project_registry, {
       rv_return$registry_id <- input$indicator_registry
+      registry_indicators <- get_registry_indicators(pool_verify, input$project_registry)
+
+      rv$registry_indicators <- as.list(registry_indicators$id)
+      names(rv$registry_indicators) <- registry_indicators$title
     })
 
     # When you select a project
