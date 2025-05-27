@@ -5,9 +5,7 @@ LABEL no.mongr.cd.enable="true"
 
 WORKDIR /app/R
 
-# hadolint ignore=DL3018
-RUN apk add --no-cache --update-cache aws-cli \
-    && installr -d shinyvalidate
+RUN installr -d shinyvalidate
 
 # hadolint ignore=DL3018
 RUN apk add --no-cache --update python3 py3-pip
