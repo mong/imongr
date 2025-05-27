@@ -199,8 +199,9 @@ invalidate_cache <- function() {
 
   system("az login --service-principal --username ${az_user_name} --password ${az_secret} --tenant ${az_tenant}")
   system(paste0("az afd endpoint purge --resource-group rg-nettsider-felles",
-    "--profile-name interaktiveNettsiderFrontDoor ",
-    "--endpoint-name ${api_endpoint_name} --content-paths '/*' --no-wait true"))
+        "--profile-name interaktiveNettsiderFrontDoor ",
+        "--endpoint-name ${api_endpoint_name} --content-paths '/*' ",
+        "--no-wait true"))
 
   message("Invaliderte API-cache")
 }
