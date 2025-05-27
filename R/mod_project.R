@@ -443,7 +443,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         dplyr::summarise(mean_var = mean(var))
 
       shiny::renderPlot({
-        ggplot2::ggplot(data = plot_data, ggplot2::aes(x = year, y = mean_var * 100)) +
+        ggplot2::ggplot(data = plot_data, ggplot2::aes(x = .data$year, y = .data$mean_var * 100)) +
           ggplot2::geom_rect(
             data = limit_data(),
             ggplot2::aes(xmin = .data$xmin, xmax = .data$xmax,
@@ -454,8 +454,8 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
           ) +
           ggplot2::geom_vline(ggplot2::aes(xintercept = rv$project_data$start_year), colour = "red", size = 1.2) +
           ggplot2::geom_vline(ggplot2::aes(xintercept = rv$project_data$end_year), colour = "red", size = 1.2) +
-          ggplot2::geom_line(ggplot2::aes(colour = participant), size = 1.2) +
-          ggplot2::geom_point(ggplot2::aes(colour = participant), size = 2) +
+          ggplot2::geom_line(ggplot2::aes(colour = .data$participant), size = 1.2) +
+          ggplot2::geom_point(ggplot2::aes(colour = .data$participant), size = 2) +
           ggplot2::scale_x_continuous("År", seq(min(plot_data$year), max(plot_data$year))) +
           ggplot2::scale_y_continuous("Andel (%)", limits = c(0, ymax)) +
           ggplot2::ylab("Andel (%)") +
