@@ -190,10 +190,10 @@ invalidate_cache <- function() {
 
   which_az <- system("which az")
   if (which_az != 0 ||
-    az_user_name == "" ||
-    az_secret == "" ||
-    az_tenant == "" ||
-    api_endpoint_name == "") {
+        az_user_name == "" ||
+        az_secret == "" ||
+        az_tenant == "" ||
+        api_endpoint_name == "") {
     return(NULL)
   }
 
