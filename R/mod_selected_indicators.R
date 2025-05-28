@@ -61,6 +61,10 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
     # When you select a registry
     shiny::observeEvent(input$selected_registry, {
       rv_return$registry_id <- input$selected_registry
+      registry_indicators <- get_registry_indicators(pool_verify, input$selected_registry)
+
+      rv$registry_indicators <- as.list(registry_indicators$id)
+      names(rv$registry_indicators) <- registry_indicators$title
     })
 
     # Select indicator drop down menu
@@ -68,7 +72,7 @@ selected_indicators_server <- function(id, registry_tracker, pool, pool_verify) 
       shiny::req(input$selected_registry)
       shiny::selectInput(
         ns("selected_indicator"), "Velg indikator:",
-        choices = get_registry_indicators(pool_verify, input$selected_registry)$id
+        choices = rv$registry_indicators
       )
     })
 
