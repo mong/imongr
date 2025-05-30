@@ -72,7 +72,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     rv_return <- shiny::reactiveValues()
     rv <- shiny::reactiveValues()
 
-    colours <- c("#3baa34", "#fd9c00", "#e30713")
+    colours <- c("#e30713", "#fd9c00", "#3baa34")
 
     limit_data <- shiny::reactive({
       if (rv$indicator_limits$level_direction == 0) {
@@ -415,12 +415,12 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
             alpha = .2,
             inherit.aes = FALSE
           ) +
-          ggplot2::geom_boxplot(alpha = 0.5, size = 1) +
+          ggplot2::geom_boxplot(alpha = 0.5, size = 1, outlier.shape = NA) +
           ggplot2::geom_jitter(width = 0.1, size = 2) +
           ggplot2::scale_colour_manual(values = c("black", "#1E88E5")) +
           ggplot2::xlab("År") +
           ggplot2::ylab("Andel (%)") +
-          ggplot2::ylim(0, ymax) +
+          ggplot2::ylim(-0.5, 1.2 * ymax) +
           ggplot2::theme_bw() +
           ggplot2::theme(text = ggplot2::element_text(size = 20)) +
           ggplot2::guides(fill = "none", colour = "none") +
