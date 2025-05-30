@@ -697,6 +697,23 @@ get_project_hospitals <- function(pool, project) {
 
 #' @rdname db_get
 #' @export
+get_ind_agg_data <- function(pool, ind_id) {
+  query <- paste0("
+    SELECT
+      var, year, unit_name, ind_id
+    FROM
+      agg_data
+    WHERE
+      context = 'caregiver'
+    AND
+      ind_id = '", ind_id, "';"
+  )
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
 get_ind_units <- function(pool, ind_id) {
   query <- paste0("
   SELECT
@@ -707,6 +724,21 @@ get_ind_units <- function(pool, ind_id) {
     unit_ind
   WHERE
     ind_id = '", ind_id, "';
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
+get_ind_limits <- function(pool, ind_id) {
+  query <- paste0("
+    SELECT
+      id, level_yellow, level_green, level_direction
+    FROM
+      ind
+    WHERE
+      id = '", ind_id, "'
   ")
 
   pool::dbGetQuery(pool, query)
