@@ -433,7 +433,7 @@ FROM
 get_registry_indicators <- function(pool, registry) {
   query <- paste0("
 SELECT
-  id
+  id, title
 FROM
   ind
 WHERE
