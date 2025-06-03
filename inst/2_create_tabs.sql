@@ -239,6 +239,7 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
   `reported_dg` tinyint(5) NOT NULL,
   `year` smallint(5) NOT NULL,
   `verdict` char(2) NOT NULL,
+  `notice` tinyint(5),
   `requirement_1` tinyint(1) NOT NULL,
   `requirement_2` tinyint(1) NOT NULL,
   `requirement_3` tinyint(1) NOT NULL,
@@ -267,6 +268,9 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
     ON UPDATE CASCADE,
   CONSTRAINT `fk_evaluation_user`
     FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_evaluation_notice`
+    FOREIGN KEY (`notice`) REFERENCES `notice` (`id`)
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
@@ -279,6 +283,26 @@ CREATE TABLE IF NOT EXISTS `requirements` (
   `introduction_year` smallint(5) NOT NULL,
   `last_year` smallint(5) NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `notice` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `text` mediumtext NOT NULL,
+  `status` tinytext NOT NULL,
+  `ref` tinytext NOT NULL
+  PRIMARY KEY (`id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `notice_event` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `text` mediumtext NOT NULL,
+  `type` tinytext NOT NULL,
+  `ref` tinytext NOT NULL,
+  `notice_id` smallint(5) unsigned NOT NULL
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_notice_event_notice`
+    FOREIGN KEY (`notice_id`) REFERENCES `notice` (`id`)
+    ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `unit_ind` (
