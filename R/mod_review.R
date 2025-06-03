@@ -500,6 +500,25 @@ review_server <- function(id, registry_tracker, pool) {
       rv$graph_data <- update_graph_data(input, pool, rv)
     })
 
+    # Registrer varsel
+    shiny::observeEvent(input$notice, {
+      shiny::showModal(
+        shiny::modalDialog(
+          shiny::renderText("Det blir nå opprettet et varsel. "),
+          footer = shiny::tagList(
+            shiny::actionButton(ns("make_notice"), "OK"),
+            shiny::modalButton("Avbryt")
+          )
+        )
+      )
+    })
+
+    shiny::observeEvent(input$make_notice, {
+      print("Suksess")
+      shiny::removeModal()
+    })
+
+
     #####################
     ##### UI skjema #####
     #####################
