@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS `notice` (
   `text` mediumtext NOT NULL,
   `status` tinytext NOT NULL,
   `ref` tinytext NOT NULL
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `notice_event` (

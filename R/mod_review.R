@@ -48,7 +48,10 @@ review_ui <- function(id) {
         shiny::hr(),
         shiny::br(),
         shiny::h5(style = "text-align: center;", "Registeret vurderes til:"),
+        shiny::br(),
+        shiny::hr(),
         shiny::uiOutput(ns("verdict")),
+        shiny::uiOutput(ns("notice_button")),
         width = 3
       ),
       shiny::mainPanel(
@@ -312,6 +315,19 @@ review_server <- function(id, registry_tracker, pool) {
 
     output$verdict <- shiny::renderUI({
       shiny::div(style = "font-size: 200%; text-align: center", verdict())
+    })
+
+    output$notice_button <- shiny::renderUI({
+      shiny::req(input$selected_registry)
+      shiny::validate(
+        shiny::need(input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1,
+                    "Redigering tillates kun på aktuelt rapporteringsår")
+      )
+
+      shiny::actionButton(
+        ns("notice"),
+        "Registrer varsel"
+      )
     })
 
     # Gjem knapper hvis årstall ikke er fjoråret
