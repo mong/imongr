@@ -134,6 +134,15 @@ db:
       - section
       - introduction_year
       - last_year
+    notice:
+      insert:
+      - text
+      - status
+    notice_event:
+      insert:
+      - text
+      - type
+      - notice_id
     evaluation:
       insert:
       - registry_id
@@ -142,6 +151,7 @@ db:
       - reported_dg
       - year
       - stage
+      - notice
       - requirement_1
       - requirement_2
       - requirement_3

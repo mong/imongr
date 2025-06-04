@@ -232,6 +232,26 @@ CREATE TABLE IF NOT EXISTS `agg_data` (
   KEY `unit_level` (`unit_level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
+CREATE TABLE IF NOT EXISTS `notice` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `text` mediumtext NOT NULL,
+  `status` tinytext NOT NULL,
+  `ref` tinytext,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `notice_event` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `text` mediumtext NOT NULL,
+  `type` tinytext NOT NULL,
+  `ref` tinytext,
+  `notice_id` smallint(5) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_notice_event_notice`
+    FOREIGN KEY (`notice_id`) REFERENCES `notice` (`id`)
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
 CREATE TABLE IF NOT EXISTS `evaluation` (
   `registry_id` smallint(5) unsigned NOT NULL,
   `user_id` smallint(5) unsigned NOT NULL,
@@ -283,26 +303,6 @@ CREATE TABLE IF NOT EXISTS `requirements` (
   `introduction_year` smallint(5) NOT NULL,
   `last_year` smallint(5) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
-
-CREATE TABLE IF NOT EXISTS `notice` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `text` mediumtext NOT NULL,
-  `status` tinytext NOT NULL,
-  `ref` tinytext NOT NULL
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
-
-CREATE TABLE IF NOT EXISTS `notice_event` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `text` mediumtext NOT NULL,
-  `type` tinytext NOT NULL,
-  `ref` tinytext NOT NULL,
-  `notice_id` smallint(5) unsigned NOT NULL
-  PRIMARY KEY (`id`),
-  CONSTRAINT `fk_notice_event_notice`
-    FOREIGN KEY (`notice_id`) REFERENCES `notice` (`id`)
-    ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `unit_ind` (

@@ -514,7 +514,8 @@ review_server <- function(id, registry_tracker, pool) {
     })
 
     shiny::observeEvent(input$make_notice, {
-      print("Suksess")
+      new_row <- data.frame(text = "Test", status = "Open")
+      insert_table(pool, "notice", new_row)
       shiny::removeModal()
     })
 
