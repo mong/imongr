@@ -134,15 +134,15 @@ db:
       - section
       - introduction_year
       - last_year
-    notice:
-      insert:
-      - text
-      - status
     notice_event:
       insert:
       - text
       - type
       - notice_id
+    notice:
+      insert:
+      - text
+      - status
     evaluation:
       insert:
       - registry_id

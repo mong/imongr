@@ -487,6 +487,8 @@ if (is.null(check_db(is_test_that = FALSE))) {
 
   pool::dbExecute(pool_verify, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
   pool::dbExecute(pool_prod, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
+  pool::dbExecute(pool_verify, "ALTER TABLE `evaluation` DROP FOREIGN KEY `fk_evaluation_notice`;")
+  pool::dbExecute(pool_prod, "ALTER TABLE `evaluation` DROP FOREIGN KEY `fk_evaluation_notice`;")
 
   pool::dbExecute(pool_verify, paste(
     "DROP TABLE",
