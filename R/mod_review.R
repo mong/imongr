@@ -249,7 +249,7 @@ review_server <- function(id, registry_tracker, pool) {
     rv_return <- shiny::reactiveValues()
 
     update_form <- shiny::reactive({
-      list(input$selected_registry, input$selected_year, input$make_notice)
+      list(input$selected_registry, input$selected_year, input$make_notice, input$save, input$save_override)
     })
 
     # Hold oversikt over valgt register
@@ -508,14 +508,29 @@ review_server <- function(id, registry_tracker, pool) {
 
     # Registrer varsel
     shiny::observeEvent(input$notice, {
+      # Sjekk om det finnes et skjema i databasen
+      dat_this_year <- pool::dbGetQuery(pool, "SELECT * FROM evaluation") |>
+        dplyr::filter(.data$registry_id == .env$input$selected_registry, .data$year == .env$input$selected_year)
+
+      allow_new_notice <- nrow(dat_this_year) > 0
+
       shiny::showModal(
-        shiny::modalDialog(
-          shiny::renderText("Det blir nå opprettet et varsel. "),
-          footer = shiny::tagList(
-            shiny::actionButton(ns("make_notice"), "OK"),
-            shiny::modalButton("Avbryt")
+        if (allow_new_notice) {
+          shiny::modalDialog(
+            shiny::renderText("Det blir nå opprettet et varsel."),
+            footer = shiny::tagList(
+              shiny::actionButton(ns("make_notice"), "OK"),
+              shiny::modalButton("Avbryt")
+            )
           )
-        )
+        } else {
+          shiny::modalDialog(
+            shiny::renderText("Lagre skjemaet før du oppretter et varsel."),
+            footer = shiny::tagList(
+              shiny::modalButton("OK")
+            )
+          )
+        }
       )
     })
 
@@ -529,6 +544,7 @@ review_server <- function(id, registry_tracker, pool) {
         UPDATE evaluation set notice = ", next_id, "
         WHERE registry_id = ", input$selected_registry, "
         AND year = ", input$selected_year, ";")
+
       pool::dbExecute(pool, query)
 
       shiny::removeModal()
@@ -576,14 +592,8 @@ review_server <- function(id, registry_tracker, pool) {
       shiny::req(input$selected_registry, input$selected_year)
 
       on_update_form(session, input, pool, n_requirements)
-      query <- paste0(
-        "SELECT notice 
-        FROM evaluation 
-        WHERE registry_id = ", input$selected_registry, "
-        AND year = ", input$selected_year, ";"
-      )
 
-      rv$notice <- pool::dbGetQuery(pool, query)$notice[1]
+      rv$notice <- get_notice(pool, input$selected_registry, input$selected_year)$notice[1]
     })
 
     shiny::observeEvent(input$get_previous_year, {
