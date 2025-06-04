@@ -1,3 +1,12 @@
+# imongr 2.7.2
+
+## Endringer
+* Purging av azure cache by @jo-inge-arnes in https://github.com/mong/imongr/pull/552
+* Fullt indikatornavn i faner for kvalitetsforbedring og utvalgte indikatorer by @Stein-Kato in https://github.com/mong/imongr/pull/551
+* Kvalitetsforbedringsfigur by @Stein-Kato in https://github.com/mong/imongr/pull/550
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.7.1...v2.7.2
+
 # imongr 2.7.1
 
 ## Endringer
