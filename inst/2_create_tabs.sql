@@ -259,7 +259,7 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
   `reported_dg` tinyint(5) NOT NULL,
   `year` smallint(5) NOT NULL,
   `verdict` char(2) NOT NULL,
-  `notice` tinyint(5),
+  `notice` smallint(5) unsigned,
   `requirement_1` tinyint(1) NOT NULL,
   `requirement_2` tinyint(1) NOT NULL,
   `requirement_3` tinyint(1) NOT NULL,
