@@ -233,6 +233,7 @@ review_server <- function(id, registry_tracker, pool) {
       graph_data = NULL,
       collaborators = NULL,
       allow_get_previous_year = TRUE,
+      notice = NA,
     )
 
     verdict <- shiny::reactive({
@@ -248,7 +249,7 @@ review_server <- function(id, registry_tracker, pool) {
     rv_return <- shiny::reactiveValues()
 
     update_form <- shiny::reactive({
-      list(input$selected_registry, input$selected_year)
+      list(input$selected_registry, input$selected_year, input$make_notice)
     })
 
     # Hold oversikt over valgt register
@@ -260,6 +261,7 @@ review_server <- function(id, registry_tracker, pool) {
     ##### UI sidemeny #####
     #######################
 
+    # Velg register
     output$select_registry <- shiny::renderUI({
       select_registry_ui(pool, conf,
         input_id = ns("selected_registry"),
@@ -288,6 +290,7 @@ review_server <- function(id, registry_tracker, pool) {
       shiny::tagList(rv$registry_url)
     })
 
+    # Velg år
     output$select_year <- shiny::renderUI({
       shiny::selectInput(
         ns("selected_year"),
@@ -297,6 +300,7 @@ review_server <- function(id, registry_tracker, pool) {
       )
     })
 
+    # Vis hoved- og leseansvarlig
     output$collaborators_main <- shiny::renderUI({
       collaborators <- rv$collaborators[rv$collaborators$role == "main", ]$name
 
@@ -317,11 +321,13 @@ review_server <- function(id, registry_tracker, pool) {
       shiny::div(style = "font-size: 200%; text-align: center", verdict())
     })
 
+    # Knapp for nytt varsel
     output$notice_button <- shiny::renderUI({
-      shiny::req(input$selected_registry)
+      shiny::req(input$selected_registry, input$selected_year)
+
       shiny::validate(
-        shiny::need(input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1,
-                    "Redigering tillates kun på aktuelt rapporteringsår")
+        shiny::need(is.na(rv$notice),
+                    "Varsel er registrert for valgt register og år")
       )
 
       shiny::actionButton(
@@ -513,9 +519,18 @@ review_server <- function(id, registry_tracker, pool) {
       )
     })
 
+    # Når varsel registreres
     shiny::observeEvent(input$make_notice, {
       new_row <- data.frame(text = "Test", status = "Open")
       insert_table(pool, "notice", new_row)
+      next_id <- pool::dbGetQuery(pool, "SELECT max(id) as next_id from notice")$next_id[1]
+
+      query <- paste0("
+        UPDATE evaluation set notice = ", next_id, "
+        WHERE registry_id = ", input$selected_registry, "
+        AND year = ", input$selected_year, ";")
+      pool::dbExecute(pool, query)
+
       shiny::removeModal()
     })
 
@@ -558,7 +573,17 @@ review_server <- function(id, registry_tracker, pool) {
 
     # Oppdater skjema ved valg av år og register
     shiny::observeEvent(update_form(), {
+      shiny::req(input$selected_registry, input$selected_year)
+
       on_update_form(session, input, pool, n_requirements)
+      query <- paste0(
+        "SELECT notice 
+        FROM evaluation 
+        WHERE registry_id = ", input$selected_registry, "
+        AND year = ", input$selected_year, ";"
+      )
+
+      rv$notice <- pool::dbGetQuery(pool, query)$notice[1]
     })
 
     shiny::observeEvent(input$get_previous_year, {

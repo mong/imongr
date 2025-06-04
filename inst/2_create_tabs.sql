@@ -292,6 +292,7 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
   CONSTRAINT `fk_evaluation_notice`
     FOREIGN KEY (`notice`) REFERENCES `notice` (`id`)
     ON UPDATE CASCADE
+    ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `requirements` (
