@@ -190,19 +190,19 @@ invalidate_cache <- function() {
 
   which_az <- system("which az")
   if (which_az != 0 ||
-        az_user_name == "" ||
-        az_secret == "" ||
-        az_tenant == "" ||
-        api_endpoint_name == "") {
+    az_user_name == "" ||
+    az_secret == "" ||
+    az_tenant == "" ||
+    api_endpoint_name == "") {
     return(NULL)
   }
 
-  system("az login --service-principal --username ${az_user_name} --password ${az_secret} --tenant ${az_tenant}")
+  system("az login --service-principal --username $AZ_USER_NAME --password $AZ_SECRET --tenant $AZ_TENANT")
   system(paste0(
     "az afd endpoint purge ",
     "--resource-group rg-nettsider-felles ",
     "--profile-name interaktiveNettsiderFrontDoor ",
-    "--endpoint-name ${api_endpoint_name} ",
+    "--endpoint-name $API_ENDPOINT_NAME ",
     "--content-paths '/*' ",
     "--no-wait true"
   ))
