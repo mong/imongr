@@ -221,7 +221,7 @@ review_server <- function(id, registry_tracker, pool) {
     stage_4 <- 12:16
     stage_3 <- 6:11
     stage_2 <- 1:5
-    level_a <- 17:18
+    level_a <- 17
     level_b <- 18
 
     rv <- shiny::reactiveValues(
@@ -466,7 +466,7 @@ review_server <- function(id, registry_tracker, pool) {
 
       if (all(rv$evaluation[level_a])) {
         rv$level <- "A"
-      } else if (rv$evaluation[level_b]) {
+      } else if (all(rv$evaluation[level_b])) {
         rv$level <- "B"
       }
     })
@@ -559,9 +559,9 @@ review_server <- function(id, registry_tracker, pool) {
 
     shiny::observeEvent(input$selected_year, {
       if (input$selected_year >= 2019) {
-        render_checkboxes(input, output, df_requirements, ns, level_a)
+        render_checkboxes(input, output, df_requirements, ns, c(level_a, level_b))
       } else {
-        lapply(X = level_a, FUN = function(i) {
+        lapply(X = c(level_a, level_b), FUN = function(i) {
           output[[paste0("checkbox", i)]] <- NULL
         })
       }

@@ -1,4 +1,4 @@
-FROM hnskde/imongr-base-r:4.1.0
+FROM hnskde/imongr-base-r:4.2.0
 
 LABEL maintainer="Arnfinn Hykkerud Steindal <arnfinn.hykkerud.steindal@helse-nord.no>"
 LABEL no.mongr.cd.enable="true"
@@ -11,7 +11,7 @@ RUN installr -d shinyvalidate
 RUN apk add --no-cache --update python3 py3-pip \
     && apk add --no-cache --update --virtual=build gcc musl-dev python3-dev \
     libffi-dev openssl-dev cargo make \
-    && pip3 install --no-cache-dir --prefer-binary azure-cli \
+    && pip3 install --no-cache-dir --prefer-binary --break-system-packages azure-cli==2.63.0 \
     && apk del build
 
 ## add package tarball
