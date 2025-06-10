@@ -647,17 +647,42 @@ update_review <- function(pool, df, registry_id, year) {
   message("Ferdig\n")
 }
 
-#' Get notice for a given registry and year
+#' Get notice id for a given registry and year
 #'
 #' @rdname ops
 #' @noRd
-get_notice <- function(pool, registry_id, year) {
-
+get_notice_id <- function(pool, registry_id, year) {
 
   query <- paste0("
     SELECT notice FROM evaluation
     WHERE registry_id = ", registry_id, "
     AND year = ", year, ";
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' Get notice for a given registry and year
+#'
+#' @rdname ops
+#' @noRd
+get_notice <- function(pool, id) {
+  query <- paste0("
+    SELECT * FROM notice
+    WHERE id = ", id, ";
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' Update notice for a given registry and year
+#'
+#' @rdname ops
+#' @noRd
+update_notice <- function(pool, id, text) {
+  query <- paste0("
+    UPDATE notice
+    set text = '", text, "' WHERE id = ", id, ";
   ")
 
   pool::dbGetQuery(pool, query)
