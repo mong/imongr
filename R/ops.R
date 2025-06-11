@@ -659,7 +659,16 @@ get_notice_id <- function(pool, registry_id, year) {
     AND year = ", year, ";
   ")
 
-  pool::dbGetQuery(pool, query)
+  notice <- pool::dbGetQuery(pool, query)
+
+  if (nrow(notice) < 1) {
+    return(NA)
+  } else if (nrow(notice) > 1) {
+    warning("Multiple instances found where one is expected.")
+    return(NA)
+  } else {
+    return(notice$notice[1])
+  }
 }
 
 #' Get notice for a given registry and year

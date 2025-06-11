@@ -631,7 +631,7 @@ review_server <- function(id, registry_tracker, pool) {
 
       on_update_form(session, input, pool, n_requirements)
 
-      rv$notice <- get_notice_id(pool, input$selected_registry, input$selected_year)$notice[1]
+      rv$notice <- get_notice_id(pool, input$selected_registry, input$selected_year)
     })
 
     shiny::observeEvent(input$get_previous_year, {
