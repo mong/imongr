@@ -124,7 +124,7 @@ upload_server <- function(id, registry_tracker, pool_verify) {
         update = input$latest_update,
         affirm = input$latest_affirm
       )
-      insert_agg_data(pool_verify, get_registry_data(pool_verify, input$publish_registry))
+      insert_agg_data(pool_verify, get_registry_data(pool_verify, input$registry))
       rv$inv_data <- rv$inv_data + 1
       shinyalert::shinyalert(conf$upload$reciept$title,
         conf$upload$reciept$body,
