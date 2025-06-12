@@ -229,26 +229,18 @@ insert_agg_data <- function(pool, df) {
 
   # add registry_id to data
   ind_reg <- dplyr::select(get_table(pool, "ind"), "id", "registry_id")
+
   df <- df |>
     dplyr::left_join(ind_reg, by = c("ind_id" = "id"))
 
   reg <- unique(df$registry_id)
+
   for (i in seq_len(length(reg))) {
     message(paste("Register:", get_registry_name(pool, reg[i])))
+
     dat <- dplyr::filter(df, .data$registry_id == reg[i]) |>
       dplyr::select(-c("registry_id"))
-    # if delivery is a subset of registry indicators AND dg is part of subset,
-    # agg_data for all indicators of the current registry must be updated.
-    if (!setequal(
-      get_registry_indicators(pool, reg[i])$id,
-      unique(dat$ind_id)
-    )) {
-      message("  Henter alle indikatorer")
-      dat <- get_registry_data(pool, reg[i])
-      if (!"unit_level" %in% names(dat)) {
-        dat <- dplyr::left_join(dat, all_orgnr, by = "orgnr")
-      }
-    }
+
     # identify none-fraction indicators (no aggregation)
     ind_noagg <- indicator_is_fraction(pool, dat, conf, return_ind = TRUE)
     ind_noagg <- ind_noagg$ind[!ind_noagg$is_fraction]
@@ -260,11 +252,14 @@ insert_agg_data <- function(pool, df) {
     message("  Henter ny aggregert data")
     insert_table(pool, "agg_data", dat)
   }
+
   message("\nOppdaterer leveransetidspunkt")
+
   # Get all indicator ids from delivered registries,
   # since all dates are removed from agg_data in the loop above.
   all_ind_id <- dplyr::filter(ind_reg, .data$registry_id %in% reg)$id
   update_aggdata_delivery(pool, all_ind_id)
+
   message("Ferdig\n")
 }
 
