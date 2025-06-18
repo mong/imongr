@@ -1,6 +1,6 @@
 Package: imongr
 Title: I Handle the Data for mongts 
-Version: 2.5.1
+Version: 2.7.2
 Authors@R: c(
     person(given = "Are",
            family = "Edvardsen",
@@ -43,7 +43,7 @@ Imports:
     shinyvalidate,
     tibble,
     yaml
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Suggests: 
     testthat (>= 2.1.0),
     covr,

@@ -262,6 +262,18 @@ test_that("all indicator data subset for a registry can be provided", {
   expect_true(dim(get_registry_ind(pool, registry))[2] > 0)
 })
 
+test_that("aggregated data for an indicator can be fetched", {
+  check_db()
+  ind_id <- imongr::ind$id[1]
+  expect_equal(class(get_ind_agg_data(pool, ind_id)), "data.frame")
+})
+
+test_that("limits for an indicator can be fetched", {
+  check_db()
+  ind_id <- imongr::ind$id[1]
+  expect_equal(class(get_ind_limits(pool, ind_id)), "data.frame")
+})
+
 test_that("an org name is provided from org number", {
   check_db()
   orgnr <- unique(imongr::hospital$orgnr)[1]
@@ -353,6 +365,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
   pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
   pool::dbExecute(pool, "ALTER TABLE `evaluation` DROP FOREIGN KEY `fk_evaluation_user`;")
   pool::dbExecute(pool, "ALTER TABLE `evaluation` DROP FOREIGN KEY `fk_evaluation_registry`;")
+  pool::dbExecute(pool, "ALTER TABLE `evaluation` DROP FOREIGN KEY `fk_evaluation_notice`;")
   pool::dbExecute(
     pool,
     paste(

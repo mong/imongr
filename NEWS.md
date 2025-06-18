@@ -1,3 +1,36 @@
+# imongr 2.7.2
+
+## Endringer
+* Purging av azure cache by @jo-inge-arnes in https://github.com/mong/imongr/pull/552
+* Fullt indikatornavn i faner for kvalitetsforbedring og utvalgte indikatorer by @Stein-Kato in https://github.com/mong/imongr/pull/551
+* Kvalitetsforbedringsfigur by @Stein-Kato in https://github.com/mong/imongr/pull/550
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.7.1...v2.7.2
+
+# imongr 2.7.1
+
+## Endringer
+* Endret fra orgnr til kortnavn by @Stein-Kato in https://github.com/mong/imongr/pull/543
+* Fikset bug i projektfanen by @Stein-Kato in https://github.com/mong/imongr/pull/545
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.7.0...v2.7.1
+
+# imongr 2.7.0
+
+## Endringer
+
+* Tillat tomme rader i csv-fil by @Stein-Kato in https://github.com/mong/imongr/pull/524
+* Fiks lintr-jobb by @arnfinn in https://github.com/mong/imongr/pull/533
+* Bytt kontekst i fagområde-, bruker- og minefeltmenyer by @Stein-Kato in https://github.com/mong/imongr/pull/516
+* Ny fane for kvalitetsforbedring by @Stein-Kato in https://github.com/mong/imongr/pull/527
+* Fiks dokumentasjon slik at pkgdown bygger siden by @Stein-Kato in https://github.com/mong/imongr/pull/537
+* Update hnskde/mongr-dev-rstudio Docker tag to v2.2.1 by @renovate in https://github.com/mong/imongr/pull/539
+* Update hnskde/mongr-dev-code-server Docker tag to v2.2.1 by @renovate in https://github.com/mong/imongr/pull/538
+* Inndata for utvalgte indikatorer by @Stein-Kato in https://github.com/mong/imongr/pull/536
+* Lagt til id i databaseskjema for kvalitetsforbedringsprosjekter by @Stein-Kato in https://github.com/mong/imongr/pull/541
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.6.0...v2.7.0
+
 # imongr 2.6.0
 
 ## Endringer

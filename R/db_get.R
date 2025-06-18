@@ -285,8 +285,7 @@ FROM
 #' @export
 get_hospitals <- function(pool) {
   query <- paste0("
-SELECT
-  orgnr,
+SELECT DISTINCT
   short_name
 FROM
   hospital;
@@ -296,27 +295,10 @@ FROM
 }
 
 #' @rdname db_get
-#' @return A named list of hospital organization numbers with their short names as names
-#' @export
-get_named_orgnr <- function(pool, level) {
-  units_df <- switch(level,
-    "hospital" = get_hospitals(pool),
-    "hf" = get_hfs(pool),
-    "rhf" = get_rhfs(pool)
-  )
-
-  units_orgnr <- units_df$orgnr
-  names(units_orgnr) <- units_df$short_name
-
-  return(units_orgnr)
-}
-
-#' @rdname db_get
 #' @export
 get_hfs <- function(pool) {
   query <- paste0("
-SELECT
-  orgnr,
+SELECT DISTINCT
   short_name
 FROM
   hf;
@@ -329,8 +311,7 @@ FROM
 #' @export
 get_rhfs <- function(pool) {
   query <- paste0("
-SELECT
-  orgnr,
+SELECT DISTINCT
   short_name
 FROM
   rhf;
@@ -452,7 +433,7 @@ FROM
 get_registry_indicators <- function(pool, registry) {
   query <- paste0("
 SELECT
-  id
+  id, title
 FROM
   ind
 WHERE
@@ -704,7 +685,7 @@ get_registry_projects <- function(pool, registry, indicator) {
 get_project_hospitals <- function(pool, project) {
   query <- paste0("
     SELECT
-      hospital_orgnr
+      hospital_short_name
     FROM
       project_hospital
     WHERE
@@ -716,16 +697,48 @@ get_project_hospitals <- function(pool, project) {
 
 #' @rdname db_get
 #' @export
+get_ind_agg_data <- function(pool, ind_id) {
+  query <- paste0("
+    SELECT
+      var, year, unit_name, ind_id
+    FROM
+      agg_data
+    WHERE
+      context = 'caregiver'
+    AND
+      ind_id = '", ind_id, "';"
+  )
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
 get_ind_units <- function(pool, ind_id) {
   query <- paste0("
   SELECT
-    hospital_orgnr,
-    hf_orgnr,
-    rhf_orgnr
+    hospital_short_name,
+    hf_short_name,
+    rhf_short_name
   FROM
     unit_ind
   WHERE
     ind_id = '", ind_id, "';
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
+get_ind_limits <- function(pool, ind_id) {
+  query <- paste0("
+    SELECT
+      id, level_yellow, level_green, level_direction
+    FROM
+      ind
+    WHERE
+      id = '", ind_id, "'
   ")
 
   pool::dbGetQuery(pool, query)

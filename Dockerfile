@@ -1,13 +1,18 @@
-FROM hnskde/imongr-base-r:4.1.0
+FROM hnskde/imongr-base-r:4.2.0
 
 LABEL maintainer="Arnfinn Hykkerud Steindal <arnfinn.hykkerud.steindal@helse-nord.no>"
 LABEL no.mongr.cd.enable="true"
 
 WORKDIR /app/R
 
-# hadolint ignore=DL3018
-RUN apk add --no-cache --update-cache aws-cli \
-    && installr -d shinyvalidate
+RUN installr -d shinyvalidate
+
+# hadolint ignore=DL3018,DL3013
+RUN apk add --no-cache --update python3 py3-pip \
+    && apk add --no-cache --update --virtual=build gcc musl-dev python3-dev \
+    libffi-dev openssl-dev cargo make \
+    && pip3 install --no-cache-dir --prefer-binary --break-system-packages azure-cli==2.63.0 \
+    && apk del build
 
 ## add package tarball
 # hadolint ignore=DL3010
@@ -17,6 +22,7 @@ COPY *.tar.gz .
 RUN R CMD INSTALL --clean ./*.tar.gz \
     && rm ./*.tar.gz \
     && R -e "rmarkdown::render(input = system.file('terms.Rmd', package = 'imongr'), output_format = 'html_fragment')"
+
 
 EXPOSE 3838
 

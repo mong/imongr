@@ -6,9 +6,10 @@ env_name <- Sys.getenv("IMONGR_DB_NAME")
 env_host <- Sys.getenv("IMONGR_DB_HOST")
 env_user_name <- Sys.getenv("SHINYPROXY_USERNAME")
 env_user_groups <- Sys.getenv("SHINYPROXY_USERGROUPS")
-env_aws_key <- Sys.getenv("AWS_ACCESS_KEY_ID")
-env_aws_secret <- Sys.getenv("AWS_SECRET_ACCESS_KEY")
-env_aws_id <- Sys.getenv("distribution_id")
+env_az_user_name <- Sys.getenv("AZ_USER_NAME")
+env_az_secret <- Sys.getenv("AZ_SECRET")
+env_az_tenant <- Sys.getenv("AZ_TENANT")
+env_api_endpoint_name <- Sys.getenv("API_ENDPOINT_NAME")
 
 
 # create a local config for testing
@@ -121,6 +122,7 @@ test_that("sample data can be deleted from db", {
 if (is.null(check_db(is_test_that = FALSE))) {
   conf <- get_config()
   pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
+  pool::dbExecute(pool, "ALTER TABLE `evaluation` DROP FOREIGN KEY `fk_evaluation_notice`;")
   pool::dbExecute(
     pool,
     paste(
@@ -142,10 +144,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
 file.remove("_imongr.yml")
 
 test_that("invalidate_cache is (not) working", {
-  # Needs aws-cli installed to test. Not installed, I guess
-  Sys.setenv(AWS_ACCESS_KEY_ID = "")
-  expect_null(invalidate_cache())
-  Sys.setenv(AWS_ACCESS_KEY_ID = "qwerty")
+  # Needs az-cli installed to test. Not installed, I guess
   expect_null(invalidate_cache())
 })
 
@@ -157,6 +156,7 @@ Sys.setenv(IMONGR_DB_NAME = env_name)
 Sys.setenv(IMONGR_DB_HOST = env_host)
 Sys.setenv(SHINYPROXY_USERNAME = env_user_name)
 Sys.setenv(SHINYPROXY_USERGROUPS = env_user_groups)
-Sys.setenv(AWS_ACCESS_KEY_ID = env_aws_key)
-Sys.setenv(AWS_SECRET_ACCESS_KEY = env_aws_secret)
-Sys.setenv(distribution_id = env_aws_id)
+Sys.setenv(AZ_USER_NAME = env_az_user_name)
+Sys.setenv(AZ_SECRET = env_az_secret)
+Sys.setenv(AZ_TENANT = env_az_tenant)
+Sys.setenv(API_ENDPOINT_NAME = env_api_endpoint_name)
