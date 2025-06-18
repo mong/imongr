@@ -38,7 +38,7 @@
 #' @param from_level Integer specifying from what level to aggregate from
 #' @return Data frame in raw, grouped or aggregated form
 #' @name aggregate
-#' @aliases agg agg_dg agg_from_level agg_residual agg_udef
+#' @aliases agg agg_dg agg_from_level
 #' @importFrom rlang .data
 NULL
 
