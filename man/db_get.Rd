@@ -33,7 +33,9 @@
 \alias{get_review_collaborators}
 \alias{get_registry_projects}
 \alias{get_project_hospitals}
+\alias{get_ind_agg_data}
 \alias{get_ind_units}
+\alias{get_ind_limits}
 \title{Retreiv data from imongr database}
 \usage{
 get_all_user_data(pool)
@@ -96,7 +98,11 @@ get_registry_projects(pool, registry, indicator)
 
 get_project_hospitals(pool, project)
 
+get_ind_agg_data(pool, ind_id)
+
 get_ind_units(pool, ind_id)
+
+get_ind_limits(pool, ind_id)
 }
 \arguments{
 \item{pool}{a database connection pool object}
