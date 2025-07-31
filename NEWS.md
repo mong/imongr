@@ -1,3 +1,15 @@
+# imongr 2.7.3
+
+## Endringer
+* Fikset logikk for nivå by @Stein-Kato in https://github.com/mong/imongr/pull/560
+* Update hnskde/imongr-base-r Docker tag to v4.2.0 by @renovate[bot] in https://github.com/mong/imongr/pull/558
+* Nye tabeller for varsel by @Stein-Kato in https://github.com/mong/imongr/pull/555
+* Skriv og les varseltekst by @Stein-Kato in https://github.com/mong/imongr/pull/563
+* Fiks aggregering i verify by @Stein-Kato in https://github.com/mong/imongr/pull/565
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.7.2...v2.7.3
+
 # imongr 2.7.2
 
 ## Endringer
