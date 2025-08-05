@@ -313,7 +313,7 @@ review_server <- function(id, registry_tracker, pool) {
         ns("selected_year"),
         "Velg \u00e5r",
         c(2013L : (as.numeric(format(Sys.Date(), "%Y")) - 1)),
-        selected = 2023
+        selected = 2024
       )
     })
 
@@ -650,6 +650,8 @@ review_server <- function(id, registry_tracker, pool) {
       })
 
       rv$registry_users <- get_registry_user(pool, input$selected_registry)
+
+      rv$collaborators <- get_review_collaborators(pool, input$selected_registry)
     })
 
     # Registrer varsel
