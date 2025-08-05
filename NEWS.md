@@ -1,3 +1,11 @@
+# imongr 2.8.0
+
+## Endringer
+* Velg roller i vurderingsskjemaet til Ekspertgruppen by @Stein-Kato in https://github.com/mong/imongr/pull/572
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.7.3...v2.8.0
+
 # imongr 2.7.3
 
 ## Endringer
