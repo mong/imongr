@@ -400,12 +400,20 @@ review_server <- function(id, registry_tracker, pool) {
       }
     })
 
+    # Knapp for å lagre hoved- og leseansvarlig
     output$save_assignment_button <- shiny::renderUI({
+      main_users <- input$select_main_users
+      read_users <- input$select_read_users
+
       if (is_manager) {
-        shiny::actionButton(
-          ns("save_assignment"),
-          "Lagre ansvarlige"
-        )
+        if (length(intersect(main_users, read_users) > 0)) {
+          shiny::h5("Samme bruker er tildelt to roller")
+        } else {
+          shiny::actionButton(
+            ns("save_assignment"),
+            "Lagre ansvarlige"
+          )
+        }
       } else {
         NULL
       }
