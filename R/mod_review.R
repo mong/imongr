@@ -43,13 +43,17 @@ review_ui <- function(id) {
         shiny::h5("Hovedansvarlig:"),
         shiny::uiOutput(ns("collaborators_main")),
         shiny::br(),
-        shiny::h5("Leseansvarlige:"),
+        shiny::uiOutput(ns("assign_collaborators_main")),
+        shiny::br(),
+        shiny::h5("Leseansvarlig:"),
         shiny::uiOutput(ns("collaborators_read")),
+        shiny::br(),
+        shiny::uiOutput(ns("assign_collaborators_read")),
+        shiny::uiOutput(ns("save_assignment_button")),
         shiny::hr(),
         shiny::br(),
         shiny::h5(style = "text-align: center;", "Registeret vurderes til:"),
         shiny::br(),
-        shiny::hr(),
         shiny::uiOutput(ns("verdict")),
         shiny::uiOutput(ns("notice_button")),
         width = 3
@@ -246,6 +250,7 @@ review_server <- function(id, registry_tracker, pool) {
       collaborators = NULL,
       allow_get_previous_year = TRUE,
       notice = NA,
+      registry_users = NA,
     )
 
     verdict <- shiny::reactive({
@@ -321,17 +326,103 @@ review_server <- function(id, registry_tracker, pool) {
       })
     })
 
+    output$assign_collaborators_main <- shiny::renderUI({
+
+      choices <- NULL
+      selected <- NULL
+
+      if (!is.null(dim(rv$registry_users))) {
+        selected_inds <- which(rv$registry_users$role == "main")
+
+        choices <- rv$registry_users$user_id
+        selected <- rv$registry_users$user_id[selected_inds]
+
+        names(choices) <- rv$registry_users$name
+        names(selected) <- rv$registry_users$name[selected_inds]
+      }
+
+      if (is_manager) {
+        shiny::tagList(
+          shiny::selectInput(
+            inputId = ns("select_main_users"),
+            label = "Velg bruker(e):",
+            choices = choices,
+            selected = selected,
+            multiple = TRUE
+          ),
+          shiny::tags$style(type = "text/css",
+            ".selectize-input { word-break : break-word;}"
+          )
+        )
+      } else {
+        NULL
+      }
+    })
+
     output$collaborators_read <- shiny::renderUI({
-      collaborators <- rv$collaborators[rv$collaborators$role == "read", ]$name
+      collaborators <- rv$collaborators$name[which(rv$collaborators$role == "read")]
 
       lapply(collaborators, FUN = function(s) {
         shiny::div(style = "font-size: 100%;", s)
       })
     })
 
+    output$assign_collaborators_read <- shiny::renderUI({
+      if (is_manager) {
+
+        choices <- NULL
+        selected <- NULL
+
+        if (!is.null(dim(rv$registry_users))) {
+          selected_inds <- which(rv$registry_users$role == "read")
+
+          choices <- rv$registry_users$user_id
+          selected <- rv$registry_users$user_id[selected_inds]
+
+          names(choices) <- rv$registry_users$name
+          names(selected) <- rv$registry_users$name[selected_inds]
+        }
+
+        shiny::tagList(
+          shiny::selectInput(
+            inputId = ns("select_read_users"),
+            label = "Velg bruker(e):",
+            choices = choices,
+            selected = selected,
+            multiple = TRUE
+          ),
+          shiny::tags$style(type = "text/css",
+            ".selectize-input { word-break : break-word;}"
+          )
+        )
+      } else {
+        NULL
+      }
+    })
+
+    # Knapp for å lagre hoved- og leseansvarlig
+    output$save_assignment_button <- shiny::renderUI({
+      main_users <- input$select_main_users
+      read_users <- input$select_read_users
+
+      if (is_manager) {
+        if (length(intersect(main_users, read_users) > 0)) {
+          shiny::h5("Samme bruker er tildelt to roller")
+        } else {
+          shiny::actionButton(
+            ns("save_assignment"),
+            "Lagre ansvarlige"
+          )
+        }
+      } else {
+        NULL
+      }
+    })
+
     output$verdict <- shiny::renderUI({
       shiny::div(style = "font-size: 200%; text-align: center", verdict())
     })
+
 
     # Knapp for nytt varsel
     output$notice_button <- shiny::renderUI({
@@ -453,6 +544,7 @@ review_server <- function(id, registry_tracker, pool) {
     shiny::observeEvent(input$selected_registry, {
       rv$table_data$registry_id <- input$selected_registry
       rv$allow_get_previous_year <- TRUE
+      rv$registry_users <- get_registry_user(pool, input$selected_registry)
     })
 
     shiny::observeEvent(input$selected_year, {
@@ -542,6 +634,22 @@ review_server <- function(id, registry_tracker, pool) {
       )
 
       rv$graph_data <- update_graph_data(input, pool, rv)
+    })
+
+    # Lagre hoved- og leseansvarlig
+    shiny::observeEvent(input$save_assignment, {
+      main_users <- input$select_main_users
+      read_users <- input$select_read_users
+
+      lapply(main_users, FUN = function(x) {
+        update_registry_user_role(pool, x, input$selected_registry, "main")
+      })
+
+      lapply(read_users, FUN = function(x) {
+        update_registry_user_role(pool, x, input$selected_registry, "read")
+      })
+
+      rv$registry_users <- get_registry_user(pool, input$selected_registry)
     })
 
     # Registrer varsel

@@ -413,7 +413,7 @@ test_that("review module has output...", {
     review_server,
     args = list(pool = pool),
     {
-      session$setInputs(selected_registry = "", selected_year = "2018")
+      session$setInputs(selected_registry = "1", selected_year = "2018")
 
       expect_equal(verdict(), "1")
 
