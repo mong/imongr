@@ -1,3 +1,11 @@
+# imongr 2.8.1
+
+## Endringer
+* Oppdatert år og fikset reaktivitet i ekspertgruppefanen by @Stein-Kato in https://github.com/mong/imongr/pull/573
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.8.0...v2.8.1
+
 # imongr 2.8.0
 
 ## Endringer

@@ -17,6 +17,7 @@
 \alias{update_ind_val}
 \alias{insert_data_verify}
 \alias{insert_data_prod}
+\alias{update_registry_user_role}
 \title{Functions for data operations in imongr}
 \usage{
 delete_indicator_data(pool, df)
@@ -46,6 +47,8 @@ create_imongr_user(pool, df)
 update_registry_medfield(pool, registry_id, df)
 
 update_registry_user(pool, registry_id, df)
+
+update_registry_user_role(pool, user_id, registry_id, role)
 }
 \arguments{
 \item{pool}{Database pool object}
@@ -71,6 +74,8 @@ apply for all uploads prior to publishing.}
 \item{indicator}{Character vector of indicator ids}
 
 \item{registry_id}{The numeric id of the selected registry}
+
+\item{role}{A string with the role to be stored}
 }
 \value{
 Relevant values from the current environment and database
