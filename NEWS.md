@@ -1,3 +1,11 @@
+# imongr 2.8.2
+
+## Endringer
+* Tillat å velge HF og RHF i tillegg til sykehus i prosjektfanen by @Stein-Kato in https://github.com/mong/imongr/pull/577
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.8.1...v2.8.2
+
 # imongr 2.8.1
 
 ## Endringer
