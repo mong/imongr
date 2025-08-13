@@ -531,7 +531,8 @@ get_users_per_registry <- function(pool) {
   query <- "
 SELECT
   user.user_name,
-  registry.short_name
+  registry.short_name,
+  user_registry.role
 FROM
   user
 LEFT JOIN
