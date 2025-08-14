@@ -111,6 +111,7 @@ db:
       insert:
       - registry_id
       - user_id
+      - role
     publish:
       insert:
       - md5_checksum
