@@ -1,3 +1,11 @@
+# imongr 2.8.3
+
+## Endringer
+* Ta hensyn til rolle i brukeradmin by @Stein-Kato in https://github.com/mong/imongr/pull/579
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.8.2...v2.8.3
+
 # imongr 2.8.2
 
 ## Endringer
