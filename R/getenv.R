@@ -145,3 +145,21 @@ adminer_url <- function() {
 
   url
 }
+
+logout_url <- function() {
+  conf <- get_config()
+
+  url <- conf$profile$logout$url
+
+  if ("IMONGR_LOGOUT_URL" %in% names(Sys.getenv())) {
+    url <- Sys.getenv("IMONGR_LOGOUT_URL")
+  } else {
+    warning(paste(
+      "No logout url in the environment",
+      "varaiable IMONGR_LOGOUT_URL!",
+      "Using config value instead."
+    ))
+  }
+
+  url
+}

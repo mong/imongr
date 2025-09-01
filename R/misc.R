@@ -83,7 +83,7 @@ user_widget <- function() {
       shiny::tags$a(
         shiny::icon("sign-out-alt"),
         conf$profile$logout$text,
-        href = conf$profile$logout$url
+        href = logout_url()
       )
     )
   )
