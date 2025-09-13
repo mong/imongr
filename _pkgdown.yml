@@ -77,8 +77,6 @@ reference:
     - agg
     - agg_dg
     - agg_from_level
-    - agg_residual
-    - agg_udef
 
   - title: Environment
     desc: >
