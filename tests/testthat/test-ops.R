@@ -65,7 +65,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
   close(fc)
   sql <- paste0(t, collapse = "\n")
   queries <- strsplit(sql, ";")[[1]]
-  for (i in seq_len(length(queries))) {
+  for (i in seq_along(queries)) {
     pool::dbExecute(pool, queries[i])
   }
 }
