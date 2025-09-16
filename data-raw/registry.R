@@ -7,7 +7,7 @@ data <- data[!ind, ]
 regs <- levels(factor(data$Register))
 
 
-registry <- data.frame(id = seq_len(length(regs)),
+registry <- data.frame(id = seq_along(regs),
                        name = regs)
 
 # add full name
