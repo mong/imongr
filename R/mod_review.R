@@ -130,12 +130,14 @@ get_last_year <- function() {
 
 #'@rdname mod_review
 update_graph_data <- function(input, pool, rv) {
-  dat <- pool::dbGetQuery(pool, "SELECT * FROM evaluation")
+  if (!is.null(input$selected_registry)) {
+    graph_data <- pool::dbGetQuery(pool, paste0("SELECT year, verdict, reported_dg FROM evaluation 
+    WHERE registry_id = ", input$selected_registry, " ORDER BY year"))
 
-  graph_data <- dat[dat$registry_id == input$selected_registry, ] |>
-    dplyr::select("year", "verdict", "reported_dg")
-
-  return(graph_data)
+    return(graph_data)
+  } else {
+    return(NULL)
+  }
 }
 
 #' @rdname mod_review
