@@ -90,7 +90,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
     Sys.setenv("IMONGR_DB_NAME" = db_name)
     local_pool <- make_pool()
 
-    for (i in seq_len(length(queries))) {
+    for (i in seq_along(queries)) {
       pool::dbExecute(local_pool, queries[i])
     }
 
