@@ -239,4 +239,3 @@ agg_from_level <- function(df, org, ind, conf, from_level) {
 
   agg
 }
-
