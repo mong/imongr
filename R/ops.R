@@ -235,7 +235,7 @@ insert_agg_data <- function(pool, df) {
 
   reg <- unique(df$registry_id)
 
-  for (i in seq_len(length(reg))) {
+  for (i in seq_along(reg)) {
     message(paste("Register:", get_registry_name(pool, reg[i])))
 
     dat <- dplyr::filter(df, .data$registry_id == reg[i]) |>

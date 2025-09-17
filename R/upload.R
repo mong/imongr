@@ -41,7 +41,7 @@ check_report <- function(registry, df, ind, pool) {
   } else {
     mail_msg <- ""
     msg <- "<font color=\"#FF0000\">"
-    for (i in seq_len(length(r$unit))) {
+    for (i in seq_along(r$unit)) {
       if (r$fail[i]) {
         msg <- paste(
           msg, "<b>", conf$upload$check[r$unit[i]], "</b>",
@@ -100,7 +100,7 @@ check_upload <- function(registry, df, ind, pool) {
     fail <- TRUE
     report <- conf$upload$check_empty
   } else {
-    for (i in seq_len(length(conf$upload$check))) {
+    for (i in seq_along(conf$upload$check)) {
       unit[i] <- names(conf$upload$check)[i]
       r <- do.call(
         paste0("check_", unit[i]),

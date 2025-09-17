@@ -76,7 +76,7 @@ queries <- strsplit(sql, ";")[[1]]
 
 test_that("relevant tables can be made in test database, table", {
   check_db()
-  for (i in seq_len(length(queries))) {
+  for (i in seq_along(queries)) {
     expect_equal(pool::dbExecute(pool, queries[i]), 0)
   }
 })
@@ -90,7 +90,7 @@ queries <- strsplit(sql, ";")[[1]]
 
 test_that("test tables can be indexed", {
   check_db()
-  for (i in seq_len(length(queries))) {
+  for (i in seq_along(queries)) {
     expect_equal(pool::dbExecute(pool, queries[i]), 0)
   }
 })
