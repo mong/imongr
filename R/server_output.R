@@ -223,7 +223,7 @@ var_doc_ui <- function(conf) {
 medfield_summary_text_ui <- function(pool, conf, df) {
   if (dim(df)[1] > 0) {
     txt <- paste0("<h2>", conf$medfield$text$summary, "</h2>\n")
-    for (i in seq_len(length(df$id))) {
+    for (i in seq_along(df$id)) {
       txt <- paste0(txt, "<h3>", df$full_name[i], "</h3>\n")
       regs <- get_medfield_registry(pool, df$id[i])
       if (dim(regs)[1] > 0) {

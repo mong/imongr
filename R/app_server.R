@@ -319,7 +319,18 @@ app_server <- function(input, output, session) {
         input$user_registry,
         length(input$select_user)
       ),
-      user_id = input$select_user
+      user_id = input$select_user,
+      # Look up each user's role, if any, and add it to the data frame.
+      # No role corresponds to NA.
+      role = input$select_user |> lapply(FUN = function(x) {
+        if (x %in% rv$reguser$user_id) {
+          return(rv$reguser$role[rv$reguser$user_id == x])
+        } else {
+          return(NA)
+        }
+      }
+      ) |>
+        unlist()
     )
 
     update_registry_user(rv$pool, input$user_registry, registry_user_update)
@@ -363,10 +374,10 @@ app_server <- function(input, output, session) {
       all_user <- list(`Not defined!` = 0)
     }
 
-    reguser <- get_registry_user(rv$pool, input$user_registry)
+    rv$reguser <- get_registry_user(rv$pool, input$user_registry)
 
-    if (!is.null(dim(reguser))) {
-      current_reguser <- reguser$user_id
+    if (!is.null(dim(rv$reguser))) {
+      current_reguser <- rv$reguser$user_id
     } else {
       current_reguser <- NULL
     }
@@ -404,7 +415,7 @@ app_server <- function(input, output, session) {
         regex = FALSE
       )
       ),
-      colnames = c("Brukernavn", "Register"),
+      colnames = c("Brukernavn", "Register", "Rolle"),
       rownames = FALSE
     )
   )

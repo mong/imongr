@@ -76,7 +76,7 @@ queries <- strsplit(sql, ";")[[1]]
 
 test_that("relevant tables can be made in test database, table", {
   check_db()
-  for (i in seq_len(length(queries))) {
+  for (i in seq_along(queries)) {
     expect_equal(pool::dbExecute(pool, queries[i]), 0)
   }
 })
@@ -90,7 +90,7 @@ queries <- strsplit(sql, ";")[[1]]
 
 test_that("test tables can be indexed", {
   check_db()
-  for (i in seq_len(length(queries))) {
+  for (i in seq_along(queries)) {
     expect_equal(pool::dbExecute(pool, queries[i]), 0)
   }
 })
@@ -123,8 +123,7 @@ test_that("database can be populated with test data", {
 
 test_that("agg_data can be populated from existing (test) data", {
   check_db()
-  # to save ptime, use just a sub-sample of data (reused on retrieval)
-  data_sample <- get_table(pool, "data", sample = .4)
+  data_sample <- get_table(pool, "data")
   expect_message(insert_agg_data(pool, data_sample))
 })
 
@@ -215,9 +214,7 @@ test_that("users per registry can be fetched", {
   expected_output <- users |>
     dplyr::left_join(user_registry, by = "user_id") |>
     dplyr::left_join(registry, by = dplyr::join_by(registry_id == id)) |>
-    dplyr::select(user_name, short_name)
-
-  colnames(expected_output) <- c("user_name", "short_name")
+    dplyr::select(user_name, short_name, role)
 
   expect_equal(get_users_per_registry(pool), expected_output)
 })

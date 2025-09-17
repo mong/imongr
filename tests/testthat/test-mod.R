@@ -48,7 +48,7 @@ if (is.null(check_db(is_test_that = FALSE))) {
   close(fc)
   sql <- paste0(t, collapse = "\n")
   queries <- strsplit(sql, ";")[[1]]
-  for (i in seq_len(length(queries))) {
+  for (i in seq_along(queries)) {
     pool::dbExecute(pool, queries[i])
   }
 
@@ -413,7 +413,7 @@ test_that("review module has output...", {
     review_server,
     args = list(pool = pool),
     {
-      session$setInputs(selected_registry = "", selected_year = "2018")
+      session$setInputs(selected_registry = "1", selected_year = "2018")
 
       expect_equal(verdict(), "1")
 

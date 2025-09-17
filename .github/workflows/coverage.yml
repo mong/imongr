@@ -23,7 +23,7 @@ jobs:
       IMONGR_DB_USER: "root"
       IMONGR_DB_PASS: "root"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: r-lib/actions/setup-r@v2
 

@@ -1,5 +1,5 @@
 x-db: &db
-  image: mariadb:10
+  image: mariadb:12
   restart: "no"
   environment:
     MYSQL_ROOT_PASSWORD: root
@@ -19,6 +19,7 @@ x-environment: &environment
   IMONGR_ADMINER_URL: http://localhost:8888
   SHINYPROXY_USERNAME: imongr@mongr.no
   SHINYPROXY_USERGROUPS: PROVIDER,MANAGER,REVIEWER
+  IMONGR_LOGOUT_URL: https://imongr.skde.no/logout
 
 services:
 

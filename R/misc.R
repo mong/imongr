@@ -83,7 +83,7 @@ user_widget <- function() {
       shiny::tags$a(
         shiny::icon("sign-out-alt"),
         conf$profile$logout$text,
-        href = conf$profile$logout$url
+        href = logout_url()
       )
     )
   )
@@ -160,7 +160,7 @@ delete_all_data <- function(prompt = TRUE) {
     message("...dropping tables...")
     pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
     pool::dbExecute(pool, "ALTER TABLE `evaluation` DROP FOREIGN KEY `fk_evaluation_notice`;")
-    for (i in seq_len(length(tabs))) {
+    for (i in seq_along(tabs)) {
       pool::dbExecute(pool, paste0(query, tabs[i], ";"))
     }
     fc <- file(system.file("2_create_tabs.sql", package = "imongr"), "r")
@@ -169,7 +169,7 @@ delete_all_data <- function(prompt = TRUE) {
     sql <- paste0(t, collapse = "\n")
     queries <- strsplit(sql, ";")[[1]]
     message("...recreating tables...")
-    for (i in seq_len(length(queries))) {
+    for (i in seq_along(queries)) {
       pool::dbExecute(pool, queries[i])
     }
     drain_pool(pool)

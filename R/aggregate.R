@@ -76,7 +76,7 @@ agg <- function(df, org, ind, ind_noagg = character(), orgnr_name_map) {
 
     # aggregate each level
     aggs <- data.frame()
-    for (i in seq_len(length(unit_levels))) {
+    for (i in seq_along(unit_levels)) {
       agg <- agg_from_level(
         df[df$unit_level == unit_levels[i], ], org, ind,
         conf,
@@ -166,7 +166,7 @@ agg_dg <- function(aggs, ind) {
   # the oldest dg will not be provided with a dg and will remain default (NA)
   # at: temporary aggs for each iteration
   # dt: temporary dg_data for each iteration
-  for (i in seq_len(length(years))) {
+  for (i in seq_along(years)) {
     at <- dplyr::filter(aggs, .data$year >= years[i]) |>
       dplyr::select(-c("dg"))
     dt <- dplyr::filter(dg_data, .data$year == years[i]) |>
@@ -214,7 +214,7 @@ agg_from_level <- function(df, org, ind, conf, from_level) {
 
   agg <- data.frame()
 
-  for (i in seq_len(length(groups))) {
+  for (i in seq_along(groups)) {
     idf <- df |>
       dplyr::group_by(
         .data[["year"]], .data[["ind_id"]], .data[["context"]],
@@ -239,3 +239,4 @@ agg_from_level <- function(df, org, ind, conf, from_level) {
 
   agg
 }
+

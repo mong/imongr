@@ -1,3 +1,47 @@
+# imongr 2.8.3
+
+## Endringer
+* Ta hensyn til rolle i brukeradmin by @Stein-Kato in https://github.com/mong/imongr/pull/579
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.8.2...v2.8.3
+
+# imongr 2.8.2
+
+## Endringer
+* Tillat å velge HF og RHF i tillegg til sykehus i prosjektfanen by @Stein-Kato in https://github.com/mong/imongr/pull/577
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.8.1...v2.8.2
+
+# imongr 2.8.1
+
+## Endringer
+* Oppdatert år og fikset reaktivitet i ekspertgruppefanen by @Stein-Kato in https://github.com/mong/imongr/pull/573
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.8.0...v2.8.1
+
+# imongr 2.8.0
+
+## Endringer
+* Velg roller i vurderingsskjemaet til Ekspertgruppen by @Stein-Kato in https://github.com/mong/imongr/pull/572
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.7.3...v2.8.0
+
+# imongr 2.7.3
+
+## Endringer
+* Fikset logikk for nivå by @Stein-Kato in https://github.com/mong/imongr/pull/560
+* Update hnskde/imongr-base-r Docker tag to v4.2.0 by @renovate[bot] in https://github.com/mong/imongr/pull/558
+* Nye tabeller for varsel by @Stein-Kato in https://github.com/mong/imongr/pull/555
+* Skriv og les varseltekst by @Stein-Kato in https://github.com/mong/imongr/pull/563
+* Fiks aggregering i verify by @Stein-Kato in https://github.com/mong/imongr/pull/565
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.7.2...v2.7.3
+
 # imongr 2.7.2
 
 ## Endringer

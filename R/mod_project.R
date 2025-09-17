@@ -100,6 +100,10 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     }
 
     hospital_unit_names <- get_hospitals(pool_verify)$short_name
+    hf_unit_names <- get_hfs(pool_verify)$short_name
+    rhf_unit_names <- get_rhfs(pool_verify)$short_name
+
+    unit_names <- c(hospital_unit_names, hf_unit_names, rhf_unit_names)
 
     validateProjectName <- function(x) {
       existing_project_ids <- pool::dbGetQuery(pool_verify, "SELECT id FROM project")$id
@@ -220,8 +224,8 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     output$add_hospitals <- shiny::renderUI({
       shiny::selectInput(
         inputId = ns("hospitals"),
-        label = "Velg sykehus",
-        choices = hospital_unit_names,
+        label = "Velg enhet",
+        choices = unit_names,
         selected = get_project_hospitals(pool_verify, input$project)$hospital_short_name,
         multiple = TRUE
       )

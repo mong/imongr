@@ -235,7 +235,7 @@ insert_agg_data <- function(pool, df) {
 
   reg <- unique(df$registry_id)
 
-  for (i in seq_len(length(reg))) {
+  for (i in seq_along(reg)) {
     message(paste("Register:", get_registry_name(pool, reg[i])))
 
     dat <- dplyr::filter(df, .data$registry_id == reg[i]) |>
@@ -378,6 +378,24 @@ WHERE
       row.names = FALSE
     )
   }
+}
+
+#' @rdname ops
+#' @param pool Database pool object
+#' @param registry_id The numeric id of the selected user
+#' @param registry_id The numeric id of the selected registry
+#' @param role A string with the role to be stored
+#' @export
+update_registry_user_role <- function(pool, user_id, registry_id, role) {
+  query <- paste0("
+UPDATE
+  user_registry
+SET
+  role='", role, "'
+WHERE
+  user_id=", user_id, " AND registry_id=", registry_id, ";")
+
+  pool::dbExecute(pool, query)
 }
 
 #' @rdname ops
