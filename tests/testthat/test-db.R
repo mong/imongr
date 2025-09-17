@@ -124,7 +124,7 @@ test_that("database can be populated with test data", {
 test_that("agg_data can be populated from existing (test) data", {
   check_db()
   # to save ptime, use just a sub-sample of data (reused on retrieval)
-  data_sample <- get_table(pool, "data", sample = .4)
+  data_sample <- get_table(pool, "data")
   expect_message(insert_agg_data(pool, data_sample))
 })
 
