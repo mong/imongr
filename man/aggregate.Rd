@@ -5,8 +5,6 @@
 \alias{agg}
 \alias{agg_dg}
 \alias{agg_from_level}
-\alias{agg_residual}
-\alias{agg_udef}
 \title{Aggregate hospital data}
 \usage{
 agg(df, org, ind, ind_noagg = character(), orgnr_name_map)
@@ -14,10 +12,6 @@ agg(df, org, ind, ind_noagg = character(), orgnr_name_map)
 agg_dg(aggs, ind)
 
 agg_from_level(df, org, ind, conf, from_level)
-
-agg_residual(aggs, conf)
-
-agg_udef(diff, conf)
 }
 \arguments{
 \item{df}{Data frame}
