@@ -411,7 +411,7 @@ app_server <- function(input, output, session) {
   output$user_table <- DT::renderDataTable(
     DT::datatable(rv$user_registry_data,
       options = list(search = list(
-        search = get_registry_name(rv$pool, input$user_registry),
+        search = get_registry_name(rv$pool, input$user_registry, short_name = TRUE),
         regex = FALSE
       )
       ),
