@@ -232,7 +232,7 @@ get_registry_name <- function(pool, registry) {
 
   query <- paste0("
 SELECT
-  name,
+  name
 FROM
   registry
 WHERE
