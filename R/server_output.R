@@ -230,9 +230,10 @@ medfield_summary_text_ui <- function(pool, conf, df) {
         regtxt <- paste0(
           "<ul>\n\t<li>",
           paste(
-            get_registry_name(pool,
+            get_registry_name(
+              pool,
               registry = regs$registry_id),
-            collapse = "</li>\n\t<li>"
+              collapse = "</li>\n\t<li>"
           ),
           "</li>\n</ul>"
         )
