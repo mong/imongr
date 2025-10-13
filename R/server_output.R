@@ -32,8 +32,9 @@ select_registry_ui <- function(pool, conf, input_id, context,
                                pool0 = NULL) {
   # Show all registries if the user has access level "MANAGER" or "IRA"
   privileged_access <- c(conf$role$manager, conf$role$ira)
+  user_groups <- get_user_groups() # Can be character(0) if the user has no group affiliation
 
-  if (intersect(privileged_access, get_user_groups()) > 0) {
+  if (length(user_groups) > 0 && length(intersect(privileged_access, user_groups)) > 0) {
     regs <- get_table(pool, "registry") |>
       dplyr::transmute(.data$short_name, .data$id) |>
       tibble::deframe()
