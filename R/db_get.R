@@ -225,25 +225,56 @@ WHERE
 
 #' @rdname db_get
 #' @export
-get_registry_name <- function(pool, registry, full_name = FALSE) {
+get_registry_name <- function(pool, registry) {
   if (missing(registry) || paste(registry, collapse = "") == "") {
     return(character())
   }
 
   query <- paste0("
 SELECT
-  name,
+  name
+FROM
+  registry
+WHERE
+  id IN (", paste(registry, collapse = ", "), ");")
+
+  pool::dbGetQuery(pool, query)$name
+}
+
+#' @rdname db_get
+#' @export
+get_registry_short_name <- function(pool, registry, full_name = FALSE, short_name = FALSE) {
+  if (missing(registry) || paste(registry, collapse = "") == "") {
+    return(character())
+  }
+
+  query <- paste0("
+SELECT
+  short_name
+FROM
+  registry
+WHERE
+  id IN (", paste(registry, collapse = ", "), ");")
+
+  pool::dbGetQuery(pool, query)$short_name
+}
+
+#' @rdname db_get
+#' @export
+get_registry_full_name <- function(pool, registry, full_name = FALSE, short_name = FALSE) {
+  if (missing(registry) || paste(registry, collapse = "") == "") {
+    return(character())
+  }
+
+  query <- paste0("
+SELECT
   full_name
 FROM
   registry
 WHERE
   id IN (", paste(registry, collapse = ", "), ");")
 
-  if (full_name) {
-    pool::dbGetQuery(pool, query)$full_name
-  } else {
-    pool::dbGetQuery(pool, query)$name
-  }
+  pool::dbGetQuery(pool, query)$full_name
 }
 
 

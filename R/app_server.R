@@ -300,9 +300,7 @@ app_server <- function(input, output, session) {
   output$registry_medfield_header <- shiny::renderText({
     paste0(
       "<h2>", conf$medfield$text$heading, " <i>",
-      get_registry_name(rv$pool, shiny::req(input$medfield_registry),
-        full_name = TRUE
-      ),
+      get_registry_full_name(rv$pool, shiny::req(input$medfield_registry)),
       "</i>:</h2><br>", conf$medfield$text$body
     )
   })
@@ -407,9 +405,7 @@ app_server <- function(input, output, session) {
   output$registry_user_header <- shiny::renderText({
     paste0(
       "<h2>", conf$reguser$text$heading, " <i>",
-      get_registry_name(rv$pool, shiny::req(input$user_registry),
-        full_name = TRUE
-      ),
+      get_registry_full_name(rv$pool, shiny::req(input$user_registry)),
       "</i>:</h2><br>", conf$reguser$text$body
     )
   })
@@ -418,7 +414,7 @@ app_server <- function(input, output, session) {
   output$user_table <- DT::renderDataTable(
     DT::datatable(rv$user_registry_data,
       options = list(search = list(
-        search = get_registry_name(rv$pool, input$user_registry),
+        search = get_registry_short_name(rv$pool, input$user_registry),
         regex = FALSE
       )
       ),

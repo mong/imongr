@@ -81,7 +81,7 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
       shiny::checkboxInput(
         ns("liability"),
         shiny::HTML(paste(
-          get_registry_name(pool_verify, input$publish_registry, TRUE),
+          get_registry_full_name(pool_verify, input$publish_registry),
           conf$publish$liability,
           as.character(shiny::actionLink(ns("view_terms"), "vilk\u00e5rene."))
         ))
@@ -112,16 +112,13 @@ publish_server <- function(id, tab_tracker, registry_tracker, pool, pool_verify)
     output$publish_verify_doc <- shiny::renderText({
       verify_hypertext <- paste0(
         "<a href='https://verify.skde.no/behandlingskvalitet/",
-        get_registry_name(pool_verify, shiny::req(input$publish_registry),
-          full_name = FALSE
-        ),
+        get_registry_name(pool_verify, shiny::req(input$publish_registry)),
         "/' target='_blank'>her.</a>"
       )
       paste(
-        get_registry_name(
+        get_registry_full_name(
           pool_verify,
-          shiny::req(input$publish_registry),
-          TRUE
+          shiny::req(input$publish_registry)
         ),
         conf$publish$doc$verify,
         verify_hypertext

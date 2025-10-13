@@ -25,6 +25,8 @@
 \alias{get_user_deliveries}
 \alias{get_indicators_registry}
 \alias{get_registry_ind}
+\alias{get_registry_short_name}
+\alias{get_registry_full_name}
 \alias{get_hospitals}
 \alias{get_hfs}
 \alias{get_rhfs}
@@ -56,7 +58,11 @@ get_indicators_registry(pool, indicator)
 
 get_registry_ind(pool, registry)
 
-get_registry_name(pool, registry, full_name = FALSE)
+get_registry_name(pool, registry)
+
+get_registry_short_name(pool, registry, full_name = FALSE, short_name = FALSE)
+
+get_registry_full_name(pool, registry, full_name = FALSE, short_name = FALSE)
 
 get_org_name(pool, orgnr)
 

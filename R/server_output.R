@@ -186,7 +186,7 @@ upload_sample_text_ui <- function(pool, conf, upload_file, registry,
     paste0(
       conf$upload$doc$sample,
       " <b>",
-      get_registry_name(pool, registry, full_name = TRUE),
+      get_registry_full_name(pool, registry),
       "</b>: ",
       paste(indicators, collapse = ", "),
       "."
@@ -235,8 +235,7 @@ medfield_summary_text_ui <- function(pool, conf, df) {
           "<ul>\n\t<li>",
           paste(
             get_registry_name(pool,
-              registry = regs$registry_id,
-              full_name = FALSE
+              registry = regs$registry_id
             ),
             collapse = "</li>\n\t<li>"
           ),

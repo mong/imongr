@@ -249,9 +249,7 @@ upload_server <- function(id, registry_tracker, pool_verify) {
     output$valid_ind <- shiny::renderText({
       paste0(
         "<h4>", conf$upload$doc$valid_ind, " <i>",
-        get_registry_name(pool_verify, shiny::req(input$registry),
-          full_name = TRUE
-        ),
+        get_registry_full_name(pool_verify, shiny::req(input$registry)),
         "</i>:</h4>"
       )
     })
