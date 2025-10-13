@@ -255,6 +255,10 @@ review_server <- function(id, registry_tracker, pool) {
       registry_users = NA,
     )
 
+    ########## HARDCODE EDIT LOCK ###########
+    disallow_edits <- TRUE
+    ########## HARDCODE EDIT LOCK ###########
+
     verdict <- shiny::reactive({
       # Nivåer ble introdusert i 2019
       shiny::req(input$selected_year)
@@ -462,7 +466,11 @@ review_server <- function(id, registry_tracker, pool) {
       shiny::validate(
         shiny::need(dplyr::between(input$reported_dg, 0, 100), "Dekningsgrad må være fra 0 til 100\n"),
         shiny::need(input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1,
-                    "Redigering tillates kun på aktuelt rapporteringsår")
+                    "Redigering tillates kun på aktuelt rapporteringsår"),
+      )
+
+      shiny::validate(
+        shiny::need(!disallow_edits, "Redigering er nå låst for inneværende år")
       )
 
       shiny::actionButton(
@@ -475,7 +483,7 @@ review_server <- function(id, registry_tracker, pool) {
 
     output$save_override <- shiny::renderUI({
       shiny::req(input$selected_registry, input$selected_year)
-      if (is_manager & !(input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1)) {
+      if (is_manager && (!(input$selected_year == as.numeric(format(Sys.Date(), "%Y")) - 1) || disallow_edits)) {
         shiny::validate(
           shiny::need(dplyr::between(input$reported_dg, 0, 100), "Dekningsgrad må være fra 0 til 100\n")
         )
