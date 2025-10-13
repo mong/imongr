@@ -78,12 +78,15 @@ app_server <- function(input, output, session) {
     )
   }
 
+  # NB: THE ORDER OF THE ROLES MATTER IN THE FOLLOWING
+
   # Find out which roles the user has
   is_provider <- valid_user && conf$role$provider %in% igrs
-  is_manager <- valid_user && conf$role$manager %in% igrs
   is_reviewer <- valid_user && conf$role$reviewer %in% igrs
+  is_manager <- valid_user && conf$role$manager %in% igrs
+  is_ira <- valid_user && conf$role$ira %in% igrs
 
-  roles <- c(is_provider, is_reviewer, is_manager)
+  roles <- c(is_provider, is_reviewer, is_manager, is_ira)
 
   # Make a vector of functions to display tabs based on roles
   show_provider <- function() {
@@ -97,14 +100,14 @@ app_server <- function(input, output, session) {
     shiny::showTab("tabs", target = "review")
   }
 
-  show_ira <- function() {
-    shiny::showTab("tabs", target = "review")
-  }
-
   show_manager <- function() {
     shiny::showTab("tabs", target = "Administrative verkt\u00f8y")
     shiny::showTab("tabs", target = "selected_indicators")
     shiny::showTab("tabs", target = "project")
+  }
+
+  show_ira <- function() {
+    shiny::showTab("tabs", target = "review")
   }
 
   show_tabs <- c(show_provider, show_reviewer, show_manager, show_ira)
