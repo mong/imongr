@@ -1,3 +1,22 @@
+# imongr 2.9.0
+
+## Endringer
+* Les logout-url fra env-variabel by @jo-inge-arnes in https://github.com/mong/imongr/pull/581
+* Fikset bug i sortering i tabellen i ekspertgruppefanen by @Stein-Kato in https://github.com/mong/imongr/pull/585
+* Update actions/checkout action to v5 by @renovate[bot] in https://github.com/mong/imongr/pull/576
+* Fikset seq_linter-advarsler by @Stein-Kato in https://github.com/mong/imongr/pull/587
+* Ikke aggreger utvalg i test by @Stein-Kato in https://github.com/mong/imongr/pull/588
+* Update mariadb Docker tag to v12 by @renovate[bot] in https://github.com/mong/imongr/pull/578
+* Update hadolint/hadolint-action action to v3.2.0 by @renovate[bot] in https://github.com/mong/imongr/pull/583
+* Fjern aggregering ned til udefinerte enheter by @Stein-Kato in https://github.com/mong/imongr/pull/569
+* Update hadolint/hadolint-action action to v3.3.0 by @renovate[bot] in https://github.com/mong/imongr/pull/589
+* Ny brukergruppe "IRA" by @Stein-Kato in https://github.com/mong/imongr/pull/592
+* Bruk kortnavn på registre i brukertabellen by @Stein-Kato in https://github.com/mong/imongr/pull/590
+* Tillat sperring av redigering av ekspertgruppeskjemaet by @Stein-Kato in https://github.com/mong/imongr/pull/595
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.8.3...v2.8.4
+
 # imongr 2.8.3
 
 ## Endringer
