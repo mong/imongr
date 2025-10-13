@@ -275,6 +275,7 @@ role:
   provider: PROVIDER
   manager: MANAGER
   reviewer: REVIEWER
+  ira: IRA
 profile:
   greeting: >
     Hei

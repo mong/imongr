@@ -97,13 +97,17 @@ app_server <- function(input, output, session) {
     shiny::showTab("tabs", target = "review")
   }
 
+  show_ira <- function() {
+    shiny::showTab("tabs", target = "review")
+  }
+
   show_manager <- function() {
     shiny::showTab("tabs", target = "Administrative verkt\u00f8y")
     shiny::showTab("tabs", target = "selected_indicators")
     shiny::showTab("tabs", target = "project")
   }
 
-  show_tabs <- c(show_provider, show_reviewer, show_manager)
+  show_tabs <- c(show_provider, show_reviewer, show_manager, show_ira)
 
   # Hide all tabs
   shiny::hideTab("tabs", target = "upload")
