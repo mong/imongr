@@ -90,7 +90,29 @@ publication_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::actionButton(ns("new_publication"), "Legg til en publikasjon")
     })
 
+
+    ######################
+    ##### Main menu #####
+    ######################
+
+    # The publication list
+    output$publication_list <- shiny::renderUI({
+      DT::dataTableOutput(ns("publication_table"))
+    })
+
+    output$publication_table <- DT::renderDataTable(
+      DT::datatable(rv$publication_data,
+        colnames = c("DOI", "Bruker", "Tidspunkt"),
+        rownames = FALSE
+      )
+    )
+
     ##### Event observers #####
+
+    shiny::observeEvent(input$registry, {
+      rv$publication_data <- get_publications(pool_verify, input$registry)
+      rv_return$registry_id <- input$registry
+    })
 
     popUpListener <- shiny::reactive({
       list(input$new_doi)
@@ -145,6 +167,7 @@ publication_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::removeModal()
       rv$new_doi <- input$new_doi
       add_publication(input, rv, pool_verify)
+      rv$publication_data <- get_publications(pool_verify, input$registry)
     })
 
     return(rv_return)
