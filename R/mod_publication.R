@@ -102,7 +102,7 @@ publication_server <- function(id, registry_tracker, pool, pool_verify) {
 
     output$publication_table <- DT::renderDataTable(
       DT::datatable(rv$publication_data,
-        colnames = c("DOI", "Bruker", "Tidspunkt"),
+        colnames = c("DOI", "Bruker", "Tidspunkt", "Referanse"),
         rownames = FALSE
       )
     )
@@ -112,6 +112,20 @@ publication_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$registry, {
       rv$publication_data <- get_publications(pool_verify, input$registry)
       rv_return$registry_id <- input$registry
+    })
+
+    shiny::observeEvent(rv$publication_data, {
+      references <- lapply(rv$publication_data$doi,
+        FUN = function(x) {
+          httr::content(
+            httr::GET(
+              paste0("https://citation.doi.org/format?doi=", x, "&style=apa&lang=nb-NO")
+            )
+          )
+        }
+      )
+
+      rv$publication_data$references <- unlist(references)
     })
 
     popUpListener <- shiny::reactive({
