@@ -463,6 +463,21 @@ WHERE
 }
 
 #' @rdname ops
+#' @param pool_verify Database pool object
+#' @param rv A shiny::reactiveValues object
+#' @noRd
+add_publication <- function(input, rv, pool_verify) {
+
+  new_publication <- data.frame(
+    doi = rv$new_doi,
+    registry_id = input$registry,
+    user_id = get_user_id(pool_verify)
+  )
+
+  insert_table(pool_verify, "publication", new_publication)
+}
+
+#' @rdname ops
 #' @param pool Database pool object
 #' @param ind_id The id of the selected indicator
 #' @param df A data frame with new unit data for overwriting the old rows

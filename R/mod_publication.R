@@ -50,9 +50,9 @@ publication_server <- function(id, registry_tracker, pool, pool_verify) {
       tryCatch(
         {
           response <- httr::GET(url)
-          response_code <- httr::status_code(response)
+          response_code <- response$all_headers[[1]]$status
 
-          if (response_code != 200) {
+          if (response_code != 302) {
             return("Skriv inn en gyldig DOI")
           } else {
             return(NULL)
@@ -143,7 +143,8 @@ publication_server <- function(id, registry_tracker, pool, pool_verify) {
     # When you press "OK" in the new DOI popup
     shiny::observeEvent(input$new_doi_submit, {
       shiny::removeModal()
-      ## Skriv til database
+      rv$new_doi <- input$new_doi
+      add_publication(input, rv, pool_verify)
     })
 
     return(rv_return)

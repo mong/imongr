@@ -200,6 +200,11 @@ db:
       - title
       - short_description
       - long_description
+    publication:
+      insert:
+      - doi
+      - registry_id
+      - user_id
     unit_ind:
       insert:
       - id
