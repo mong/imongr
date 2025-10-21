@@ -354,3 +354,18 @@ CREATE TABLE IF NOT EXISTS `project_ind` (
     FOREIGN KEY (`ind_id`) REFERENCES `ind` (`id`)
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `publication` (
+  `id` varchar(63) NOT NULL,
+  `doi` varchar(255) NOT NULL,
+  `registry_id` smallint(5) unsigned NOT NULL,
+  `time` timestamp NOT NULL,
+  `user_id` smallint unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_publication_registry`
+    FOREIGN KEY (`registry_id`) REFERENCES `registry` (`id`)
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_publication_user`
+    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;

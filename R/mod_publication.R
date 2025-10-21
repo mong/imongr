@@ -96,12 +96,13 @@ publication_server <- function(id, registry_tracker, pool, pool_verify) {
       list(input$new_doi)
     })
 
-    # When you push the new project button
+    # When you push the new DOI button
     shiny::observeEvent(input$new_publication, {
       shiny::showModal(
         shiny::modalDialog(
           shiny::tags$h3("Legg inn DOI-en til publikasjonen"),
           shiny::textInput(ns("new_doi"), "DOI"),
+          shiny::textOutput(ns("doi_info")),
           footer = shiny::tagList(
             shiny::actionButton(ns("new_doi_submit"), "OK"),
             shiny::modalButton("Avbryt")
@@ -120,9 +121,29 @@ publication_server <- function(id, registry_tracker, pool, pool_verify) {
 
       if (valid_doi) {
         shinyjs::enable("new_doi_submit")
+        output$doi_info <- shiny::renderText(
+          tryCatch(
+            {
+              httr::content(
+                httr::GET(
+                  paste0("https://citation.doi.org/format?doi=", input$new_doi, "&style=apa&lang=nb-NO")
+                )
+              )
+            },
+            error = function(er) {
+              return(NULL)
+            }
+          )
+        )
       } else {
         shinyjs::disable("new_doi_submit")
       }
+    })
+
+    # When you press "OK" in the new DOI popup
+    shiny::observeEvent(input$new_doi_submit, {
+      shiny::removeModal()
+      ## Skriv til database
     })
 
     return(rv_return)
