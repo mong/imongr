@@ -104,6 +104,7 @@ app_server <- function(input, output, session) {
     shiny::showTab("tabs", target = "Administrative verkt\u00f8y")
     shiny::showTab("tabs", target = "selected_indicators")
     shiny::showTab("tabs", target = "project")
+    shiny::showTab("tabs", target = "publication")
   }
 
   show_ira <- function() {
@@ -126,6 +127,7 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "status")
   shiny::hideTab("tabs", target = "review")
   shiny::hideTab("tabs", target = "project")
+  shiny::hideTab("tabs", target = "publication")
   shiny::hideTab("tabs", target = "selected_indicators")
 
   # Show the tabs that are appropriate for the user's roles
@@ -183,13 +185,12 @@ app_server <- function(input, output, session) {
   profile_server("profile", pool, pool_verify)
 
 
-  # last
+  # upload
   rv_upload <- upload_server("upload", registry_tracker, pool_verify)
 
   shiny::observeEvent(rv_upload$registry_id, {
     registry_tracker$current_registry <- rv_upload$registry_id
   })
-
 
   # publish
   rv_publish <- publish_server("publ", tab_tracker, registry_tracker, pool, pool_verify)
@@ -198,14 +199,12 @@ app_server <- function(input, output, session) {
     registry_tracker$current_registry <- rv_publish$registry_id
   })
 
-
-  # loss
+  # download
   rv_download <- download_server("download", registry_tracker, pool, pool_verify)
 
   shiny::observeEvent(rv_download$registry_id, {
     registry_tracker$current_registry <- rv_download$registry_id
   })
-
 
   # indicator
   rv_indicator <- indicator_server("ind", registry_tracker, pool, pool_verify)
@@ -226,6 +225,13 @@ app_server <- function(input, output, session) {
 
   shiny::observeEvent(rv_project$registry_id, {
     registry_tracker$current_registry <- rv_project$registry_id
+  })
+
+  # publication
+  rv_publication <- publication_server("publication", registry_tracker, pool, pool_verify)
+
+  shiny::observeEvent(rv_publication$registry_id, {
+    registry_tracker$current_registry <- rv_publication$registry_id
   })
 
   # selected indicators

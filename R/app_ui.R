@@ -75,6 +75,13 @@ app_ui <- function() {
         project_ui("project")
       ),
       shiny::tabPanel(
+        value = "publication",
+        shiny::span("Publikasjoner",
+          title = conf$app_text$tooltip$publication
+        ),
+        publication_ui("publication")
+      ),
+      shiny::tabPanel(
         value = "selected_indicators",
         shiny::span("Utvalgte indikatorer",
           title = conf$app_text$tooltip$selected_indicators
