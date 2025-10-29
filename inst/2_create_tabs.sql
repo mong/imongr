@@ -247,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `notice` (
 
 CREATE TABLE IF NOT EXISTS `notice_event` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `text` mediumtext NOT NULL DEFAULT '',
+  `text` mediumtext DEFAULT NULL,
   `date` datetime NOT NULL,
   `type` tinytext NOT NULL,
   `ref` tinytext DEFAULT NULL,
