@@ -30,7 +30,9 @@ publication_ui <- function(id) {
     )
   )
 
-}#' @rdname mod_publication
+}
+
+#' @rdname mod_publication
 #' @export
 publication_server <- function(id, registry_tracker, pool, pool_verify) {
   shiny::moduleServer(id, function(input, output, session) {

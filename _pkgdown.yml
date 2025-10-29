@@ -144,6 +144,7 @@ reference:
     - mod_status
     - mod_project
     - mod_selected_indicators
+    - mod_publication
 
   - title: Data
     desc: >
