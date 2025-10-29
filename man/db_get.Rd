@@ -35,6 +35,7 @@
 \alias{get_review_collaborators}
 \alias{get_registry_projects}
 \alias{get_project_hospitals}
+\alias{get_publications}
 \alias{get_ind_agg_data}
 \alias{get_ind_units}
 \alias{get_ind_limits}
@@ -103,6 +104,8 @@ get_review_collaborators(pool, registry)
 get_registry_projects(pool, registry, indicator)
 
 get_project_hospitals(pool, project)
+
+get_publications(pool, registry)
 
 get_ind_agg_data(pool, ind_id)
 
