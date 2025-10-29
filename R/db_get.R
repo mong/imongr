@@ -735,7 +735,8 @@ get_publications <- function(pool, registry) {
   SELECT
     doi,
     user_id,
-    time
+    time,
+    reference
   FROM
     publication
   WHERE

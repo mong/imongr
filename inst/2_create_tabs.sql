@@ -360,6 +360,7 @@ CREATE TABLE IF NOT EXISTS `publication` (
   `registry_id` smallint(5) unsigned NOT NULL,
   `time` timestamp NOT NULL DEFAULT current_timestamp(),
   `user_id` smallint unsigned NOT NULL,
+  `reference` varchar(1023) NOT NULL
   PRIMARY KEY (`doi`),
   CONSTRAINT `fk_publication_registry`
     FOREIGN KEY (`registry_id`) REFERENCES `registry` (`id`)

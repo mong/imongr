@@ -469,9 +469,10 @@ WHERE
 add_publication <- function(input, rv, pool_verify) {
 
   new_publication <- data.frame(
-    doi = rv$new_doi,
+    doi = input$new_doi,
     registry_id = input$registry,
-    user_id = get_user_id(pool_verify)
+    user_id = get_user_id(pool_verify),
+    reference = rv$new_reference
   )
 
   insert_table(pool_verify, "publication", new_publication)

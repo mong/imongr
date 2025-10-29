@@ -45,6 +45,10 @@ publication_server <- function(id, registry_tracker, pool, pool_verify) {
         return("Skriv inn en gyldig DOI")
       }
 
+      if (!is.null(x) && !is.null(rv$publication_data) && x %in% rv$publication_data$doi) {
+        return("Publikasjonen finnes allerede")
+      }
+
       url <- paste0("https://doi.org/", x)
 
       tryCatch(
@@ -114,20 +118,6 @@ publication_server <- function(id, registry_tracker, pool, pool_verify) {
       rv_return$registry_id <- input$registry
     })
 
-    shiny::observeEvent(rv$publication_data, {
-      references <- lapply(rv$publication_data$doi,
-        FUN = function(x) {
-          httr::content(
-            httr::GET(
-              paste0("https://citation.doi.org/format?doi=", x, "&style=apa&lang=nb-NO")
-            )
-          )
-        }
-      )
-
-      rv$publication_data$references <- unlist(references)
-    })
-
     popUpListener <- shiny::reactive({
       list(input$new_doi)
     })
@@ -156,21 +146,22 @@ publication_server <- function(id, registry_tracker, pool, pool_verify) {
       valid_doi <- is.null(validate_doi(input$new_doi))
 
       if (valid_doi) {
-        shinyjs::enable("new_doi_submit")
         output$doi_info <- shiny::renderText(
           tryCatch(
             {
-              httr::content(
+              rv$new_reference <- httr::content(
                 httr::GET(
                   paste0("https://citation.doi.org/format?doi=", input$new_doi, "&style=apa&lang=nb-NO")
                 )
               )
+              rv$new_reference
             },
             error = function(er) {
               return(NULL)
             }
           )
         )
+        shinyjs::enable("new_doi_submit")
       } else {
         shinyjs::disable("new_doi_submit")
       }
@@ -179,7 +170,6 @@ publication_server <- function(id, registry_tracker, pool, pool_verify) {
     # When you press "OK" in the new DOI popup
     shiny::observeEvent(input$new_doi_submit, {
       shiny::removeModal()
-      rv$new_doi <- input$new_doi
       add_publication(input, rv, pool_verify)
       rv$publication_data <- get_publications(pool_verify, input$registry)
     })
