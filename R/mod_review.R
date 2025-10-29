@@ -191,8 +191,7 @@ on_update_form <- function(session, input, pool, n_requirements, fetch_previous_
   dat <- dat[(dat$year == selected_year) & (dat$registry_id == input$selected_registry), ]
 
   notice_id <- get_notice_id(pool, input$selected_registry, input$selected_year)
-
-  if (!is.na(notice_id)) {
+  if (!is.null(notice_id) && !is.na(notice_id)) {
     notice <- get_notice(pool, notice_id)
     shiny::updateTextInput(session, "notice_text", value = notice$text)
   }
@@ -632,10 +631,6 @@ review_server <- function(id, registry_tracker, pool) {
 
       update_review(pool, rv$table_data, input$selected_registry, input$selected_year)
 
-      if (!is.na(rv$notice)) {
-        update_notice(pool, rv$notice, input$notice_text)
-      }
-
       shinyalert::shinyalert("Ferdig",
         "Dine data er n\u00e5 lagret",
         type = "success",
@@ -694,16 +689,7 @@ review_server <- function(id, registry_tracker, pool) {
 
     # Når varsel registreres
     shiny::observeEvent(input$make_notice, {
-      new_row <- data.frame(text = "Test", status = "Open")
-      insert_table(pool, "notice", new_row)
-      next_id <- pool::dbGetQuery(pool, "SELECT max(id) as next_id from notice")$next_id[1]
-
-      query <- paste0("
-        UPDATE evaluation set notice = ", next_id, "
-        WHERE registry_id = ", input$selected_registry, "
-        AND year = ", input$selected_year, ";")
-
-      pool::dbExecute(pool, query)
+      new_notice(pool, input$selected_registry, input$selected_year)
 
       shiny::removeModal()
     })

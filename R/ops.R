@@ -660,6 +660,15 @@ update_review <- function(pool, df, registry_id, year) {
   message("Ferdig\n")
 }
 
+#' Add a new notice for a given registry and year
+#'
+#' @rdname ops
+#' @noRd
+new_notice <- function(pool, registry_id, year) {
+  new_row <- data.frame(registry_id = registry_id, year = year, status = "Open")
+  insert_table(pool, "notice", new_row)
+}
+
 #' Get notice id for a given registry and year
 #'
 #' @rdname ops
@@ -667,7 +676,7 @@ update_review <- function(pool, df, registry_id, year) {
 get_notice_id <- function(pool, registry_id, year) {
 
   query <- paste0("
-    SELECT notice FROM evaluation
+    SELECT id FROM notice
     WHERE registry_id = ", registry_id, "
     AND year = ", year, ";
   ")

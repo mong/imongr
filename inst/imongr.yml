@@ -142,7 +142,8 @@ db:
       - notice_id
     notice:
       insert:
-      - text
+      - registry_id
+      - year
       - status
     evaluation:
       insert:

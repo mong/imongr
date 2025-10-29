@@ -234,17 +234,22 @@ CREATE TABLE IF NOT EXISTS `agg_data` (
 
 CREATE TABLE IF NOT EXISTS `notice` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `text` mediumtext NOT NULL,
+  `registry_id` smallint(5) unsigned NOT NULL,
+  `year` smallint(5) NOT NULL,
   `status` tinytext NOT NULL,
-  `ref` tinytext,
-  PRIMARY KEY (`id`)
+  `ref` tinytext DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_notice_registry`
+    FOREIGN KEY (`registry_id`) REFERENCES `registry` (`id`)
+    ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `notice_event` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `text` mediumtext NOT NULL,
+  `text` mediumtext NOT NULL DEFAULT '',
+  `date` datetime NOT NULL,
   `type` tinytext NOT NULL,
-  `ref` tinytext,
+  `ref` tinytext DEFAULT NULL,
   `notice_id` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_notice_event_notice`
@@ -259,7 +264,6 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
   `reported_dg` tinyint(5) NOT NULL,
   `year` smallint(5) NOT NULL,
   `verdict` char(2) NOT NULL,
-  `notice` smallint(5) unsigned,
   `requirement_1` tinyint(1) NOT NULL,
   `requirement_2` tinyint(1) NOT NULL,
   `requirement_3` tinyint(1) NOT NULL,
