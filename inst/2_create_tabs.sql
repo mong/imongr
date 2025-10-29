@@ -239,6 +239,7 @@ CREATE TABLE IF NOT EXISTS `notice` (
   `status` tinytext NOT NULL,
   `ref` tinytext DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `registry_id_year` (`registry_id`,`year`),
   CONSTRAINT `fk_notice_registry`
     FOREIGN KEY (`registry_id`) REFERENCES `registry` (`id`)
     ON DELETE RESTRICT ON UPDATE CASCADE
