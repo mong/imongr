@@ -76,6 +76,8 @@ app_text:
       Send inn vurdering av årsrapporter
     project: |-
       Se og endre på kvalitetsforbedringsprosjekter
+    publication: |-
+      Se og endre på vitenskapelige publikasjoner
     selected_indicators: |-
       Velg utvalgte indikatorer for behandlingsenheter
     adminer: |-
@@ -174,6 +176,12 @@ db:
       - evaluation_text
       - level_A_comment
       - level_B_comment
+    publication:
+      insert:
+      - doi
+      - registry_id
+      - user_id
+      - reference
     user:
       insert:
       - user_name

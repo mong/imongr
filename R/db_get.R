@@ -730,6 +730,24 @@ get_project_hospitals <- function(pool, project) {
 
 #' @rdname db_get
 #' @export
+get_publications <- function(pool, registry) {
+  query <- paste0("
+  SELECT
+    doi,
+    user_id,
+    time,
+    reference
+  FROM
+    publication
+  WHERE
+    registry_id='", registry, "';"
+  )
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
 get_ind_agg_data <- function(pool, ind_id) {
   query <- paste0("
     SELECT
