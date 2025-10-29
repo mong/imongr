@@ -689,32 +689,6 @@ get_notice_id <- function(pool, registry_id, year) {
     warning("Multiple instances found where one is expected.")
     return(NA)
   } else {
-    return(notice$notice[1])
+    return(notice$id[1])
   }
-}
-
-#' Get notice for a given registry and year
-#'
-#' @rdname ops
-#' @noRd
-get_notice <- function(pool, id) {
-  query <- paste0("
-    SELECT * FROM notice
-    WHERE id = ", id, ";
-  ")
-
-  pool::dbGetQuery(pool, query)
-}
-
-#' Update notice for a given registry and year
-#'
-#' @rdname ops
-#' @noRd
-update_notice <- function(pool, id, text) {
-  query <- paste0("
-    UPDATE notice
-    set text = '", text, "' WHERE id = ", id, ";
-  ")
-
-  pool::dbGetQuery(pool, query)
 }
