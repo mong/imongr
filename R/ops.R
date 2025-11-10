@@ -683,20 +683,20 @@ update_review <- function(pool, df, registry_id, year) {
 get_notice_id <- function(pool, registry_id, year) {
 
   query <- paste0("
-    SELECT notice FROM evaluation
+    SELECT id FROM notice
     WHERE registry_id = ", registry_id, "
     AND year = ", year, ";
   ")
 
-  notice <- pool::dbGetQuery(pool, query)
+  notice_id <- pool::dbGetQuery(pool, query)
 
-  if (nrow(notice) < 1) {
+  if (nrow(notice_id) < 1) {
     return(NA)
-  } else if (nrow(notice) > 1) {
+  } else if (nrow(notice_id) > 1) {
     warning("Multiple instances found where one is expected.")
     return(NA)
   } else {
-    return(notice$notice[1])
+    return(notice_id[1])
   }
 }
 
