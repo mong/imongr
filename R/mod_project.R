@@ -29,6 +29,7 @@ project_ui <- function(id) {
           shiny::uiOutput(ns("enter_start_year")),
           shiny::uiOutput(ns("enter_end_year")),
         ),
+        shiny::uiOutput(ns("toggle_context")),
         shiny::uiOutput(ns("add_hospitals")),
         shiny::br(),
         shiny::uiOutput(ns("update_values_button")),
@@ -220,6 +221,19 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
+    # Context toggle
+    output$toggle_context <- shiny::renderUI({
+      shiny::req(input$project)
+
+      shiny::tags$div(
+        title = "Angi om data skal vises på opptaksområder istedenfor behandlingsenheter",
+        bslib::input_switch(
+          ns("resident"), "Bruk opptaksområde",
+          value = rv$project_data$context == "resident"
+        )
+      )
+    })
+
     # Add hospitals UI
     output$add_hospitals <- shiny::renderUI({
       shiny::selectInput(
@@ -247,6 +261,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$update_values, {
 
       # Update the projects table
+      rv$project_data$context <- ifelse(input$resident, "resident", "caregiver")
       rv$project_data$start_year <- input$start_year
       rv$project_data$end_year <- input$end_year
 

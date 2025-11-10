@@ -696,6 +696,7 @@ get_registry_projects <- function(pool, registry, indicator) {
     SELECT
       project.id,
       project_ind.ind_id,
+      project.context,
       project.start_year,
       project.end_year,
       project.title,
