@@ -237,12 +237,11 @@ CREATE TABLE IF NOT EXISTS `notice` (
   `registry_id` smallint(5) unsigned NOT NULL,
   `year` smallint(5) NOT NULL,
   `status` tinytext NOT NULL,
-  `ref` tinytext DEFAULT NULL,
+  `ref` tinytext,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `registry_id_year` (`registry_id`,`year`),
   CONSTRAINT `fk_notice_registry`
     FOREIGN KEY (`registry_id`) REFERENCES `registry` (`id`)
-    ON DELETE RESTRICT ON UPDATE CASCADE
+    ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `notice_event` (
