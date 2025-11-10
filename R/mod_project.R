@@ -277,6 +277,8 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       update_project_hospitals(pool_verify, input$project, new_data)
 
       rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_short_name
+      rv$indicator_data <- get_ind_agg_data(pool_verify, input$project_indicator, rv$project_data$context)
+      rv$indicator_limits <- get_ind_limits(pool_verify, input$project_indicator)
     })
 
     # When you select a registry
@@ -292,7 +294,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$project, {
       rv$project_data <- project_data()
       rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_short_name
-      rv$indicator_data <- get_ind_agg_data(pool_verify, input$project_indicator)
+      rv$indicator_data <- get_ind_agg_data(pool_verify, input$project_indicator, rv$project_data$context)
       rv$indicator_limits <- get_ind_limits(pool_verify, input$project_indicator)
     })
 
@@ -416,7 +418,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     ##### UI elements tab 2 #####
     output$boxplot <- shiny::renderUI({
-      shiny::req(input$project, rv$indicator_data)
+      shiny::req(input$project, nrow(rv$indicator_data) > 0)
 
       ymax <- max(rv$indicator_data$var * 100)
 
@@ -453,7 +455,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     ##### UI elements tab 2 #####
     output$lineplot <- shiny::renderUI({
-      shiny::req(input$project, rv$indicator_data)
+      shiny::req(input$project, nrow(rv$indicator_data) > 0)
 
       ymax <- max(rv$indicator_data$var * 100)
 

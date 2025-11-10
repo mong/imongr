@@ -749,14 +749,15 @@ get_publications <- function(pool, registry) {
 
 #' @rdname db_get
 #' @export
-get_ind_agg_data <- function(pool, ind_id) {
+get_ind_agg_data <- function(pool, ind_id, context) {
+
   query <- paste0("
     SELECT
       var, year, unit_name, ind_id
     FROM
       agg_data
     WHERE
-      context = 'caregiver'
+      context = '", context, "'
     AND
       ind_id = '", ind_id, "';"
   )
