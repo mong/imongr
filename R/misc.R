@@ -159,7 +159,6 @@ delete_all_data <- function(prompt = TRUE) {
     pool <- make_pool()
     message("...dropping tables...")
     pool::dbExecute(pool, "ALTER TABLE `delivery` DROP FOREIGN KEY `fk_delivery_publish`;")
-    pool::dbExecute(pool, "ALTER TABLE `evaluation` DROP FOREIGN KEY `fk_evaluation_notice`;")
     for (i in seq_along(tabs)) {
       pool::dbExecute(pool, paste0(query, tabs[i], ";"))
     }
