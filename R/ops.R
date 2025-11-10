@@ -688,15 +688,15 @@ get_notice_id <- function(pool, registry_id, year) {
     AND year = ", year, ";
   ")
 
-  notice_id <- pool::dbGetQuery(pool, query)
+  notice <- pool::dbGetQuery(pool, query)
 
-  if (nrow(notice_id) < 1) {
+  if (nrow(notice) < 1) {
     return(NA)
-  } else if (nrow(notice_id) > 1) {
+  } else if (nrow(notice) > 1) {
     warning("Multiple instances found where one is expected.")
     return(NA)
   } else {
-    return(notice_id[1])
+    return(notice$id[1])
   }
 }
 
