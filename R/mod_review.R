@@ -114,10 +114,6 @@ review_ui <- function(id) {
         shiny::br(),
         shiny::h3("Ekspertgruppens vurdering"),
         shiny::uiOutput(ns("evaluation_text")),
-        shiny::br(),
-        shiny::br(),
-        shiny::uiOutput(ns("notice_title")),
-        shiny::uiOutput(ns("notice_text")),
       )
     )
   )
@@ -189,13 +185,6 @@ on_update_form <- function(session, input, pool, n_requirements, fetch_previous_
   }
 
   dat <- dat[(dat$year == selected_year) & (dat$registry_id == input$selected_registry), ]
-
-  notice_id <- get_notice_id(pool, input$selected_registry, input$selected_year)
-
-  if (!is.na(notice_id)) {
-    notice <- get_notice(pool, notice_id)
-    shiny::updateTextInput(session, "notice_text", value = notice$text)
-  }
 
   if (nrow(dat) == 1) {
     lapply(X = 1:n_requirements, FUN = function(i) {
@@ -534,19 +523,6 @@ review_server <- function(id, registry_tracker, pool) {
       )
     })
 
-    output$notice_title <- shiny::renderUI({
-      shiny::req(!is.na(rv$notice))
-      shiny::h3("Varsel")
-    })
-
-    output$notice_text <- shiny::renderUI({
-      shiny::req(!is.na(rv$notice))
-      shiny::textAreaInput(
-        ns("notice_text"), "Begrunnelse for varsel",
-        value = "", width = "90%", rows = 16
-      )
-    })
-
     ################################
     ##### Reaktivitet sidemeny #####
     ################################
@@ -602,19 +578,10 @@ review_server <- function(id, registry_tracker, pool) {
       rv$table_data$verdict <- verdict()
     })
 
-    shiny::observeEvent(rv$notice, {
-      rv$table_data$notice <- rv$notice
-    })
-
     ##### Lagre #####
     shiny::observeEvent(input$save, {
 
       update_review(pool, rv$table_data, input$selected_registry, input$selected_year)
-
-      # Oppdater varsel dersom det er registrert
-      if (!is.na(rv$notice)) {
-        update_notice(pool, rv$notice, input$notice_text)
-      }
 
       shinyalert::shinyalert("Ferdig",
         "Dine data er n\u00e5 lagret",
@@ -631,10 +598,6 @@ review_server <- function(id, registry_tracker, pool) {
     shiny::observeEvent(input$save_override, {
 
       update_review(pool, rv$table_data, input$selected_registry, input$selected_year)
-
-      if (!is.na(rv$notice)) {
-        update_notice(pool, rv$notice, input$notice_text)
-      }
 
       shinyalert::shinyalert("Ferdig",
         "Dine data er n\u00e5 lagret",
@@ -694,16 +657,7 @@ review_server <- function(id, registry_tracker, pool) {
 
     # Når varsel registreres
     shiny::observeEvent(input$make_notice, {
-      new_row <- data.frame(text = "Test", status = "Open")
-      insert_table(pool, "notice", new_row)
-      next_id <- pool::dbGetQuery(pool, "SELECT max(id) as next_id from notice")$next_id[1]
-
-      query <- paste0("
-        UPDATE evaluation set notice = ", next_id, "
-        WHERE registry_id = ", input$selected_registry, "
-        AND year = ", input$selected_year, ";")
-
-      pool::dbExecute(pool, query)
+      new_notice(pool, input$selected_registry, input$selected_year)
 
       shiny::removeModal()
     })

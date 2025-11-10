@@ -144,7 +144,8 @@ db:
       - notice_id
     notice:
       insert:
-      - text
+      - registry_id
+      - year
       - status
     evaluation:
       insert:
@@ -154,7 +155,6 @@ db:
       - reported_dg
       - year
       - stage
-      - notice
       - requirement_1
       - requirement_2
       - requirement_3

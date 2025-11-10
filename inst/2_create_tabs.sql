@@ -246,9 +246,10 @@ CREATE TABLE IF NOT EXISTS `notice` (
 
 CREATE TABLE IF NOT EXISTS `notice_event` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `text` mediumtext NOT NULL,
+  `text` mediumtext DEFAULT NULL,
+  `date` datetime NOT NULL,
   `type` tinytext NOT NULL,
-  `ref` tinytext,
+  `ref` tinytext DEFAULT NULL,
   `notice_id` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_notice_event_notice`
