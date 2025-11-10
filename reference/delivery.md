@@ -1,0 +1,39 @@
+# Delivery example data for qmongr data store
+
+Meta data to allow interactions with qmong data. Only used for testing
+in this package. Please refere to the overall data model (ref)
+
+## Usage
+
+``` r
+delivery
+```
+
+## Format
+
+Data frame with made up values
+
+- latest:
+
+  Numeric definig if the delivery is the latest (1) or not(0)
+
+- latest_update:
+
+  Date (YYYY-MM-DD) defining data latest update
+
+- latest_affirm:
+
+  Date (YYYY-MM-DD) up until data are regarded as final
+
+- md5_checksum:
+
+  String A hash of the delivered data set used for integrity checking
+
+- terms_version:
+
+  Character string providing version stamp of the terms accepted when
+  data are published
+
+- user_id:
+
+  Numeric id referencing the user that made the delivery
