@@ -1,3 +1,12 @@
+# imongr 2.9.1
+
+## What's Changed
+* Fane for å legge inn publikasjoner by @Stein-Kato in https://github.com/mong/imongr/pull/599
+* Fikset spørring i vurderingsfanen by @Stein-Kato in https://github.com/mong/imongr/pull/603
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.9.0...v2.9.1
+
 # imongr 2.9.0
 
 ## Endringer
