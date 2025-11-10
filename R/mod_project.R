@@ -228,7 +228,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::tags$div(
         title = "Angi om data skal vises på opptaksområder istedenfor behandlingsenheter",
         bslib::input_switch(
-          ns("resident"), "Bruk opptaksområde",
+          ns("resident"), "Bruk opptaksområder",
           value = rv$project_data$context == "resident"
         )
       )
