@@ -96,18 +96,18 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     project_data <- function() {
-      get_registry_projects(pool_verify, input$project_registry, input$project_indicator) |>
+      get_registry_projects(pool, input$project_registry, input$project_indicator) |>
         dplyr::filter(.data$id == input$project)
     }
 
-    hospital_unit_names <- get_hospitals(pool_verify)$short_name
-    hf_unit_names <- get_hfs(pool_verify)$short_name
-    rhf_unit_names <- get_rhfs(pool_verify)$short_name
+    hospital_unit_names <- get_hospitals(pool)$short_name
+    hf_unit_names <- get_hfs(pool)$short_name
+    rhf_unit_names <- get_rhfs(pool)$short_name
 
     unit_names <- c(hospital_unit_names, hf_unit_names, rhf_unit_names)
 
     validateProjectName <- function(x) {
-      existing_project_ids <- pool::dbGetQuery(pool_verify, "SELECT id FROM project")$id
+      existing_project_ids <- pool::dbGetQuery(pool, "SELECT id FROM project")$id
 
       return(validateName(x, existing_project_ids))
     }
@@ -167,7 +167,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # Select registry UI
     output$select_project_registry <- shiny::renderUI({
-      select_registry_ui(pool_verify, conf,
+      select_registry_ui(pool, conf,
         input_id = ns("project_registry"),
         context = "verify",
         show_context = FALSE,
@@ -190,7 +190,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$project_registry, input$project_indicator, input$project_indicator)
       shiny::selectInput(
         ns("project"), "Velg prosjekt:",
-        choices = get_registry_projects(pool_verify, input$project_registry, input$project_indicator)$id,
+        choices = get_registry_projects(pool, input$project_registry, input$project_indicator)$id,
         selected = rv$new_project_name, # Switch to the new project when it is made
       )
     })
@@ -240,7 +240,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         inputId = ns("hospitals"),
         label = "Velg enhet",
         choices = unit_names,
-        selected = get_project_hospitals(pool_verify, input$project)$hospital_short_name,
+        selected = get_project_hospitals(pool, input$project)$hospital_short_name,
         multiple = TRUE
       )
     })
@@ -265,7 +265,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       rv$project_data$start_year <- input$start_year
       rv$project_data$end_year <- input$end_year
 
-      update_project_val(pool_verify, rv$project_data)
+      update_project_val(pool, rv$project_data)
 
       # Update the project_hospital table
       if (!is.null(input$hospitals)) {
@@ -274,17 +274,17 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         new_data <- data.frame()
       }
 
-      update_project_hospitals(pool_verify, input$project, new_data)
+      update_project_hospitals(pool, input$project, new_data)
 
-      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_short_name
-      rv$indicator_data <- get_ind_agg_data(pool_verify, input$project_indicator, rv$project_data$context)
-      rv$indicator_limits <- get_ind_limits(pool_verify, input$project_indicator)
+      rv$selected_hospitals <- get_project_hospitals(pool, input$project)$hospital_short_name
+      rv$indicator_data <- get_ind_agg_data(pool, input$project_indicator, rv$project_data$context)
+      rv$indicator_limits <- get_ind_limits(pool, input$project_indicator)
     })
 
     # When you select a registry
     shiny::observeEvent(input$project_registry, {
       rv_return$registry_id <- input$indicator_registry
-      registry_indicators <- get_registry_indicators(pool_verify, input$project_registry)
+      registry_indicators <- get_registry_indicators(pool, input$project_registry)
 
       rv$registry_indicators <- as.list(registry_indicators$id)
       names(rv$registry_indicators) <- registry_indicators$title
@@ -293,9 +293,9 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     # When you select a project
     shiny::observeEvent(input$project, {
       rv$project_data <- project_data()
-      rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_short_name
-      rv$indicator_data <- get_ind_agg_data(pool_verify, input$project_indicator, rv$project_data$context)
-      rv$indicator_limits <- get_ind_limits(pool_verify, input$project_indicator)
+      rv$selected_hospitals <- get_project_hospitals(pool, input$project)$hospital_short_name
+      rv$indicator_data <- get_ind_agg_data(pool, input$project_indicator, rv$project_data$context)
+      rv$indicator_limits <- get_ind_limits(pool, input$project_indicator)
     })
 
     # When you push the new project button
@@ -339,8 +339,8 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     shiny::observeEvent(rv$new_project_name, {
-      add_project(input, rv, pool, pool_verify)
-      add_project_to_indicator(pool_verify, rv$new_project_name, input$project_indicator)
+      add_project(input, rv, pool)
+      add_project_to_indicator(pool, rv$new_project_name, input$project_indicator)
 
       default_text <- data.frame(
         title = "Tittel",
@@ -350,7 +350,6 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       )
 
       update_project_text(pool, default_text)
-      update_project_text(pool_verify, default_text)
 
       # Reactive value to trigger updates of UI elements
       rv$new_project_counter <- rv$new_project_counter + 1
@@ -506,7 +505,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       rv$project_data$long_description <- input$long_description
 
       # Update database
-      update_project_text(pool_verify, rv$project_data)
+      update_project_text(pool, rv$project_data)
     })
 
     ###### Oversize observers #####

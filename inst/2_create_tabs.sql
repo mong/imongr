@@ -333,6 +333,21 @@ CREATE TABLE IF NOT EXISTS `project` (
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
+CREATE TABLE IF NOT EXISTS `staging_project` (
+  `id` varchar(63) NOT NULL,
+  `registry_id` smallint(5) unsigned NOT NULL,
+  `context` varchar(63) NOT NULL,
+  `start_year` smallint(5) NOT NULL,
+  `end_year` smallint(5),
+  `title` varchar(255) DEFAULT NULL,
+  `short_description` varchar(1023) DEFAULT NULL,
+  `long_description` varchar(2047) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_staging_projects_registry`
+    FOREIGN KEY (`registry_id`) REFERENCES `registry` (`id`)
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
 CREATE TABLE IF NOT EXISTS `project_hospital` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `project_id` varchar(63) NOT NULL,
@@ -343,6 +358,16 @@ CREATE TABLE IF NOT EXISTS `project_hospital` (
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
+CREATE TABLE IF NOT EXISTS `staging_project_hospital` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` varchar(63) NOT NULL,
+  `hospital_short_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_staging_project_hospital_project`
+    FOREIGN KEY (`project_id`) REFERENCES `staging_project` (`id`)
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
 CREATE TABLE IF NOT EXISTS `project_ind` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `project_id` varchar(63) NOT NULL,
@@ -350,6 +375,19 @@ CREATE TABLE IF NOT EXISTS `project_ind` (
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_project_ind_project`
     FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_project_ind`
+    FOREIGN KEY (`ind_id`) REFERENCES `ind` (`id`)
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `staging_project_ind` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` varchar(63) NOT NULL,
+  `ind_id` varchar(63) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_staging_project_ind_project`
+    FOREIGN KEY (`project_id`) REFERENCES `staging_project` (`id`)
     ON UPDATE CASCADE,
   CONSTRAINT `fk_project_ind`
     FOREIGN KEY (`ind_id`) REFERENCES `ind` (`id`)
