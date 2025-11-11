@@ -262,7 +262,7 @@ test_that("all indicator data subset for a registry can be provided", {
 test_that("aggregated data for an indicator can be fetched", {
   check_db()
   ind_id <- imongr::ind$id[1]
-  expect_equal(class(get_ind_agg_data(pool, ind_id)), "data.frame")
+  expect_equal(class(get_ind_agg_data(pool, ind_id, "caregiver")), "data.frame")
 })
 
 test_that("limits for an indicator can be fetched", {

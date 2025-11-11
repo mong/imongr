@@ -174,7 +174,8 @@ update_project_val_check <- function(input, conf, ns, rv, years_consistent) {
     # Cast to integer to make sure that the classes are the same
     identical(as.integer(input$start_year), as.integer(rv$project_data$start_year)),
     identical(as.integer(input$end_year), as.integer(rv$project_data$end_year)),
-    identical(as.character(input$hospitals), as.character(rv$selected_hospitals))
+    identical(as.character(input$hospitals), as.character(rv$selected_hospitals)),
+    identical(input$resident, rv$project_data$context == "resident")
   ))
 
   if (missing_values || no_new_values || !years_consistent()) {

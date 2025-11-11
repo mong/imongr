@@ -405,11 +405,11 @@ WHERE
 #' @param rv A shiny::reactiveValues object
 #' @noRd
 add_project <- function(input, rv, pool, pool_verify) {
-  query <- paste0("INSERT INTO project (id, registry_id, start_year) VALUES ( '",
+  query <- paste0("INSERT INTO project (id, registry_id, context, start_year) VALUES ( '",
     rv$new_project_name,
     "', '",
     input$project_registry,
-    "', '",
+    "', 'caregiver', '",
     input$new_project_start_year,
     "');"
   )
@@ -631,12 +631,14 @@ update_project_val <- function(pool, new_data) {
 UPDATE
   project
 SET
+  context = ?,
   start_year = ?,
   end_year = ?
 WHERE
   id = ?;")
 
   params <- list(
+    new_data$context,
     new_data$start_year,
     new_data$end_year,
     new_data$id
