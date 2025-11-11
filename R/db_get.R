@@ -729,14 +729,14 @@ get_project_data <- function(pool, project) {
   res <- pool::dbGetQuery(pool, query)
 
   if (nrow(res) != 0) {
-    return(res[1,])
+    return(res[1, ])
   } else {
     query <- paste0("
       SELECT * FROM project WHERE id='", project, "';
     ")
 
     res <- pool::dbGetQuery(pool, query)
-    return(res[1,])
+    return(res[1, ])
   }
 }
 

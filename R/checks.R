@@ -164,10 +164,14 @@ update_check <- function(input, conf, ns, rv, level_consistent) {
 #' @rdname checks
 #' @noRd
 update_project_val_check <- function(input, conf, ns, rv, years_consistent) {
+  # Side menu
   missing_values <- any(c(
     is.null(input$start_year),
     is.na(input$start_year),
-    nrow(rv$project_data) == 0
+    nrow(rv$project_data) == 0,
+    rv$title_oversize,
+    rv$short_oversize,
+    rv$long_oversize
   ))
 
   no_new_values <- all(c(
@@ -175,7 +179,10 @@ update_project_val_check <- function(input, conf, ns, rv, years_consistent) {
     identical(as.integer(input$start_year), as.integer(rv$project_data$start_year)),
     identical(as.integer(input$end_year), as.integer(rv$project_data$end_year)),
     identical(as.character(input$hospitals), as.character(rv$selected_hospitals)),
-    identical(input$resident, rv$project_data$context == "resident")
+    identical(input$resident, rv$project_data$context == "resident"),
+    identical(input$short_description, rv$project_data$short_description),
+    identical(input$title, rv$project_data$title),
+    identical(input$long_description, rv$project_data$long_description)
   ))
 
   if (missing_values || no_new_values || !years_consistent()) {
@@ -184,7 +191,7 @@ update_project_val_check <- function(input, conf, ns, rv, years_consistent) {
     return(
       shiny::actionButton(
         ns("update_values"),
-        "Oppdater verdier",
+        "Lagre",
         style = conf$profile$action_button_style
       )
     )
@@ -220,38 +227,6 @@ update_indicator_txt_check <- function(input, conf, ns, rv) {
     }
   }
 }
-
-#' Check for updated indicator descriptions in the main panel of the project tab
-#'
-#' @param input A shiny input object
-#' @param conf The data from the get_config function
-#' @param ns A shiny::NS namespace function
-#' @param rv A shiny::reactiveValues object
-#'
-#' @rdname checks
-#' @noRd
-update_project_txt_check <- function(input, conf, ns, rv) {
-  missing_values <- any(c(rv$title_oversize, rv$short_oversize, rv$long_oversize))
-
-  no_new_text <- all(c(
-    identical(input$short_description, rv$project_data$short_description),
-    identical(input$title, rv$project_data$title),
-    identical(input$long_description, rv$project_data$long_description)
-  ))
-
-  if (missing_values || no_new_text || nrow(rv$project_data) == 0) {
-    NULL
-  } else {
-    return(
-      shiny::actionButton(
-        ns("update_text"),
-        "Oppdater tekster",
-        style = conf$profile$action_button_style
-      )
-    )
-  }
-}
-
 
 #' Check for updated treatments unit for selected indicators
 #'

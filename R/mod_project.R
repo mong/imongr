@@ -45,7 +45,6 @@ project_ui <- function(id) {
             shiny::uiOutput(ns("short_oversize")),
             shiny::uiOutput(ns("edit_long")),
             shiny::uiOutput(ns("long_oversize")),
-            shiny::uiOutput(ns("update_text_button"))
           ),
           shiny::tabPanel(
             value = ns("boxplot_tab"),
@@ -389,12 +388,6 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         ns("long_description"), "Lang prosjektbeskrivelse (maks 2047 tegn)",
         value = project_data()$long_description, width = "90%", rows = 16
       )
-    })
-
-    # Update button
-    output$update_text_button <- shiny::renderUI({
-      # Make an action button with id update_text
-      update_project_txt_check(input, conf, ns, rv)
     })
 
     ##### Oversize warnings #####
