@@ -33,7 +33,8 @@
 \alias{get_users_per_registry}
 \alias{get_aggdata}
 \alias{get_review_collaborators}
-\alias{get_registry_projects}
+\alias{get_indicator_project_ids}
+\alias{get_project_data}
 \alias{get_project_hospitals}
 \alias{get_publications}
 \alias{get_ind_agg_data}
@@ -101,13 +102,15 @@ get_aggdata(pool, registry)
 
 get_review_collaborators(pool, registry)
 
-get_registry_projects(pool, registry, indicator)
+get_indicator_project_ids(pool, indicator)
+
+get_project_data(pool, project)
 
 get_project_hospitals(pool, project)
 
 get_publications(pool, registry)
 
-get_ind_agg_data(pool, ind_id)
+get_ind_agg_data(pool, ind_id, context)
 
 get_ind_units(pool, ind_id)
 

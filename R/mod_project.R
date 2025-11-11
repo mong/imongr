@@ -95,11 +95,6 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       }
     })
 
-    project_data <- function() {
-      get_registry_projects(pool, input$project_registry, input$project_indicator) |>
-        dplyr::filter(.data$id == input$project)
-    }
-
     hospital_unit_names <- get_hospitals(pool)$short_name
     hf_unit_names <- get_hfs(pool)$short_name
     rhf_unit_names <- get_rhfs(pool)$short_name
@@ -159,6 +154,10 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     })
 
+    project_data <- shiny::reactive({
+      get_project_data(pool, input$project)
+    })
+
     ########################
     ##### Sidebar menu #####
     ########################
@@ -190,7 +189,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req(input$project_registry, input$project_indicator, input$project_indicator)
       shiny::selectInput(
         ns("project"), "Velg prosjekt:",
-        choices = get_registry_projects(pool, input$project_registry, input$project_indicator)$id,
+        choices = get_indicator_project_ids(pool, input$project_indicator),
         selected = rv$new_project_name, # Switch to the new project when it is made
       )
     })
@@ -229,7 +228,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
         title = "Angi om data skal vises på opptaksområder istedenfor behandlingsenheter",
         bslib::input_switch(
           ns("resident"), "Bruk opptaksområder",
-          value = rv$project_data$context == "resident"
+          value = project_data()$context == "resident"
         )
       )
     })

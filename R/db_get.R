@@ -691,17 +691,11 @@ get_review_collaborators <- function(pool, registry) {
 
 #' @rdname db_get
 #' @export
-get_registry_projects <- function(pool, registry, indicator) {
+get_indicator_project_ids <- function(pool, indicator) {
   query <- paste0("
     SELECT
       project.id,
-      project_ind.ind_id,
-      project.context,
-      project.start_year,
-      project.end_year,
-      project.title,
-      project.short_description,
-      project.long_description
+      project_ind.ind_id
     FROM
       project
     LEFT JOIN
@@ -709,9 +703,41 @@ get_registry_projects <- function(pool, registry, indicator) {
     ON
       project.id=project_ind.project_id
     WHERE
-      project.registry_id=", registry, " AND project_ind.ind_id='", indicator, "';")
+      project_ind.ind_id='", indicator, "'
+    UNION SELECT
+      staging_project.id,
+      staging_project_ind.ind_id
+    FROM
+      staging_project
+    LEFT JOIN
+      staging_project_ind
+    ON
+      staging_project.id=staging_project_ind.project_id
+    WHERE
+      staging_project_ind.ind_id='", indicator, "';")
 
-  pool::dbGetQuery(pool, query)
+  pool::dbGetQuery(pool, query)$id
+}
+
+#' @rdname db_get
+#' @export
+get_project_data <- function(pool, project) {
+  query <- paste0("
+    SELECT * FROM staging_project WHERE id='", project, "';
+  ")
+
+  res <- pool::dbGetQuery(pool, query)
+
+  if (nrow(res) != 0) {
+    return(res[1,])
+  } else {
+    query <- paste0("
+      SELECT * FROM project WHERE id='", project, "';
+    ")
+
+    res <- pool::dbGetQuery(pool, query)
+    return(res[1,])
+  }
 }
 
 #' @rdname db_get
@@ -721,12 +747,28 @@ get_project_hospitals <- function(pool, project) {
     SELECT
       hospital_short_name
     FROM
-      project_hospital
+      staging_project_hospital
     WHERE
       project_id='", project, "';
   ")
 
-  pool::dbGetQuery(pool, query)
+  res <- pool::dbGetQuery(pool, query)
+
+  if (nrow(res) != 0) {
+    return(res[1])
+  } else {
+    query <- paste0("
+      SELECT
+        hospital_short_name
+      FROM
+        staging_project_hospital
+      WHERE
+        project_id='", project, "';
+    ")
+
+    res <- pool::dbGetQuery(pool, query)
+    return(res[1])
+  }
 }
 
 #' @rdname db_get

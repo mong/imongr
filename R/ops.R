@@ -405,7 +405,7 @@ WHERE
 #' @param rv A shiny::reactiveValues object
 #' @noRd
 add_project <- function(input, rv, pool) {
-  query <- paste0("INSERT INTO project (id, registry_id, context, start_year) VALUES ( '",
+  query <- paste0("INSERT INTO staging_project (id, registry_id, context, start_year) VALUES ( '",
     rv$new_project_name,
     "', '",
     input$project_registry,
@@ -425,7 +425,7 @@ add_project <- function(input, rv, pool) {
 add_project_to_indicator <- function(pool, project_id, indicator_id) {
   query <- paste0("
     INSERT INTO
-      project_ind
+      staging_project_ind
       (project_id, ind_id)
     VALUES ('",
     project_id,
@@ -446,7 +446,7 @@ update_project_hospitals <- function(pool, project_id, new_data) {
   # Delete all hospitals from the selected project
   query <- paste0("
 DELETE FROM
-  project_hospital
+  staging_project_hospital
 WHERE
   project_id='", project_id, "';")
 
@@ -454,7 +454,7 @@ WHERE
 
   # Add new hospitals if available
   if (nrow(new_data) > 0) {
-    pool::dbWriteTable(pool, "project_hospital", new_data,
+    pool::dbWriteTable(pool, "staging_project_hospital", new_data,
       append = TRUE,
       row.names = FALSE
     )
@@ -550,7 +550,7 @@ update_project_text <- function(pool, new_data) {
 
   query <- paste0("
 UPDATE
-  project
+  staging_project
 SET
   title = ?,
   short_description = ?,
@@ -628,7 +628,7 @@ update_project_val <- function(pool, new_data) {
 
   query <- paste0("
 UPDATE
-  project
+  staging_project
 SET
   context = ?,
   start_year = ?,
