@@ -34,7 +34,9 @@ project_ui <- function(id) {
         shiny::uiOutput(ns("add_hospitals")),
         shiny::br(),
         shiny::uiOutput(ns("activate_editing_button")),
+        shiny::br(),
         shiny::uiOutput(ns("update_values_button")),
+        shiny::br(),
         shiny::uiOutput(ns("publish_updates_button")),
       ),
       shiny::mainPanel(
@@ -254,10 +256,31 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
+    # Activate editing button
+    output$activate_editing_button <- shiny::renderUI({
+      shiny::req(input$project, !rv$edit_mode)
+      shiny::actionButton(
+        ns("activate_editing"),
+        "Rediger",
+        style = conf$profile$action_button_style
+      )
+    })
+
     # Update values button
     output$update_values_button <- shiny::renderUI({
       # Make an action button with id update_values
+      shiny::req(input$project, rv$edit_mode)
       update_project_val_check(input, conf, ns, rv, years_consistent)
+    })
+
+    # Publish updates button
+    output$publish_updates_button <- shiny::renderUI({
+      shiny::req(input$project, rv$edit_mode)
+      shiny::actionButton(
+        ns("publish_updates"),
+        "Publiser",
+        style = conf$profile$action_button_style
+      )
     })
 
 
@@ -347,6 +370,11 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
 
+    ##### When you push the activate editing button
+    shiny::observeEvent(input$activate_editing, {
+      rv$edit_mode <- TRUE
+    })
+
     ##### When you push the update values button
     shiny::observeEvent(input$update_values, {
 
@@ -380,7 +408,9 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     ##### When you push the publish button
-
+    shiny::observeEvent(input$publish_updates, {
+      rv$edit_mode <- FALSE
+    })
 
 
     ######################
