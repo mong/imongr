@@ -20,6 +20,7 @@ project_ui <- function(id) {
     shinyjs::useShinyjs(),
     shiny::sidebarLayout(
       shiny::sidebarPanel(
+        shiny::uiOutput(ns("mode_information")),
         shiny::uiOutput(ns("select_project_registry")),
         shiny::uiOutput(ns("select_project_indicator")),
         shiny::uiOutput(ns("select_project")),
@@ -32,7 +33,9 @@ project_ui <- function(id) {
         shiny::uiOutput(ns("toggle_context")),
         shiny::uiOutput(ns("add_hospitals")),
         shiny::br(),
+        shiny::uiOutput(ns("activate_editing_button")),
         shiny::uiOutput(ns("update_values_button")),
+        shiny::uiOutput(ns("publish_updates_button")),
       ),
       shiny::mainPanel(
         shiny::tabsetPanel(
@@ -163,6 +166,14 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     ##### UI elements #####
 
+    # Mode information
+    output$mode_information <- shiny::renderUI({
+      shiny::req(input$project)
+      if (rv$edit_mode) {
+        shiny::h1("Redigeringsmodus")
+      }
+    })
+
     # Select registry UI
     output$select_project_registry <- shiny::renderUI({
       select_registry_ui(pool, conf,
@@ -252,10 +263,91 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
 
 
-
+    ###########################
     ##### Event observers #####
+    ###########################
 
-    # When you push the update values button
+    ##### When you select a registry
+    shiny::observeEvent(input$project_registry, {
+      rv_return$registry_id <- input$indicator_registry
+      registry_indicators <- get_registry_indicators(pool, input$project_registry)
+
+      rv$registry_indicators <- as.list(registry_indicators$id)
+      names(rv$registry_indicators) <- registry_indicators$title
+    })
+
+    ##### When you select a project
+    shiny::observeEvent(input$project, {
+      rv$project_data <- project_data()
+      rv$selected_hospitals <- get_project_hospitals(pool, input$project)$hospital_short_name
+      rv$indicator_data <- get_ind_agg_data(pool, input$project_indicator, rv$project_data$context)
+      rv$indicator_limits <- get_ind_limits(pool, input$project_indicator)
+      rv$edit_mode <- get_project_edit_mode(pool, input$project)
+    })
+
+    ###### When you push the new project button
+    shiny::observeEvent(input$new_project, {
+      shiny::showModal(
+        shiny::modalDialog(
+          shiny::tags$h3("Velg navn p\u00e5 nytt prosjekt"),
+          shiny::textInput(ns("new_project_name"), "Prosjektnavn"),
+          shiny::numericInput(ns("new_project_start_year"),
+            label = "Velg start\u00e5r",
+            value = NA
+          ),
+          footer = shiny::tagList(
+            shiny::actionButton(ns("new_project_submit"), "OK"),
+            shiny::modalButton("Avbryt")
+          )
+        )
+      )
+      shinyjs::disable("new_project_submit")
+    })
+
+    ##### When you write a new project name in the popup
+    shiny::observeEvent(popUpListener(), {
+      shiny::req("new_project_submit")
+
+      # Validate input
+      validName <- is.null(validateProjectName(input$new_project_name))
+      validYear <- is.null(validateStartYear(input$new_project_start_year))
+
+      if (validName && validYear) {
+        shinyjs::enable("new_project_submit")
+      } else {
+        shinyjs::disable("new_project_submit")
+      }
+    })
+
+    ##### When you press "OK" in the new project popup
+    shiny::observeEvent(input$new_project_submit, {
+      # Write a new row in the staging table
+      # Switch to edit mode
+      shiny::removeModal()
+      rv$new_project_name <- input$new_project_name
+    })
+
+    shiny::observeEvent(rv$new_project_name, {
+      add_project(input, rv, pool)
+      add_project_to_indicator(pool, rv$new_project_name, input$project_indicator)
+
+      default_text <- data.frame(
+        title = "Tittel",
+        short_description = "Kort beskrivelse",
+        long_description = "Lang beskrivelse",
+        id = rv$new_project_name
+      )
+
+      update_project_text(pool, default_text)
+
+      rv$edit_mode <- TRUE
+
+      # Reactive value to trigger updates of UI elements
+      rv$new_project_counter <- rv$new_project_counter + 1
+    })
+
+
+    ##### When you push the update values button
     shiny::observeEvent(input$update_values, {
 
       # Update the projects table
@@ -277,83 +369,17 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       rv$selected_hospitals <- get_project_hospitals(pool, input$project)$hospital_short_name
       rv$indicator_data <- get_ind_agg_data(pool, input$project_indicator, rv$project_data$context)
       rv$indicator_limits <- get_ind_limits(pool, input$project_indicator)
+
+      # Update local data
+      rv$project_data$title <- input$title
+      rv$project_data$short_description <- input$short_description
+      rv$project_data$long_description <- input$long_description
+
+      # Update database
+      update_project_text(pool, rv$project_data)
     })
 
-    # When you select a registry
-    shiny::observeEvent(input$project_registry, {
-      rv_return$registry_id <- input$indicator_registry
-      registry_indicators <- get_registry_indicators(pool, input$project_registry)
-
-      rv$registry_indicators <- as.list(registry_indicators$id)
-      names(rv$registry_indicators) <- registry_indicators$title
-    })
-
-    # When you select a project
-    shiny::observeEvent(input$project, {
-      rv$project_data <- project_data()
-      rv$selected_hospitals <- get_project_hospitals(pool, input$project)$hospital_short_name
-      rv$indicator_data <- get_ind_agg_data(pool, input$project_indicator, rv$project_data$context)
-      rv$indicator_limits <- get_ind_limits(pool, input$project_indicator)
-    })
-
-    # When you push the new project button
-    shiny::observeEvent(input$new_project, {
-      shiny::showModal(
-        shiny::modalDialog(
-          shiny::tags$h3("Velg navn p\u00e5 nytt prosjekt"),
-          shiny::textInput(ns("new_project_name"), "Prosjektnavn"),
-          shiny::numericInput(ns("new_project_start_year"),
-            label = "Velg start\u00e5r",
-            value = NA
-          ),
-          footer = shiny::tagList(
-            shiny::actionButton(ns("new_project_submit"), "OK"),
-            shiny::modalButton("Avbryt")
-          )
-        )
-      )
-      shinyjs::disable("new_project_submit")
-    })
-
-    # When you write a new project name in the popup
-    shiny::observeEvent(popUpListener(), {
-      shiny::req("new_project_submit")
-
-      # Validate input
-      validName <- is.null(validateProjectName(input$new_project_name))
-      validYear <- is.null(validateStartYear(input$new_project_start_year))
-
-      if (validName && validYear) {
-        shinyjs::enable("new_project_submit")
-      } else {
-        shinyjs::disable("new_project_submit")
-      }
-    })
-
-    # When you press "OK" in the new project popup
-    shiny::observeEvent(input$new_project_submit, {
-      shiny::removeModal()
-      rv$new_project_name <- input$new_project_name
-    })
-
-    shiny::observeEvent(rv$new_project_name, {
-      add_project(input, rv, pool)
-      add_project_to_indicator(pool, rv$new_project_name, input$project_indicator)
-
-      default_text <- data.frame(
-        title = "Tittel",
-        short_description = "Kort beskrivelse",
-        long_description = "Lang beskrivelse",
-        id = rv$new_project_name
-      )
-
-      update_project_text(pool, default_text)
-
-      # Reactive value to trigger updates of UI elements
-      rv$new_project_counter <- rv$new_project_counter + 1
-    })
-
-
+    ##### When you push the publish button
 
 
 
@@ -487,18 +513,6 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
 
     ##### Event observers #####
-
-    # Button click observer
-    shiny::observeEvent(input$update_text, {
-      # Update local data
-      rv$project_data <- project_data()
-      rv$project_data$title <- input$title
-      rv$project_data$short_description <- input$short_description
-      rv$project_data$long_description <- input$long_description
-
-      # Update database
-      update_project_text(pool, rv$project_data)
-    })
 
     ###### Oversize observers #####
     shiny::observeEvent(input$title, {

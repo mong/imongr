@@ -742,6 +742,22 @@ get_project_data <- function(pool, project) {
 
 #' @rdname db_get
 #' @export
+get_project_edit_mode <- function(pool, project) {
+  query <- paste0("
+    SELECT * FROM staging_project WHERE id='", project, "';
+  ")
+
+  res <- pool::dbGetQuery(pool, query)
+
+  if (nrow(res) != 0) {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
+
+#' @rdname db_get
+#' @export
 get_project_hospitals <- function(pool, project) {
   query <- paste0("
     SELECT

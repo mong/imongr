@@ -417,6 +417,7 @@ add_project <- function(input, rv, pool) {
   pool::dbExecute(pool, query)
 }
 
+
 #' @rdname ops
 #' @param pool Database pool object
 #' @param project_id String
@@ -539,7 +540,7 @@ WHERE
   message("Ferdig\n")
 }
 
-#' Updatet the description text from the main panel input
+#' Update the description text from the main panel input
 #' in the project tab
 #'
 #' @rdname ops
