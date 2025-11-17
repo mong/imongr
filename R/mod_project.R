@@ -247,13 +247,18 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # Add hospitals UI
     output$add_hospitals <- shiny::renderUI({
-      shiny::selectInput(
-        inputId = ns("hospitals"),
-        label = "Velg enhet",
-        choices = unit_names,
-        selected = get_project_hospitals(pool, input$project)$hospital_short_name,
-        multiple = TRUE
-      )
+      shiny::req(input$project)
+      if (rv$edit_mode) {
+        shiny::selectInput(
+          inputId = ns("hospitals"),
+          label = "Velg enhet",
+          choices = unit_names,
+          selected = get_project_hospitals(pool, input$project)$hospital_short_name,
+          multiple = TRUE
+        )
+      } else {
+        shiny::renderText(paste(input$hospitals, collapse = ", "))
+      }
     })
 
     # Activate editing button
@@ -289,6 +294,27 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     ###########################
     ##### Event observers #####
     ###########################
+
+    ##### When edit mode changes
+    shiny::observeEvent(rv$edit_mode, {
+      if (rv$edit_mode) {
+        shinyjs::enable("title")
+        shinyjs::enable("long_description")
+        shinyjs::enable("short_description")
+        shinyjs::enable("start_year")
+        shinyjs::enable("end_year")
+        shinyjs::enable("resident")
+        shinyjs::enable("hospitals")
+      } else {
+        shinyjs::disable("title")
+        shinyjs::disable("long_description")
+        shinyjs::disable("short_description")
+        shinyjs::disable("start_year")
+        shinyjs::disable("end_year")
+        shinyjs::disable("resident")
+        shinyjs::disable("hospitals")
+      }
+    })
 
     ##### When you select a registry
     shiny::observeEvent(input$project_registry, {
