@@ -46,7 +46,6 @@ services:
     restart: "no"
     volumes:
       - ~/.ssh:/home/rstudio/.ssh
-      - ~/.gitconfig:/home/rstudio/.gitconfig
       - .:/home/rstudio/imongr
     ports:
       - 8787:8787
@@ -62,7 +61,6 @@ services:
     restart: "no"
     volumes:
       - ~/.ssh:/home/coder/.ssh
-      - ~/.gitconfig:/home/coder/.gitconfig
       - .:/home/coder/imongr
     ports:
       - 8080:8080
