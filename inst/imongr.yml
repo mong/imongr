@@ -74,6 +74,8 @@ app_text:
       Se og endre på indikatortekster
     review: |-
       Send inn vurdering av årsrapporter
+    notice: |-
+      Administrer varsler
     project: |-
       Se og endre på kvalitetsforbedringsprosjekter
     publication: |-

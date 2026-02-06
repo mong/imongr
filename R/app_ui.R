@@ -68,6 +68,13 @@ app_ui <- function() {
         review_ui("review")
       ),
       shiny::tabPanel(
+        value = "notice",
+        shiny::span("Varsler",
+          title = conf$app_text$tooltip$notice
+        ),
+        notice_ui("notice")
+      ),
+      shiny::tabPanel(
         value = "project",
         shiny::span("Kvalitetsforbedring",
           title = conf$app_text$tooltip$project
