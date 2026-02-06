@@ -21,6 +21,12 @@ notice_ui <- function(id) {
     shiny::sidebarLayout(
       shiny::sidebarPanel(
         shiny::uiOutput(ns("select_registry")),
+        shiny::uiOutput(ns("select_notice")),
+        shiny::br(),
+        shiny::uiOutput(ns("set_status")),
+        shiny::uiOutput(ns("set_ref")),
+        shiny::uiOutput(ns("save_changes_button")),
+        shiny::br(),
         shiny::uiOutput(ns("add_event_button")),
       ),
       shiny::mainPanel(
@@ -42,36 +48,18 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
     rv_return <- shiny::reactiveValues()
     rv <- shiny::reactiveValues()
 
-    validate_doi <- function(x) {
+    validate_ref <- function(x) {
       if (!is.null(x) && x == "") {
-        return("Skriv inn en gyldig DOI")
+        return("Skriv inn en gyldig referanse")
       }
 
-      if (!is.null(x) && !is.null(rv$event_data) && x %in% rv$event_data$doi) {
-        return("Publikasjonen finnes allerede")
+      if (!is.null(x) && !is.null(rv$event_data) && x %in% rv$event_data$ref) {
+        return("Hendelsem finnes allerede")
       }
-
-      url <- paste0("https://doi.org/", x)
-
-      tryCatch(
-        {
-          response <- httr::GET(url)
-          response_code <- response$all_headers[[1]]$status
-
-          if (response_code != 302) {
-            return("Skriv inn en gyldig DOI")
-          } else {
-            return(NULL)
-          }
-        },
-        error = function(er) {
-          return("Skriv inn en gyldig DOI")
-        }
-      )
     }
 
     inputValidator <- shinyvalidate::InputValidator$new(session = session)
-    inputValidator$add_rule("new_doi", validate_doi)
+    inputValidator$add_rule("new_ref", validate_ref)
     inputValidator$enable()
 
     ########################
@@ -90,10 +78,29 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
+    # Select notice
+    output$select_notice <- shiny::renderUI({
+      shiny::selectInput(
+        ns("selected_year"),
+        "Velg \u00e5r",
+        rv$notice_data$year
+      )
+    })
+
+    # Set status
+    output$set_status <- shiny::renderUI({
+      shiny::selectInput(
+        ns("notice_status"),
+        "Velg status",
+        setNames(c("Open", "Closed"), c("Åpent", "Lukket")),
+        selected = rv$notice_data$status[rv$notice_data$year == input$selected_year]
+      )
+    })
+
     # The button for adding a new event
     output$add_event_button <- shiny::renderUI({
       shiny::req(input$registry)
-      shiny::actionButton(ns("new_event"), "Legg til en publikasjon")
+      shiny::actionButton(ns("new_event"), "Legg til en hendelse")
     })
 
 
@@ -116,61 +123,45 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
     ##### Event observers #####
 
     shiny::observeEvent(input$registry, {
-      rv$event_data <- get_publications(pool_verify, input$registry)
+      rv$notice_data <- get_registry_notices(pool, input$registry)
       rv_return$registry_id <- input$registry
     })
 
     popUpListener <- shiny::reactive({
-      list(input$new_doi)
+      list(input$new_ref)
     })
 
     # When you push the new DOI button
     shiny::observeEvent(input$new_event, {
       shiny::showModal(
         shiny::modalDialog(
-          shiny::tags$h3("Legg inn DOI-en til publikasjonen"),
-          shiny::textInput(ns("new_doi"), "DOI"),
-          shiny::textOutput(ns("doi_info")),
+          shiny::tags$h3("Legg inn referansen til hendelsen"),
+          shiny::textInput(ns("new_ref"), "Referanse"),
           footer = shiny::tagList(
-            shiny::actionButton(ns("new_doi_submit"), "OK"),
+            shiny::actionButton(ns("new_ref_submit"), "OK"),
             shiny::modalButton("Avbryt")
           )
         )
       )
-      shinyjs::disable("new_doi_submit")
+      shinyjs::disable("new_ref_submit")
     })
 
     # When you write a DOI in the popup
     shiny::observeEvent(popUpListener(), {
-      shiny::req("new_doi_submit")
+      shiny::req("new_ref_submit")
 
       # Validate input
-      valid_doi <- is.null(validate_doi(input$new_doi))
+      valid_ref <- is.null(validate_ref(input$new_ref))
 
-      if (valid_doi) {
-        output$doi_info <- shiny::renderText(
-          tryCatch(
-            {
-              rv$new_reference <- httr::content(
-                httr::GET(
-                  paste0("https://citation.doi.org/format?doi=", input$new_doi, "&style=apa&lang=nb-NO")
-                )
-              )
-              rv$new_reference
-            },
-            error = function(er) {
-              return(NULL)
-            }
-          )
-        )
-        shinyjs::enable("new_doi_submit")
+      if (valid_ref) {
+        shinyjs::enable("new_ref_submit")
       } else {
-        shinyjs::disable("new_doi_submit")
+        shinyjs::disable("new_ref_submit")
       }
     })
 
     # When you press "OK" in the new DOI popup
-    shiny::observeEvent(input$new_doi_submit, {
+    shiny::observeEvent(input$new_ref_submit, {
       shiny::removeModal()
       add_publication(input, rv, pool_verify)
       rv$event_data <- get_publications(pool_verify, input$registry)
