@@ -54,7 +54,7 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       }
 
       if (!is.null(x) && !is.null(rv$event_data) && x %in% rv$event_data$ref) {
-        return("Hendelsem finnes allerede")
+        return("Hendelsen finnes allerede")
       }
     }
 
@@ -89,13 +89,37 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # Set status
     output$set_status <- shiny::renderUI({
+
       shiny::selectInput(
         ns("notice_status"),
-        "Velg status",
+        "Endre status",
         setNames(c("Open", "Closed"), c("Åpent", "Lukket")),
         selected = rv$notice_data$status[rv$notice_data$year == input$selected_year]
       )
     })
+
+    # Reference text field
+    output$set_ref <- shiny::renderUI({
+      shiny::textInput(
+        ns("new_ref"),
+        "Referanse",
+        value = rv$notice_data$ref[rv$notice_data$year == input$selected_year]
+      )
+    })
+
+    # Save notice changes button
+    output$save_changes_button <- shiny::renderUI({
+      shiny::req(input$registry)
+      shiny::req(is.null(validate_ref(input$new_ref)))
+
+      shiny::actionButton(
+        ns("save"),
+        "Lagre",
+        shiny::icon("floppy-disk"),
+        style = conf$profile$action_button_style,
+      )
+    })
+
 
     # The button for adding a new event
     output$add_event_button <- shiny::renderUI({
