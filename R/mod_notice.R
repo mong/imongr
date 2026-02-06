@@ -48,18 +48,31 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
     rv_return <- shiny::reactiveValues()
     rv <- shiny::reactiveValues()
 
-    validate_ref <- function(x) {
+    validate_notice_ref <- function(x) {
+      if (!is.null(x) && x == "") {
+        return("Skriv inn en gyldig referanse")
+      }
+
+      if (
+          !is.null(x) &&
+            !is.null(rv$all_notices_data) &&
+            x %in% rv$all_notices_data$ref) {
+        return("Referansen finnes allerede")
+      }
+    }
+
+    validate_event_ref <- function(x) {
       if (!is.null(x) && x == "") {
         return("Skriv inn en gyldig referanse")
       }
 
       if (!is.null(x) && !is.null(rv$event_data) && x %in% rv$event_data$ref) {
-        return("Hendelsen finnes allerede")
+        return("Referansen finnes allerede")
       }
     }
 
     inputValidator <- shinyvalidate::InputValidator$new(session = session)
-    inputValidator$add_rule("new_ref", validate_ref)
+    inputValidator$add_rule("new_ref", validate_notice_ref)
     inputValidator$enable()
 
     ########################
@@ -110,22 +123,24 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
     # Save notice changes button
     output$save_changes_button <- shiny::renderUI({
       shiny::req(input$registry)
-      shiny::req(is.null(validate_ref(input$new_ref)))
+      shiny::req(is.null(validate_notice_ref(input$new_ref)))
 
       shiny::actionButton(
-        ns("save"),
+        ns("save_changes"),
         "Lagre",
         shiny::icon("floppy-disk"),
         style = conf$profile$action_button_style,
       )
     })
 
-
     # The button for adding a new event
     output$add_event_button <- shiny::renderUI({
       shiny::req(input$registry)
       shiny::actionButton(ns("new_event"), "Legg til en hendelse")
     })
+
+    ##### Event handlers #####
+
 
 
     ######################
@@ -148,6 +163,7 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
 
     shiny::observeEvent(input$registry, {
       rv$notice_data <- get_registry_notices(pool, input$registry)
+      rv$all_notices_data <- get_all_notices(pool)
       rv_return$registry_id <- input$registry
     })
 
@@ -155,7 +171,12 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       list(input$new_ref)
     })
 
-    # When you push the new DOI button
+    # When you push the save changes button
+    shiny::observeEvent(input$save_changes, {
+
+    })
+
+    # When you push the new event button
     shiny::observeEvent(input$new_event, {
       shiny::showModal(
         shiny::modalDialog(
@@ -175,7 +196,7 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req("new_ref_submit")
 
       # Validate input
-      valid_ref <- is.null(validate_ref(input$new_ref))
+      valid_ref <- is.null(validate_event_ref(input$new_ref))
 
       if (valid_ref) {
         shinyjs::enable("new_ref_submit")

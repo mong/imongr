@@ -811,3 +811,16 @@ get_registry_notices <- function(pool, registry_id) {
 
   pool::dbGetQuery(pool, query)
 }
+
+#' @rdname db_get
+#' @export
+get_all_notices <- function(pool) {
+  query <- paste0("
+    SELECT
+      year, status, ref
+    FROM 
+      notice
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
