@@ -238,6 +238,7 @@ CREATE TABLE IF NOT EXISTS `notice` (
   `year` smallint(5) NOT NULL,
   `status` tinytext NOT NULL,
   `ref` tinytext,
+  `user_id` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_notice_registry`
     FOREIGN KEY (`registry_id`) REFERENCES `registry` (`id`)
@@ -250,6 +251,7 @@ CREATE TABLE IF NOT EXISTS `notice_event` (
   `date` datetime NOT NULL,
   `type` tinytext NOT NULL,
   `ref` tinytext DEFAULT NULL,
+  `user_id` smallint(5) unsigned NOT NULL,
   `notice_id` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_notice_event_notice`

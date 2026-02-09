@@ -824,3 +824,18 @@ get_all_notices <- function(pool) {
 
   pool::dbGetQuery(pool, query)
 }
+
+#' @rdname db_get
+#' @export
+get_notice_events <- function(pool, notice_id) {
+  query <- paste0("
+    SELECT
+      text, date, type, ref, user_id
+    FROM 
+      notice_event
+    WHERE
+      notice_id = '", notice_id, "'
+  ")
+
+  pool::dbGetQuery(pool, query)
+}

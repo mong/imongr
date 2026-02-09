@@ -154,7 +154,7 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
 
     output$event_table <- DT::renderDataTable(
       DT::datatable(rv$event_data,
-        colnames = c("DOI", "Bruker", "Tidspunkt", "Referanse"),
+        colnames = c("Tekst", "Dato", "type", "Referanse", "Bruker"),
         rownames = FALSE
       )
     )
@@ -167,49 +167,62 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       rv_return$registry_id <- input$registry
     })
 
+    shiny::observeEvent(input$selected_year, {
+      shiny::req(input$registry, input$selected_year)
+      rv$event_data <- get_notice_events(pool, get_notice_id(pool, input$registry, input$selected_year))
+    })
+
     popUpListener <- shiny::reactive({
-      list(input$new_ref)
+      list(input$new_event_ref)
     })
 
     # When you push the save changes button
     shiny::observeEvent(input$save_changes, {
-
+      update_notice(input, get_notice_id(pool, input$registry, input$selected_year), pool)
+      rv$notice_data <- get_registry_notices(pool, input$registry)
     })
 
     # When you push the new event button
     shiny::observeEvent(input$new_event, {
       shiny::showModal(
         shiny::modalDialog(
+          shiny::tags$h3("Fritekst"),
+          shiny::textInput(ns("new_event_text"), "Fritekst"),
           shiny::tags$h3("Legg inn referansen til hendelsen"),
-          shiny::textInput(ns("new_ref"), "Referanse"),
+          shiny::textInput(ns("new_event_ref"), "Referanse"),
+          shiny::tags$h3("Legg inn referansen til hendelsen"),
+          shiny::dateInput(ns("new_event_date"), "Dato"),
+          shiny::tags$h3("Type"),
+          shiny::selectInput(ns("new_event_type"), "Type", choices = c("a", "b", "c")),
           footer = shiny::tagList(
-            shiny::actionButton(ns("new_ref_submit"), "OK"),
+            shiny::actionButton(ns("new_event_submit"), "OK"),
             shiny::modalButton("Avbryt")
           )
         )
       )
-      shinyjs::disable("new_ref_submit")
+      shinyjs::disable("new_event_submit")
     })
 
     # When you write a DOI in the popup
     shiny::observeEvent(popUpListener(), {
-      shiny::req("new_ref_submit")
+      shiny::req("new_event_submit")
 
       # Validate input
-      valid_ref <- is.null(validate_event_ref(input$new_ref))
+      valid_ref <- is.null(validate_event_ref(input$new_event_ref))
 
       if (valid_ref) {
-        shinyjs::enable("new_ref_submit")
+        shinyjs::enable("new_event_submit")
       } else {
-        shinyjs::disable("new_ref_submit")
+        shinyjs::disable("new_event_submit")
       }
     })
 
     # When you press "OK" in the new DOI popup
-    shiny::observeEvent(input$new_ref_submit, {
+    shiny::observeEvent(input$new_event_submit, {
+
       shiny::removeModal()
-      add_publication(input, rv, pool_verify)
-      rv$event_data <- get_publications(pool_verify, input$registry)
+      add_event(input, rv, pool)
+      rv$event_data <- get_notice_events(pool, get_notice_id(pool, input$registry, input$selected_year))
     })
 
     return(rv_return)

@@ -142,13 +142,17 @@ db:
     notice_event:
       insert:
       - text
+      - date
       - type
+      - ref
+      - user_id
       - notice_id
     notice:
       insert:
       - registry_id
       - year
       - status
+      - user_id
     evaluation:
       insert:
       - registry_id
