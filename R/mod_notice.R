@@ -180,6 +180,12 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$save_changes, {
       update_notice(input, get_notice_id(pool, input$registry, input$selected_year), pool)
       rv$notice_data <- get_registry_notices(pool, input$registry)
+      shinyalert::shinyalert(conf$upload$reciept$title,
+        "Lagret",
+        type = "success",
+        showConfirmButton = TRUE,
+        timer = 7000
+      )
     })
 
     # When you push the new event button
