@@ -601,8 +601,13 @@ adminer:
   url: env
 notice:
   types:
+  - Samtale
   - Brev
   - Klage
   - Utsettelse
   - Løst
   - Melding
+  status:
+  - Vurderes
+  - Aktivt
+  - Lukket

@@ -51,9 +51,6 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
     max_event_text_length <- 1000
 
     validate_notice_ref <- function(x) {
-      if (!is.null(x) && x == "") {
-        return("Skriv inn en referanse")
-      }
 
       if (
           !is.null(x) &&
@@ -111,7 +108,7 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::selectInput(
         ns("notice_status"),
         "Endre status",
-        setNames(c("Open", "Closed"), c("Åpent", "Lukket")),
+        conf$notice$status,
         selected = rv$notice_data$status[rv$notice_data$year == input$selected_year]
       )
     })
