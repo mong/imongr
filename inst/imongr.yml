@@ -144,7 +144,6 @@ db:
       - text
       - date
       - type
-      - ref
       - user_id
       - notice_id
     notice:
@@ -600,3 +599,10 @@ download:
   - rhf
 adminer:
   url: env
+notice:
+  types:
+  - Brev
+  - Klage
+  - Utsettelse
+  - Løst
+  - Melding

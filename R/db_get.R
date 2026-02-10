@@ -817,7 +817,7 @@ get_registry_notices <- function(pool, registry_id) {
 get_all_notices <- function(pool) {
   query <- paste0("
     SELECT
-      year, status, ref
+      id, year, status, ref
     FROM 
       notice
   ")
@@ -830,7 +830,7 @@ get_all_notices <- function(pool) {
 get_notice_events <- function(pool, notice_id) {
   query <- paste0("
     SELECT
-      text, date, type, ref, user_id
+      text, date, type, user_id
     FROM 
       notice_event
     WHERE

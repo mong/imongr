@@ -50,29 +50,31 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
 
     validate_notice_ref <- function(x) {
       if (!is.null(x) && x == "") {
-        return("Skriv inn en gyldig referanse")
+        return("Skriv inn en referanse")
       }
 
       if (
           !is.null(x) &&
             !is.null(rv$all_notices_data) &&
-            x %in% rv$all_notices_data$ref) {
+            x %in% rv$all_notices_data$ref[
+              as.numeric(rv$all_notices_data$id) != as.numeric(get_notice_id(pool, input$registry, input$selected_year))
+            ]) {
         return("Referansen finnes allerede")
       }
     }
 
-    validate_event_ref <- function(x) {
+    validate_event_text <- function(x) {
       if (!is.null(x) && x == "") {
-        return("Skriv inn en gyldig referanse")
+        return("Skriv inn en fritekst")
       }
-
-      if (!is.null(x) && !is.null(rv$event_data) && x %in% rv$event_data$ref) {
-        return("Referansen finnes allerede")
+      if (!is.null(x) && nchar(x) > 1000) {
+        return("Teksten er for lang")
       }
     }
 
     inputValidator <- shinyvalidate::InputValidator$new(session = session)
     inputValidator$add_rule("new_ref", validate_notice_ref)
+    inputValidator$add_rule("new_event_text", validate_event_text)
     inputValidator$enable()
 
     ########################
@@ -154,7 +156,7 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
 
     output$event_table <- DT::renderDataTable(
       DT::datatable(rv$event_data,
-        colnames = c("Tekst", "Dato", "type", "Referanse", "Bruker"),
+        colnames = c("Tekst", "Dato", "type", "Bruker"),
         rownames = FALSE
       )
     )
@@ -163,6 +165,9 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
 
     shiny::observeEvent(input$registry, {
       rv$notice_data <- get_registry_notices(pool, input$registry)
+      if (nrow(rv$notice_data) > 0) {
+        rv$event_data <- get_notice_events(pool, get_notice_id(pool, input$registry, max(rv$notice_data$year)))
+      }
       rv$all_notices_data <- get_all_notices(pool)
       rv_return$registry_id <- input$registry
     })
@@ -173,7 +178,7 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     popUpListener <- shiny::reactive({
-      list(input$new_event_ref)
+      list(input$new_event_text)
     })
 
     # When you push the save changes button
@@ -192,14 +197,10 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$new_event, {
       shiny::showModal(
         shiny::modalDialog(
-          shiny::tags$h3("Fritekst"),
+          shiny::tags$h3("Ny hendelse"),
           shiny::textInput(ns("new_event_text"), "Fritekst"),
-          shiny::tags$h3("Legg inn referansen til hendelsen"),
-          shiny::textInput(ns("new_event_ref"), "Referanse"),
-          shiny::tags$h3("Legg inn referansen til hendelsen"),
           shiny::dateInput(ns("new_event_date"), "Dato"),
-          shiny::tags$h3("Type"),
-          shiny::selectInput(ns("new_event_type"), "Type", choices = c("a", "b", "c")),
+          shiny::selectInput(ns("new_event_type"), "Type", choices = conf$notice$types),
           footer = shiny::tagList(
             shiny::actionButton(ns("new_event_submit"), "OK"),
             shiny::modalButton("Avbryt")
@@ -214,9 +215,9 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::req("new_event_submit")
 
       # Validate input
-      valid_ref <- is.null(validate_event_ref(input$new_event_ref))
+      valid_text <- is.null(validate_event_text(input$new_event_text))
 
-      if (valid_ref) {
+      if (valid_text) {
         shinyjs::enable("new_event_submit")
       } else {
         shinyjs::disable("new_event_submit")

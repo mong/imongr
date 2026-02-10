@@ -721,7 +721,6 @@ add_event <- function(input, rv, pool) {
     text = input$new_event_text,
     date = input$new_event_date,
     type = input$new_event_type,
-    ref = input$new_event_ref,
     user_id = get_user_id(pool),
     notice_id = get_notice_id(pool, input$registry, input$selected_year)
   )

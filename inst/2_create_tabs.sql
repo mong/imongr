@@ -250,7 +250,6 @@ CREATE TABLE IF NOT EXISTS `notice_event` (
   `text` mediumtext DEFAULT NULL,
   `date` datetime NOT NULL,
   `type` tinytext NOT NULL,
-  `ref` tinytext DEFAULT NULL,
   `user_id` smallint(5) unsigned NOT NULL,
   `notice_id` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`),
