@@ -48,6 +48,8 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
     rv_return <- shiny::reactiveValues()
     rv <- shiny::reactiveValues()
 
+    max_event_text_length <- 1000
+
     validate_notice_ref <- function(x) {
       if (!is.null(x) && x == "") {
         return("Skriv inn en referanse")
@@ -67,7 +69,7 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       if (!is.null(x) && x == "") {
         return("Skriv inn en fritekst")
       }
-      if (!is.null(x) && nchar(x) > 1000) {
+      if (!is.null(x) && nchar(x) > max_event_text_length) {
         return("Teksten er for lang")
       }
     }
