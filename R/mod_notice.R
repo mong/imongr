@@ -55,6 +55,7 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       if (
           !is.null(x) &&
             !is.null(rv$all_notices_data) &&
+            nchar(x) > 0 &&
             x %in% rv$all_notices_data$ref[
               as.numeric(rv$all_notices_data$id) != as.numeric(get_notice_id(pool, input$registry, input$selected_year))
             ]) {
@@ -97,7 +98,7 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::selectInput(
         ns("selected_year"),
         "Velg \u00e5r",
-        rv$notice_data$year,
+        sort(rv$notice_data$year, decreasing = TRUE),
         selected = input$selected_year
       )
     })
@@ -151,15 +152,14 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # The event list
     output$event_list <- shiny::renderUI({
-      DT::dataTableOutput(ns("event_table"))
+      DT::renderDataTable(
+        DT::datatable(rv$event_data,
+          colnames = c("Tekst", "Dato", "type", "Bruker"),
+          rownames = FALSE
+        )
+      )
     })
 
-    output$event_table <- DT::renderDataTable(
-      DT::datatable(rv$event_data,
-        colnames = c("Tekst", "Dato", "type", "Bruker"),
-        rownames = FALSE
-      )
-    )
 
     ##### Event observers #####
 
