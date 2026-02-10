@@ -828,6 +828,11 @@ get_all_notices <- function(pool) {
 #' @rdname db_get
 #' @export
 get_notice_events <- function(pool, notice_id) {
+
+  if (!shiny::isTruthy(notice_id)) {
+    return(NULL)
+  }
+
   query <- paste0("
     SELECT
       text, date, type, user_id

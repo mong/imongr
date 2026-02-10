@@ -693,6 +693,10 @@ new_notice <- function(pool, registry_id, year) {
 #' @noRd
 get_notice_id <- function(pool, registry_id, year) {
 
+  if (!shiny::isTruthy(registry_id) || !shiny::isTruthy(year)) {
+    return(NULL)
+  }
+
   query <- paste0("
     SELECT id FROM notice
     WHERE registry_id = ", registry_id, "

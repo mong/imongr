@@ -100,7 +100,8 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::selectInput(
         ns("selected_year"),
         "Velg \u00e5r",
-        rv$notice_data$year
+        rv$notice_data$year,
+        selected = input$selected_year
       )
     })
 
@@ -167,9 +168,7 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
 
     shiny::observeEvent(input$registry, {
       rv$notice_data <- get_registry_notices(pool, input$registry)
-      if (nrow(rv$notice_data) > 0) {
-        rv$event_data <- get_notice_events(pool, get_notice_id(pool, input$registry, max(rv$notice_data$year)))
-      }
+      rv$event_data <- get_notice_events(pool, get_notice_id(pool, input$registry, input$selected_year))
       rv$all_notices_data <- get_all_notices(pool)
       rv_return$registry_id <- input$registry
     })
