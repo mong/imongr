@@ -1,3 +1,16 @@
+# imongr 2.10.0
+
+## What's Changed
+* Fiks varsel by @Stein-Kato in https://github.com/mong/imongr/pull/600
+* Update actions/upload-artifact action to v5 by @renovate[bot] in https://github.com/mong/imongr/pull/598
+* Tillat opptaksområder i kvalitetsforbedringsprosjekter by @Stein-Kato in https://github.com/mong/imongr/pull/605
+* Update actions/upload-artifact action to v6 by @renovate[bot] in https://github.com/mong/imongr/pull/612
+* Update actions/checkout action to v6 by @renovate[bot] in https://github.com/mong/imongr/pull/607
+* Ny fane for varsler by @Stein-Kato in https://github.com/mong/imongr/pull/614
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.9.1...v2.10.0
+
 # imongr 2.9.1
 
 ## What's Changed
