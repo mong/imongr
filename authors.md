@@ -14,15 +14,15 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/mong/imongr/blob/v2.9.1/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/mong/imongr/blob/v2.10.0/DESCRIPTION)
 
-Edvardsen A, Steindal A, Lindberg S (2025). *imongr: I Handle the Data
-for mongts*. R package version 2.9.1, <https://github.com/mong/imongr>.
+Edvardsen A, Steindal A, Lindberg S (2026). *imongr: I Handle the Data
+for mongts*. R package version 2.10.0, <https://github.com/mong/imongr>.
 
     @Manual{,
       title = {imongr: I Handle the Data for mongts},
       author = {Are Edvardsen and Arnfinn Hykkerud Steindal and Stein-Kato Lindberg},
-      year = {2025},
-      note = {R package version 2.9.1},
+      year = {2026},
+      note = {R package version 2.10.0},
       url = {https://github.com/mong/imongr},
     }
