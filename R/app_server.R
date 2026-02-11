@@ -105,6 +105,7 @@ app_server <- function(input, output, session) {
     shiny::showTab("tabs", target = "selected_indicators")
     shiny::showTab("tabs", target = "project")
     shiny::showTab("tabs", target = "publication")
+    shiny::showTab("tabs", target = "notice")
   }
 
   show_ira <- function() {
@@ -126,6 +127,7 @@ app_server <- function(input, output, session) {
   shiny::hideTab("tabs", target = "report")
   shiny::hideTab("tabs", target = "status")
   shiny::hideTab("tabs", target = "review")
+  shiny::hideTab("tabs", target = "notice")
   shiny::hideTab("tabs", target = "project")
   shiny::hideTab("tabs", target = "publication")
   shiny::hideTab("tabs", target = "selected_indicators")
@@ -218,6 +220,13 @@ app_server <- function(input, output, session) {
 
   shiny::observeEvent(rv_review$registry_id, {
     registry_tracker$current_registry <- rv_review$registry_id
+  })
+
+  # notice
+  rv_notice <- notice_server("notice", registry_tracker, pool, pool_verify)
+
+  shiny::observeEvent(rv_notice$registry_id, {
+    registry_tracker$current_registry <- rv_notice$registry_id
   })
 
   # project

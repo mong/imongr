@@ -74,6 +74,8 @@ app_text:
       Se og endre på indikatortekster
     review: |-
       Send inn vurdering av årsrapporter
+    notice: |-
+      Administrer varsler
     project: |-
       Se og endre på kvalitetsforbedringsprosjekter
     publication: |-
@@ -140,13 +142,16 @@ db:
     notice_event:
       insert:
       - text
+      - date
       - type
+      - user_id
       - notice_id
     notice:
       insert:
       - registry_id
       - year
       - status
+      - user_id
     evaluation:
       insert:
       - registry_id
@@ -594,3 +599,15 @@ download:
   - rhf
 adminer:
   url: env
+notice:
+  types:
+  - Samtale
+  - Brev
+  - Klage
+  - Utsettelse
+  - Løst
+  - Melding
+  status:
+  - Vurderes
+  - Aktivt
+  - Lukket

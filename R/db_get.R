@@ -796,3 +796,51 @@ get_ind_limits <- function(pool, ind_id) {
 
   pool::dbGetQuery(pool, query)
 }
+
+#' @rdname db_get
+#' @export
+get_registry_notices <- function(pool, registry_id) {
+  query <- paste0("
+    SELECT
+      year, status, ref
+    FROM 
+      notice
+    WHERE
+      registry_id = '", registry_id, "'
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
+get_all_notices <- function(pool) {
+  query <- paste0("
+    SELECT
+      id, year, status, ref
+    FROM 
+      notice
+  ")
+
+  pool::dbGetQuery(pool, query)
+}
+
+#' @rdname db_get
+#' @export
+get_notice_events <- function(pool, notice_id) {
+
+  if (!shiny::isTruthy(notice_id)) {
+    return(NULL)
+  }
+
+  query <- paste0("
+    SELECT
+      text, date, type, user_id
+    FROM 
+      notice_event
+    WHERE
+      notice_id = '", notice_id, "'
+  ")
+
+  pool::dbGetQuery(pool, query)
+}

@@ -683,7 +683,7 @@ update_review <- function(pool, df, registry_id, year) {
 #' @rdname ops
 #' @noRd
 new_notice <- function(pool, registry_id, year) {
-  new_row <- data.frame(registry_id = registry_id, year = year, status = "Open")
+  new_row <- data.frame(registry_id = registry_id, year = year, status = "Open", user_id = get_user_id(pool))
   insert_table(pool, "notice", new_row)
 }
 
@@ -692,6 +692,10 @@ new_notice <- function(pool, registry_id, year) {
 #' @rdname ops
 #' @noRd
 get_notice_id <- function(pool, registry_id, year) {
+
+  if (!shiny::isTruthy(registry_id) || !shiny::isTruthy(year)) {
+    return(NULL)
+  }
 
   query <- paste0("
     SELECT id FROM notice
@@ -709,4 +713,39 @@ get_notice_id <- function(pool, registry_id, year) {
   } else {
     return(notice$id[1])
   }
+}
+
+#' @rdname ops
+#' @param pool Database pool object
+#' @param rv A shiny::reactiveValues object
+#' @noRd
+add_event <- function(input, rv, pool) {
+
+  new_notice_event <- data.frame(
+    text = input$new_event_text,
+    date = input$new_event_date,
+    type = input$new_event_type,
+    user_id = get_user_id(pool),
+    notice_id = get_notice_id(pool, input$registry, input$selected_year)
+  )
+
+  insert_table(pool, "notice_event", new_notice_event)
+}
+
+#' @rdname ops
+#' @param pool Database pool object
+#' @noRd
+update_notice <- function(input, notice_id, pool) {
+
+  query <- paste0("
+    UPDATE
+      notice
+    SET
+      status = '", input$notice_status, "',
+      ref = '", input$new_ref, "'
+    WHERE
+      id = '", notice_id, "'
+  ")
+
+  pool::dbExecute(pool, query)
 }
