@@ -24,7 +24,7 @@ remotes::install_github("mong/imongr")
 The easiest way to develop `imongr` is to fire up the `docker-compose.yml` file:
 
 ```sh
-docker-compose up
+docker compose up
 ```
 
 This file consist of seven different services:
