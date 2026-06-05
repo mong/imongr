@@ -1,5 +1,22 @@
 # Changelog
 
+## imongr 2.11.0
+
+### What’s Changed
+
+- Kombiner alle action updates i en PR by
+  [@arnfinn](https://github.com/arnfinn) in
+  <https://github.com/mong/imongr/pull/623>
+- Update github actions (major) by
+  [@renovate](https://github.com/renovate)\[bot\] in
+  <https://github.com/mong/imongr/pull/624>
+- chore: slå av error på større nevner enn teller by
+  [@Stein-Kato](https://github.com/Stein-Kato) in
+  <https://github.com/mong/imongr/pull/625>
+
+**Full Changelog**:
+<https://github.com/mong/imongr/compare/v2.10.0>…v2.11.0
+
 ## imongr 2.10.0
 
 ### What’s Changed

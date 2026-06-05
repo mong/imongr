@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="favicon.ico">
 <link rel="manifest" href="site.webmanifest">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="I Handle the Data for mongts">
 <meta name="description" content="Primarily a tool to update data used by the mongts application.">
@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">imongr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,7 @@
 <h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
 </h2>
 <p>The easiest way to develop <code>imongr</code> is to fire up the <code>docker-compose.yml</code> file:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">docker-compose</span> up</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">docker</span> compose up</span></code></pre></div>
 <p>This file consist of seven different services: - three mariadb databases (<code>prod</code> at port <code>3331</code>, <code>verify</code> at port <code>3332</code>, and <code>qa</code> at port <code>3333</code>) - Adminer, a tool for database management, at port <a href="http://localhost:8888/" class="external-link">8888</a> - RStudio at port <a href="http://localhost:8787/" class="external-link">8787</a> - Code-server (vscode) at port <a href="http://localhost:8080/" class="external-link">8080</a> - The app, based on the <code>hnskde/imongr:latest</code> image, at port <a href="http://localhost:3838/" class="external-link">3838</a></p>
 <p>Open <a href="http://localhost:8787/" class="external-link">localhost:8787</a> with your favorite browser and login with <code>rstudio</code> and <code>password</code>. Go into the <code>imongr</code> folder, open <code>imongr.Rproj</code>, and press <strong>Yes</strong> to <em>Do you want to open the project ~/imongr?</em>. Start coding. If you prefer <em>vscode</em>, you can open <a href="http://localhost:8080/" class="external-link">localhost:8080</a> instead.</p>
 <p>Populate the databases by using Adminer, either through <code>imongr</code> (<em>Administrative verktøy</em> - <em>Adminer</em>) or through <a href="http://localhost:8888/" class="external-link">port 8888</a> (the password is the same as username/db/repository name).</p>
