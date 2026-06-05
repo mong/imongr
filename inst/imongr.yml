@@ -419,8 +419,6 @@ upload:
       En eller flere verdier i var er ikke numerisk
     natural_var: |-
       En eller flere verdier i var er ikke naturlige tall (inkludert 0)
-    overflow_var: |-
-      En eller flere verdier i var er større enn tilsvarende denominator
     numeric_denominator: |-
       En eller flere verdier i denominator er ikke numerisk
     natural_denominator: |-
