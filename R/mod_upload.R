@@ -212,7 +212,7 @@ upload_server <- function(id, registry_tracker, pool_verify) {
 
     output$warning_report <- shiny::renderText({
       rv$inv_data
-      warning_report_ui(pool_verify, input_data(), input$upload_file, input$registry)
+      warning_report_ui(ind(), conf, pool_verify, input_data(), input$upload_file, input$registry)
     })
 
     # The instructions

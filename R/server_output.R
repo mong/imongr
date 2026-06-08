@@ -138,10 +138,14 @@ error_report_ui <- function(pool, df, ind, upload_file, registry) {
 
 #' @rdname server_output
 #' @export
-warning_report_ui <- function(pool, df, upload_file, registry) {
+warning_report_ui <- function(ind, conf, pool, df, upload_file, registry) {
+  msg <- "<font color=\"#b5a633\">"
+
   if (is.null(upload_file) || is.null(registry)) {
+    # Nothing to test
     NULL
   } else {
+    # Test if the same file has been uploaded before
     df_delivery <- pool::dbGetQuery(pool, "SELECT md5_checksum, user_id, time FROM delivery ORDER BY time ASC")
     checksums <- df_delivery$md5_checksum
     current_checksum <- md5_checksum(df)
@@ -156,15 +160,33 @@ warning_report_ui <- function(pool, df, upload_file, registry) {
       msg_dates <- paste0(same_data_deliveries$time, " av ", same_data_deliveries$user_name) |>
         paste(collapse = "<br/>")
 
-      paste(
-        "<font color=\"#b5a633\">",
+      msg <- paste0(msg,
         "En identisk fil har blitt lastet opp tidligere:<br/>",
-        msg_dates, "</font>"
+        msg_dates
       )
-    } else {
-      NULL
+    }
+
+    # Test if all denominators are smaller or equal than the
+    # corresponding numerators
+    is_fraction <- "var" %in% names(df) && is.numeric(df$var) &&
+      "denominator" %in% names(df) && is.numeric(df$denominator) &&
+      "ind_id" %in% names(df)
+
+    if (is_fraction) {
+      # check only on indicator data that are true fractions
+      df <- filter_fraction_indicator(pool, df, conf, ind = ind)
+      if (dim(df)[1] < 1) {
+        return(list(fail = FALSE, report = ""))
+      }
+
+      if (!all(df$var <= df$denominator)) {
+        msg <- paste0(msg, "<br>", "En eller flere tellere er større enn tilsvarende nevner")
+      }
     }
   }
+  msg <- paste0(msg, "</font>")
+
+  return(msg)
 }
 
 #' @rdname server_output
