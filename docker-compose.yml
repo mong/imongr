@@ -43,6 +43,7 @@ services:
     depends_on:
       - db
     image: hnskde/mongr-dev-rstudio:2.2.1
+    platform: linux/amd64
     restart: "no"
     volumes:
       - ~/.ssh:/home/rstudio/.ssh
@@ -59,6 +60,7 @@ services:
     depends_on:
       - db
     image: hnskde/mongr-dev-code-server:2.2.1
+    platform: linux/amd64
     restart: "no"
     volumes:
       - ~/.ssh:/home/coder/.ssh
@@ -92,6 +94,7 @@ services:
     depends_on:
       - db
     image: hnskde/mong-api:develop
+    platform: linux/amd64
     restart: "no"
     environment:
       DB_HOST: db
