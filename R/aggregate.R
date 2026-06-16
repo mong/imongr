@@ -158,7 +158,7 @@ agg_dg <- function(aggs, ind) {
   # unique years represented by dgs in data, ascending order
   years <- dplyr::select(dg_data, "year") |>
     dplyr::distinct() |>
-    dplyr::arrange(year) |>
+    dplyr::arrange(.data$year) |>
     dplyr::pull()
 
   # dg might not be present for every year, hence start filling in oldest
