@@ -1,5 +1,19 @@
 # Changelog
 
+## imongr 2.11.1
+
+### What’s Changed
+
+- chore: Fiks for å kjøre docker compose på arm by
+  [@arnfinn](https://github.com/arnfinn) in
+  <https://github.com/mong/imongr/pull/626>
+- fix: sorter eksplisitt på år før dekningsgrad legges på agg-data by
+  [@Stein-Kato](https://github.com/Stein-Kato) in
+  <https://github.com/mong/imongr/pull/632>
+
+**Full Changelog**:
+<https://github.com/mong/imongr/compare/v2.11.0>…v2.11.1
+
 ## imongr 2.11.0
 
 ### What’s Changed
