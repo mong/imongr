@@ -141,6 +141,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
 
     shiny::observeEvent(input$update_val, {
       rv$ind_data$include <- input$include
+      print(input$dg_id)
       rv$ind_data$dg_id <- check_no_dg(input$dg_id)
       rv$ind_data$level_direction <- input$level_direction
       rv$ind_data$level_green <- input$level_green
@@ -261,7 +262,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     output$select_dg_id <- shiny::renderUI({
-      shiny::req(input$indicator_registry, rv$ind_data, !grepl("dg_", rv$ind_data$type))
+      shiny::req(input$indicator_registry, rv$ind_data)
 
       shiny::selectInput(
         ns("dg_id"), "Tilh\u00f8rende dekningsgradsindikator:",
