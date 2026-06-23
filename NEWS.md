@@ -1,3 +1,14 @@
+# imongr 2.11.2
+
+## What's Changed
+* Migrate Renovate config by @renovate[bot] in https://github.com/mong/imongr/pull/634
+* docker-compose: slett code-server-oppsett by @arnfinn in https://github.com/mong/imongr/pull/635
+* Update base image version to 4.2.1 by @arnfinn in https://github.com/mong/imongr/pull/627
+* fix: vis nedtrekksmeny for dekningsgradsindikator uansett by @Stein-Kato in https://github.com/mong/imongr/pull/643
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.11.1...v2.11.2
+
 # imongr 2.11.1
 
 ## What's Changed
