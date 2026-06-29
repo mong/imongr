@@ -272,7 +272,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
           pool_verify, paste0(
             "SELECT DISTINCT year FROM data WHERE ind_id = '", input$indicator, "';"
           )
-        )$year
+        )$year |>
+          sort(decreasing = FALSE)
         shiny::showModal(
           shiny::modalDialog(
             shiny::fluidRow(
