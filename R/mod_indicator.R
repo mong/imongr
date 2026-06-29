@@ -22,7 +22,11 @@ indicator_ui <- function(id) {
       shiny::sidebarPanel(
         shiny::uiOutput(ns("select_indicator_registry")),
         shiny::uiOutput(ns("select_indicator")),
-        shiny::uiOutput(ns("add_new_indicator")),
+        shiny::fluidRow(
+          shiny::column(4, shiny::uiOutput(ns("add_new_indicator"))),
+          shiny::column(4, shiny::uiOutput(ns("remove_indicator_data_btn"))),
+          shiny::column(4, shiny::uiOutput(ns("remove_indicator_completely_btn")))
+        ),
         shiny::hr(),
         shiny::uiOutput(ns("select_dg_id")),
         shiny::uiOutput(ns("set_include")),
@@ -193,6 +197,34 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       shinyjs::disable("new_ind_submit")
     })
 
+    shiny::observeEvent(input$remove_indicator_completely, {
+      is_in_project <- pool::dbGetQuery(
+        pool_verify,
+        paste0(
+          "SELECT EXISTS (SELECT 1 FROM project_ind WHERE ind_id = '",
+          input$indicator, "') AS exists_flag;"
+        )
+      )$exists_flag
+      if (is_in_project) {
+        shiny::showModal(
+          shiny::modalDialog(
+            shiny::tags$h3("Denne indikatoren er i bruk i ett eller flere prosjekter og kan ikke fjernes."),
+            footer = shiny::modalButton("Lukk")
+          )
+        )
+      } else {
+        shiny::showModal(
+          shiny::modalDialog(
+            shiny::tags$h3("Er du sikker p\u00e5 at du vil fjerne denne indikatoren?"),
+            footer = shiny::tagList(
+              shiny::actionButton(ns("remove_ind_submit"), "OK"),
+              shiny::modalButton("Avbryt")
+            )
+          )
+        )
+      }
+    })
+
     shiny::observeEvent(input$new_ind_name, {
       if (nchar(input$new_ind_name) > 0) {
         if (is.null(validateIndName(input$new_ind_name))) {
@@ -208,9 +240,99 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       rv$new_ind_name <- input$new_ind_name
     })
 
+    shiny::observeEvent(input$remove_ind_submit, {
+      shiny::removeModal()
+
+      remove_agg_query <- paste0("DELETE FROM agg_data WHERE ind_id = '", input$indicator, "';")
+      remove_ind_query <- paste0("DELETE FROM ind WHERE id = '", input$indicator, "';")
+
+      pool::dbExecute(pool, remove_agg_query)
+      pool::dbExecute(pool_verify, remove_agg_query)
+      pool::dbExecute(pool, remove_ind_query)
+      pool::dbExecute(pool_verify, remove_ind_query)
+
+      rv$new_ind_counter <- rv$new_ind_counter - 1
+    })
+
+    shiny::observeEvent(input$remove_indicator_data, {
+      is_in_project <- pool::dbGetQuery(
+        pool_verify, paste0(
+          "SELECT EXISTS (SELECT 1 FROM project_ind WHERE ind_id = '", input$indicator, "') AS exists_flag;"
+        )
+      )$exists_flag
+      if (is_in_project) {
+        shiny::showModal(
+          shiny::modalDialog(
+            shiny::tags$h3("Denne indikatoren er i bruk i ett eller flere prosjekter og kan ikke fjernes."),
+            footer = shiny::modalButton("Lukk")
+          )
+        )
+      } else {
+        years_with_data <- pool::dbGetQuery(
+          pool_verify, paste0(
+            "SELECT DISTINCT year FROM data WHERE ind_id = '", input$indicator, "';"
+          )
+        )$year |>
+          sort(decreasing = FALSE)
+        shiny::showModal(
+          shiny::modalDialog(
+            shiny::fluidRow(
+              shiny::column(6, shiny::radioButtons(ns("remove_year_type"), "Type:",
+                choices = c("Til og med", "Enkeltår")
+              )),
+              shiny::column(
+                6,
+                shiny::selectInput(ns("remove_year"), "Velg \u00e5r for data som skal fjernes:",
+                  choices = years_with_data
+                )
+              )
+            ),
+            shiny::selectInput(ns("remove_context"), "Velg kontekst som skal fjernes:",
+              choices = c("Alle", "caregiver", "resident")
+            ),
+            footer = shiny::tagList(
+              shiny::actionButton(ns("remove_ind_data_submit"), "Fjern data"),
+              shiny::modalButton("Avbryt")
+            )
+          )
+        )
+      }
+    })
+
+    shiny::observeEvent(input$remove_ind_data_submit, {
+      if (input$remove_year_type == "Til og med") {
+        year_condition <- paste0("year <= ", input$remove_year)
+      } else {
+        year_condition <- paste0("year = ", input$remove_year)
+      }
+      if (input$remove_context == "Alle") {
+        context_condition <- ""
+      } else {
+        context_condition <- paste0("AND context = '", input$remove_context, "'")
+      }
+      shiny::removeModal()
+
+      remove_agg_query <- paste0(
+        "DELETE FROM data WHERE ind_id = '",
+        input$indicator, "' AND ", year_condition, " ", context_condition, ";"
+      )
+      remove_data_query <- paste0(
+        "DELETE FROM agg_data WHERE ind_id = '", input$indicator,
+        "' AND ", year_condition, " ", context_condition, ";"
+      )
+
+      pool::dbExecute(pool, remove_agg_query)
+      pool::dbExecute(pool_verify, remove_agg_query)
+      pool::dbExecute(pool, remove_data_query)
+      pool::dbExecute(pool_verify, remove_data_query)
+      rv$new_ind_counter <- rv$new_ind_counter - 1
+    })
+
     shiny::observeEvent(rv$new_ind_name, {
-      query <- paste0("INSERT INTO ind (id, registry_id) VALUES ( '",
-                      rv$new_ind_name, "', '", input$indicator_registry, "');")
+      query <- paste0(
+        "INSERT INTO ind (id, registry_id) VALUES ( '",
+        rv$new_ind_name, "', '", input$indicator_registry, "');"
+      )
 
       new_ind_data <- data.frame(
         id = rv$new_ind_name,
@@ -273,6 +395,16 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     output$add_new_indicator <- shiny::renderUI({
       shiny::req(input$indicator_registry)
       shiny::actionButton(ns("new_indicator"), "Lag helt ny indikator")
+    })
+
+    output$remove_indicator_completely_btn <- shiny::renderUI({
+      shiny::req(input$indicator_registry)
+      shiny::actionButton(ns("remove_indicator_completely"), "Fjern indikator med all tilh\u00f8rende data")
+    })
+
+    output$remove_indicator_data_btn <- shiny::renderUI({
+      shiny::req(input$indicator_registry)
+      shiny::actionButton(ns("remove_indicator_data"), "Fjern data for denne indikatoren")
     })
 
     output$set_include <- shiny::renderUI({
