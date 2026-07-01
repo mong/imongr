@@ -1,16 +1,9 @@
-FROM hnskde/imongr-base-r:4.3.2
+FROM hnskde/imongr-base-r:4.4.0
 
 LABEL maintainer="Arnfinn Hykkerud Steindal <arnfinn.hykkerud.steindal@helse-nord.no>"
 LABEL no.mongr.cd.enable="true"
 
 WORKDIR /app/R
-
-# hadolint ignore=DL3018,DL3013
-RUN apk add --no-cache --update python3 py3-pip \
-    && apk add --no-cache --update --virtual=build gcc musl-dev python3-dev \
-    libffi-dev openssl-dev cargo make \
-    && pip3 install --no-cache-dir --prefer-binary --break-system-packages azure-cli==2.63.0 \
-    && apk del build
 
 # COPY package to /app/R/pakke
 COPY . pakke
