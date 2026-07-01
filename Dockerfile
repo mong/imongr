@@ -1,4 +1,4 @@
-FROM hnskde/imongr-base-r:4.2.1
+FROM hnskde/imongr-base-r:4.3.2
 
 LABEL maintainer="Arnfinn Hykkerud Steindal <arnfinn.hykkerud.steindal@helse-nord.no>"
 LABEL no.mongr.cd.enable="true"
