@@ -25,30 +25,24 @@ jobs:
           dockerfile: Dockerfile
   push_to_registries:
     name: Push Docker image to docker hub
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v7
-      - name: R setup
-        uses: r-lib/actions/setup-r@v2
-      - name: Build package
-        run: R CMD build .
-      - name: Build and push Docker image to docker hub
-        uses: docker/github-builder/.github/workflows/build.yml@v1
-        with:
-          output: image
-          push: ${{ github.event_name != 'pull_request' }}
-          platforms: linux/amd64,linux/arm64
-          context: .
-          cache: true
-          meta-images: hnskde/imongr-base-r
-          meta-tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-          secrets:
-            registry-auths: |
-              - registry: docker.io
-                username: ${{ secrets.DOCKERHUB_USERNAME }}
-                password: ${{ secrets.DOCKERHUB_TOKEN }}
+    uses: docker/github-builder/.github/workflows/build.yml@v1
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      output: image
+      push: ${{ github.event_name != 'pull_request' }}
+      platforms: linux/amd64,linux/arm64
+      context: .
+      cache: true
+      meta-images: hnskde/imongr
+      meta-tags: |
+        type=ref,event=branch
+        type=ref,event=pr
+        type=semver,pattern={{version}}
+        type=semver,pattern={{major}}.{{minor}}
+    secrets:
+      registry-auths: |
+        - registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
