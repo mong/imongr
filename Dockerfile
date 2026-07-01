@@ -1,11 +1,9 @@
-FROM hnskde/imongr-base-r:4.2.1
+FROM hnskde/imongr-base-r:4.3.2
 
 LABEL maintainer="Arnfinn Hykkerud Steindal <arnfinn.hykkerud.steindal@helse-nord.no>"
 LABEL no.mongr.cd.enable="true"
 
 WORKDIR /app/R
-
-RUN installr -d shinyvalidate
 
 # hadolint ignore=DL3018,DL3013
 RUN apk add --no-cache --update python3 py3-pip \
@@ -14,13 +12,12 @@ RUN apk add --no-cache --update python3 py3-pip \
     && pip3 install --no-cache-dir --prefer-binary --break-system-packages azure-cli==2.63.0 \
     && apk del build
 
-## add package tarball
-# hadolint ignore=DL3010
-COPY *.tar.gz .
+# COPY package to /app/R/pakke
+COPY . pakke
 
 ## install package, clean up and make sure sufficient pandoc tools exists in base image
-RUN R CMD INSTALL --clean ./*.tar.gz \
-    && rm ./*.tar.gz \
+RUN R CMD INSTALL --clean ./pakke/. \
+    && rm -rf ./pakke \
     && R -e "rmarkdown::render(input = system.file('terms.Rmd', package = 'imongr'), output_format = 'html_fragment')"
 
 
