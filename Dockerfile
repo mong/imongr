@@ -1,11 +1,9 @@
-FROM hnskde/imongr-base-r:4.2.1
+FROM hnskde/imongr-base-r:4.3.1
 
 LABEL maintainer="Arnfinn Hykkerud Steindal <arnfinn.hykkerud.steindal@helse-nord.no>"
 LABEL no.mongr.cd.enable="true"
 
 WORKDIR /app/R
-
-RUN installr -d shinyvalidate
 
 # hadolint ignore=DL3018,DL3013
 RUN apk add --no-cache --update python3 py3-pip \
