@@ -42,10 +42,10 @@ Imports:
     shinyvalidate,
     tibble,
     yaml
-RoxygenNote: 7.3.2
 Suggests: 
     testthat (>= 2.1.0),
     covr,
     lintr
 URL: https://github.com/mong/imongr
 BugReports: https://github.com/mong/imongr/issues
+Config/roxygen2/version: 8.0.0

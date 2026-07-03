@@ -106,7 +106,7 @@ test_that("a user id can be provided", {
 test_that("all users data can be provided", {
   check_db()
   expect_equal(class(get_all_user_data(pool)), "data.frame")
-  expect_equal(class(get_user_registries(pool)), "character")
+  expect_equal(class(get_user_registries(pool)), "data.frame")
   expect_equal(class(get_user_deliveries(pool)), "data.frame")
 })
 

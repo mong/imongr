@@ -39,6 +39,9 @@
 \alias{get_ind_agg_data}
 \alias{get_ind_units}
 \alias{get_ind_limits}
+\alias{get_registry_notices}
+\alias{get_all_notices}
+\alias{get_notice_events}
 \title{Retreiv data from imongr database}
 \usage{
 get_all_user_data(pool)
@@ -48,8 +51,6 @@ get_user_data(pool)
 get_user_id(pool)
 
 get_user_registries(pool)
-
-get_user_registry_select(pool)
 
 get_user_deliveries(pool)
 
@@ -107,11 +108,17 @@ get_project_hospitals(pool, project)
 
 get_publications(pool, registry)
 
-get_ind_agg_data(pool, ind_id)
+get_ind_agg_data(pool, ind_id, context)
 
 get_ind_units(pool, ind_id)
 
 get_ind_limits(pool, ind_id)
+
+get_registry_notices(pool, registry_id)
+
+get_all_notices(pool)
+
+get_notice_events(pool, notice_id)
 }
 \arguments{
 \item{pool}{a database connection pool object}

@@ -84,7 +84,8 @@ get_user_registries <- function(pool) {
   if (valid_user) {
     query <- paste0("
 SELECT
-  r.name
+  r.id,
+  r.short_name
 FROM
   user_registry ur
 LEFT JOIN
@@ -94,33 +95,11 @@ ON
 WHERE
   ur.user_id=", get_user_id(pool), ";")
 
-    pool::dbGetQuery(pool, query)[, 1]
+    pool::dbGetQuery(pool, query)
   } else {
     NULL
   }
 }
-
-
-#' @rdname db_get
-#' @export
-get_user_registry_select <- function(pool) {
-  query <- paste0("
-SELECT
-  r.name AS name,
-  r.id AS value
-FROM
-  user_registry ur
-LEFT JOIN
-  registry r
-ON
-  ur.registry_id=r.id
-WHERE
-  ur.user_id=", get_user_id(pool), "
-ORDER BY name;")
-
-  tibble::deframe(pool::dbGetQuery(pool, query))
-}
-
 
 #' @rdname db_get
 #' @export

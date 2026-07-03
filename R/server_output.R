@@ -37,16 +37,24 @@ select_registry_ui <- function(pool, conf, input_id, context,
   if (length(user_groups) > 0 && length(intersect(privileged_access, user_groups)) > 0) {
     regs <- get_table(pool, "registry") |>
       dplyr::transmute(.data$short_name, .data$id) |>
+      dplyr::arrange(.data$short_name) |>
       tibble::deframe()
     if (!is.null(pool0)) {
       regs0 <- get_table(pool0, "registry") |>
         dplyr::transmute(.data$short_name, .data$id) |>
+        dplyr::arrange(.data$short_name) |>
         tibble::deframe()
     }
   } else {
-    regs <- get_user_registry_select(pool)
+    regs <- get_user_registries(pool) |>
+      dplyr::transmute(.data$short_name, .data$id) |>
+      dplyr::arrange(.data$short_name) |>
+      tibble::deframe()
     if (!is.null(pool0)) {
-      regs0 <- get_user_registry_select(pool0)
+      regs0 <- get_user_registries(pool0) |>
+        dplyr::transmute(.data$short_name, .data$id) |>
+        dplyr::arrange(.data$short_name) |>
+        tibble::deframe()
     }
   }
 
