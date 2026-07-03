@@ -44,9 +44,13 @@ select_registry_ui <- function(pool, conf, input_id, context,
         tibble::deframe()
     }
   } else {
-    regs <- get_user_registry_select(pool)
+    regs <- get_user_registries(pool) |>
+      dplyr::transmute(.data$short_name, .data$id) |>
+      tibble::deframe()
     if (!is.null(pool0)) {
-      regs0 <- get_user_registry_select(pool0)
+      regs0 <- get_user_registries(pool0) |>
+        dplyr::transmute(.data$short_name, .data$id) |>
+        tibble::deframe()
     }
   }
 
