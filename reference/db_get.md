@@ -20,8 +20,6 @@ get_user_id(pool)
 
 get_user_registries(pool)
 
-get_user_registry_select(pool)
-
 get_user_deliveries(pool)
 
 get_registry_data(pool, registry)
@@ -78,11 +76,17 @@ get_project_hospitals(pool, project)
 
 get_publications(pool, registry)
 
-get_ind_agg_data(pool, ind_id)
+get_ind_agg_data(pool, ind_id, context)
 
 get_ind_units(pool, ind_id)
 
 get_ind_limits(pool, ind_id)
+
+get_registry_notices(pool, registry_id)
+
+get_all_notices(pool)
+
+get_notice_events(pool, notice_id)
 ```
 
 ## Arguments

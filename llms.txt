@@ -113,7 +113,6 @@ Retrieve data from database
 
 - [`get_all_user_data()`](db_get.md) [`get_user_data()`](db_get.md)
   [`get_user_id()`](db_get.md) [`get_user_registries()`](db_get.md)
-  [`get_user_registry_select()`](db_get.md)
   [`get_user_deliveries()`](db_get.md)
   [`get_registry_data()`](db_get.md)
   [`get_indicators_registry()`](db_get.md)
@@ -134,8 +133,9 @@ Retrieve data from database
   [`get_registry_projects()`](db_get.md)
   [`get_project_hospitals()`](db_get.md)
   [`get_publications()`](db_get.md) [`get_ind_agg_data()`](db_get.md)
-  [`get_ind_units()`](db_get.md) [`get_ind_limits()`](db_get.md) :
-  Retreiv data from imongr database
+  [`get_ind_units()`](db_get.md) [`get_ind_limits()`](db_get.md)
+  [`get_registry_notices()`](db_get.md) [`get_all_notices()`](db_get.md)
+  [`get_notice_events()`](db_get.md) : Retreiv data from imongr database
 
 ## Data operations
 
@@ -257,6 +257,8 @@ Application server, user interface, modules and start-up
 - [`publication_ui()`](mod_publication.md)
   [`publication_server()`](mod_publication.md) : Shiny module providing
   GUI and server logic for the publication tab
+- [`notice_ui()`](mod_notice.md) [`notice_server()`](mod_notice.md) :
+  Shiny module providing GUI and server logic for the notice tab
 
 ## Data
 

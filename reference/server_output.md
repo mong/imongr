@@ -19,7 +19,7 @@ submit_ui(input_id, conf, pool, upload_file, registry, df, ind, context)
 
 error_report_ui(pool, df, ind, upload_file, registry)
 
-warning_report_ui(pool, df, upload_file, registry)
+warning_report_ui(ind, conf, pool, df, upload_file, registry)
 
 upload_sample_text_ui(pool, conf, upload_file, registry, indicators)
 

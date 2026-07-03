@@ -1,5 +1,42 @@
 # Changelog
 
+## imongr 2.12.0
+
+### What’s Changed
+
+- Update actions/checkout action to v7 by
+  [@renovate](https://github.com/renovate)\[bot\] in
+  <https://github.com/mong/imongr/pull/638>
+- sletting av indikatordata by
+  [@petterlinberg](https://github.com/petterlinberg) in
+  <https://github.com/mong/imongr/pull/637>
+- Oppdater til imongr-base-r: 4.3.2 by
+  [@arnfinn](https://github.com/arnfinn) in
+  <https://github.com/mong/imongr/pull/646>
+- Bruk RStudio-image fra Rapporteket by
+  [@arnfinn](https://github.com/arnfinn) in
+  <https://github.com/mong/imongr/pull/636>
+- docker: dropp bygging av pakke utenfor by
+  [@arnfinn](https://github.com/arnfinn) in
+  <https://github.com/mong/imongr/pull/648>
+- Bruk docker/github-builder i docker action by
+  [@arnfinn](https://github.com/arnfinn) in
+  <https://github.com/mong/imongr/pull/647>
+- Oppdater til imongr-base-r:4.4.0 by
+  [@arnfinn](https://github.com/arnfinn) in
+  <https://github.com/mong/imongr/pull/649>
+- fix: vis kortnavn på registre istedenfor id-navn by
+  [@Stein-Kato](https://github.com/Stein-Kato) in
+  <https://github.com/mong/imongr/pull/650>
+
+### New Contributors
+
+- @petterlinberg made their first contribution in
+  <https://github.com/mong/imongr/pull/637>
+
+**Full Changelog**:
+<https://github.com/mong/imongr/compare/v2.11.2>…v2.12.0
+
 ## imongr 2.11.2
 
 ### What’s Changed
