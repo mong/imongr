@@ -41,15 +41,18 @@ select_registry_ui <- function(pool, conf, input_id, context,
     if (!is.null(pool0)) {
       regs0 <- get_table(pool0, "registry") |>
         dplyr::transmute(.data$short_name, .data$id) |>
+        dplyr::arrange(.data$short_name) |>
         tibble::deframe()
     }
   } else {
     regs <- get_user_registries(pool) |>
       dplyr::transmute(.data$short_name, .data$id) |>
+      dplyr::arrange(.data$short_name) |>
       tibble::deframe()
     if (!is.null(pool0)) {
       regs0 <- get_user_registries(pool0) |>
         dplyr::transmute(.data$short_name, .data$id) |>
+        dplyr::arrange(.data$short_name) |>
         tibble::deframe()
     }
   }
