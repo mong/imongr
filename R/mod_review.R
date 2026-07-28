@@ -245,7 +245,8 @@ review_server <- function(id, registry_tracker, pool) {
     )
 
     ########## HARDCODE EDIT LOCK ###########
-    disallow_edits <- TRUE
+    default_year <- 2025
+    disallow_edits <- FALSE
     ########## HARDCODE EDIT LOCK ###########
 
     verdict <- shiny::reactive({
@@ -308,7 +309,7 @@ review_server <- function(id, registry_tracker, pool) {
         ns("selected_year"),
         "Velg \u00e5r",
         c(2013L : (as.numeric(format(Sys.Date(), "%Y")) - 1)),
-        selected = 2024
+        selected = default_year
       )
     })
 
