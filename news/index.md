@@ -1,5 +1,16 @@
 # Changelog
 
+## imongr 2.12.1
+
+### What’s Changed
+
+- chore: åpne for redigering av EG-data og sett nytt år by
+  [@Stein-Kato](https://github.com/Stein-Kato) in
+  <https://github.com/mong/imongr/pull/652>
+
+**Full Changelog**:
+<https://github.com/mong/imongr/compare/v2.12.0>…v2.12.1
+
 ## imongr 2.12.0
 
 ### What’s Changed
