@@ -21,33 +21,42 @@ indicator_ui <- function(id) {
     shiny::sidebarLayout(
       shiny::sidebarPanel(
         shiny::uiOutput(ns("select_indicator_registry")),
-        shiny::uiOutput(ns("select_indicator")),
-        shiny::fluidRow(
-          shiny::column(4, shiny::uiOutput(ns("add_new_indicator"))),
-          shiny::column(4, shiny::uiOutput(ns("remove_indicator_data_btn"))),
-          shiny::column(4, shiny::uiOutput(ns("remove_indicator_completely_btn")))
-        ),
-        shiny::hr(),
-        shiny::uiOutput(ns("select_dg_id")),
-        shiny::uiOutput(ns("set_include")),
-        shiny::uiOutput(ns("set_level_direction")),
-        shiny::uiOutput(ns("set_level_green")),
-        shiny::uiOutput(ns("set_level_yellow")),
-        shiny::uiOutput(ns("set_min_denominator")),
-        shiny::uiOutput(ns("set_type")),
-        shiny::uiOutput(ns("set_format")),
-        shiny::uiOutput(ns("set_digits")),
-        shiny::uiOutput(ns("update_indicator_val")),
-        shiny::uiOutput(ns("message"))
+        shiny::tabsetPanel(
+          id = ns("indicator_tabs"),
+          selected = "Indikator",
+          shiny::tabPanel(
+            value = "Indikator",
+            title = "Lag eller endre indikator",
+            shiny::br(),
+            shiny::uiOutput(ns("select_indicator")),
+            shiny::fluidRow(
+              shiny::column(4, shiny::uiOutput(ns("add_new_indicator"))),
+              shiny::column(4, shiny::uiOutput(ns("remove_indicator_data_btn"))),
+              shiny::column(4, shiny::uiOutput(ns("remove_indicator_completely_btn")))
+            ),
+            shiny::hr(),
+            shiny::uiOutput(ns("select_dg_id")),
+            shiny::uiOutput(ns("set_include")),
+            shiny::uiOutput(ns("set_level_direction")),
+            shiny::uiOutput(ns("set_level_green")),
+            shiny::uiOutput(ns("set_level_yellow")),
+            shiny::uiOutput(ns("set_min_denominator")),
+            shiny::uiOutput(ns("set_type")),
+            shiny::uiOutput(ns("set_format")),
+            shiny::uiOutput(ns("set_digits")),
+            shiny::uiOutput(ns("update_indicator_val")),
+            shiny::uiOutput(ns("message"))
+          ),
+          shiny::tabPanel(
+            value = "Sortering",
+            title = "Sortere indikatorer",
+            shiny::br(),
+            shiny::uiOutput(ns("sorting_info"))
+          )
+        )
       ),
       shiny::mainPanel(
-        shiny::uiOutput(ns("edit_ind_title")),
-        shiny::uiOutput(ns("title_oversize")),
-        shiny::uiOutput(ns("edit_ind_short")),
-        shiny::uiOutput(ns("short_oversize")),
-        shiny::uiOutput(ns("edit_ind_long")),
-        shiny::uiOutput(ns("long_oversize")),
-        shiny::uiOutput(ns("update_indicator_txt"))
+        shiny::uiOutput(ns("indicator_main_panel"))
       )
     )
   )
@@ -566,6 +575,78 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
 
     output$update_indicator_txt <- shiny::renderUI({
       update_indicator_txt_check(input, conf, ns, rv)
+    })
+
+
+    output$sorting_info <- shiny::renderUI({
+      shiny::req(input$indicator_registry)
+      shiny::tagList(
+        shiny::tags$p(
+          "Sorter indikatorene i den rekkef\u00f8lgen du \u00f8nsker at de skal vises p\u00e5 nettsiden."
+        ),
+        shiny::tags$p(
+          "Husk \u00e5 lagre sorteringen n\u00e5r du er ferdig."
+        )
+      )
+    })
+
+    sorting_indicators <- shiny::reactive({
+      shiny::req(input$indicator_registry)
+      indicators <- get_registry_ind(pool_verify, input$indicator_registry)
+      indicators <- indicators[indicators$include == 1, ]
+      indicators <- indicators[order(is.na(indicators$name), indicators$name, indicators$id), ]
+
+      stats::setNames(indicators$title, indicators$id)
+    })
+
+    output$indicator_main_panel <- shiny::renderUI({
+      shiny::req(input$indicator_tabs)
+
+      if (identical(input$indicator_tabs, "Sortering")) {
+        shiny::tagList(
+          shiny::tags$h3("Sorter indikatorer"),
+          shiny::tags$p(
+            "Dra og slipp indikatorene i den rekkef\u00f8lgen du \u00f8nsker."
+          ),
+          sortable::rank_list(
+            text = "Indikatorer",
+            labels = sorting_indicators(),
+            input_id = ns("sorted_indicators")
+          ),
+          shiny::actionButton(ns("save_sorting"), "Lagre sortering")
+        )
+      } else {
+        shiny::tagList(
+          shiny::uiOutput(ns("edit_ind_title")),
+          shiny::uiOutput(ns("title_oversize")),
+          shiny::uiOutput(ns("edit_ind_short")),
+          shiny::uiOutput(ns("short_oversize")),
+          shiny::uiOutput(ns("edit_ind_long")),
+          shiny::uiOutput(ns("long_oversize")),
+          shiny::uiOutput(ns("update_indicator_txt"))
+        )
+      }
+    })
+
+    shiny::observeEvent(input$save_sorting, {
+      shiny::req(input$sorted_indicators)
+
+      new_order <- input$sorted_indicators
+
+      escape_sql <- function(x) {
+        gsub("'", "''", x, fixed = TRUE)
+      }
+
+      new_names <- letters[seq_along(new_order)]
+
+      update_name_query <- paste0(
+        "UPDATE ind SET name = CASE id ",
+        paste0("WHEN '", new_order, "' THEN '", new_names, "'", collapse = " "),
+        " END WHERE id IN ('", paste(escape_sql(new_order), collapse = "', '"), "');"
+      )
+      pool::dbExecute(pool_verify, update_name_query)
+      pool::dbExecute(pool, update_name_query)
+      shiny::showNotification("Sortering lagret.", type = "message")
     })
 
     return(rv_return)
