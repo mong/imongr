@@ -40,6 +40,7 @@ Imports:
     shinycssloaders,
     shinyjs,
     shinyvalidate,
+    sortable,
     tibble,
     yaml
 Suggests: 
