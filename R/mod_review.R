@@ -143,7 +143,7 @@ toggle_button <- function(input, session, rv, event, requirements) {
 
     toggled <- rv$evaluation[requirements]
 
-    if (all(toggled) | all(!toggled)) {
+    if (all(toggled) || all(!toggled)) {
       lapply(X = requirements, FUN = function(i) {
         col_name <- paste0("requirement_", i)
         shiny::updateCheckboxInput(session, col_name, value = !(input[[col_name]]))
