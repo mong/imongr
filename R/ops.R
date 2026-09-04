@@ -539,7 +539,54 @@ WHERE
 
   message("Ferdig\n")
 }
+#' Update the description text from the main panel input
+#' in the indicator tab
+#'
+#' @rdname ops
+#' @noRd
+update_nordic_ind_text <- function(pool, df) {
 
+  message("Oppdaterer nordiske indikatortekster")
+
+  exists_query <- "
+SELECT EXISTS(
+  SELECT 1 FROM registry_nordic WHERE ind_id = ? AND language = ?
+) AS exists_flag;"
+  insert_query <- "
+INSERT INTO registry_nordic (ind_id, title, language, description)
+VALUES (?, ?, ?, ?);"
+  update_query <- "
+UPDATE registry_nordic
+SET title = ?, description = ?
+WHERE ind_id = ? AND language = ?;"
+
+  con <- pool::poolCheckout(pool)
+  on.exit(pool::poolReturn(con), add = TRUE)
+
+  DBI::dbWithTransaction(con, {
+    for (row_index in seq_len(nrow(df))) {
+      row <- df[row_index, ]
+      exists <- DBI::dbGetQuery(
+        con, exists_query,
+        params = list(row$ind_id, row$language)
+      )$exists_flag
+
+      if (exists) {
+        DBI::dbExecute(
+          con, update_query,
+          params = list(row$title, row$description, row$ind_id, row$language)
+        )
+      } else {
+        DBI::dbExecute(
+          con, insert_query,
+          params = list(row$ind_id, row$title, row$language, row$description)
+        )
+      }
+    }
+  })
+
+  message("Ferdig\n")
+}
 #' Updatet the description text from the main panel input
 #' in the project tab
 #'

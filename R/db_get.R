@@ -256,7 +256,30 @@ WHERE
   pool::dbGetQuery(pool, query)$full_name
 }
 
+#' @rdname db_get
+#' @export
+get_registry_nordic_state <- function(pool, registry) {
+  if (missing(registry) || paste(registry, collapse = "") == "") {
+    return(character())
+  }
 
+  query <- paste0("SELECT nordic FROM registry WHERE id IN (", paste(registry, collapse = ", "), ");")
+  pool::dbGetQuery(pool, query)$nordic
+}
+
+#' @rdname db_get
+#' @export
+get_nordic_ind_text <- function(pool, indicator) {
+  query <- "
+SELECT
+  language,
+  title,
+  description
+FROM registry_nordic
+WHERE ind_id = ?;"
+
+  pool::dbGetQuery(pool, query, params = list(indicator))
+}
 #' @rdname db_get
 #' @export
 get_org_name <- function(pool, orgnr) {
