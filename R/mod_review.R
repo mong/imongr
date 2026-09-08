@@ -493,7 +493,7 @@ review_server <- function(id, registry_tracker, pool) {
     output$evaluation_text <- shiny::renderUI({
       shiny::textAreaInput(
         ns("evaluation_text"), "Vurdering av \u00e5rsrapporten",
-        value = "", width = "90%", rows = 16
+        value = "", width = "90%", rows = 50
       ) |>
         bslib::tooltip(
           shiny::HTML("
