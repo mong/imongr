@@ -1,3 +1,12 @@
+## What's Changed
+* lint by @petterlinberg in https://github.com/mong/imongr/pull/657
+* Update hnskde/imongr-base-r Docker tag to v4.5.0 by @renovate[bot] in https://github.com/mong/imongr/pull/656
+* Update hadolint/hadolint-action action to v3.4.0 by @renovate[bot] in https://github.com/mong/imongr/pull/653
+* chore: lås Ekspertgruppens vurdering by @Stein-Kato in https://github.com/mong/imongr/pull/668
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.12.1...v2.12.2
+
 # imongr 2.12.1
 
 ## What's Changed
