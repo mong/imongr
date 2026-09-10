@@ -54,7 +54,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     ns <- session$ns
     shinyjs::useShinyjs()
     conf <- get_config()
-    
+
     validateIndName <- function(x) {
       existing_ind_ids <- pool::dbGetQuery(pool_verify, "SELECT id FROM ind")$id
 
@@ -686,18 +686,22 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
           nchar(input[[paste0("ind_long_", language_code)]] %||% "") > 2047
       }, logical(1)))
 
-      if (missing_descriptions > 0) {
-        shiny::tags$p(sprintf("%d språk mangler beskrivelse", missing_descriptions))
-      } else if (all(nzchar(trimws(required_text$title))) &&
-        !has_oversize_text) {
-        shiny::actionButton(
-          ns("update_nordic_txt"),
-          "Oppdater tekster",
-          style = if (nordic_changed()) {
-            conf$profile$action_button_style
-          } else {
-            "background-color: #B9B9B9; border-color: #B9B9B9; color: white;"
-          }
+      if (!has_oversize_text) {
+        missing_text <- if (missing_descriptions > 0) {
+          shiny::tags$p(sprintf("%d språk mangler beskrivelse", missing_descriptions))
+        }
+
+        shiny::tagList(
+          missing_text,
+          shiny::actionButton(
+            ns("update_nordic_txt"),
+            "Oppdater tekster",
+            style = if (nordic_changed()) {
+              conf$profile$action_button_style
+            } else {
+              "background-color: #B9B9B9; border-color: #B9B9B9; color: white;"
+            }
+          )
         )
       }
     })
