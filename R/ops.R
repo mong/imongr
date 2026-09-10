@@ -550,13 +550,13 @@ update_nordic_ind_text <- function(pool, df) {
 
   exists_query <- "
 SELECT EXISTS(
-  SELECT 1 FROM registry_nordic WHERE ind_id = ? AND language = ?
+  SELECT 1 FROM ind_description WHERE ind_id = ? AND language = ?
 ) AS exists_flag;"
   insert_query <- "
-INSERT INTO registry_nordic (ind_id, title, language, description)
+INSERT INTO ind_description (ind_id, title, language, description)
 VALUES (?, ?, ?, ?);"
   update_query <- "
-UPDATE registry_nordic
+UPDATE ind_description
 SET title = ?, description = ?
 WHERE ind_id = ? AND language = ?;"
 

@@ -186,7 +186,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
     output$indicator_text_editor <- shiny::renderUI({
       shiny::req(input$indicator_registry)
-      nordic_state <- get_registry_nordic_state(pool_verify, input$indicator_registry)
+      nordic_state <- get_nordic_state(pool_verify, input$indicator_registry)
 
       if (isTRUE(nordic_state == 0)) {
         shiny::tagList(

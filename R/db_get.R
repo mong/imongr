@@ -258,7 +258,7 @@ WHERE
 
 #' @rdname db_get
 #' @export
-get_registry_nordic_state <- function(pool, registry) {
+get_nordic_state <- function(pool, registry) {
   if (missing(registry) || paste(registry, collapse = "") == "") {
     return(character())
   }
@@ -275,7 +275,7 @@ SELECT
   language,
   title,
   description
-FROM registry_nordic
+FROM ind_description
 WHERE ind_id = ?;"
 
   pool::dbGetQuery(pool, query, params = list(indicator))

@@ -64,13 +64,13 @@ CREATE TABLE IF NOT EXISTS `registry` (
   UNIQUE KEY `unique_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
-CREATE TABLE IF NOT EXISTS `nordic_ind_description` (
+CREATE TABLE IF NOT EXISTS `ind_description` (
   `ind_id` varchar(63) NOT NULL,
   `language` varchar(63) NOT NULL,
   `title` varchar(255) DEFAULT NULL,
   `description` varchar(2047) DEFAULT NULL,
   PRIMARY KEY (`ind_id`, `language`),
-  CONSTRAINT `fk_nordic_ind_description_ind`
+  CONSTRAINT `fk_ind_description_ind`
     FOREIGN KEY (`ind_id`) REFERENCES `ind` (`id`)
     ON UPDATE CASCADE
     ON DELETE CASCADE

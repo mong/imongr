@@ -27,7 +27,7 @@
 \alias{get_registry_ind}
 \alias{get_registry_short_name}
 \alias{get_registry_full_name}
-\alias{get_registry_nordic_state}
+\alias{get_nordic_state}
 \alias{get_nordic_ind_text}
 \alias{get_hospitals}
 \alias{get_hfs}
@@ -68,7 +68,7 @@ get_registry_short_name(pool, registry, full_name = FALSE, short_name = FALSE)
 
 get_registry_full_name(pool, registry, full_name = FALSE, short_name = FALSE)
 
-get_registry_nordic_state(pool, registry)
+get_nordic_state(pool, registry)
 
 get_nordic_ind_text(pool, indicator)
 
