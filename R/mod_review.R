@@ -246,7 +246,7 @@ review_server <- function(id, registry_tracker, pool) {
 
     ########## HARDCODE EDIT LOCK ###########
     default_year <- 2025
-    disallow_edits <- FALSE
+    disallow_edits <- TRUE
     ########## HARDCODE EDIT LOCK ###########
 
     verdict <- shiny::reactive({
@@ -493,7 +493,7 @@ review_server <- function(id, registry_tracker, pool) {
     output$evaluation_text <- shiny::renderUI({
       shiny::textAreaInput(
         ns("evaluation_text"), "Vurdering av \u00e5rsrapporten",
-        value = "", width = "90%", rows = 16
+        value = "", width = "90%", rows = 50
       ) |>
         bslib::tooltip(
           shiny::HTML("
