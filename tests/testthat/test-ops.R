@@ -189,6 +189,29 @@ test_that("indicator texts can be updated", {
   expect_equal(length(res$messages), 2)
 })
 
+test_that("nordic indicator texts can be updated for multiple languages", {
+  check_db()
+  text <- data.frame(
+    ind_id = "norgast_dummy",
+    language = c("no", "da"),
+    title = c("Norsk tittel", "Dansk titel"),
+    description = c("Norsk tekst", "Dansk tekst"),
+    stringsAsFactors = FALSE
+  )
+
+  res <- testthat::evaluate_promise(update_nordic_ind_text(pool, text))
+  expect_equal(length(res$messages), 2)
+
+  stored_text <- get_nordic_ind_text(pool, "norgast_dummy")
+  expect_equal(nrow(stored_text), 2)
+  expect_equal(sort(stored_text$language), c("da", "no"))
+
+  text$title[text$language == "no"] <- "Oppdatert norsk tittel"
+  update_nordic_ind_text(pool, text)
+  stored_text <- get_nordic_ind_text(pool, "norgast_dummy")
+  expect_equal(stored_text$title[stored_text$language == "no"], "Oppdatert norsk tittel")
+})
+
 test_that("indicator values can be updated", {
   check_db()
   res <- testthat::evaluate_promise(

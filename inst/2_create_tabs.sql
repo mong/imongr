@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS `registry` (
   `short_name` varchar(128) DEFAULT NULL,
   `RHF` varchar(128) DEFAULT NULL,
   `first_year` smallint(5) DEFAULT NULL,
+  `nordic` smallint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
@@ -119,6 +120,18 @@ CREATE TABLE IF NOT EXISTS `ind` (
   CONSTRAINT `inconsistent_level_values`
     CHECK (`level_direction` = 1 and `level_green` >= `level_yellow` or
            `level_direction` = 0 and `level_green` <= `level_yellow`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+CREATE TABLE IF NOT EXISTS `ind_description` (
+  `ind_id` varchar(63) NOT NULL,
+  `language` varchar(63) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `description` varchar(2047) DEFAULT NULL,
+  PRIMARY KEY (`ind_id`, `language`),
+  CONSTRAINT `fk_ind_description_ind`
+    FOREIGN KEY (`ind_id`) REFERENCES `ind` (`id`)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `user` (

@@ -93,6 +93,89 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
 
     rv_return <- shiny::reactiveValues()
 
+    nordic_languages <- c(
+      no = "Norsk",
+      dk = "Dansk",
+      se = "Svensk",
+      fi = "Finsk",
+      is = "Islandsk",
+      en = "Engelsk"
+    )
+    required_nordic_languages <- names(nordic_languages)
+
+    nordic_existing_text <- shiny::reactive({
+      shiny::req(input$indicator)
+      get_nordic_ind_text(pool_verify, input$indicator)
+    })
+
+    rv_nordic <- shiny::reactive({
+      data.frame(
+        ind_id = input$indicator,
+        language = names(nordic_languages),
+        title = vapply(names(nordic_languages), function(language_code) {
+          input[[paste0("ind_title_", language_code)]] %||% ""
+        }, character(1)),
+        description = vapply(names(nordic_languages), function(language_code) {
+          input[[paste0("ind_long_", language_code)]] %||% ""
+        }, character(1)),
+        row.names = NULL
+      )
+    })
+
+    nordic_saved <- shiny::reactiveVal(NULL)
+
+    shiny::observeEvent(nordic_existing_text(), {
+      nordic_saved(nordic_existing_text())
+    })
+
+    nordic_changed <- shiny::reactive({
+      saved <- nordic_saved()
+      current <- rv_nordic()
+      !identical(
+        paste(current$title, current$description),
+        vapply(current$language, function(language_code) {
+          saved_row <- saved[saved$language == language_code, ]
+          if (nrow(saved_row) == 0) " " else paste(saved_row$title, saved_row$description)
+        }, character(1), USE.NAMES = FALSE)
+      )
+    })
+
+    nordic_text_editor <- function(language_code) {
+      existing_text <- nordic_existing_text()
+      existing_row <- existing_text[existing_text$language == language_code, ]
+      title <- if (nrow(existing_row)) existing_row$title[[1]] else ""
+      description <- if (nrow(existing_row)) existing_row$description[[1]] else ""
+
+      shiny::tagList(
+        shiny::textAreaInput(
+          ns(paste0("ind_title_", language_code)),
+          "Indikatortittel (maks 255 tegn)",
+          value = title,
+          width = "90%", rows = 2
+        ),
+        shiny::uiOutput(ns(paste0("title_oversize_", language_code))),
+        shiny::textAreaInput(
+          ns(paste0("ind_long_", language_code)),
+          "Indikatorbeskrivelse (maks 2047 tegn)",
+          value = description,
+          width = "90%", rows = 16
+        ),
+        shiny::uiOutput(ns(paste0("long_oversize_", language_code)))
+      )
+    }
+
+    for (language_code in names(nordic_languages)) {
+      local({
+        code <- language_code
+        output[[paste0("title_oversize_", code)]] <- shiny::renderUI({
+          oversize_check(isTRUE(nchar(input[[paste0("ind_title_", code)]]) > 255), conf)
+        })
+        output[[paste0("long_oversize_", code)]] <- shiny::renderUI({
+          oversize_check(isTRUE(nchar(input[[paste0("ind_long_", code)]]) > 2047), conf)
+        })
+      })
+    }
+
     level_limits <- shiny::reactive({
       if (nrow(rv$ind_data) != 0) {
         if (rv$ind_data$level_direction == 1) {
@@ -116,7 +199,32 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$indicator_registry, {
       rv_return$registry_id <- input$indicator_registry
     })
+    output$indicator_text_editor <- shiny::renderUI({
+      shiny::req(input$indicator_registry)
+      nordic_state <- get_nordic_state(pool_verify, input$indicator_registry)
 
+      if (isTRUE(nordic_state == 0)) {
+        shiny::tagList(
+          shiny::uiOutput(ns("edit_ind_title")),
+          shiny::uiOutput(ns("title_oversize")),
+          shiny::uiOutput(ns("edit_ind_short")),
+          shiny::uiOutput(ns("short_oversize")),
+          shiny::uiOutput(ns("edit_ind_long")),
+          shiny::uiOutput(ns("long_oversize")),
+          shiny::uiOutput(ns("update_indicator_txt"))
+        )
+      } else if (isTRUE(nordic_state == 1)) {
+        shiny::tagList(
+          do.call(shiny::tabsetPanel, lapply(names(nordic_languages), function(language_code) {
+            shiny::tabPanel(
+              nordic_languages[[language_code]],
+              nordic_text_editor(language_code)
+            )
+          })),
+          shiny::uiOutput(ns("update_nordic_button"))
+        )
+      }
+    })
     shiny::observeEvent(input$indicator, {
       rv$ind_data <- get_registry_ind(pool_verify, input$indicator_registry)
       rv$ind_data <- rv$ind_data |>
@@ -186,6 +294,13 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       update_ind_text(pool_verify, rv$ind_data)
       rv$ind_data <- get_registry_ind(pool_verify, input$indicator_registry) |>
         dplyr::filter(.data$id == input$indicator)
+    })
+
+    shiny::observeEvent(input$update_nordic_txt, {
+      shiny::req(nordic_changed())
+      update_nordic_ind_text(pool_verify, rv_nordic())
+      update_nordic_ind_text(pool, rv_nordic())
+      nordic_saved(rv_nordic())
     })
 
     shiny::observeEvent(input$new_indicator, {
@@ -577,6 +692,35 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       update_indicator_txt_check(input, conf, ns, rv)
     })
 
+    output$update_nordic_button <- shiny::renderUI({
+      nordic_df <- rv_nordic()
+      required_text <- nordic_df[nordic_df$language %in% required_nordic_languages, ]
+      missing_descriptions <- sum(!nzchar(trimws(required_text$description)))
+      has_oversize_text <- any(vapply(required_nordic_languages, function(language_code) {
+        nchar(input[[paste0("ind_title_", language_code)]] %||% "") > 255 ||
+          nchar(input[[paste0("ind_long_", language_code)]] %||% "") > 2047
+      }, logical(1)))
+
+      if (!has_oversize_text) {
+        missing_text <- if (missing_descriptions > 0) {
+          shiny::tags$p(sprintf("%d språk mangler beskrivelse", missing_descriptions))
+        }
+
+        shiny::tagList(
+          missing_text,
+          shiny::actionButton(
+            ns("update_nordic_txt"),
+            "Oppdater tekster",
+            style = if (nordic_changed()) {
+              conf$profile$action_button_style
+            } else {
+              "background-color: #B9B9B9; border-color: #B9B9B9; color: white;"
+            }
+          )
+        )
+      }
+    })
+
 
     output$sorting_info <- shiny::renderUI({
       shiny::req(input$indicator_registry)
@@ -662,15 +806,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
           shiny::actionButton(ns("save_sorting"), "Lagre sortering")
         )
       } else {
-        shiny::tagList(
-          shiny::uiOutput(ns("edit_ind_title")),
-          shiny::uiOutput(ns("title_oversize")),
-          shiny::uiOutput(ns("edit_ind_short")),
-          shiny::uiOutput(ns("short_oversize")),
-          shiny::uiOutput(ns("edit_ind_long")),
-          shiny::uiOutput(ns("long_oversize")),
-          shiny::uiOutput(ns("update_indicator_txt"))
-        )
+        shiny::uiOutput(ns("indicator_text_editor"))
       }
     })
 

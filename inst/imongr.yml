@@ -234,6 +234,12 @@ db:
       - short_description
       - long_description
       - registry_id
+    ind_description:
+      insert:
+      - ind_id
+      - language
+      - title
+      - description
     registry_medfield:
       insert:
       - id
@@ -254,6 +260,7 @@ db:
       - short_name
       - RHF
       - first_year
+      - nordic
     hospital:
       insert:
       - orgnr
