@@ -21,33 +21,42 @@ indicator_ui <- function(id) {
     shiny::sidebarLayout(
       shiny::sidebarPanel(
         shiny::uiOutput(ns("select_indicator_registry")),
-        shiny::uiOutput(ns("select_indicator")),
-        shiny::fluidRow(
-          shiny::column(4, shiny::uiOutput(ns("add_new_indicator"))),
-          shiny::column(4, shiny::uiOutput(ns("remove_indicator_data_btn"))),
-          shiny::column(4, shiny::uiOutput(ns("remove_indicator_completely_btn")))
-        ),
-        shiny::hr(),
-        shiny::uiOutput(ns("select_dg_id")),
-        shiny::uiOutput(ns("set_include")),
-        shiny::uiOutput(ns("set_level_direction")),
-        shiny::uiOutput(ns("set_level_green")),
-        shiny::uiOutput(ns("set_level_yellow")),
-        shiny::uiOutput(ns("set_min_denominator")),
-        shiny::uiOutput(ns("set_type")),
-        shiny::uiOutput(ns("set_format")),
-        shiny::uiOutput(ns("set_digits")),
-        shiny::uiOutput(ns("update_indicator_val")),
-        shiny::uiOutput(ns("message"))
+        shiny::tabsetPanel(
+          id = ns("indicator_tabs"),
+          selected = "Indikator",
+          shiny::tabPanel(
+            value = "Indikator",
+            title = "Lag eller endre indikator",
+            shiny::br(),
+            shiny::uiOutput(ns("select_indicator")),
+            shiny::fluidRow(
+              shiny::column(4, shiny::uiOutput(ns("add_new_indicator"))),
+              shiny::column(4, shiny::uiOutput(ns("remove_indicator_data_btn"))),
+              shiny::column(4, shiny::uiOutput(ns("remove_indicator_completely_btn")))
+            ),
+            shiny::hr(),
+            shiny::uiOutput(ns("select_dg_id")),
+            shiny::uiOutput(ns("set_include")),
+            shiny::uiOutput(ns("set_level_direction")),
+            shiny::uiOutput(ns("set_level_green")),
+            shiny::uiOutput(ns("set_level_yellow")),
+            shiny::uiOutput(ns("set_min_denominator")),
+            shiny::uiOutput(ns("set_type")),
+            shiny::uiOutput(ns("set_format")),
+            shiny::uiOutput(ns("set_digits")),
+            shiny::uiOutput(ns("update_indicator_val")),
+            shiny::uiOutput(ns("message"))
+          ),
+          shiny::tabPanel(
+            value = "Sortering",
+            title = "Sortere indikatorer",
+            shiny::br(),
+            shiny::uiOutput(ns("sorting_info"))
+          )
+        )
       ),
       shiny::mainPanel(
-        shiny::uiOutput(ns("edit_ind_title")),
-        shiny::uiOutput(ns("title_oversize")),
-        shiny::uiOutput(ns("edit_ind_short")),
-        shiny::uiOutput(ns("short_oversize")),
-        shiny::uiOutput(ns("edit_ind_long")),
-        shiny::uiOutput(ns("long_oversize")),
-        shiny::uiOutput(ns("update_indicator_txt"))
+        shiny::uiOutput(ns("indicator_main_panel"))
       )
     )
   )
@@ -566,6 +575,184 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
 
     output$update_indicator_txt <- shiny::renderUI({
       update_indicator_txt_check(input, conf, ns, rv)
+    })
+
+
+    output$sorting_info <- shiny::renderUI({
+      shiny::req(input$indicator_registry)
+      shiny::tagList(
+        shiny::tags$p(
+          "Flytt indikatorer mellom kolonnene for \u00e5 velge om de skal inkluderes eller ekskluderes."
+        ),
+        shiny::tags$p(
+          "Kolonnen for inkluderte indikatorer bestemmer sorteringsrekkef\u00f8lgen."
+        ),
+        shiny::tags$p(
+          "Husk \u00e5 lagre sorteringen n\u00e5r du er ferdig."
+        )
+      )
+    })
+
+    sorting_indicators <- shiny::reactive({
+      shiny::req(input$indicator_registry)
+      indicators <- get_registry_ind(pool_verify, input$indicator_registry)
+      indicators <- indicators[!grepl("^dg", indicators$type), ]
+
+      include_indicators <- indicators[!is.na(indicators$include) & indicators$include == 1, ]
+      include_indicators <- include_indicators[
+        order(is.na(include_indicators$name), include_indicators$name, include_indicators$id),
+      ]
+
+      exclude_indicators <- indicators[!is.na(indicators$include) & indicators$include == 0, ]
+      exclude_indicators <- exclude_indicators[
+        order(is.na(exclude_indicators$name), exclude_indicators$name, exclude_indicators$id),
+      ]
+
+      list(
+        include = stats::setNames(
+          include_indicators$title,
+          include_indicators$id
+        ),
+        exclude = stats::setNames(
+          exclude_indicators$title,
+          exclude_indicators$id
+        )
+      )
+    })
+
+    output$indicator_main_panel <- shiny::renderUI({
+      shiny::req(input$indicator_tabs)
+
+      if (identical(input$indicator_tabs, "Sortering")) {
+        shiny::tagList(
+          shiny::tags$div(
+            style = "display: flex; align-items: center; justify-content: space-between; gap: 12px;",
+            shiny::tags$h3("Sorter og inkluder indikatorer", style = "margin: 0;"),
+            shiny::actionButton(
+              ns("sorting_instructions"),
+              "Instruksjoner",
+              icon = shiny::icon("circle-info"),
+              class = "btn btn-outline-secondary"
+            )
+          ),
+          shiny::br(),
+          shiny::tags$p(
+            "Dra indikatorer mellom kolonnene og sorter dem i riktig rekkef\u00f8lge.",
+            style = "margin-bottom: 16px;"
+          ),
+          shiny::tags$p(
+            "Kolonnen \"Skal vises p\u00e5 behandlingskvalitet\" bestemmer hvilke indikatorer
+            som vises p\u00e5 apps.skde.no/behandlingskvalitet.",
+            style = "margin-bottom: 16px;"
+          ),
+          sortable::bucket_list(
+            header = NULL,
+            group_name = ns("indicator_sorting"),
+            sortable::add_rank_list(
+              text = "Skal vises p\u00e5 behandlingskvalitet",
+              labels = sorting_indicators()$include,
+              input_id = ns("indicator_sorting_include")
+            ),
+            sortable::add_rank_list(
+              text = "Vises IKKE p\u00e5 behandlingskvalitet",
+              labels = sorting_indicators()$exclude,
+              input_id = ns("indicator_sorting_exclude")
+            )
+          ),
+          shiny::actionButton(ns("save_sorting"), "Lagre sortering")
+        )
+      } else {
+        shiny::tagList(
+          shiny::uiOutput(ns("edit_ind_title")),
+          shiny::uiOutput(ns("title_oversize")),
+          shiny::uiOutput(ns("edit_ind_short")),
+          shiny::uiOutput(ns("short_oversize")),
+          shiny::uiOutput(ns("edit_ind_long")),
+          shiny::uiOutput(ns("long_oversize")),
+          shiny::uiOutput(ns("update_indicator_txt"))
+        )
+      }
+    })
+
+    shiny::observeEvent(input$sorting_instructions, {
+      shiny::showModal(
+        shiny::modalDialog(
+          title = "Instruksjoner for sortering",
+          shiny::tags$p(
+            "Bruk denne visningen for å velge hvilke indikatorer som skal vises og i hvilken rekkefølge.",
+            style = "margin-bottom: 12px;"
+          ),
+          shiny::tags$ol(
+            shiny::tags$li("Dra indikatorer til \"Skal vises på behandlingskvalitet\" for å vise dem på nettsiden."),
+            shiny::tags$li("La indikatorer som ikke skal vises ligge i \"Vises IKKE på behandlingskvalitet\"."),
+            shiny::tags$li("Sorter rekkefølgen i \"Skal vises på behandlingskvalitet\" fra topp til bunn."),
+            shiny::tags$li("Trykk Lagre sortering når du er ferdig."),
+            style = "margin-bottom: 16px;"
+          ),
+          shiny::tags$p(
+            "Husk: Rekkefølgen i \"Skal vises på behandlingskvalitet\" blir den rekkefølgen som brukes videre.",
+            style = "margin-bottom: 12px;"
+          ),
+          shiny::img(
+            src = "www/sortering_instruksjoner.gif",
+            style = "max-width: 100%; height: auto; border-radius: 6px;"
+          ),
+          easyClose = TRUE,
+          size = "xl",
+          footer = shiny::modalButton("Lukk")
+        )
+      )
+    })
+
+    shiny::observeEvent(input$save_sorting, {
+      shiny::req(input$indicator_sorting)
+
+      sorting_state <- input$indicator_sorting
+      if (length(sorting_state) < 2) {
+        return()
+      }
+
+      include_ids <- sorting_state[[1]]
+      exclude_ids <- sorting_state[[2]]
+
+      escape_sql <- function(x) {
+        gsub("'", "''", x, fixed = TRUE)
+      }
+
+      include_names <- letters[seq_along(include_ids)]
+
+      all_ids <- c(include_ids, exclude_ids)
+
+      if (length(all_ids) == 0) {
+        shiny::showNotification("Ingen indikatorer å lagre.", type = "message")
+        return()
+      }
+
+      update_include_query <- paste0(
+        "UPDATE ind SET include = CASE id ",
+        paste0(
+          c(
+            paste0("WHEN '", escape_sql(include_ids), "' THEN 1"),
+            paste0("WHEN '", escape_sql(exclude_ids), "' THEN 0")
+          ),
+          collapse = " "
+        ),
+        " END WHERE id IN ('", paste(escape_sql(all_ids), collapse = "', '"), "');"
+      )
+
+      update_name_query <- paste0(
+        "UPDATE ind SET name = CASE id ",
+        paste0(
+          "WHEN '", escape_sql(include_ids), "' THEN '", include_names, "'",
+          collapse = " "
+        ),
+        " END WHERE id IN ('", paste(escape_sql(include_ids), collapse = "', '"), "');"
+      )
+      pool::dbExecute(pool_verify, update_include_query)
+      pool::dbExecute(pool, update_include_query)
+      pool::dbExecute(pool_verify, update_name_query)
+      pool::dbExecute(pool, update_name_query)
+      shiny::showNotification("Sortering lagret.", type = "message")
     })
 
     return(rv_return)
