@@ -56,7 +56,7 @@ indicator_ui <- function(id) {
         )
       ),
       shiny::mainPanel(
-        shiny::uiOutput(ns("indicator_text_editor"))
+        shiny::uiOutput(ns("indicator_main_panel"))
       )
     )
   )
@@ -806,15 +806,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
           shiny::actionButton(ns("save_sorting"), "Lagre sortering")
         )
       } else {
-        shiny::tagList(
-          shiny::uiOutput(ns("edit_ind_title")),
-          shiny::uiOutput(ns("title_oversize")),
-          shiny::uiOutput(ns("edit_ind_short")),
-          shiny::uiOutput(ns("short_oversize")),
-          shiny::uiOutput(ns("edit_ind_long")),
-          shiny::uiOutput(ns("long_oversize")),
-          shiny::uiOutput(ns("update_indicator_txt"))
-        )
+        shiny::uiOutput(ns("indicator_text_editor"))
       }
     })
 
