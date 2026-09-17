@@ -76,8 +76,30 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
       return(validateName(x, existing_ind_ids))
     }
 
+    validateMinDenominator <- function(x) {
+      if (is.na(x)) {
+        return("Angi minste antall observasjoner. ")
+      } else if (x >= conf$indicator$min_denominator_treshold) {
+        return(NULL)
+      } else {
+        return("Minste antall observasjoner må være 5 eller flere. ")
+      }
+    }
+
+    validateDigits <- function(x) {
+      if (is.na(x)) {
+        return("Angi antall desimaler. ")
+      } else if (x < 0 || x %% 1 != 0) {
+        return("Antall desimaler må være et positivt heltall. ")
+      } else {
+        return(NULL)
+      }
+    }
+
     inputValidator <- shinyvalidate::InputValidator$new(session = session)
     inputValidator$add_rule("new_ind_name", validateIndName)
+    inputValidator$add_rule("min_denominator", validateMinDenominator)
+    inputValidator$add_rule("digits", validateDigits)
     inputValidator$enable()
 
     rv <- shiny::reactiveValues(
@@ -481,7 +503,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         ),
         shiny::numericInput(
           ns("min_denominator"), "Minste antall observasjoner:",
-          value = rv$ind_data$min_denominator, min = 0
+          value = rv$ind_data$min_denominator, min = 5
         )
       )
     })
