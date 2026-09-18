@@ -515,6 +515,8 @@ indicator:
       </i>
   oversize_message: >
       <i style='color:red;'>Teksten er for lang!</i><br><br>
+  min_denominator_treshold:
+  - 5
 medfield:
   text:
     heading: >
