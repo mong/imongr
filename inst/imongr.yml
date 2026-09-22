@@ -218,6 +218,12 @@ db:
       - hf_orgnr
       - rhf_orgnr
       - ind_id
+    ind_description:
+      insert:
+      - ind_id
+      - language
+      - title
+      - description
     ind:
       insert:
       - id
@@ -254,6 +260,7 @@ db:
       - short_name
       - RHF
       - first_year
+      - nordic
     hospital:
       insert:
       - orgnr
