@@ -1,6 +1,6 @@
 Package: imongr
 Title: I Handle the Data for mongts 
-Version: 2.12.1
+Version: 2.12.3
 Authors@R: c(
     person(given = "Are",
            family = "Edvardsen",
@@ -40,6 +40,7 @@ Imports:
     shinycssloaders,
     shinyjs,
     shinyvalidate,
+    sortable,
     tibble,
     yaml
 Suggests: 
@@ -48,4 +49,4 @@ Suggests:
     lintr
 URL: https://github.com/mong/imongr
 BugReports: https://github.com/mong/imongr/issues
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0
