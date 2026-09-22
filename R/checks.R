@@ -104,7 +104,12 @@ update_check <- function(input, conf, ns, rv, level_consistent) {
     is.null(input$indicator),
     is.null(input$include),
     is.null(input$level_direction),
-    nrow(rv$ind_data) == 0
+    nrow(rv$ind_data) == 0,
+    input$min_denominator < conf$indicator$min_denominator_treshold,
+    is.na(input$min_denominator),
+    is.na(input$digits),
+    input$digits < 0,
+    input$digits %% 1 != 0
   ))) {
     NULL
   } else {
