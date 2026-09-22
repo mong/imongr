@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `registry` (
   `short_name` varchar(128) DEFAULT NULL,
   `RHF` varchar(128) DEFAULT NULL,
   `first_year` smallint(5) DEFAULT NULL,
-  `nordic` smallint(1) DEFAULT 0,
+  `nordic` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;

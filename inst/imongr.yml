@@ -218,6 +218,12 @@ db:
       - hf_orgnr
       - rhf_orgnr
       - ind_id
+    ind_description:
+      insert:
+      - ind_id
+      - language
+      - title
+      - description
     ind:
       insert:
       - id
@@ -234,12 +240,6 @@ db:
       - short_description
       - long_description
       - registry_id
-    ind_description:
-      insert:
-      - ind_id
-      - language
-      - title
-      - description
     registry_medfield:
       insert:
       - id

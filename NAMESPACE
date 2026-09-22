@@ -150,11 +150,7 @@ export(var_doc_ui)
 export(version_info)
 export(warning_report_ui)
 export(write_config)
-importFrom(rlang,
-  .data,
-  .env
-)
-importFrom(utils,
-  URLencode,
-  read.csv
-)
+importFrom(rlang,.data)
+importFrom(rlang,.env)
+importFrom(utils,URLencode)
+importFrom(utils,read.csv)
