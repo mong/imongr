@@ -1,4 +1,14 @@
-# imongr 2.12.13
+# imongr 2.12.4
+
+## What's Changed
+* feat: Mulighet til å endre rekkefølge på indikatorer by @petterlinberg in https://github.com/mong/imongr/pull/654
+* fix(indicator): lagt til validering på minste nevner og antall desimaler by @Stein-Kato in https://github.com/mong/imongr/pull/672
+* feat: nordic indicator addition by @petterlinberg in https://github.com/mong/imongr/pull/667
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.12.3...v2.12.4
+
+# imongr 2.12.3
 
 ## What's Changed
 * chore: gjøre tekstboksen til EGs vurdering lengre by @Stein-Kato in https://github.com/mong/imongr/pull/669
