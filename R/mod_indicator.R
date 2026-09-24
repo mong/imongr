@@ -77,7 +77,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     }
 
     validateMinDenominator <- function(x) {
-      if (is.na(x)) {
+      if (is.na(x) || is.null(x)) {
         return("Angi minste antall observasjoner. ")
       } else if (x >= conf$indicator$min_denominator_treshold) {
         return(NULL)
@@ -87,7 +87,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     }
 
     validateDigits <- function(x) {
-      if (is.na(x)) {
+      if (is.na(x) || is.null(x)) {
         return("Angi antall desimaler. ")
       } else if (x < 0 || x %% 1 != 0) {
         return("Antall desimaler må være et positivt heltall. ")
