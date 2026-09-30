@@ -255,10 +255,12 @@ CREATE TABLE IF NOT EXISTS `notice` (
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_notice_registry`
     FOREIGN KEY (`registry_id`) REFERENCES `registry` (`id`)
-    ON UPDATE CASCADE,
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT,
   CONSTRAINT `fk_notice_user`
     FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
     ON UPDATE CASCADE
+    ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 CREATE TABLE IF NOT EXISTS `notice_event` (
