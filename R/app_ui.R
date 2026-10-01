@@ -174,7 +174,8 @@ app_ui <- function() {
           value = "status",
           shiny::span("Registerstatus"),
           status_ui("status")
-        ),
+        )
+      ),
       bslib::nav_spacer(),
       user_widget()
     )
