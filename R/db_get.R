@@ -819,9 +819,13 @@ get_registry_notices <- function(pool, registry_id) {
 get_all_notices <- function(pool) {
   query <- paste0("
     SELECT
-      id, year, status, ref
+      notice.id, year, status, ref, registry.id as registry_id, registry.short_name
     FROM 
       notice
+    LEFT JOIN
+      registry
+    ON
+      notice.registry_id = registry.id
   ")
 
   pool::dbGetQuery(pool, query)
