@@ -174,6 +174,11 @@ app_ui <- function() {
           value = "status",
           shiny::span("Registerstatus"),
           status_ui("status")
+        ),
+        shiny::tabPanel(
+          value = "status",
+          shiny::span("Registerstatus"),
+          status_ui("status")
         )
       ),
       bslib::nav_spacer(),
