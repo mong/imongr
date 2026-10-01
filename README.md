@@ -11,14 +11,6 @@
 
 Primarily a tool to update data used by the [mongts](https://github.com/mong/mongts/) application.
 
-## Install
-
-You can install the released version of imongr from [GitHub](https://github.com/mong/imongr) with:
-
-``` r
-remotes::install_github("mong/imongr")
-```
-
 ## Development
 
 The easiest way to develop `imongr` is to fire up the `docker-compose.yml` file:
@@ -34,28 +26,9 @@ This file consist of seven different services:
 - Code-server (vscode) at port [8080](http://localhost:8080/)
 - The app, based on the `hnskde/imongr:latest` image, at port [3838](http://localhost:3838/)
 
-Open [localhost:8787](http://localhost:8787/) with your favorite browser and login with `rstudio` and `password`. Go into the `imongr` folder, open `imongr.Rproj`, and press **Yes** to *Do you want to open the project ~/imongr?*. Start coding. If you prefer *vscode*, you can open [localhost:8080](http://localhost:8080/) instead.
+Open [localhost:8787](http://localhost:8787/) with your favorite browser and login with `rstudio` and `password`. Go into the `imongr` folder, open `imongr.Rproj`, and press **Yes** to *Do you want to open the project ~/imongr?*. Start coding. 
 
-Populate the databases by using Adminer, either through `imongr` (*Administrative verktøy* - *Adminer*) or through [port 8888](http://localhost:8888/) (the password is the same as username/db/repository name).
-
-The data can be visualized by using the `mongts` app:
-
-```bash
-export DB_PORT=3331 # or 3332 for the verify database
-yarn install && yarn dev # inside the mongts folder
-```
-
-The data can then be seen at [localhost:3000/kvalitetsregistre/alle/sykehus/](http://localhost:3000/kvalitetsregistre/alle/sykehus/)
-
-### Build docker image and run the container app locally
-
-```bash
-R CMD build .
-docker build -t hnskde/imongr:latest .
-docker compose up
-```
-
-Navigate a browser to [localhost:3838/](http://localhost:3838/).
+Populate the databases by using Adminer, either through `imongr` (*Administrative verktøy* - *Adminer*) or through [port 8888](http://localhost:8888/). There are two databases: `db` and `db-verify`. The username and password are both "imongr" for both databases. You will need a copy of the database as a compressed sql file. Open the imongr database and click the `import` button. Select the file containing the database and click `Execute`. This must be done for the production and verify databases separately. 
 
 ### Getting out of some dirty states
 
