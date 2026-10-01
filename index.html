@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">imongr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.12.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.12.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,37 +61,18 @@
 
 <p>Primarily a tool to update data used by the <a href="https://github.com/mong/mongts/" class="external-link">mongts</a> application.</p>
 <div class="section level2">
-<h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
-</h2>
-<p>You can install the released version of imongr from <a href="https://github.com/mong/imongr" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"mong/imongr"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
 <h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
 </h2>
 <p>The easiest way to develop <code>imongr</code> is to fire up the <code>docker-compose.yml</code> file:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">docker</span> compose up</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">docker</span> compose up</span></code></pre></div>
 <p>This file consist of seven different services: - three mariadb databases (<code>prod</code> at port <code>3331</code>, <code>verify</code> at port <code>3332</code>, and <code>qa</code> at port <code>3333</code>) - Adminer, a tool for database management, at port <a href="http://localhost:8888/" class="external-link">8888</a> - RStudio at port <a href="http://localhost:8787/" class="external-link">8787</a> - Code-server (vscode) at port <a href="http://localhost:8080/" class="external-link">8080</a> - The app, based on the <code>hnskde/imongr:latest</code> image, at port <a href="http://localhost:3838/" class="external-link">3838</a></p>
-<p>Open <a href="http://localhost:8787/" class="external-link">localhost:8787</a> with your favorite browser and login with <code>rstudio</code> and <code>password</code>. Go into the <code>imongr</code> folder, open <code>imongr.Rproj</code>, and press <strong>Yes</strong> to <em>Do you want to open the project ~/imongr?</em>. Start coding. If you prefer <em>vscode</em>, you can open <a href="http://localhost:8080/" class="external-link">localhost:8080</a> instead.</p>
-<p>Populate the databases by using Adminer, either through <code>imongr</code> (<em>Administrative verktøy</em> - <em>Adminer</em>) or through <a href="http://localhost:8888/" class="external-link">port 8888</a> (the password is the same as username/db/repository name).</p>
-<p>The data can be visualized by using the <code>mongts</code> app:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="bu">export</span> <span class="va">DB_PORT</span><span class="op">=</span>3331 <span class="co"># or 3332 for the verify database</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="ex">yarn</span> install <span class="kw">&amp;&amp;</span> <span class="ex">yarn</span> dev <span class="co"># inside the mongts folder</span></span></code></pre></div>
-<p>The data can then be seen at <a href="http://localhost:3000/kvalitetsregistre/alle/sykehus/" class="external-link">localhost:3000/kvalitetsregistre/alle/sykehus/</a></p>
-<div class="section level3">
-<h3 id="build-docker-image-and-run-the-container-app-locally">Build docker image and run the container app locally<a class="anchor" aria-label="anchor" href="#build-docker-image-and-run-the-container-app-locally"></a>
-</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="ex">R</span> CMD build .</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> hnskde/imongr:latest .</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="ex">docker</span> compose up</span></code></pre></div>
-<p>Navigate a browser to <a href="http://localhost:3838/" class="external-link">localhost:3838/</a>.</p>
-</div>
+<p>Open <a href="http://localhost:8787/" class="external-link">localhost:8787</a> with your favorite browser and login with <code>rstudio</code> and <code>password</code>. Go into the <code>imongr</code> folder, open <code>imongr.Rproj</code>, and press <strong>Yes</strong> to <em>Do you want to open the project ~/imongr?</em>. Start coding.</p>
+<p>Populate the databases by using Adminer, either through <code>imongr</code> (<em>Administrative verktøy</em> - <em>Adminer</em>) or through <a href="http://localhost:8888/" class="external-link">port 8888</a>. There are two databases: <code>db</code> and <code>db-verify</code>. The username and password are both “imongr” for both databases. You will need a copy of the database as a compressed sql file. Open the imongr database and click the <code>import</code> button. Select the file containing the database and click <code>Execute</code>. This must be done for the production and verify databases separately.</p>
 <div class="section level3">
 <h3 id="getting-out-of-some-dirty-states">Getting out of some dirty states<a class="anchor" aria-label="anchor" href="#getting-out-of-some-dirty-states"></a>
 </h3>
 <p>If the environment variables have been changed an you want to change them back to default:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRenviron.html" class="external-link">readRenviron</a></span><span class="op">(</span><span class="st">"~/.Renviron"</span><span class="op">)</span></span></code></pre></div>
 <p>If your pool have not been closed properly, for instance if you have not cleaned up after testing with database:</p>
 <ol style="list-style-type: decimal">
