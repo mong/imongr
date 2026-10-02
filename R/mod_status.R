@@ -74,10 +74,19 @@ add_arrows <- function(dat_format) {
 status_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::fluidPage(
-    shiny::tags$h1("Stadium"),
-    DT::dataTableOutput(ns("status_table")),
-    shiny::tags$h1("Varsler"),
-    DT::dataTableOutput(ns("notice_table"))
+    shiny::tabsetPanel(
+      id = ns("tabs"),
+      shiny::tabPanel(
+        value = "stadium",
+        title = "Stadium",
+        DT::dataTableOutput(ns("status_table")),
+      ),
+      shiny::tabPanel(
+        value = "notices",
+        title = "Varsler",
+        DT::dataTableOutput(ns("notice_table"))
+      )
+    )
   )
 }
 
@@ -118,6 +127,7 @@ status_server <- function(id, pool, pool_verify) {
         DT::datatable(
           all_notices_data |> dplyr::select(.data$short_name, .data$year, .data$status, .data$ref),
           rownames = FALSE,
+          colnames = c("Register", "\u00c5r", "Status", "Referanse"),
           options = list(
             columnDefs = list(
               list(targets = "_all", className = "dt-left")
