@@ -14,13 +14,23 @@ NULL
 #' @export
 profile_ui <- function(id) {
   ns <- shiny::NS(id)
-
-  shiny::tagList(
-    shiny::htmlOutput(ns("profile")),
-    shiny::uiOutput(ns("upload_history")),
-    shiny::uiOutput(ns("ui_upload_table")),
-    shiny::uiOutput(ns("publish_history")),
-    shiny::uiOutput(ns("ui_publish_table"))
+  shiny::sidebarLayout(
+    shiny::sidebarPanel(
+      shiny::htmlOutput(ns("profile"))
+    ),
+    shiny::mainPanel(
+      shiny::fluidRow(
+        shiny::column(
+          width = 12,
+          shiny::div(
+            style = "background-color: transparent; border: 1px solid #c8c8c8; border-radius:
+            6px; padding: 16px; margin-bottom: 10px;",
+            shiny::htmlOutput(ns("welcome_text"))
+          )
+        )
+      ),
+      shiny::uiOutput(ns("ui_table"))
+    )
   )
 }
 
@@ -37,22 +47,20 @@ profile_server <- function(id, pool, pool_verify) {
 
       is_provider <- conf$role$provider %in% get_user_groups()
 
-      output$upload_history <- shiny::renderUI({
+      output$history_type <- shiny::renderUI({
         if (is_provider) {
-          shiny::checkboxInput(
-            ns("upload_history"),
-            conf$profile$delivery$status$upload
-          )
-        } else {
-          NULL
-        }
-      })
-
-      output$publish_history <- shiny::renderUI({
-        if (is_provider) {
-          shiny::checkboxInput(
-            ns("publish_history"),
-            conf$profile$delivery$status$publish
+          shiny::radioButtons(
+            ns("history_type"),
+            label = NULL,
+            choices = stats::setNames(
+              c("upload", "publish"),
+              c(
+                conf$profile$delivery$status$upload,
+                conf$profile$delivery$status$publish
+              )
+            ),
+            selected = "upload",
+            inline = TRUE
           )
         } else {
           NULL
@@ -81,6 +89,25 @@ profile_server <- function(id, pool, pool_verify) {
             "e-post:", df$email, "<br><br>"
           )
 
+
+          welcome_text
+
+        }
+      })
+
+      welcome_text <- shiny::reactive({
+        if (!nrow(get_user_data(pool)) > 0 || conf$role$none %in% get_user_groups()) {
+          conf$profile$pending
+        } else {
+          df <- get_user_data(pool)
+          if (df$id %in% get_table(pool, "delivery")$user_id) {
+            delivery_history <- ""
+          } else {
+            delivery_history <- conf$profile$delivery$none
+          }
+          welcome_text <- ""
+          is_provider <- conf$role$provider %in% get_user_groups()
+          is_reviewer <- conf$role$reviewer %in% get_user_groups()
           if (is_provider) {
             welcome_text <- paste(welcome_text, conf$profile$provider_howto)
           }
@@ -98,80 +125,69 @@ profile_server <- function(id, pool, pool_verify) {
           if (is_provider) {
             welcome_text <- paste(welcome_text, "<br><br>", delivery_history, "<br><br>")
           }
-
           welcome_text
-
         }
       })
 
-      upload_history <- shiny::reactive({
-        if (is_provider & input$upload_history) {
-          DT::datatable(
-            get_user_deliveries(pool_verify),
-            rownames = FALSE,
-            options = list(
-              dom = "tp",
-              pageLength = 10,
-              language = list(
-                paginate = list(
-                  previous = "Forrige",
-                  `next` = "Neste"
-                )
-              )
-            )
-          )
-        } else {
-          NULL
+      history_table <- shiny::reactive({
+        if (!is_provider) {
+          return(NULL)
         }
-      })
 
-      publish_history <- shiny::reactive({
-        if (is_provider & input$publish_history) {
-          DT::datatable(
-            get_user_deliveries(pool),
-            rownames = FALSE,
-            options = list(
-              dom = "tp",
-              pageLength = 10,
-              language = list(
-                paginate = list(
-                  previous = "Forrige",
-                  `next` = "Neste"
-                )
+        shiny::req(input$history_type)
+
+        delivery_data <- switch(
+          input$history_type,
+          upload = get_user_deliveries(pool_verify),
+          publish = get_user_deliveries(pool),
+          get_user_deliveries(pool_verify)
+        )
+
+        DT::datatable(
+          delivery_data,
+          rownames = FALSE,
+          options = list(
+            dom = "tp",
+            pageLength = 10,
+            language = list(
+              paginate = list(
+                previous = "Forrige",
+                `next` = "Neste"
               )
             )
           )
-        } else {
-          NULL
-        }
+        )
       })
 
       output$profile <- shiny::renderText({
         profile()
       })
 
-      output$upload_table <- DT::renderDataTable(
+      output$welcome_text <- shiny::renderText({
+        welcome_text()
+      })
+
+      output$history_table <- DT::renderDataTable(
+        history_table()
+      )
+
+      output$ui_table <- shiny::renderUI(
         if (is_provider) {
-          upload_history()
+          shiny::fluidRow(
+            shiny::column(
+              width = 12,
+              shiny::div(
+                style = "background-color: transparent; border: 1px solid #c8c8c8; border-radius: 6px; padding: 16px;",
+                shiny::div(
+                  shiny::uiOutput(ns("history_type"))
+                ),
+                DT::dataTableOutput(ns("history_table"))
+              )
+            )
+          )
         } else {
           NULL
         }
-      )
-
-      output$publish_table <- DT::renderDataTable(
-        if (is_provider) {
-          publish_history()
-        } else {
-          NULL
-        }
-      )
-
-      output$ui_upload_table <- shiny::renderUI(
-        DT::dataTableOutput(ns("upload_table"))
-      )
-
-      output$ui_publish_table <- shiny::renderUI(
-        DT::dataTableOutput(ns("publish_table"))
       )
     }
   )
