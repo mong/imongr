@@ -389,7 +389,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       )
       indicator_titles <- pool::dbGetQuery(pool_verify, query)$title
       shiny::selectInput(
-        ns("new_project_indicators"), "Velg indikator:",
+        ns("new_project_indicators"), "Velg indikatorer som skal inngå i prosjektet:",
         choices = setNames(indicator_ids, indicator_titles),
         multiple = TRUE
       )
