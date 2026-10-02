@@ -31,7 +31,7 @@ notice_ui <- function(id) {
       ),
       shiny::mainPanel(
         shiny::uiOutput(ns("event_list")),
-        shiny::uiOutput(ns("update_list_button"))
+        shiny::uiOutput(ns("notice_status_list"))
       )
     )
   )
@@ -76,13 +76,6 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
     inputValidator$add_rule("new_event_text", validate_event_text)
     inputValidator$enable()
 
-    all_notices_data <- get_all_notices(pool)
-
-    registries <- all_notices_data |>
-      dplyr::transmute(.data$short_name, .data$registry_id) |>
-      dplyr::arrange(.data$short_name) |>
-      tibble::deframe()
-
     ########################
     ##### Sidebar menu #####
     ########################
@@ -94,7 +87,7 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       shiny::selectInput(
         ns("registry"),
         "Velg register",
-        registries
+        rv$registries
       )
     })
 
@@ -164,12 +157,18 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       )
     })
 
-
     ##### Event observers #####
 
     shiny::observeEvent(input$registry, {
       rv$notice_data <- get_registry_notices(pool, input$registry)
       rv$event_data <- get_notice_events(pool, get_notice_id(pool, input$registry, input$selected_year))
+
+      rv$all_notices_data <- get_all_notices(pool)
+
+      rv$registries <- rv$all_notices_data |>
+        dplyr::transmute(.data$short_name, .data$registry_id) |>
+        dplyr::arrange(.data$short_name) |>
+        tibble::deframe()
     })
 
     shiny::observeEvent(input$selected_year, {
