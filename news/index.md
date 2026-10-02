@@ -1,5 +1,21 @@
 # Changelog
 
+## imongr 2.12.6
+
+### What’s Changed
+
+- feat: varseltabell by [@Stein-Kato](https://github.com/Stein-Kato) in
+  <https://github.com/mong/imongr/pull/693>
+- Opprette prosjekt i pop up by
+  [@petterlinberg](https://github.com/petterlinberg) in
+  <https://github.com/mong/imongr/pull/694>
+- feat: forhåndsvisning av vurderingstekst i ekspertgruppefanen by
+  [@Stein-Kato](https://github.com/Stein-Kato) in
+  <https://github.com/mong/imongr/pull/695>
+
+**Full Changelog**:
+<https://github.com/mong/imongr/compare/v2.12.5>…v2.12.6
+
 ## imongr 2.12.5
 
 ### What’s Changed
