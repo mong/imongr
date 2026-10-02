@@ -125,7 +125,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       return(validateName(x, existing_project_ids))
     }
 
-    validatePopupStartYear <- function(x) {
+    validateStartYear <- function(x) {
       if (is.numeric(x)) {
         return(NULL)
       } else {
@@ -133,25 +133,17 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       }
     }
 
-    validateStartYear <- function(x) {
-      if (!shiny::isTruthy(x) || !shiny::isTruthy(input$end_year) || x <= input$end_year) {
+    validateEndYear <- function(x) {
+      if (!shiny::isTruthy(x) || !shiny::isTruthy(input$start_year) || x >= input$start_year) {
         return(NULL)
       } else {
         return("Start\u00e5r kan ikke være større enn slutt\u00e5r")
       }
     }
 
-    validateEndYear <- function(x) {
-      if (!shiny::isTruthy(x) || !shiny::isTruthy(input$start_year) || x >= input$start_year) {
-        return(NULL)
-      } else {
-        return("")
-      }
-    }
-
     inputValidator <- shinyvalidate::InputValidator$new(session = session)
     inputValidator$add_rule("new_project_name", validateProjectName)
-    inputValidator$add_rule("new_project_start_year", validatePopupStartYear)
+    inputValidator$add_rule("new_project_start_year", validateStartYear)
     inputValidator$add_rule("start_year", validateStartYear)
     inputValidator$add_rule("end_year", validateEndYear)
     inputValidator$enable()
