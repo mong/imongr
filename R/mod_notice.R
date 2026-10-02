@@ -45,7 +45,6 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
     ns <- session$ns
     conf <- get_config()
 
-    rv_return <- shiny::reactiveValues()
     rv <- shiny::reactiveValues()
 
     max_event_text_length <- 1000
@@ -77,6 +76,13 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
     inputValidator$add_rule("new_event_text", validate_event_text)
     inputValidator$enable()
 
+    all_notices_data <- get_all_notices(pool)
+
+    registries <- all_notices_data |>
+      dplyr::transmute(.data$short_name, .data$registry_id) |>
+      dplyr::arrange(.data$short_name) |>
+      tibble::deframe()
+
     ########################
     ##### Sidebar menu #####
     ########################
@@ -85,11 +91,10 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # Select registry UI
     output$select_registry <- shiny::renderUI({
-      select_registry_ui(pool_verify, conf,
-        input_id = ns("registry"),
-        context = "verify",
-        show_context = FALSE,
-        current_reg = registry_tracker$current_registry
+      shiny::selectInput(
+        ns("registry"),
+        "Velg register",
+        registries
       )
     })
 
@@ -105,7 +110,6 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # Set status
     output$set_status <- shiny::renderUI({
-
       shiny::selectInput(
         ns("notice_status"),
         "Endre status",
@@ -166,8 +170,6 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$registry, {
       rv$notice_data <- get_registry_notices(pool, input$registry)
       rv$event_data <- get_notice_events(pool, get_notice_id(pool, input$registry, input$selected_year))
-      rv$all_notices_data <- get_all_notices(pool)
-      rv_return$registry_id <- input$registry
     })
 
     shiny::observeEvent(input$selected_year, {
@@ -229,7 +231,5 @@ notice_server <- function(id, registry_tracker, pool, pool_verify) {
       add_event(input, rv, pool)
       rv$event_data <- get_notice_events(pool, get_notice_id(pool, input$registry, input$selected_year))
     })
-
-    return(rv_return)
   })
 }

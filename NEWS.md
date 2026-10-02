@@ -1,3 +1,16 @@
+# imongr 2.12.5
+
+## What's Changed
+* chore(deps): update hadolint/hadolint-action action to v3.5.0 by @renovate[bot] in https://github.com/mong/imongr/pull/660
+* chore(deps): update mariadb docker tag to v13 by @renovate[bot] in https://github.com/mong/imongr/pull/670
+* fix: oppdater URL til verify-siden i opplastingsfanen by @Stein-Kato in https://github.com/mong/imongr/pull/685
+* fix: feil mellom test og validering av input by @Stein-Kato in https://github.com/mong/imongr/pull/687
+* Legg inn fremmednøkkel på notice-tabellen i _create_tabs.sql by @Stein-Kato in https://github.com/mong/imongr/pull/688
+* fix: filtrer ut registre som har varsel i nedtrekksmenyen by @Stein-Kato in https://github.com/mong/imongr/pull/691
+
+
+**Full Changelog**: https://github.com/mong/imongr/compare/v2.12.4...v2.12.5
+
 # imongr 2.12.4
 
 ## What's Changed
