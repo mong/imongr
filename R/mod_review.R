@@ -114,6 +114,11 @@ review_ui <- function(id) {
         shiny::br(),
         shiny::h3("Ekspertgruppens vurdering"),
         shiny::uiOutput(ns("evaluation_text")),
+        shiny::br(),
+        shiny::br(),
+        shiny::uiOutput(ns("evaluation_markdown")),
+        shiny::br(),
+        shiny::br(),
       )
     )
   )
@@ -493,7 +498,7 @@ review_server <- function(id, registry_tracker, pool) {
     output$evaluation_text <- shiny::renderUI({
       shiny::textAreaInput(
         ns("evaluation_text"), "Vurdering av \u00e5rsrapporten",
-        value = "", width = "90%", rows = 50
+        value = "", width = "90%", rows = 25
       ) |>
         bslib::tooltip(
           shiny::HTML("
@@ -506,6 +511,10 @@ review_server <- function(id, registry_tracker, pool) {
           "),
           options = list(html = TRUE, delay = 100, trigger = "hover")
         )
+    })
+
+    output$evaluation_markdown <- shiny::renderUI({
+      shiny::markdown(input$evaluation_text)
     })
 
     output$level_A_comment <- shiny::renderUI({
