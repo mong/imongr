@@ -21,8 +21,8 @@ project_ui <- function(id) {
     shiny::sidebarLayout(
       shiny::sidebarPanel(
         shiny::uiOutput(ns("select_project_registry")),
-        shiny::uiOutput(ns("select_project_indicator")),
         shiny::uiOutput(ns("select_project")),
+        shiny::uiOutput(ns("select_project_indicator")),
         shiny::uiOutput(ns("add_new_project")),
         shiny::hr(),
         bslib::layout_columns(
@@ -71,7 +71,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     conf <- get_config()
 
     rv_return <- shiny::reactiveValues()
-    rv <- shiny::reactiveValues()
+    rv <- shiny::reactiveValues(new_project_counter = 0)
 
     colours <- c("#e30713", "#fd9c00", "#3baa34")
 
@@ -96,8 +96,21 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     project_data <- function() {
-      get_registry_projects(pool_verify, input$project_registry, input$project_indicator) |>
-        dplyr::filter(.data$id == input$project)
+      query <- "
+        SELECT
+          id,
+          context,
+          start_year,
+          end_year,
+          title,
+          short_description,
+          long_description
+        FROM
+          project
+        WHERE
+          id = ?;"
+
+      pool::dbGetQuery(pool_verify, query, params = list(input$project))
     }
 
     hospital_unit_names <- get_hospitals(pool_verify)$short_name
@@ -112,7 +125,7 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       return(validateName(x, existing_project_ids))
     }
 
-    validatePopupStartYear <- function(x) {
+    validateStartYear <- function(x) {
       if (is.numeric(x)) {
         return(NULL)
       } else {
@@ -120,25 +133,17 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       }
     }
 
-    validateStartYear <- function(x) {
-      if (!shiny::isTruthy(x) || !shiny::isTruthy(input$end_year) || x <= input$end_year) {
+    validateEndYear <- function(x) {
+      if (!shiny::isTruthy(x) || !shiny::isTruthy(input$start_year) || x >= input$start_year) {
         return(NULL)
       } else {
         return("Start\u00e5r kan ikke være større enn slutt\u00e5r")
       }
     }
 
-    validateEndYear <- function(x) {
-      if (!shiny::isTruthy(x) || !shiny::isTruthy(input$start_year) || x >= input$start_year) {
-        return(NULL)
-      } else {
-        return("")
-      }
-    }
-
     inputValidator <- shinyvalidate::InputValidator$new(session = session)
     inputValidator$add_rule("new_project_name", validateProjectName)
-    inputValidator$add_rule("new_project_start_year", validatePopupStartYear)
+    inputValidator$add_rule("new_project_start_year", validateStartYear)
     inputValidator$add_rule("start_year", validateStartYear)
     inputValidator$add_rule("end_year", validateEndYear)
     inputValidator$enable()
@@ -167,30 +172,47 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # Select registry UI
     output$select_project_registry <- shiny::renderUI({
-      select_registry_ui(pool_verify, conf,
-        input_id = ns("project_registry"),
-        context = "verify",
-        show_context = FALSE,
-        current_reg = registry_tracker$current_registry
+      rv$new_project_counter
+      query <- paste0("SELECT DISTINCT registry_id FROM project;")
+      registry_ids <- pool::dbGetQuery(pool_verify, query)$registry_id
+      registry_names <- pool::dbGetQuery(
+        pool_verify,
+        "SELECT short_name FROM registry WHERE id IN (SELECT DISTINCT registry_id FROM project);"
+      )$short_name
+      shiny::selectInput(
+        ns("project_registry"), "Velg register:",
+        choices = setNames(registry_ids, registry_names),
+        selected = rv$new_project_registry
       )
     })
 
     # Select indicator UI
     output$select_project_indicator <- shiny::renderUI({
-      shiny::req(input$project_registry)
+      shiny::req(input$project_registry, input$project)
+      indicator_ids <- pool::dbGetQuery(pool_verify, paste0(
+        "SELECT id FROM ind WHERE id IN (SELECT ind_id FROM project_ind WHERE project_id = '",
+        input$project, "');"
+      ))$id
+      query <- paste0(
+        "SELECT title FROM ind WHERE id IN (SELECT ind_id FROM project_ind WHERE project_id = '",
+        input$project, "');"
+      )
+      indicator_titles <- pool::dbGetQuery(pool_verify, query)$title
       shiny::selectInput(
         ns("project_indicator"), "Velg indikator:",
-        choices = rv$registry_indicators
+        choices = setNames(indicator_ids, indicator_titles)
       )
     })
 
     # Select project UI
     output$select_project <- shiny::renderUI({
       rv$new_project_counter
-      shiny::req(input$project_registry, input$project_indicator, input$project_indicator)
+      shiny::req(input$project_registry)
+      query <- paste0("SELECT DISTINCT id FROM project WHERE registry_id = '", input$project_registry, "';")
+      projects <- pool::dbGetQuery(pool_verify, query)
       shiny::selectInput(
         ns("project"), "Velg prosjekt:",
-        choices = get_registry_projects(pool_verify, input$project_registry, input$project_indicator)$id,
+        choices = projects$id,
         selected = rv$new_project_name, # Switch to the new project when it is made
       )
     })
@@ -224,12 +246,11 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     # Context toggle
     output$toggle_context <- shiny::renderUI({
       shiny::req(input$project)
-
       shiny::tags$div(
         title = "Angi om data skal vises på opptaksområder istedenfor behandlingsenheter",
         bslib::input_switch(
           ns("resident"), "Bruk opptaksområder",
-          value = rv$project_data$context == "resident"
+          value = project_data()$context == "resident"
         )
       )
     })
@@ -292,8 +313,14 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
 
     # When you select a project
     shiny::observeEvent(input$project, {
+      shiny::req(input$project)
       rv$project_data <- project_data()
       rv$selected_hospitals <- get_project_hospitals(pool_verify, input$project)$hospital_short_name
+    })
+
+    # When you select an indicator
+    shiny::observeEvent(list(input$project, input$project_indicator), {
+      shiny::req(input$project, input$project_indicator)
       rv$indicator_data <- get_ind_agg_data(pool_verify, input$project_indicator, rv$project_data$context)
       rv$indicator_limits <- get_ind_limits(pool_verify, input$project_indicator)
     })
@@ -302,7 +329,9 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
     shiny::observeEvent(input$new_project, {
       shiny::showModal(
         shiny::modalDialog(
-          shiny::tags$h3("Velg navn p\u00e5 nytt prosjekt"),
+          shiny::tags$h3("Opprett et nytt prosjekt"),
+          shiny::uiOutput(ns("new_project_registry")),
+          shiny::uiOutput(ns("new_project_indicators")),
           shiny::textInput(ns("new_project_name"), "Prosjektnavn"),
           shiny::numericInput(ns("new_project_start_year"),
             label = "Velg start\u00e5r",
@@ -332,15 +361,45 @@ project_server <- function(id, registry_tracker, pool, pool_verify) {
       }
     })
 
+    output$new_project_registry <- shiny::renderUI({
+      select_registry_ui(pool_verify, conf,
+        input_id = ns("new_project_registry"),
+        context = "verify",
+        show_context = FALSE,
+      )
+    })
+
+    output$new_project_indicators <- shiny::renderUI({
+      shiny::req(input$new_project_registry)
+      indicator_ids <- pool::dbGetQuery(pool_verify, paste0(
+        "SELECT id FROM ind WHERE registry_id = '",
+        input$new_project_registry, "';"
+      ))$id
+      query <- paste0(
+        "SELECT title FROM ind WHERE registry_id = '",
+        input$new_project_registry, "';"
+      )
+      indicator_titles <- pool::dbGetQuery(pool_verify, query)$title
+      shiny::selectInput(
+        ns("new_project_indicators"), "Velg indikatorer som skal inngå i prosjektet:",
+        choices = setNames(indicator_ids, indicator_titles),
+        multiple = TRUE
+      )
+    })
     # When you press "OK" in the new project popup
     shiny::observeEvent(input$new_project_submit, {
-      shiny::removeModal()
+      rv$new_project_registry <- input$new_project_registry
+      rv$new_project_indicators <- input$new_project_indicators
+      rv$new_project_start_year <- input$new_project_start_year
       rv$new_project_name <- input$new_project_name
+      shiny::removeModal()
     })
 
     shiny::observeEvent(rv$new_project_name, {
-      add_project(input, rv, pool, pool_verify)
-      add_project_to_indicator(pool_verify, rv$new_project_name, input$project_indicator)
+      add_project(rv, pool, pool_verify)
+      lapply(rv$new_project_indicators, function(indicator) {
+        add_project_to_indicator(pool_verify, rv$new_project_name, indicator)
+      })
 
       default_text <- data.frame(
         title = "Tittel",

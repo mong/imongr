@@ -404,13 +404,13 @@ WHERE
 #' @param conf The data from the get_config function
 #' @param rv A shiny::reactiveValues object
 #' @noRd
-add_project <- function(input, rv, pool, pool_verify) {
+add_project <- function(rv, pool, pool_verify) {
   query <- paste0("INSERT INTO project (id, registry_id, context, start_year) VALUES ( '",
     rv$new_project_name,
     "', '",
-    input$project_registry,
+    rv$new_project_registry,
     "', 'caregiver', '",
-    input$new_project_start_year,
+    rv$new_project_start_year,
     "');"
   )
 
