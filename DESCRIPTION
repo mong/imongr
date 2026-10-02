@@ -1,6 +1,6 @@
 Package: imongr
 Title: I Handle the Data for mongts 
-Version: 2.12.5
+Version: 2.12.6
 Authors@R: c(
     person(given = "Are",
            family = "Edvardsen",
