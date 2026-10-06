@@ -18,9 +18,9 @@ indicator_ui <- function(id) {
 
   shiny::tagList(
     shinyjs::useShinyjs(),
-    tags$head(
-      tags$style(
-        HTML("
+    shiny::tags$head(
+      shiny::tags$style(
+        shiny::HTML("
           .shiny-text-output {
             background-color: #D3D3D3;
             color: #A9A9A9;
