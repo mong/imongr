@@ -18,6 +18,21 @@ indicator_ui <- function(id) {
 
   shiny::tagList(
     shinyjs::useShinyjs(),
+    shiny::tags$head(
+      shiny::tags$style(
+        shiny::HTML("
+          .shiny-text-output {
+            background-color: #D3D3D3;
+            color: #A9A9A9;
+            border: solid;
+            border-width: thin;
+            width: 90%
+            }
+          h6 {
+            color: #A9A9A9
+          }")
+      )
+    ),
     shiny::sidebarLayout(
       shiny::sidebarPanel(
         shiny::uiOutput(ns("select_indicator_registry")),
@@ -69,6 +84,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     ns <- session$ns
     shinyjs::useShinyjs()
     conf <- get_config()
+
+
 
     validateIndName <- function(x) {
       existing_ind_ids <- pool::dbGetQuery(pool_verify, "SELECT id FROM ind")$id
@@ -178,7 +195,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         shiny::uiOutput(ns(paste0("title_oversize_", language_code))),
         shiny::textAreaInput(
           ns(paste0("ind_long_", language_code)),
-          "Indikatorbeskrivelse (maks 2047 tegn)",
+          "Indikatorbeskrivelse (maks 1000 tegn)",
           value = description,
           width = "90%", rows = 16
         ),
@@ -193,7 +210,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
           oversize_check(isTRUE(nchar(input[[paste0("ind_title_", code)]]) > 255), conf)
         })
         output[[paste0("long_oversize_", code)]] <- shiny::renderUI({
-          oversize_check(isTRUE(nchar(input[[paste0("ind_long_", code)]]) > 2047), conf)
+          oversize_check(isTRUE(nchar(input[[paste0("ind_long_", code)]]) > 1000), conf)
         })
       })
     }
@@ -229,7 +246,9 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
         shiny::tagList(
           shiny::uiOutput(ns("edit_ind_title")),
           shiny::uiOutput(ns("title_oversize")),
+          shiny::h6("Kort indikatorbeskrivelse"),
           shiny::uiOutput(ns("edit_ind_short")),
+          shiny::br(),
           shiny::uiOutput(ns("short_oversize")),
           shiny::uiOutput(ns("edit_ind_long")),
           shiny::uiOutput(ns("long_oversize")),
@@ -306,7 +325,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     })
 
     shiny::observeEvent(input$ind_long, {
-      rv$long_oversize <- ifelse(nchar(input$ind_long) > 2047, TRUE, FALSE)
+      rv$long_oversize <- ifelse(nchar(input$ind_long) > 1000, TRUE, FALSE)
     })
 
     shiny::observeEvent(input$update_txt, {
@@ -688,9 +707,8 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
 
     output$edit_ind_short <- shiny::renderUI({
       shiny::req(input$indicator)
-      shiny::textAreaInput(
-        ns("ind_short"), "Kort indikatorbeskrivelse (maks 1023 tegn)",
-        value = rv$ind_data$short_description, width = "90%", rows = 8
+      shiny::renderText(
+        rv$ind_data$short_description
       )
     })
 
@@ -701,7 +719,7 @@ indicator_server <- function(id, registry_tracker, pool, pool_verify) {
     output$edit_ind_long <- shiny::renderUI({
       shiny::req(input$indicator)
       shiny::textAreaInput(
-        ns("ind_long"), "Lang indikatorbeskrivelse (maks 2047 tegn)",
+        ns("ind_long"), "Lang indikatorbeskrivelse (maks 1000 tegn)",
         value = rv$ind_data$long_description, width = "90%", rows = 16
       )
     })
