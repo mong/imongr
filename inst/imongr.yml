@@ -510,6 +510,7 @@ indicator:
   - gjennomsnitt
   - median
   - dg_andel
+  - ikke_andel
   formats: 
   - '%'
   - f
