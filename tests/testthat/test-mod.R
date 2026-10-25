@@ -119,12 +119,10 @@ test_that("profile module server provides sensible output for known user", {
     args = list(pool = pool, pool_verify = pool),
     {
       session$setInputs(upload_history = FALSE, publish_history = FALSE)
-      expect_null(upload_history())
-      expect_null(publish_history())
+      expect_null(history_table())
 
       session$setInputs(upload_history = TRUE, publish_history = TRUE)
-      expect_true("htmlwidget" %in% class(upload_history()))
-      expect_true("htmlwidget" %in% class(publish_history()))
+      expect_true("htmlwidget" %in% class(history_table()))
     }
   )
 })
